@@ -6,49 +6,27 @@ import {
   Input,
   Tag,
   Divider,
-  message,
   Modal,
-  Popconfirm,
-  Descriptions,
-  Switch,
-  notification,
   Pagination,
   Form,
   Row,
   Col,
   Radio,
-  DatePicker,
 } from "antd";
-import { Select } from "antd";
-
-import {
-  SearchOutlined,
-  PlusSquareFilled,
-  FolderViewOutlined,
-  ExclamationCircleOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-
+import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import storageUtils from "../../utils/storageUtils";
 import { listType, listAddType } from "../../utils/memoryUtils";
 import {
+  reqPermit,
   reqGetList,
-  reqDelCampaign,
-  reqPublishCampaign,
-  reqTransfer,
-  reqDistributions,
+  reqDelSettlement,
+  reqPutSettlement,
+  reqAgreeSettlement,
 } from "../../api";
-import ReactFileReader from "react-file-reader";
 import { Loading } from "../../components";
-import comEvents from "../../utils/comEvents";
 import "./index.less";
-import "../../css/common.less";
 
-const { RangePicker } = DatePicker;
-const { Search } = Input;
-const { Option } = Select;
 const { confirm } = Modal;
-const Product = [];
 const renderContent = (value, row, index) => {
   const obj = {
     children: value,
@@ -56,17 +34,7 @@ const renderContent = (value, row, index) => {
   };
   return obj;
 };
-const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 16 },
-};
 
-const tailLayout = {
-  wrapperCol: {
-    offset: 4,
-    span: 16,
-  },
-};
 class Setting extends Component {
   state = {
     inited: false,
@@ -90,52 +58,69 @@ class Setting extends Component {
     title: "审批机构", //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
   };
   componentDidMount() {
-    this.getMarkets(null, 1);
+    this.getList();
   }
+  getList = async () => {
+    const result = await reqPermit("LIST_SETTLEMENT");
+    if (result) this.getMarkets(null, 1);
+  };
   componentWillMount() {
     this.initColumns();
   }
 
   initColumns() {
+    /*审批机构表头*/
     this.merchantColumns = [
       {
-        title: "提交机构",
-        dataIndex: "name",
-        key: "name",
+        title: "审批机构",
+        dataIndex: "marketerName",
+        key: "marketerName",
         //ellipsis: true,
-      },
-
-      {
-        title: "交易周期",
-        dataIndex: "effective",
-        key: "effective",
-        colSpan: 2,
-        width: 110,
-        render: renderContent,
-      },
-      {
-        title: "终止时间",
-        dataIndex: "expiry",
-        colSpan: 0,
-        key: "expiry",
-        //render: renderContent,
-        width: 110,
-        render: (text) => {
-          return (
-            <div>{text ? comEvents.getDateStr(-1, new Date(text)) : "-"}</div>
-          );
-        },
       },
       {
         title: "结算类型",
         dataIndex: "type",
         key: "type",
         width: 110,
+        render: (text) => {
+          return (
+            <div>
+              <Tag color="blue" key={text}>
+                {listAddType.map((item, index) =>
+                  item.value === text ? (
+                    <span key={index}>{item.name}</span>
+                  ) : null
+                )}
+              </Tag>
+            </div>
+          );
+        },
+      },
+      {
+        title: "交易周期",
+        dataIndex: "beginDate",
+        key: "beginDate",
+        colSpan: 2,
+        width: 110,
+        render: renderContent,
+      },
+      {
+        title: "终止时间",
+        dataIndex: "endDate",
+        colSpan: 0,
+        key: "endDate",
+        width: 110,
+      },
+      {
+        title: "票券数量",
+        dataIndex: "amount",
+        key: "amount",
+        width: 110,
       },
       {
         title: "结算时间",
-        dataIndex: "time",
-        key: "time",
+        dataIndex: "settlementDate",
+        key: "settlementDate",
         width: 110,
       },
       {
@@ -168,7 +153,13 @@ class Setting extends Component {
                 <span>
                   <b
                     onClick={() => {
-                      //this.props.history.push("/admin/market/edit/" + id);
+                      let that = this;
+                      that.hasPower(
+                        id,
+                        "确认提交该结算？",
+                        "SUBMIT_SETTLEMENT",
+                        'publishItem'
+                      );
                     }}
                     className="ant-green-link cursor"
                   >
@@ -178,32 +169,16 @@ class Setting extends Component {
                   <b
                     onClick={() => {
                       let that = this;
-                      confirm({
-                        title: "确认删除该结算?",
-                        icon: <ExclamationCircleOutlined />,
-                        okText: "确认",
-                        okType: "danger",
-                        cancelText: "取消",
-                        onOk() {
-                          that.delItem(id);
-                        },
-                        onCancel() {},
-                      });
+                       that.hasPower(
+                         id,
+                         "确认删除该结算",
+                         "DELETE_SETTLEMENT",
+                         "delItem"
+                       );
                     }}
-                    className="ant-pink-link"
+                    className="ant-pink-link cursor"
                   >
                     删除
-                  </b>
-                </span>
-              ) : status === "SUBMITTED" ? (
-                <span>
-                  <b
-                    onClick={() => {
-                      //this.showCSV("distributions", chooseItem);
-                    }}
-                    className="ant-blue-link cursor"
-                  >
-                    批准
                   </b>
                 </span>
               ) : (
@@ -214,45 +189,57 @@ class Setting extends Component {
         },
       },
     ];
+    /*提交机构表头*/
     this.marketerColumns = [
       {
-        title: "审批机构",
-        dataIndex: "name",
-        key: "name",
-        //ellipsis: true,
-      },
-
-      {
-        title: "交易周期",
-        dataIndex: "effective",
-        key: "effective",
-        colSpan: 2,
-        width: 110,
-        render: renderContent,
-      },
-      {
-        title: "终止时间",
-        dataIndex: "expiry",
-        colSpan: 0,
-        key: "expiry",
-        //render: renderContent,
-        width: 110,
-        render: (text) => {
-          return (
-            <div>{text ? comEvents.getDateStr(-1, new Date(text)) : "-"}</div>
-          );
-        },
+        title: "提交机构",
+        dataIndex: "merchantName",
+        key: "merchantName",
       },
       {
         title: "结算类型",
         dataIndex: "type",
         key: "type",
         width: 110,
+        render: (text) => {
+          return (
+            <div>
+              <Tag color="blue" key={text}>
+                {listAddType.map((item, index) =>
+                  item.value === text ? (
+                    <span key={index}>{item.name}</span>
+                  ) : null
+                )}
+              </Tag>
+            </div>
+          );
+        },
+      },
+      {
+        title: "交易周期",
+        dataIndex: "beginDate",
+        key: "beginDate",
+        colSpan: 2,
+        width: 110,
+        render: renderContent,
+      },
+      {
+        title: "终止时间",
+        dataIndex: "endDate",
+        colSpan: 0,
+        key: "endDate",
+        width: 110,
+      },
+      {
+        title: "票券数量",
+        dataIndex: "amount",
+        key: "amount",
+        width: 110,
       },
       {
         title: "结算时间",
-        dataIndex: "time",
-        key: "time",
+        dataIndex: "settlementDate",
+        key: "settlementDate",
         width: 110,
       },
       {
@@ -281,42 +268,17 @@ class Setting extends Component {
           const { id, status } = chooseItem;
           return (
             <span>
-              {status === "INITIATED" ? (
+              {status === "SUBMITTED" ? (
                 <span>
-                  <b
-                    onClick={() => {
-                      //this.props.history.push("/admin/market/edit/" + id);
-                    }}
-                    className="ant-green-link cursor"
-                  >
-                    提交
-                  </b>
-                  <Divider type="vertical" />
                   <b
                     onClick={() => {
                       let that = this;
-                      confirm({
-                        title: "确认删除该结算?",
-                        icon: <ExclamationCircleOutlined />,
-                        okText: "确认",
-                        okType: "danger",
-                        cancelText: "取消",
-                        onOk() {
-                          that.delItem(id);
-                        },
-                        onCancel() {},
-                      });
-                    }}
-                    className="ant-pink-link"
-                  >
-                    删除
-                  </b>
-                </span>
-              ) : status === "SUBMITTED" ? (
-                <span>
-                  <b
-                    onClick={() => {
-                      this.showCSV("distributions", chooseItem);
+                      that.hasPower(
+                        id,
+                        "确认批准该结算",
+                        "APPROVE_SETTLEMENT",
+                        "approveItem"
+                      );
                     }}
                     className="ant-blue-link cursor"
                   >
@@ -333,17 +295,8 @@ class Setting extends Component {
     ];
   }
 
-  searchValue = (value) => {
-    console.log("Setting -> searchValue -> value", value)
-    this.setState({
-      searchTxt: value.searchTxt,
-      value: value.group,
-    });
-    console.log("value", value);
-    this.getMarkets(value.searchTxt, 1);
-  };
+  /*radio 切换*/
   onChange = (e) => {
-    console.log("radio checked", e.target.value);
     //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
     this.setState({
       page: 0,
@@ -352,41 +305,82 @@ class Setting extends Component {
     });
     this.getMarkets(null, 1, e.target.value);
   };
+  /*搜索*/
+  searchValue = (value) => {
+    this.setState({
+      searchTxt: value.searchTxt,
+      value: value.group,
+    });
+    this.getMarkets(value.searchTxt, 1, this.state.value);
+  };
+  /*搜索loding*/
   enterLoading = () => {
     this.setState({
       loading: true,
     });
   };
-  addItem = () => {
-    //this.props.history.push("/admin/market/edit/new");
-    this.setState({
-      showCSV: true,
-    });
+  /*添加 */
+  addItem = async () => {
+    const result = await reqPermit("CREATE_SETTLEMENT");
+    if (result) this.props.history.push("/admin/setting/new");
+  };
+  hasPower=async(id,title,str,handleName)=>{
+    let that = this;
+     const result = await reqPermit(str);
+     if (result) {
+       confirm({
+         title: title,
+         icon: <ExclamationCircleOutlined />,
+         okText: "确认",
+         cancelText: "取消",
+         onOk() {
+           that[handleName](id);
+         },
+       });
+     }
+
+  }
+  /*删除草稿 */
+  delItem = async (id) => {
+      const result = await reqDelSettlement(id);
+      this.getMarkets(null, 1, this.state.value);
+  };
+  /*提交草稿 */
+  publishItem = async (id) => {
+      const params = {
+        merchantId: storageUtils.getUser().orgId,
+      };
+      const result = await reqPutSettlement(id, params);
+      this.setState({
+        currentPage: 1,
+      });
+      this.getMarkets(null, 1);
+
+  };
+  /*批准 */
+  approveItem = async (id) => {
+      const params = {
+        marketerId: storageUtils.getUser().orgId,
+      };
+      const result = await reqAgreeSettlement(id, params);
+      this.setState({
+        currentPage: 1,
+      });
+      this.getMarkets(null, 1);
+
   };
 
-  delItem = async (id) => {
-    const result = await reqDelCampaign(id);
-    this.getMarkets(null, 1);
-  };
-  publishItem = async (id) => {
-    const result = await reqPublishCampaign(id);
-    this.setState({
-      currentPage: 1,
-    });
-    this.getMarkets(null, 1);
-  };
   /*
 获取列表数据
 */
   getMarkets = async (value, currentPage, type) => {
+    let typeStr = type ? type : this.state.value;
     // merchantId 商户id
     // marketerId 机构id
-    // status 结算状态
-    // searchTxt 搜索框
     //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
     //提交机构（INITIATED，只显示在机构审批类)，审批机构（SUBMITTED，只显示在机构提交)
     const parmas =
-      type === "merchant"
+      typeStr === "merchant"
         ? {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
@@ -402,41 +396,31 @@ class Setting extends Component {
             searchTxt: this.state.searchTxt,
           };
     const result = await reqGetList(parmas);
-    console.log("Setting -> getMarkets -> result", result)
-    const cont = result && result.data ? result.data.content.entries : [];
-    this.totalPages = result && result.data ? result.data.content.total : 1;
+    const cont =
+      result && result.data && result.data.content
+        ? result.data.content.entries
+        : [];
+    this.totalPages =
+      result && result.data && result.data.content
+        ? result.data.content.totalElements
+        : 1;
 
     this.setState({
       inited: true,
       campaigns: cont,
-      total: result && result.data ? result.data.content.total : 1,
-      searchTxt: "",
+      total: result && result.data ? result.data.content.totalElements : 1,
+      searchTxt: null,
       loading: false,
     });
   };
-  showCSV = (type, chooseItem) => {
-    this.setState({
-      typeStr: type,
-      showCSV: true,
-      chooseItem: chooseItem,
-    });
-  };
-  handleCancel = () => {
-    this.setState({ showCSV: false });
-  };
-
+  /*分页 */
   handleTableChange = (page) => {
     this.setState({
       currentPage: page,
     });
     this.getMarkets(null, page);
   };
- onFinish = values => {
-    console.log(values);
-  };
-  onGenderChange = value => {
-  console.log(`selected ${value}`);
-  };
+
   renderContent = () => {
     const {
       campaigns,
@@ -469,7 +453,7 @@ class Setting extends Component {
           name="advanced_search"
           className="ant-advanced-search-form"
           initialValues={{
-            searchTxt: "",
+            searchTxt: searchTxt,
             group: "marketer",
           }}
         >
@@ -484,7 +468,11 @@ class Setting extends Component {
             </Col>
             <Col span={9}>
               <Form.Item name="searchTxt">
-                <Input placeholder="请输入活动名称或标签进行搜索" allowClear />
+                <Input
+                  value={searchTxt}
+                  placeholder="请输入活动名称或标签进行搜索"
+                  allowClear
+                />
               </Form.Item>
             </Col>
             <Col>
@@ -523,121 +511,6 @@ class Setting extends Component {
             size="small"
           />
         </div>
-        <Modal
-          title="新增结算"
-          visible={this.state.showCSV}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          footer={[]}
-        >
-          <Form
-            {...layout}
-            name="control-hooks"
-            onFinish={this.onFinish}
-            initialValues={{
-              org: storageUtils.getUser().orgName,
-              group: "marketer",
-              gender: "MONTHLY",
-            }}
-          >
-            <Form.Item
-              name="who"
-              label="营销机构"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Select
-                placeholder="请选择营销机构"
-                onChange={this.onGenderChange}
-                allowClear
-              >
-                <Option value="q">重庆农商行</Option>
-                {/* {listAddType.map((item) => {
-                  return <Option value={item.value}>{item.name}</Option>;
-                })} */}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="gender"
-              label="结算类型"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Select
-                placeholder="请选择结算类型"
-                onChange={this.onGenderChange}
-                allowClear
-              >
-                {listAddType.map((item) => {
-                  return <Option value={item.value}>{item.name}</Option>;
-                })}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              noStyle
-              shouldUpdate={(prevValues, currentValues) =>
-                prevValues.gender !== currentValues.gender
-              }
-            >
-              {({ getFieldValue }) =>
-                getFieldValue("gender") !== "NONE" ? (
-                  <Form.Item
-                    name="period"
-                    label="交易日期"
-                    rules={[
-                      {
-                        required: true,
-                      },
-                    ]}
-                  >
-                    <DatePicker />
-                    {/* <RangePicker
-                      picker={
-                        getFieldValue("gender") === "MONTHLY"
-                          ? "month"
-                          : getFieldValue("gender") === "ANNUAL"
-                          ? "year"
-                          : "quarter"
-                      }
-                    /> */}
-                  </Form.Item>
-                ) : (
-                  <Form.Item
-                    name="period"
-                    label="营销活动"
-                    rules={[
-                      {
-                        required: true,
-                      },
-                    ]}
-                  >
-                    <Select
-                      placeholder="请选择营销活动"
-                      onChange={this.onGenderChange}
-                      allowClear
-                    >
-                      {listAddType.map((item) => {
-                        return <Option value={item.value}>{item.name}</Option>;
-                      })}
-                    </Select>
-                  </Form.Item>
-                )
-              }
-            </Form.Item>
-
-            <Form.Item {...tailLayout}>
-              <Button type="primary" htmlType="submit">
-                创建
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
       </div>
     );
   };

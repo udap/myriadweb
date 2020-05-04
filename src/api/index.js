@@ -2,14 +2,15 @@
 定义接口请求
 */
 import ajax from "./serverAjax";
-import {host} from "../utils/config";
+import { host } from "../utils/config";
+import { Operation } from "../utils/memoryUtils";
+import { notification } from "antd";
 
 let BASE = host;
 // "proxy": "https://points.xinongtech.com/dev",
 //"proxy": "https://myriad-test.xinongtech.com"
 //https://gift-test.xinongtech.com
 var env = process.env.NODE_ENV;
-
 
 // if (env === "development") {
 //   BASE = `https://gift-test.xinongtech.com`; // 开发环境
@@ -31,7 +32,7 @@ export const reqLogin = (values) =>
   ajax.get(BASE + "/public/login", { params: values });
 //重新获取token
 export const reqToken = (values) =>
-         ajax.get(BASE + "/auth/refresh_token", { params: values });
+  ajax.get(BASE + "/auth/refresh_token", { params: values });
 /*
 LOGIN END
  */
@@ -117,6 +118,20 @@ export const regGetCurOrg = (params) =>
 
 //获取机构列表
 export const regGetOrgs = (params) => ajax(BASE + "/organizations");
+
+//权限判断
+export const reqPermit = (str) =>
+  ajax
+    .get(BASE + "/accounts/me/permissions/any?operations=" + Operation[str])
+    .then(function (response) {
+      if (response.data.retcode===0 && !response.data.content) {
+        notification.warn({
+          message: "对不起，您没有权限！",
+        });
+      } 
+      return response.data.content;
+    })
+
 /*
 注册机构 END
  */
@@ -180,13 +195,8 @@ TOPNAV END
 export const reqGetCoupons = (params) =>
   ajax.get(BASE + "/myriad/vouchers", { params: params });
 export const reqGetClients = (params) =>
-         ajax.get(BASE + "/customers", { params: params });
-;
+  ajax.get(BASE + "/customers", { params: params });
 // 单个发券：
-// post /distributions
-// 参数：json格式
-// voucherId
-// customerId
 export const reqPublishDis = (params) =>
   ajax.post(BASE + "/myriad/distributions", params);
 
@@ -194,30 +204,42 @@ export const reqPublishDis = (params) =>
 票券管理 END
  */
 
-
-
 /*
 结算管理 START
  */
-//  查询结算单 
-// get /myriad/settlements
-// 参数：
-// merchantId 商户id
-// marketerId 机构id
-// status 结算状态
-// searchTxt 搜索框
-
+//  查询结算单
 export const reqGetList = (params) =>
-         ajax.get(BASE + "/myriad/settlements", { params: params });
+  ajax.get(BASE + "/myriad/settlements", { params: params });
 
 // 查询商户参与的活动：
-// GET /myriad/campaigns
-// partyId 商户id
-// partyType = MERCHANT
-export const reqGetMerchant = (params) =>
-         ajax.get(BASE + "/myriad/campaigns", { params: params });
+export const reqGetMerchantList = (params) =>
+  ajax.get(BASE + "/myriad/campaigns", { params: params });
+// 查询商户加入的机构：
+export const reqGetOrgLists = (uid, params) =>
+  ajax.get(BASE + "/merchants/" + uid + "/orgs", { params: params });
 
+// 创建结算单：
+export const reqAddSettlement = (params) =>
+  ajax.post(BASE + "/myriad/settlements", params);
 
+// 删除结算单;
+// DELETE / myriad / settlements / { id };
+export const reqDelSettlement = (id) =>
+  ajax.delete(BASE + "/myriad/settlements/" + id);
+// 提交结算单
+// PUT /myriad/settlements/{id}/submit
+// json 参数：
+// merchantId 当前机构id  
+  export const reqPutSettlement = (id, params) =>
+           ajax.put(BASE + "/myriad/settlements/" + id + "/submit", params);
+//   审批结算单
+// PUT /myriad/settlements/{id}/approve
+// json 参数：
+// marketerId 当前机构id
+   export const reqAgreeSettlement = (id, params) =>
+            ajax.put(BASE + "/myriad/settlements/" + id + "/approve", params);
+  
+  
 /*
 结算管理 END
  */

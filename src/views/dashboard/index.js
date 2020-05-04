@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import storageUtils from "../../utils/storageUtils";
-import { reqGetAccounts, regGetCurOrg } from "../../api";
+import { reqPermit, reqGetAccounts, regGetCurOrg } from "../../api";
 import { message, Modal, Result } from "antd";
 import { ExclamationCircleOutlined, SmileOutlined } from "@ant-design/icons";
 import { LinkBtn } from "../../components";
@@ -14,14 +14,13 @@ class Dashboard extends Component {
     inited: false,
   };
   componentDidMount() {
-    this.getList();
+   this.getList();
   }
   /*
 获取当前机构
 */
   regGetCurOrg = async (newOrg) => {
     let that = this;
-
     let uid = newOrg ? newOrg : storageUtils.getUser().orgUid;
     const result = await regGetCurOrg(uid);
 
@@ -67,7 +66,8 @@ class Dashboard extends Component {
       //user
       let hasOrg = data && data.orgUid;
       if (hasOrg) {
-        this.regGetCurOrg();
+          //const result = await reqPermit("CREATE_SETTLEMENT");
+          this.regGetCurOrg();
       } else {
         this.setState({
           inited: true,

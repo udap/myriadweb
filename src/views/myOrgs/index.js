@@ -14,10 +14,6 @@ class MyOrgs extends Component {
   };
 
   componentDidMount() {
-    console.log(
-      "MyOrgs -> componentDidMount -> componentDidMount",
-      storageUtils.getUser().orgUid
-    );
     if (storageUtils.getUser().orgUid) {
       this.regGetCurOrg();
       this.setState({
@@ -33,7 +29,6 @@ class MyOrgs extends Component {
 获取当前机构
 */
   regGetCurOrg = async (newOrg) => {
-    console.log("MyOrgs -> regGetCurOrg -> newOrg", newOrg)
     let uid = newOrg ? newOrg : storageUtils.getUser().orgUid;
     const result = await regGetCurOrg(uid);
     const cont = result && result.data ? result.data.content : null;
@@ -44,7 +39,6 @@ class MyOrgs extends Component {
   };
 
   closeEditing = (changed,uid) => {
-    console.log("MyOrgs -> closeEditing -> closeEditing");
     this.setState({
       isNew: false,
       inited: false,

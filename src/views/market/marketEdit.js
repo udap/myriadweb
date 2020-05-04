@@ -16,26 +16,17 @@ import {
   Upload,
   Radio,
   InputNumber,
+  List,
 } from "antd";
-import { Drawer, List, Avatar, Divider, IconText } from "antd";
-
 import {
-  RollbackOutlined,
-  DollarCircleOutlined,
-  GiftOutlined,
-  InboxOutlined,
-  UploadOutlined,
+  RollbackOutlined
 } from "@ant-design/icons";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
-  reqGetGroup,
   reqGetCampaigns,
-  reqGetDistributionpoints,
   reqAddCampaign,
   reqPutConfig,
   reqPostConfig,
-  reqPostParties,
-  reqDelParty,
   //reqPostConfigImg,
 } from "../../api";
 import storageUtils from "../../utils/storageUtils";
@@ -45,7 +36,6 @@ import { withRouter } from "react-router-dom";
 import moment from "moment";
 import JoinOrg from "./joinOrg";
 import "./index.less";
-const Product = [];
 const layout = {
   labelCol: {
     xs: { span: 24 },
@@ -75,7 +65,6 @@ const tailLayout = {
   },
 };
 const { Step } = Steps;
-const { Option } = Select;
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -145,7 +134,6 @@ class MarketEdit extends Component {
   //获取当前活动详情
   getMarket = async (id) => {
     let curInfo = await reqGetCampaigns(id);
-    console.log("MarketEdit -> getMarket -> curInfo", curInfo);
     let cont = curInfo.data ? curInfo.data : [];
     let voucherConfig = cont.voucherConfig;
     this.setState({
@@ -174,7 +162,6 @@ class MarketEdit extends Component {
       hasConfig: cont.voucherConfig ? true : false,
       parties: cont.parties ? cont.parties : [],
     });
-    console.log("MarketEdit -> getMarket -> valueOff", this.state);
   };
   onFinish2 = async (values) => {
     let timeEffective = new Date(this.state.effective).getTime();
@@ -447,7 +434,6 @@ class MarketEdit extends Component {
     const {
       multiple,
       coverImg,
-      select,
       valueOff,
       totalSupply,
       autoUpdate,
@@ -463,17 +449,6 @@ class MarketEdit extends Component {
         span: 14,
       },
     };
-
-    // const normFile = (e) => {
-
-    //   if (Array.isArray(e)) {
-    //     return e;
-    //   }
-    //   this.setState({
-    //     coverImg: e.fileList,
-    //   });
-    //   return e && e.fileList;
-    // };
     const { fileList } = this.state;
     const props = {
       onRemove: (file) => {

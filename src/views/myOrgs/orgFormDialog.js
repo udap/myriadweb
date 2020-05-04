@@ -51,9 +51,7 @@ class OrgFormDialog extends Component {
       licenseNo: props.organize ? props.organize.licenseNo : "",
       fullName: props.organize ? props.organize.fullName : "",
       name: props.organize ? props.organize.name : "",
-      phone: props.organize
-        ? props.organize.phone
-        : storageUtils.getUser().cellphone,
+      phone: props.organize?props.organize.phone:storageUtils.getUser().cellphone,
       postalCode: props.organize ? props.organize.postalCode : "",
       address: props.organize ? props.organize.address : "",
       street: props.street ? props.organize.street : "",
@@ -64,7 +62,13 @@ class OrgFormDialog extends Component {
     };
   }
   componentDidMount() {
-    console.log("OrgFormDialog -> componentDidMount -> storageUtils.user.cellphone;", storageUtils.getUser().cellphone)
+    console.log(
+      "OrgFormDialog -> componentDidMount -> storageUtils.user.cellphone;",
+      this.props.organize,
+      storageUtils.getUser().cellphone,
+      this.state.phone
+    );
+    
   }
   onFinish = async (values) => {
     this.setState({

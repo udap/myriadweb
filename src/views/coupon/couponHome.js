@@ -42,14 +42,6 @@ const style = {
   color: "#1890ff",
   marginLeft: "10px",
 };
-const formItemLayout = {
-  labelCol: {
-    //span: 6,
-  },
-  wrapperCol: {
-    //span: 6,
-  },
-};
 const { Search } = Input;
 const { confirm } = Modal;
 const { Option } = Select;
@@ -308,9 +300,6 @@ class CouponHome extends Component {
     });
   };
   searchValue = (value) => {
-    // this.setState({
-    //   searchClientTxt: value.searchClientTxt,
-    // });
     this.getClient(1, this.state.searchClientTxt);
   };
   enterLoading = () => {
@@ -419,7 +408,6 @@ class CouponHome extends Component {
         ></PageHeader>
 
         <Form
-          {...formItemLayout}
           onFinish={this.onFinish}
           layout="horizontal"
           name="advanced_search"

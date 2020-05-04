@@ -72,9 +72,14 @@ const Login = Loadable({
 });
 
 const Setting = Loadable({
-  loader: () => import('./setting/setHome'),
-  loading: Loading
+  loader: () => import("./setting/setHome"),
+  loading: Loading,
 });
+const SetDetail = Loadable({
+  loader: () => import("./setting/setForm"),
+  loading: Loading,
+});
+;
 const Merchant = Loadable({
   loader: () => import("./merchant"),
   loading: Loading,
@@ -96,6 +101,7 @@ export {
   Provide,
   Exchange,
   Setting,
+  SetDetail,
   FormDialog,
   Merchant,
 };

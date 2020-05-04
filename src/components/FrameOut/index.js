@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Layout, Menu, Row, Col, Modal, message } from "antd";
+import { Layout, Menu, Row, Col, Modal, notification } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import "./index.less";
 //动态渲染导航栏
@@ -57,7 +57,9 @@ class FrameOut extends Component {
         selectedKeys: key,
       });
     } else {
-      message.info("您尚未加入任何结构！请注册新机构或者退出");
+      notification.warning({
+        message: "您尚未加入任何结构！请注册新机构或者退出",
+      });
       this.props.history.push("/admin/dashboard");
     }
   };
@@ -84,7 +86,9 @@ class FrameOut extends Component {
         //有下级菜单
         //默认打开当前子列表
         //找到当前路径的菜单
-        const cItem = item.children.find((cItem) => cItem.pathname === path);
+       // const cItem = item.children.find((cItem) => cItem.pathname === path);
+        const cItem = item.children.filter(cItem => cItem.isNav === true);
+        console.log("getNavMap -> cItem", cItem)
         //把subMenu展开
         if (cItem) {
           this.selectedOpenKeys = item.pathname;
@@ -99,7 +103,7 @@ class FrameOut extends Component {
               </span>
             }
           >
-            {this.getNavMap(item.children)}
+            {this.getNavMap(cItem)}
           </SubMenu>
         );
       }

@@ -308,7 +308,7 @@ class Merchant extends Component {
           columns={columns}
           pagination={false}
         />
-        <div class="pagination">
+        <div className="pagination">
           <Pagination
             pageSize={size}
             current={currentPage}

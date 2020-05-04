@@ -12,6 +12,7 @@ import {
   Provide,
   Exchange,
   Setting,
+  SetDetail,
   MyOrgs,
   FormDialog,
   MarketEdit,
@@ -115,6 +116,7 @@ const privateRoutes = [
         title: "我的机构",
         icon: "BankOutlined",
         isTop: false, //顶级菜单
+        isNav: true,
       },
       {
         pathname: "/admin/merchant",
@@ -122,6 +124,7 @@ const privateRoutes = [
         title: "入驻商户",
         icon: "ApartmentOutlined",
         isTop: false, //顶级菜单
+        isNav: true,
       },
       {
         pathname: "/admin/setting",
@@ -129,14 +132,17 @@ const privateRoutes = [
         title: "结算中心",
         icon: "MoneyCollectOutlined",
         isTop: false, //顶级菜单
+        exact: true,
+        isNav: true,
       },
-      // {
-      //   pathname: "/admin/setting/add",
-      //   component: SettingAdd,
-      //   title: "新增结算",
-      //   icon: "MoneyCollectOutlined",
-      //   isTop: false, //顶级菜单
-      // },
+      {
+        pathname: "/admin/setting/new",
+        component: SetDetail,
+        title: "新增结算",
+        icon: "MoneyCollectOutlined",
+        isTop: false, //顶级菜单
+        isNav: false,
+      },
     ],
   },
 ];
