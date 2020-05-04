@@ -1,0 +1,58 @@
+@import '../../css/yc.less';
+.logo {
+  display: block;
+  margin: 16px;
+  color:#fff;
+  text-align: center;
+  img{
+    display: inline;
+    width: 40px;
+    height: 40px;
+    margin-right: 4px;
+  }
+}
+.logo:hover{
+  color:#fff;
+}
+.logo::after{
+  content: '江渝礼享';
+  font-size: 12px;
+}
+.trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+//折叠隐藏文字
+.ant-layout-sider-collapsed .ant-menu-inline-collapsed span.title {
+    display: none;
+}
+.btnText{
+  font-size: 14px;
+}
+.authCode{
+  p{
+    margin:0;
+  }
+  span{
+    color:@greenColor;
+    font-size: 16px;
+    margin: 0 10px;
+  }
+}
+@media screen and (max-width:500px){
+  .btnText{ display:none; }
+  .collapsedUI{
+    width: 80px!important;
+  }
+}
