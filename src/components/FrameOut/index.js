@@ -46,6 +46,7 @@ class FrameOut extends Component {
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
+      openKey: [],
     });
   };
 

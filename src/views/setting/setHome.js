@@ -36,7 +36,7 @@ const renderContent = (value, row, index) => {
 };
 const renderCampaign = (value, row, index) => {
   const obj = {
-    children: value.name,
+    children: value?value.name:'-',
   };
   return obj;
 };
