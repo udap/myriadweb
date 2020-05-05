@@ -77,7 +77,7 @@ class Employees extends Component {
         render: (text, record) => (
           <b
             onClick={() => {
-              this.props.history.push("/admin/employees/detail/" + record._id);
+              //this.props.history.push("/admin/employees/detail/" + record._id);
             }}
             className="ant-green-link cursor"
           >
@@ -94,7 +94,11 @@ class Employees extends Component {
         title: "员工编码",
         dataIndex: "code",
         key: "code",
-        ellipsis: true,
+         render: (text) => (
+          <span>
+            {text?text:'-'}
+          </span>
+        ),
       },
       {
         title: "操作",
@@ -102,32 +106,33 @@ class Employees extends Component {
         key: "action",
         render: (text, record) => (
           <span>
-            <b onClick={() => {}} className="ant-green-link cursor">
+            -
+            {/* <b onClick={() => {}} className="ant-green-link cursor">
               调用
             </b>
             <Divider type="vertical" />
             <b
               onClick={() => {
-                // let that = this;
-                // confirm({
-                //   title: "确认离职吗?",
-                //   icon: <ExclamationCircleOutlined />,
-                //   content: "离职之后将不可恢复，请谨慎操作！",
-                //   okText: "确认",
-                //   okType: "danger",
-                //   cancelText: "取消",
-                //   onOk() {
-                //     console.log("OK");
-                //   },
-                //   onCancel() {
-                //     console.log("Cancel");
-                //   },
-                // });
+                let that = this;
+                confirm({
+                  title: "确认离职吗?",
+                  icon: <ExclamationCircleOutlined />,
+                  content: "离职之后将不可恢复，请谨慎操作！",
+                  okText: "确认",
+                  okType: "danger",
+                  cancelText: "取消",
+                  onOk() {
+                    console.log("OK");
+                  },
+                  onCancel() {
+                    console.log("Cancel");
+                  },
+                });
               }}
               className="ant-pink-link cursor"
             >
               离职
-            </b>
+            </b> */}
           </span>
         ),
       },
@@ -147,7 +152,7 @@ class Employees extends Component {
           //   />
           // }
           extra={[
-            <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
+           // <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
           ]}
         ></PageHeader>
         <Table

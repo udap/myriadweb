@@ -471,13 +471,29 @@ class MarketHome extends Component {
                 ""
               )} */}
             </Descriptions>
-
-            <ReactFileReader handleFiles={this.handleFiles} fileTypes={".csv"}>
-              <Button type="primary">
-                <UploadOutlined />
-                选择文件并上传
-              </Button>
-            </ReactFileReader>
+            <Row>
+              <Col>
+                <ReactFileReader
+                  handleFiles={this.handleFiles}
+                  fileTypes={".csv"}
+                >
+                  <Button
+                    type="primary"
+                    disabled={this.state.number === 0 ? true : false}
+                  >
+                    <UploadOutlined />
+                    选择文件并上传
+                  </Button>
+                </ReactFileReader>
+              </Col>
+              <Col>
+                {this.state.number === 0 ? (
+                  <Button type="primary" style={{marginLeft:"10px"}} onClick={this.handleCancel}>
+                    关闭
+                  </Button>
+                ) : null}
+              </Col>
+            </Row>
           </div>
         </Modal>
       </div>

@@ -76,11 +76,9 @@ class FrameOut extends Component {
   };
 
   onOpenChange = (openKey) => {
-    console.log("onOpenChange -> openKey", openKey);
     const latestOpenKey = openKey.find(
       (key) => this.state.openKey.indexOf(key) === -1
     );
-    console.log("onOpenChange -> latestOpenKey", latestOpenKey);
     if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
       this.setState({ openKey });
     } else {
@@ -114,14 +112,6 @@ class FrameOut extends Component {
         //找到当前路径的菜单
         // const cItem = item.children.find((cItem) => cItem.pathname === path);
         const cItem = item.children.filter((cItem) => cItem.isNav === true);
-        console.log("getNavMap -> cItem", cItem);
-        //把subMenu展开
-        if (cItem) {
-           this.selectedOpenKeys = item.pathname;
-           this.setState({
-             openKey:['/admin/settings']
-           });
-         }
         return (
           <SubMenu
             key={item.pathname}
@@ -175,7 +165,6 @@ class FrameOut extends Component {
     const path = location.pathname;
     // //获取当前页面需要默认打开子列表的key值
     const selectedOpenKeys = this.selectedOpenKeys;
-    console.log("render -> openKey", openKey)
     // //更新title
     // let curTtile = comEvents.getTitle(location.pathname);
     // window.document.title = curTtile;
