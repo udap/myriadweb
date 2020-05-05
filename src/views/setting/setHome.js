@@ -54,7 +54,7 @@ class Setting extends Component {
     loading: false,
     publisherId: storageUtils.getUser().orgId,
     ownerId: storageUtils.getUser().id,
-    value: "marketer",
+    value: "merchant",
     title: "审批机构", //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
   };
   componentDidMount() {
@@ -71,12 +71,6 @@ class Setting extends Component {
   initColumns() {
     /*审批机构表头*/
     this.merchantColumns = [
-      {
-        title: "审批机构",
-        dataIndex: "marketerName",
-        key: "marketerName",
-        //ellipsis: true,
-      },
       {
         title: "结算类型",
         dataIndex: "type",
@@ -96,6 +90,13 @@ class Setting extends Component {
           );
         },
       },
+      {
+        title: "审批机构",
+        dataIndex: "marketerName",
+        key: "marketerName",
+        //ellipsis: true,
+      },
+
       {
         title: "交易周期",
         dataIndex: "beginDate",
@@ -158,7 +159,7 @@ class Setting extends Component {
                         id,
                         "确认提交该结算？",
                         "SUBMIT_SETTLEMENT",
-                        'publishItem'
+                        "publishItem"
                       );
                     }}
                     className="ant-green-link cursor"
@@ -169,12 +170,12 @@ class Setting extends Component {
                   <b
                     onClick={() => {
                       let that = this;
-                       that.hasPower(
-                         id,
-                         "确认删除该结算",
-                         "DELETE_SETTLEMENT",
-                         "delItem"
-                       );
+                      that.hasPower(
+                        id,
+                        "确认删除该结算",
+                        "DELETE_SETTLEMENT",
+                        "delItem"
+                      );
                     }}
                     className="ant-pink-link cursor"
                   >
@@ -191,11 +192,6 @@ class Setting extends Component {
     ];
     /*提交机构表头*/
     this.marketerColumns = [
-      {
-        title: "提交机构",
-        dataIndex: "merchantName",
-        key: "merchantName",
-      },
       {
         title: "结算类型",
         dataIndex: "type",
@@ -215,6 +211,12 @@ class Setting extends Component {
           );
         },
       },
+      {
+        title: "提交机构",
+        dataIndex: "merchantName",
+        key: "merchantName",
+      },
+
       {
         title: "交易周期",
         dataIndex: "beginDate",
@@ -454,15 +456,15 @@ class Setting extends Component {
           className="ant-advanced-search-form"
           initialValues={{
             searchTxt: searchTxt,
-            group: "marketer",
+            group: "merchant",
           }}
         >
           <Row>
             <Col>
               <Form.Item name="group" label="查询条件">
                 <Radio.Group onChange={this.onChange}>
-                  <Radio value="marketer">机构审批</Radio>
                   <Radio value="merchant">机构提交</Radio>
+                  <Radio value="marketer">机构审批</Radio>
                 </Radio.Group>
               </Form.Item>
             </Col>

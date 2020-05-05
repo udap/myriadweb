@@ -62,7 +62,7 @@ class SetDetail extends Component {
     });
   }
   onFinish = async (values) => {
-      if (!this.state.marketerId) {
+      if (values.recurringType !== "NONE" &&!this.state.marketerId) {
         notification.info({
           message: "请选择营销机构",
         });
@@ -79,7 +79,7 @@ class SetDetail extends Component {
           ? {
         recurringType: values.recurringType,
         merchantId: storageUtils.getUser().orgId,
-        marketerId: this.state.marketerId,
+        //marketerId: this.state.marketerId,
         campaignId: this.state.campaignId,
       }
     : {
