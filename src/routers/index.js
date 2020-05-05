@@ -94,6 +94,13 @@ const privateRoutes = [
     icon: "CheckCircleOutlined",
     isTop: true, //顶级菜单
   },
+  {
+    pathname: "/admin/employees",
+    component: Employees,
+    title: "员工管理",
+    icon: "UsergroupAddOutlined",
+    isTop: false, //顶级菜单
+  },
 
   {
     pathname: "/admin/merchant",

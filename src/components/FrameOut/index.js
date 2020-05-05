@@ -13,7 +13,6 @@ import storageUtils from "../../utils/storageUtils";
 import logo from "../../assets/images/logo.jpg";
 import TopNav from "./topNav";
 
-
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 //过滤filter导航栏  左侧导航栏
@@ -35,10 +34,13 @@ withRouter 是一个高阶组件 用来包装非路由组件，返回一个新�
 
 @withRouter
 class FrameOut extends Component {
+  rootSubmenuKeys = ["/admin/settings"];
+  rootSubmenuChildKeys = ["/admin/myOrgs", "/admin/merchant", "/admin/setting"];
   state = {
     collapsed: false,
     current: "mail",
     selectedKeys: "/admin/dashboard",
+    openKey: [],
   };
 
   toggle = () => {
@@ -51,6 +53,14 @@ class FrameOut extends Component {
     if (key === "username") {
       return false;
     }
+    /*点击其他 关闭当前 */
+    if (
+      this.rootSubmenuKeys.indexOf(key) === -1 &&
+      this.rootSubmenuChildKeys.indexOf(key) === -1
+    ) {
+      this.setState({ openKey: [] });
+    }
+
     if (storageUtils.getUser().orgUid) {
       this.props.history.push(key);
       this.setState({
@@ -61,6 +71,21 @@ class FrameOut extends Component {
         message: "您尚未加入任何结构！请注册新机构或者退出",
       });
       this.props.history.push("/admin/dashboard");
+    }
+  };
+
+  onOpenChange = (openKey) => {
+    console.log("onOpenChange -> openKey", openKey);
+    const latestOpenKey = openKey.find(
+      (key) => this.state.openKey.indexOf(key) === -1
+    );
+    console.log("onOpenChange -> latestOpenKey", latestOpenKey);
+    if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+      this.setState({ openKey });
+    } else {
+      this.setState({
+        openKey: latestOpenKey ? [latestOpenKey] : [],
+      });
     }
   };
 
@@ -86,13 +111,16 @@ class FrameOut extends Component {
         //有下级菜单
         //默认打开当前子列表
         //找到当前路径的菜单
-       // const cItem = item.children.find((cItem) => cItem.pathname === path);
-        const cItem = item.children.filter(cItem => cItem.isNav === true);
-        console.log("getNavMap -> cItem", cItem)
+        // const cItem = item.children.find((cItem) => cItem.pathname === path);
+        const cItem = item.children.filter((cItem) => cItem.isNav === true);
+        console.log("getNavMap -> cItem", cItem);
         //把subMenu展开
         if (cItem) {
-          this.selectedOpenKeys = item.pathname;
-        }
+           this.selectedOpenKeys = item.pathname;
+           this.setState({
+             openKey:['/admin/settings']
+           });
+         }
         return (
           <SubMenu
             key={item.pathname}
@@ -120,7 +148,7 @@ class FrameOut extends Component {
     // 得到当前请求路径
     const path = this.props.location.pathname;
     let title;
-    
+
     privateRoutes.forEach((item) => {
       if (item.pathname === path) {
         // 如果当前item对象的key与path一样,item的title就是需要显示的title
@@ -140,93 +168,90 @@ class FrameOut extends Component {
     return title;
   };
   render() {
-             const { location } = this.props;
-             // //获取当前页面的路径地址
-             const path = location.pathname;
-             // //获取当前页面需要默认打开子列表的key值
-             const openKey = this.selectedOpenKeys;
-             // //更新title
-             // let curTtile = comEvents.getTitle(location.pathname);
-             // window.document.title = curTtile;
-             let curTtile =this.getTitle()||'江渝礼享';
+    const {openKey}  = this.state
+    const { location } = this.props;
+    // //获取当前页面的路径地址
+    const path = location.pathname;
+    // //获取当前页面需要默认打开子列表的key值
+    const selectedOpenKeys = this.selectedOpenKeys;
+    console.log("render -> openKey", openKey)
+    // //更新title
+    // let curTtile = comEvents.getTitle(location.pathname);
+    // window.document.title = curTtile;
+    let curTtile = this.getTitle() || "江渝礼享";
 
-             return (
-               <ReactDocumentTitle title={curTtile}>
-                 <Layout
-                   style={{
-                     minHeight: "100%",
-                   }}
-                 >
-                   <Layout>
-                     <Sider
-                       trigger={null}
-                       collapsible
-                       collapsed={this.state.collapsed}
-                     >
-                       <Link
-                         to="/admin/dashboard"
-                         className="logo"
-                         onClick={this.updateSelected.bind(
-                           this,
-                           "/admin/dashboard"
-                         )}
-                       >
-                         <img alt="江渝礼享" src={logo} />
-                       </Link>
-                       <Menu
-                         onClick={this.menusHandler}
-                         mode="inline"
-                         theme="dark"
-                         selectedKeys={[path]}
-                         defaultOpenKeys={[openKey]}
-                       >
-                         {this.menuNodes}
-                       </Menu>
-                     </Sider>
-                     <Layout
-                       className="site-layout"
-                       style={{
-                         padding: 0,
-                       }}
-                     >
-                       <Header
-                         className="site-layout-background"
-                         style={{
-                           padding: 0,
-                         }}
-                       >
-                         <Row>
-                           <Col xs={{ span: 12 }} lg={{ span: 12 }}>
-                             {React.createElement(
-                               this.state.collapsed
-                                 ? MenuUnfoldOutlined
-                                 : MenuFoldOutlined,
-                               {
-                                 className: "trigger",
-                                 onClick: this.toggle,
-                               }
-                             )}
-                           </Col>
-                           <Col xs={{ span: 12 }} lg={{ span: 8, offset: 4 }}>
-                             <TopNav />
-                           </Col>
-                         </Row>
-                       </Header>
-                       <Content
-                         className="site-layout-background"
-                         style={{
-                           margin: "24px 16px",
-                           padding: 24,
-                           minHeight: 280,
-                         }}
-                       >
-                         {this.props.children}
-                       </Content>
-                     </Layout>
-                   </Layout>
-                 </Layout>
-               </ReactDocumentTitle>
-             );
-           }
+    return (
+      <ReactDocumentTitle title={curTtile}>
+        <Layout
+          style={{
+            minHeight: "100%",
+          }}
+        >
+          <Layout>
+            <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
+              <Link
+                to="/admin/dashboard"
+                className="logo"
+                onClick={this.updateSelected.bind(this, "/admin/dashboard")}
+              >
+                <img alt="江渝礼享" src={logo} />
+              </Link>
+              <Menu
+                onClick={this.menusHandler}
+                mode="inline"
+                theme="dark"
+                selectedKeys={[path]}
+                openKeys={openKey || selectedOpenKeys}
+                onOpenChange={this.onOpenChange}
+                defaultOpenKeys={[openKey]}
+              >
+                {this.menuNodes}
+              </Menu>
+            </Sider>
+            <Layout
+              className="site-layout"
+              style={{
+                padding: 0,
+              }}
+            >
+              <Header
+                className="site-layout-background"
+                style={{
+                  padding: 0,
+                }}
+              >
+                <Row>
+                  <Col xs={{ span: 12 }} lg={{ span: 12 }}>
+                    {React.createElement(
+                      this.state.collapsed
+                        ? MenuUnfoldOutlined
+                        : MenuFoldOutlined,
+                      {
+                        className: "trigger",
+                        onClick: this.toggle,
+                      }
+                    )}
+                  </Col>
+                  <Col xs={{ span: 12 }} lg={{ span: 8, offset: 4 }}>
+                    <TopNav />
+                  </Col>
+                </Row>
+              </Header>
+              <Content
+                className="site-layout-background"
+                style={{
+                  margin: "24px 16px",
+                  padding: 24,
+                  minHeight: 280,
+                }}
+              >
+                {this.props.children}
+              </Content>
+            </Layout>
+          </Layout>
+        </Layout>
+      </ReactDocumentTitle>
+    );
+  }
 }
 export default FrameOut;
