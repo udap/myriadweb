@@ -28,7 +28,6 @@ import "./index.less";
 
 const { confirm } = Modal;
 const renderContent = (value, row, index) => {
-  console.log("renderContent -> value, row, index", value, row, index)
   const obj = {
     children: value,
     props: {},
@@ -36,7 +35,6 @@ const renderContent = (value, row, index) => {
   return obj;
 };
 const renderCampaign = (value, row, index) => {
-  console.log("renderContent -> value, row, index", value, "----",row, index);
   const obj = {
     children: value.name,
   };
@@ -55,7 +53,7 @@ class Setting extends Component {
     },
     currentPage: 1,
     size: 20,
-    total: 1,
+    total: 0,
     /*搜索框 */
     searchTxt: "",
     loading: false,
@@ -69,7 +67,13 @@ class Setting extends Component {
   }
   getList = async () => {
     const result = await reqPermit("LIST_SETTLEMENT");
-    if (result) this.getMarkets(null, 1);
+    if (result) {
+      this.getMarkets(null, 1);
+    } else {
+      this.setState({
+        inited: true,
+      });
+    }
   };
   componentWillMount() {
     this.initColumns();
@@ -344,50 +348,47 @@ class Setting extends Component {
     const result = await reqPermit("CREATE_SETTLEMENT");
     if (result) this.props.history.push("/admin/setting/new");
   };
-  hasPower=async(id,title,str,handleName)=>{
+  hasPower = async (id, title, str, handleName) => {
     let that = this;
-     const result = await reqPermit(str);
-     if (result) {
-       confirm({
-         title: title,
-         icon: <ExclamationCircleOutlined />,
-         okText: "确认",
-         cancelText: "取消",
-         onOk() {
-           that[handleName](id);
-         },
-       });
-     }
-
-  }
+    const result = await reqPermit(str);
+    if (result) {
+      confirm({
+        title: title,
+        icon: <ExclamationCircleOutlined />,
+        okText: "确认",
+        cancelText: "取消",
+        onOk() {
+          that[handleName](id);
+        },
+      });
+    }
+  };
   /*删除草稿 */
   delItem = async (id) => {
-      const result = await reqDelSettlement(id);
-      this.getMarkets(null, 1, this.state.value);
+    const result = await reqDelSettlement(id);
+    this.getMarkets(null, 1, this.state.value);
   };
   /*提交草稿 */
   publishItem = async (id) => {
-      const params = {
-        merchantId: storageUtils.getUser().orgId,
-      };
-      const result = await reqPutSettlement(id, params);
-      this.setState({
-        currentPage: 1,
-      });
-      this.getMarkets(null, 1);
-
+    const params = {
+      merchantId: storageUtils.getUser().orgId,
+    };
+    const result = await reqPutSettlement(id, params);
+    this.setState({
+      currentPage: 1,
+    });
+    this.getMarkets(null, 1);
   };
   /*批准 */
   approveItem = async (id) => {
-      const params = {
-        marketerId: storageUtils.getUser().orgId,
-      };
-      const result = await reqAgreeSettlement(id, params);
-      this.setState({
-        currentPage: 1,
-      });
-      this.getMarkets(null, 1);
-
+    const params = {
+      marketerId: storageUtils.getUser().orgId,
+    };
+    const result = await reqAgreeSettlement(id, params);
+    this.setState({
+      currentPage: 1,
+    });
+    this.getMarkets(null, 1);
   };
 
   /*
@@ -423,12 +424,15 @@ class Setting extends Component {
     this.totalPages =
       result && result.data && result.data.content
         ? result.data.content.totalElements
-        : 1;
+        : 0;
 
     this.setState({
       inited: true,
       campaigns: cont,
-      total: result && result.data ? result.data.content.totalElements : 1,
+      total:
+        result && result.data && result.data.content
+          ? result.data.content.totalElements
+          : 0,
       searchTxt: null,
       loading: false,
     });
