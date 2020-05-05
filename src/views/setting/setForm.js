@@ -62,40 +62,39 @@ class SetDetail extends Component {
     });
   }
   onFinish = async (values) => {
-      if (values.recurringType !== "NONE" &&!this.state.marketerId) {
-        notification.info({
-          message: "请选择营销机构",
-        });
-        return false;
-      }
- if (values.recurringType === "NONE" && !this.state.campaignId) {
-   notification.info({
-     message: "请选择营销活动",
-   });
-   return false;
- }
-      let params =
-        values.recurringType === "NONE"
-          ? {
-        recurringType: values.recurringType,
-        merchantId: storageUtils.getUser().orgId,
-        //marketerId: this.state.marketerId,
-        campaignId: this.state.campaignId,
-      }
-    : {
-        recurringType: values.recurringType,
-        merchantId: storageUtils.getUser().orgId,
-        marketerId: this.state.marketerId,
-        beginDate: this.state.beginDate,
-      };
+    if (values.recurringType !== "NONE" && !this.state.marketerId) {
+      notification.info({
+        message: "请选择营销机构",
+      });
+      return false;
+    }
+    if (values.recurringType === "NONE" && !this.state.campaignId) {
+      notification.info({
+        message: "请选择营销活动",
+      });
+      return false;
+    }
+    let params =
+      values.recurringType === "NONE"
+        ? {
+            recurringType: values.recurringType,
+            merchantId: storageUtils.getUser().orgId,
+            //marketerId: this.state.marketerId,
+            campaignId: this.state.campaignId,
+          }
+        : {
+            recurringType: values.recurringType,
+            merchantId: storageUtils.getUser().orgId,
+            marketerId: this.state.marketerId,
+            beginDate: this.state.beginDate,
+          };
     const result = await reqAddSettlement(params);
-      if (result.data.retcode === 0) {
-        notification.success({message:"创建成功！"});
-        this.props.history.push("/admin/setting");
-      }
+    if (result.data.retcode === 0) {
+      notification.success({ message: "创建成功！" });
+      this.props.history.push("/admin/setting");
+    }
   };
-  onGenderChange = (value) => {
-  };
+  onGenderChange = (value) => {};
   componentWillMount() {
     this.initColumns();
   }
@@ -130,7 +129,7 @@ class SetDetail extends Component {
   chooseItem = (item) => {
     this.setState({
       visible: false,
-      currentItem: item
+      currentItem: item,
     });
     if (this.state.modalTitle === "activity") {
       this.setState({
@@ -140,7 +139,7 @@ class SetDetail extends Component {
     } else {
       this.setState({
         orgName: item.name,
-        marketerId:item.id
+        marketerId: item.id,
       });
     }
   };
@@ -183,7 +182,7 @@ class SetDetail extends Component {
     let parmas;
     let result;
     let data = [];
-    let str = title?title:this.state.modalTitle;
+    let str = title ? title : this.state.modalTitle;
     if (str === "activity") {
       /*营销活动*/
       const id = storageUtils.getUser().orgId;
@@ -296,18 +295,6 @@ class SetDetail extends Component {
           }}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
-          <Form.Item name="marketerId" label="营销机构">
-            <Row>
-              <Col span={19}>
-                <Input disabled value={this.state.orgName} />
-              </Col>
-              <Col span={5} className="fr">
-                <Button type="primary" onClick={this.choose.bind(this, "org")}>
-                  选择营销机构
-                </Button>
-              </Col>
-            </Row>
-          </Form.Item>
           <Form.Item name="recurringType" label="结算类型">
             <Select
               placeholder="请选择结算类型"
@@ -319,6 +306,7 @@ class SetDetail extends Component {
               })}
             </Select>
           </Form.Item>
+
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) =>
@@ -327,13 +315,30 @@ class SetDetail extends Component {
           >
             {({ getFieldValue }) =>
               getFieldValue("recurringType") !== "NONE" ? (
-                <Form.Item name="time" label="交易起始时间">
-                  <DatePicker
-                    defaultValue={moment(begin, dateFormat)}
-                    onChange={this.changeDate}
-                    style={{ width: "100%" }}
-                  />
-                </Form.Item>
+                <div>
+                  <Form.Item name="marketerId" label="营销机构">
+                    <Row>
+                      <Col span={19}>
+                        <Input disabled value={this.state.orgName} />
+                      </Col>
+                      <Col span={5} className="fr">
+                        <Button
+                          type="primary"
+                          onClick={this.choose.bind(this, "org")}
+                        >
+                          选择营销机构
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Form.Item>
+                  <Form.Item name="time" label="交易起始时间">
+                    <DatePicker
+                      defaultValue={moment(begin, dateFormat)}
+                      onChange={this.changeDate}
+                      style={{ width: "100%" }}
+                    />
+                  </Form.Item>
+                </div>
               ) : (
                 <Form.Item name="campaignId" label="营销活动">
                   <Row>

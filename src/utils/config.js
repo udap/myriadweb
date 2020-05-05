@@ -7,7 +7,7 @@ function versionLX() {
       return ""; //开发版
       break;
     case "production":
-      return "https://gift-test.xinongtech.com"; //体验版
+      return "https://gift-support.xinongtech.com"; //体验版
       break;
     default:
       return "";

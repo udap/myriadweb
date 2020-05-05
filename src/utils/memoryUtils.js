@@ -17,14 +17,10 @@ const couponType = [
 
 
 const listType = [
-  //  intial creation
   { INITIATED: "草稿" },
-  // when settlement is created by merchant
-  { SUBMITTED: "提交" },
-  // when settlement is approved and processed by marketer
-  { PROCESSED: "审批完成" },
-  // when something is wrong in the settlement process
-  { FAILED: "是吧" },
+  { SUBMITTED: "审核中" },
+  { PROCESSED: "审核通过" },
+  { FAILED: "失败" },
 ];
 
 //结算的类型
@@ -48,6 +44,8 @@ const listAddType = [
     name: "按年结算",
   },
 ];
+
+
 var Operation = {
   MANAGE_ORGANIZATION: "MANAGE_ORGANIZATION",
   LIST_SUBSIDIARIES: "LIST_SUBSIDIARIES",
@@ -137,5 +135,5 @@ export {
   couponType, //票券管理
   listType, //结算中心
   listAddType, //结算添加类型
-  Operation,//权限判断
+  Operation, //权限判断,
 };

@@ -90,7 +90,7 @@ const privateRoutes = [
   {
     pathname: "/admin/exchange",
     component: Exchange,
-    title: "兑换记录",
+    title: "核销记录",
     icon: "CheckCircleOutlined",
     isTop: true, //顶级菜单
   },

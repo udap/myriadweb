@@ -28,13 +28,20 @@ import "./index.less";
 
 const { confirm } = Modal;
 const renderContent = (value, row, index) => {
+  console.log("renderContent -> value, row, index", value, row, index)
   const obj = {
     children: value,
     props: {},
   };
   return obj;
 };
-
+const renderCampaign = (value, row, index) => {
+  console.log("renderContent -> value, row, index", value, "----",row, index);
+  const obj = {
+    children: value.name,
+  };
+  return obj;
+};
 class Setting extends Component {
   state = {
     inited: false,
@@ -72,6 +79,12 @@ class Setting extends Component {
     /*审批机构表头*/
     this.merchantColumns = [
       {
+        title: "审批机构",
+        dataIndex: "marketerName",
+        key: "marketerName",
+        //ellipsis: true,
+      },
+      {
         title: "结算类型",
         dataIndex: "type",
         key: "type",
@@ -91,12 +104,11 @@ class Setting extends Component {
         },
       },
       {
-        title: "审批机构",
-        dataIndex: "marketerName",
-        key: "marketerName",
-        //ellipsis: true,
+        title: "活动名称",
+        dataIndex: "campaign",
+        key: "campaign",
+        render: renderCampaign,
       },
-
       {
         title: "交易周期",
         dataIndex: "beginDate",
@@ -193,6 +205,12 @@ class Setting extends Component {
     /*提交机构表头*/
     this.marketerColumns = [
       {
+        title: "提交机构",
+        dataIndex: "merchantName",
+        key: "merchantName",
+      },
+
+      {
         title: "结算类型",
         dataIndex: "type",
         key: "type",
@@ -212,11 +230,11 @@ class Setting extends Component {
         },
       },
       {
-        title: "提交机构",
-        dataIndex: "merchantName",
-        key: "merchantName",
+        title: "活动名称",
+        dataIndex: "campaign",
+        key: "campaign",
+        render: renderCampaign,
       },
-
       {
         title: "交易周期",
         dataIndex: "beginDate",
@@ -463,8 +481,8 @@ class Setting extends Component {
             <Col>
               <Form.Item name="group" label="查询条件">
                 <Radio.Group onChange={this.onChange}>
-                  <Radio value="merchant">机构提交</Radio>
-                  <Radio value="marketer">机构审批</Radio>
+                  <Radio value="merchant">提交</Radio>
+                  <Radio value="marketer">审批</Radio>
                 </Radio.Group>
               </Form.Item>
             </Col>
