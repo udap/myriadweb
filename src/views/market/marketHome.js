@@ -15,7 +15,7 @@ import {
   Pagination,
   Form,
   Row,
-  Col
+  Col,
 } from "antd";
 import {
   SearchOutlined,
@@ -33,6 +33,7 @@ import {
   reqPublishCampaign,
   reqTransfer,
   reqDistributions,
+  reqGetNumber,
 } from "../../api";
 import ReactFileReader from "react-file-reader";
 import { Loading } from "../../components";
@@ -67,6 +68,7 @@ class MarketHome extends Component {
     /*搜索框 */
     searchTxt: "",
     loading: false,
+    number: 0,
   };
   componentDidMount() {
     this.getMarkets(null, 1);
@@ -279,14 +281,24 @@ class MarketHome extends Component {
       campaigns: cont,
       total: result && result.data ? result.data.totalElements : 1,
       searchTxt: "",
-      loading:false,
+      loading: false,
     });
   };
   showCSV = (type, chooseItem) => {
+    console.log("MarketHome -> showCSV -> chooseItem", chooseItem)
+    this.getNumber(chooseItem.id);
     this.setState({
       typeStr: type,
       showCSV: true,
       chooseItem: chooseItem,
+    });
+  };
+  getNumber = async (campaignId) => {
+    const owner = storageUtils.getUser().id;
+    const result = await reqGetNumber(campaignId,owner);
+    console.log("MarketHome -> getNumber -> result", result)
+    this.setState({
+      number: result.data,
     });
   };
   handleCancel = () => {
@@ -357,7 +369,7 @@ class MarketHome extends Component {
       currentPage,
       searchTxt,
     } = this.state;
-    const typeName = typeStr === "transfer" ? "分配票券文件" : "发放票券文件";
+    const typeName = typeStr === "transfer" ? "票券分配文件" : "票券发放文件";
     const typeTitle = typeStr === "transfer" ? "分配票券" : "发放票券";
     return (
       <div>
@@ -428,6 +440,13 @@ class MarketHome extends Component {
           footer={[]}
         >
           <div>
+            <div class="market-number">
+              {typeTitle === "分配票券" ? (
+                <span>当前可分配数量：{this.state.number}</span>
+              ) : (
+                <span>当前可发放数量：{this.state.number}</span>
+              )}
+            </div>
             <Descriptions title={"请上传" + `${typeName}`} column={2}>
               <Descriptions.Item label="格式">csv</Descriptions.Item>
               <Descriptions.Item label="表头">

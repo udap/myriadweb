@@ -434,7 +434,7 @@ class CouponHome extends Component {
                   checked={publisher}
                   onChange={this.onCheckBoxChange}
                 >
-                  我的机构
+                  机构发行的
                 </Checkbox>
               </Form.Item>
             </Col>

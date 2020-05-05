@@ -60,11 +60,22 @@ export const reqDelCampaign = (id) =>
 //发布某个活动
 export const reqPublishCampaign = (id) =>
   ajax.put(BASE + "/myriad/campaigns/" + id + "/activate");
+//获取分配数量'/myriad/vouchers/count?campaignId=' + couponuid + '&owner=' + wx.getStorageSync('userId')
+ export const reqGetNumber = (campaignId, owner) =>
+          ajax.get(
+            BASE +
+              "/myriad/vouchers/count?campaignId=" +
+              campaignId +
+              "&owner=" +
+              owner
+          );
+
 //批量分配
 export const reqTransfer = (params) =>
   ajax.post(BASE + " /myriad/vouchers/batchTransfer", params, {
     "Content-Type": "multipart/form-data",
   });
+
 //批量发放
 export const reqDistributions = (params) =>
   ajax.post(BASE + " /myriad/distributions/batch", params, {
