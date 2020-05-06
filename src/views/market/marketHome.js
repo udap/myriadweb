@@ -16,6 +16,7 @@ import {
   Form,
   Row,
   Col,
+  Radio,
 } from "antd";
 import {
   SearchOutlined,
@@ -69,6 +70,7 @@ class MarketHome extends Component {
     searchTxt: "",
     loading: false,
     number: 0,
+    value: "merchant",
   };
   componentDidMount() {
     this.getMarkets(null, 1);
@@ -235,12 +237,23 @@ class MarketHome extends Component {
       },
     ];
   }
-
+  /*radio 切换*/
+  onChange = (e) => {
+    //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
+    this.setState({
+      page: 0,
+      value: e.target.value,
+      title: e.target.value === "merchant" ? "提交机构" : "审批机构",
+      currentPage: 1,
+    });
+    this.getMarkets(null, 1, e.target.value);
+  };
   searchValue = (value) => {
     this.setState({
       searchTxt: value.searchTxt,
+      value: value.group,
     });
-    this.getMarkets(value.searchTxt, 1);
+    this.getMarkets(value.searchTxt, 1, this.state.value);
   };
   enterLoading = () => {
     this.setState({
@@ -265,13 +278,26 @@ class MarketHome extends Component {
   /*
 获取列表数据
 */
-  getMarkets = async (value, currentPage) => {
-    const parmas = {
-      page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-      size: this.state.size,
-      partyId: storageUtils.getUser().orgId,
-      searchTxt: value,
-    };
+  getMarkets = async (value, currentPage, type) => {
+    let typeStr = type ? type : this.state.value;
+    //一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
+    //都需要传status=NON_EXPIRED
+    const parmas =
+      typeStr === "merchant"
+        ? {
+            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+            size: this.state.size,
+            participantId: storageUtils.getUser().orgId,
+            status: "NON_EXPIRED",
+            searchTxt: value,
+          }
+        : {
+            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+            size: this.state.size,
+            partyId: storageUtils.getUser().orgId,
+            status: "NON_EXPIRED",
+            searchTxt: value,
+          };
     const result = await reqGetMarkets(parmas);
     const cont = result && result.data ? result.data.content : [];
     this.totalPages = result && result.data ? result.data.totalElements : 1;
@@ -285,7 +311,7 @@ class MarketHome extends Component {
     });
   };
   showCSV = (type, chooseItem) => {
-    console.log("MarketHome -> showCSV -> chooseItem", chooseItem)
+    console.log("MarketHome -> showCSV -> chooseItem", chooseItem);
     this.getNumber(chooseItem.id);
     this.setState({
       typeStr: type,
@@ -295,8 +321,8 @@ class MarketHome extends Component {
   };
   getNumber = async (campaignId) => {
     const owner = storageUtils.getUser().id;
-    const result = await reqGetNumber(campaignId,owner);
-    console.log("MarketHome -> getNumber -> result", result)
+    const result = await reqGetNumber(campaignId, owner);
+    console.log("MarketHome -> getNumber -> result", result);
     this.setState({
       number: result.data,
     });
@@ -388,11 +414,20 @@ class MarketHome extends Component {
           className="ant-advanced-search-form"
           initialValues={{
             searchTxt: "",
+            group: "merchant",
           }}
         >
           <Row>
+            <Col>
+              <Form.Item name="group" label="查询条件">
+                <Radio.Group onChange={this.onChange}>
+                  <Radio value="merchant">我参与的</Radio>
+                  <Radio value="marketer">机构参与的</Radio>
+                </Radio.Group>
+              </Form.Item>
+            </Col>
             <Col span={9}>
-              <Form.Item name="searchTxt" label="查询条件">
+              <Form.Item name="searchTxt">
                 <Input placeholder="请输入名称进行搜索" allowClear />
               </Form.Item>
             </Col>
@@ -488,7 +523,11 @@ class MarketHome extends Component {
               </Col>
               <Col>
                 {this.state.number === 0 ? (
-                  <Button type="primary" style={{marginLeft:"10px"}} onClick={this.handleCancel}>
+                  <Button
+                    type="primary"
+                    style={{ marginLeft: "10px" }}
+                    onClick={this.handleCancel}
+                  >
                     关闭
                   </Button>
                 ) : null}
