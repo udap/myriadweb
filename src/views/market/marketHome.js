@@ -248,7 +248,13 @@ class MarketHome extends Component {
     });
   };
   addItem = () => {
-    this.props.history.push("/admin/market/edit/new");
+    if (storageUtils.getUser().orgId === 1 && storageUtils.getUser().admin) {
+      this.props.history.push("/admin/market/edit/new");
+    } else {
+      notification.error({
+        message: "目前只支持【重庆农商行总行】创建活动。",
+      });
+    }
   };
 
   delItem = async (id) => {
@@ -285,7 +291,6 @@ class MarketHome extends Component {
     });
   };
   showCSV = (type, chooseItem) => {
-    console.log("MarketHome -> showCSV -> chooseItem", chooseItem)
     this.getNumber(chooseItem.id);
     this.setState({
       typeStr: type,
@@ -295,8 +300,7 @@ class MarketHome extends Component {
   };
   getNumber = async (campaignId) => {
     const owner = storageUtils.getUser().id;
-    const result = await reqGetNumber(campaignId,owner);
-    console.log("MarketHome -> getNumber -> result", result)
+    const result = await reqGetNumber(campaignId, owner);
     this.setState({
       number: result.data,
     });
@@ -488,7 +492,11 @@ class MarketHome extends Component {
               </Col>
               <Col>
                 {this.state.number === 0 ? (
-                  <Button type="primary" style={{marginLeft:"10px"}} onClick={this.handleCancel}>
+                  <Button
+                    type="primary"
+                    style={{ marginLeft: "10px" }}
+                    onClick={this.handleCancel}
+                  >
                     关闭
                   </Button>
                 ) : null}
