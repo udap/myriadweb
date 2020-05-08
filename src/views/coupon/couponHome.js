@@ -5,29 +5,18 @@ import {
   PageHeader,
   Input,
   Tag,
-  Divider,
-  message,
   Modal,
   notification,
-  Checkbox,
-  Popconfirm,
+  Radio,
   Form,
   Row,
   Col,
   Select,
   Pagination,
 } from "antd";
-import {
-  SearchOutlined,
-  PlusOutlined,
-  FolderViewOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
-
 import storageUtils from "../../utils/storageUtils";
 import {
   reqGetCoupons,
-  reqDelCampaign,
   reqPublishDis,
   reqGetClients,
 } from "../../api";
@@ -37,22 +26,8 @@ import comEvents from "../../utils/comEvents";
 import "../../css/common.less";
 import "./index.less";
 
-const style = {
-  fontSize: "20px",
-  color: "#1890ff",
-  marginLeft: "10px",
-};
-const { Search } = Input;
-const { confirm } = Modal;
-const { Option } = Select;
 
-const renderContent = (value, row, index) => {
-  const obj = {
-    children: value,
-    props: {},
-  };
-  return obj;
-};
+const { Option } = Select;
 
 class CouponHome extends Component {
   state = {
@@ -67,19 +42,18 @@ class CouponHome extends Component {
     currentPage: 1,
     size: 20,
     total: 0,
-    owner: true,
-    publisher: false,
     visible: false,
     /**发布客户 */
     current: 1,
     listSize: 5,
-    listTotal: 1,
+    listTotal: 0,
     listData: [],
     partyId: "",
     clientId: "",
     /*搜索框 */
     searchClientTxt: "",
-    loading:false
+    loading: false,
+    chooseRadio:'owner'
   };
   componentDidMount() {
     this.getMarkets(null, 1);
@@ -110,7 +84,6 @@ class CouponHome extends Component {
         message: "票券发放失败",
         onClick: () => {},
       });
-      
     }
   };
   initColumns() {
@@ -139,7 +112,6 @@ class CouponHome extends Component {
         colSpan: 2,
         dataIndex: "effective",
         key: "effective",
-        render: renderContent,
         width: 110,
       },
       {
@@ -234,20 +206,30 @@ class CouponHome extends Component {
   /*
 获取列表数据
 */
-  getMarkets = async (values, currentPage, size) => {
-    let parmas = {
-      page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-      size: size ? size : this.state.size,
-      orgUid: storageUtils.getUser().orgUid,
-      ownerId: this.state.owner ? this.state.ownerId : "",
-      issuerId: this.state.publisher ? this.state.publisherId : "",
-      merchantCode: values ? values.merchantCode : "",
-      codeType: this.state.codeType,
-    };
-    if (!this.state.owner && !this.state.publisher) {
-      message.info("请选择查询条件");
-      return false;
-    }
+  getMarkets = async (values, currentPage, size, chooseRadio) => {
+    let typeStr = chooseRadio ? chooseRadio : this.state.chooseRadio;
+    //owner 我的
+    let parmas =
+      typeStr === "owner"
+        ? {
+            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+            size: size ? size : this.state.size,
+            orgUid: storageUtils.getUser().orgUid,
+            ownerId: this.state.ownerId,
+            issuerId: "",
+            merchantCode: values ? values.merchantCode : "",
+            codeType: this.state.codeType,
+          }
+        : {
+            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+            size: size ? size : this.state.size,
+            orgUid: storageUtils.getUser().orgUid,
+            ownerId: "",
+            issuerId: this.state.publisherId,
+            merchantCode: values ? values.merchantCode : "",
+            codeType: this.state.codeType,
+          };
+   
     const result = await reqGetCoupons(parmas);
     const cont = result && result.data ? result.data.entries : [];
     let data = [];
@@ -268,11 +250,11 @@ class CouponHome extends Component {
       }
     }
     this.totalPages =
-      result && result.data ? result.data.total * result.data.size : 1;
+      result && result.data ? result.data.total * result.data.size : 0;
     this.setState({
       inited: true,
       campaigns: data,
-      //total: result.data ? result.data.total * result.data.size : "",
+      total: result.data ? result.data.total * result.data.size : 0,
       searchTxt: "",
       loading: false,
     });
@@ -293,22 +275,14 @@ class CouponHome extends Component {
       codeType: value,
     });
   };
-  handleClientChange = (e) => {
-    console.log("CouponHome -> handleClientChange -> value", e.target);
-    this.setState({
-      searchClientTxt: e.target.value,
-    });
-  };
-  searchValue = (value) => {
-    this.getClient(1, this.state.searchClientTxt);
-  };
+  c;
   enterLoading = () => {
     this.setState({
       loading: true,
     });
   };
   onFinish = (values) => {
-    console.log("CouponHome -> onFinish -> values", values)
+    console.log("CouponHome -> onFinish -> values", values);
     this.getMarkets(values, 1);
   };
   handleTableChange = (page) => {
@@ -324,10 +298,15 @@ class CouponHome extends Component {
     });
     this.getClient(page);
   };
-  onCheckBoxChange = (e) => {
+  /*radio 切换*/
+  onRadioChange = (e) => {
+    //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
     this.setState({
-      [e.target.name]: e.target.checked,
+      page: 0,
+      chooseRadio: e.target.value,
+      currentPage: 1,
     });
+    this.getMarkets(null, 1, null, e.target.value);
   };
   showList = (partyId) => {
     this.setState({
@@ -368,11 +347,11 @@ class CouponHome extends Component {
         });
       }
     }
-    this.totalListPages = result && result.data ? cont.totalElements : 1;
+    this.totalListPages = result && result.data ? cont.totalElements : 0;
     this.setState({
       listData: data,
-      tolistTotaltal: result && result.data ? cont.totalElements : 1,
-      searchClientTxt:'',
+      tolistTotaltal: result && result.data ? cont.totalElements : 0,
+      searchClientTxt: "",
       loading: false,
       // inited: true,
     });
@@ -382,10 +361,6 @@ class CouponHome extends Component {
     const {
       campaigns,
       size,
-      owner,
-      ownerId,
-      publisher,
-      publisherId,
       total,
       currentPage,
       /*客户 */
@@ -396,10 +371,6 @@ class CouponHome extends Component {
       searchClientTxt,
     } = this.state;
 
-    this.options = [
-      { label: "我的", name: "ownerId", value: ownerId },
-      { label: "我的机构", name: "publisherId", value: publisherId },
-    ];
     return (
       <div>
         <PageHeader
@@ -414,28 +385,16 @@ class CouponHome extends Component {
           className="ant-advanced-search-form"
           initialValues={{
             merchantCode: "",
-            group: [ownerId],
+            group: "owner",
           }}
         >
           <Row>
             <Col>
               <Form.Item name="group" label="查询条件">
-                <Checkbox
-                  name="owner"
-                  value={ownerId}
-                  checked={owner}
-                  onChange={this.onCheckBoxChange}
-                >
-                  我的
-                </Checkbox>
-                <Checkbox
-                  name="publisher"
-                  value={publisherId}
-                  checked={publisher}
-                  onChange={this.onCheckBoxChange}
-                >
-                  机构发行的
-                </Checkbox>
+                <Radio.Group onChange={this.onRadioChange}>
+                  <Radio value="owner">我的</Radio>
+                  <Radio value="publisherId">机构发行的</Radio>
+                </Radio.Group>
               </Form.Item>
             </Col>
             <Col>
@@ -509,7 +468,7 @@ class CouponHome extends Component {
                   allowClear
                 />
               </Col>
-              <Col span={6}>
+              <Col span={6} offset={1}>
                 <Button
                   type="primary"
                   className="cursor"

@@ -254,3 +254,43 @@ export const reqDelSettlement = (id) =>
 /*
 结算管理 END
  */
+
+
+
+ /*核销记录*/
+//  核销记录--发行机构。
+// 请求 GET /myriad/redemptions
+// issuerId = 当前机构
+// searchTxt 搜索框
+export const reqGetExchangeLists = (params) =>
+         ajax.get(BASE + "/myriad/redemptions", {
+           params: params,
+         });
+
+// 核销记录--核销机构。
+// 请求 GET /myriad/redemptions
+// merchantId = 当前机构
+// searchTxt 搜索框
+// export const reqGetOrgLists = (uid, params) =>
+//   ajax.get(BASE + "/merchants/" + uid + "/orgs", { params: params });
+
+
+ /*核销记录*/
+
+
+ /*发放记录*/
+//  发放记录--我的。
+// 请求 GET /myriad/distributions
+// ownerId = 当前用户id
+// searchTxt 搜索框
+export const reqDistributionsLists = (params) =>
+         ajax.get(BASE + "/myriad/distributions", {
+           params: params,
+         });
+
+// 发放记录--发行机构。
+// 请求 GET /myriad/distributions
+// issuerId = 当前机构
+// searchTxt 搜索框
+
+ /*发放记录*/

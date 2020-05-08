@@ -52,10 +52,7 @@ const CouponHome = Loadable({
   loading: Loading,
 });
 
-const CouponDetail = Loadable({
-  loader: () => import("./coupon/couponDetail"),
-  loading: Loading,
-});
+
 const Provide = Loadable({
   loader: () => import('./provide'),
   loading: Loading
@@ -97,7 +94,6 @@ export {
   MarketDetail,
   Coupon,
   CouponHome,
-  CouponDetail,
   Provide,
   Exchange,
   Setting,

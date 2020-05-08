@@ -8,7 +8,6 @@ import {
   MarketHome,
   Coupon,
   CouponHome,
-  CouponDetail,
   Provide,
   Exchange,
   Setting,
@@ -74,13 +73,6 @@ const privateRoutes = [
     isTop: true, //顶级菜单
   },
   {
-    pathname: "/admin/coupon/detail/:id",
-    component: CouponDetail,
-    title: "凭证详情",
-    icon: "",
-    isTop: false, //顶级菜单
-  },
-  {
     pathname: "/admin/provide",
     component: Provide,
     title: "发放记录",
@@ -91,7 +83,7 @@ const privateRoutes = [
     pathname: "/admin/exchange",
     component: Exchange,
     title: "核销记录",
-    icon: "CheckCircleOutlined",
+    icon: "InteractionOutlined",
     isTop: true, //顶级菜单
   },
   {

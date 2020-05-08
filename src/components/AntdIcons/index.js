@@ -13,6 +13,7 @@ import {
   DollarCircleOutlined,
   PlusCircleOutlined,
   ApartmentOutlined,
+  InteractionOutlined,
 } from "@ant-design/icons";
 
 //显示antd图标组件
@@ -47,6 +48,8 @@ class AntdIcon extends Component {
         return <ApartmentOutlined />;
       case "MoneyCollectOutlined":
         return <MoneyCollectOutlined />;
+      case "InteractionOutlined":
+        return <InteractionOutlined />;
       default:
         return <DashboardOutlined />;
     }

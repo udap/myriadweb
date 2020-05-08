@@ -97,7 +97,7 @@ class JoinOrg extends Component {
                     onCancel() {},
                   });
                 }}
-                className="ant-pink-link"
+                className="ant-pink-link cursor"
               >
                 删除
               </b>
@@ -109,6 +109,11 @@ class JoinOrg extends Component {
     this.listColumns = [
       {
         title: "商户名称",
+        dataIndex: "fullName",
+        key: "fullName",
+      },
+      {
+        title: "简称",
         dataIndex: "name",
         key: "name",
       },
@@ -127,7 +132,7 @@ class JoinOrg extends Component {
                 onClick={() => {
                   this.addItem(partyId);
                 }}
-                className="ant-green-link"
+                className="ant-green-link cursor"
               >
                 添加
               </b>
@@ -138,26 +143,28 @@ class JoinOrg extends Component {
     ];
   }
   /*
-获取选择列表数据 加号
+获取添加选择列表数据 加号
 */
-  getOrgs = async (currentPage) => {
+  getOrgs = async (currentPage,searchTxt) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
       excludeCampaignId: this.state.id,
+      searchTxt:searchTxt
     };
     const result = await reqGetMerchants(parmas);
     const cont = result && result.data ? result.data.content : [];
     let data = [];
-    if (cont&&cont.length !== 0) {
+    if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.content.length; i++) {
         data.push({
           key: i,
           partyId: cont.content[i].merchant.id,
           uid: cont.content[i].merchant.uid,
           name: cont.content[i].merchant.name,
-          upCode: cont.content[i].upCode,
+          fullName: cont.content[i].merchant.fullName,
+          code: cont.content[i].merchant.code,
         });
       }
     }
@@ -178,9 +185,9 @@ class JoinOrg extends Component {
     this.getOrgs(1);
   };
   handleCancel = () => {
-    this.setState({ 
-      visible: false, 
-      currentPage:1
+    this.setState({
+      visible: false,
+      currentPage: 1,
     });
   };
   //获取当前添加商户 list type=MERCHANT
@@ -228,7 +235,7 @@ class JoinOrg extends Component {
     this.setState({
       visible: false,
       parties: [],
-      currentPage:1,
+      currentPage: 1,
     });
     this.getMarket(this.state.id);
   };
@@ -249,12 +256,21 @@ class JoinOrg extends Component {
     });
     this.getOrgs(page);
   };
-  onShowSizeChange = (current, pageSize) => {
+  // onShowSizeChange = (current, pageSize) => {
+  //   this.setState({
+  //     currentPage: current,
+  //     size: pageSize,
+  //   });
+  //   this.getOrgs(current, pageSize);
+  // };
+  handleOrgChange = (e) => {
+    console.log("CouponHome -> handleOrgChange -> value", e.target);
     this.setState({
-      currentPage: current,
-      size: pageSize,
+      searchTxt: e.target.value,
     });
-    this.getOrgs(current, pageSize);
+  };
+  searchValue = (value) => {
+    this.getOrgs(1, this.state.searchTxt);
   };
   render() {
     const {
@@ -270,6 +286,7 @@ class JoinOrg extends Component {
       total,
       pageSize,
       totalList,
+      searchTxt,
     } = this.state;
     // const rowSelection = {
     //   selectedRowKeys,
@@ -307,7 +324,7 @@ class JoinOrg extends Component {
             </Button>
             {/* <span style={{ marginLeft: 8 }}>
                 {hasSelected ? `选择了 ${selectedRowKeys.length} 个商户` : ""}
-              </span> */}
+              </span> 、简称、商户号码*/}
           </div>
         </div>
 
@@ -320,6 +337,27 @@ class JoinOrg extends Component {
         >
           {this.state.inited ? (
             <div>
+              <Row style={{ marginBottom: "24px" }}>
+                <Col span={14}>
+                  <Input
+                    name="searchTxt"
+                    value={searchTxt}
+                    onChange={this.handleOrgChange}
+                    placeholder="请输入商户名称、简称、商户码搜索"
+                    allowClear
+                    onPressEnter={this.searchValue}
+                  />
+                </Col>
+                <Col span={6} offset={1}>
+                  <Button
+                    type="primary"
+                    className="cursor"
+                    onClick={this.searchValue}
+                  >
+                    查询
+                  </Button>
+                </Col>
+              </Row>
               <Table
                 size="middle"
                 columns={this.listColumns}
