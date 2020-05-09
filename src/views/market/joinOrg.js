@@ -1,13 +1,5 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Input,
-  PageHeader,
-  Col,
-  Row,
-  Table,
-  Modal,
-} from "antd";
+import { Button, Input, PageHeader, Col, Row, Table, Modal } from "antd";
 import { ExclamationCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 import {
@@ -45,6 +37,7 @@ class JoinOrg extends Component {
   };
   componentDidMount() {
     let id = this.props.id;
+    console.log("JoinOrg -> componentDidMount -> id", id)
     if (id) {
       this.setState({
         id: this.props.id,
@@ -105,24 +98,24 @@ class JoinOrg extends Component {
         dataIndex: "name",
         key: "name",
       },
-      {
-        title: "操作",
-        render: (item) => {
-          const { partyId } = item;
-          return (
-            <span>
-              <b
-                onClick={() => {
-                  this.addOneItem(partyId);
-                }}
-                className="ant-green-link cursor"
-              >
-                添加
-              </b>
-            </span>
-          );
-        },
-      },
+      // {
+      //   title: "操作",
+      //   render: (item) => {
+      //     const { partyId } = item;
+      //     return (
+      //       <span>
+      //         <b
+      //           onClick={() => {
+      //             this.addOneItem(partyId);
+      //           }}
+      //           className="ant-green-link cursor"
+      //         >
+      //           添加
+      //         </b>
+      //       </span>
+      //     );
+      //   },
+      // },
     ];
   }
   /*
@@ -164,7 +157,7 @@ class JoinOrg extends Component {
   showList = () => {
     this.setState({
       visible: true,
-      searchTxt:''
+      searchTxt: "",
     });
     this.getOrgs(1);
   };
@@ -313,7 +306,11 @@ class JoinOrg extends Component {
             }}
           />
         </div>
-
+        <div style={{ marginBottom: 16, marginTop: 16 }}>
+          <Button type="primary" onClick={this.backHome}>
+            完成
+          </Button>
+        </div>
         <Modal
           className="markrt"
           title="入驻商户"
