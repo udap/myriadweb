@@ -120,7 +120,7 @@ class MarketHome extends Component {
                         <span>
               {status === "INITIATED" ? (
                             <span>
-                  <b
+                  {/* <b
                             onClick={() => {
                                 this.props.history.push("/admin/market/edit/" + id);
                             }}
@@ -128,7 +128,7 @@ class MarketHome extends Component {
                             >
                     查看
                   </b>
-                  <Divider type="vertical" />
+                  <Divider type="vertical" /> */}
                   <Popconfirm
                             title="确认发布吗?"
                             onConfirm={this.publishItem.bind(this, id)}
