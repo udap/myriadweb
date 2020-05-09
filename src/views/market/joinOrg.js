@@ -98,6 +98,11 @@ class JoinOrg extends Component {
         dataIndex: "name",
         key: "name",
       },
+      {
+        title: "银联商户码",
+        dataIndex: "code",
+        key: "code",
+      },
       // {
       //   title: "操作",
       //   render: (item) => {
@@ -140,7 +145,7 @@ class JoinOrg extends Component {
           uid: cont.content[i].merchant.uid,
           name: cont.content[i].merchant.name,
           fullName: cont.content[i].merchant.fullName,
-          code: cont.content[i].merchant.code,
+          code: cont.content[i].upCode,
         });
       }
     }
