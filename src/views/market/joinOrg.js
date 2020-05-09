@@ -369,7 +369,7 @@ class JoinOrg extends Component {
                   disabled={!hasSelected}
                   loading={loading}
                 >
-                  完成
+                  提交
                 </Button>
                 <span style={{ marginLeft: 8 }}>
                   {hasSelected ? `选择了 ${selectedRowKeys.length} 个商户` : ""}
