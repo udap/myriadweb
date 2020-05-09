@@ -365,148 +365,148 @@ class MarketHome extends Component {
         const typeName = typeStr === "transfer" ? "票券分配文件" : "票券发放文件";
         const typeTitle = typeStr === "transfer" ? "分配票券" : "发放票券";
         return (
-            <div>
-        <PageHeader
-            className="site-page-header-responsive cont"
-            title="营销活动"
-            extra={[
+          <div>
+            <PageHeader
+              className="site-page-header-responsive cont"
+              title="营销活动"
+              extra={[
                 <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
-            ]}
+              ]}
             ></PageHeader>
-        { /* --搜索栏-- */ }
-        <Form
-            onFinish={this.searchValue}
-            layout="horizontal"
-            name="advanced_search"
-            className="ant-advanced-search-form"
-            initialValues={{
+            {/* --搜索栏-- */}
+            <Form
+              onFinish={this.searchValue}
+              layout="horizontal"
+              name="advanced_search"
+              className="ant-advanced-search-form"
+              initialValues={{
                 searchTxt: "",
                 group: "merchant",
-            }}
+              }}
             >
-          <Row>
-            <Col>
-              <Form.Item name="group" label="查询条件">
-                <Radio.Group onChange={this.onChange}>
-                  <Radio value="merchant">我参与的</Radio>
-                  <Radio value="marketer">机构参与的</Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-            <Col span={9}>
-              <Form.Item name="searchTxt">
-                <Input placeholder="请输入名称进行搜索" allowClear />
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item>
-                <Button
-            type="primary"
-            className="cursor searchBtn"
-            htmlType="submit"
-            loading={this.state.loading}
-            onClick={this.enterLoading}
-            >
-                  搜索
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-        { /* --搜索栏-- */ }
-        <Table
-            tableLayout="auto"
-            style={{
-                wordBreak: "break-all"
-            }}
-            size="small"
-            bordered
-            showSizeChanger
-            dataSource={campaigns}
-            columns={this.columns}
-            pagination={false}
+              <Row>
+                <Col>
+                  <Form.Item name="group" label="查询条件">
+                    <Radio.Group onChange={this.onChange}>
+                      <Radio value="merchant">我参与的</Radio>
+                      <Radio value="marketer">机构参与的</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
+                <Col span={9}>
+                  <Form.Item name="searchTxt">
+                    <Input placeholder="请输入名称进行搜索" allowClear />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      className="cursor searchBtn"
+                      htmlType="submit"
+                      loading={this.state.loading}
+                      onClick={this.enterLoading}
+                    >
+                      搜索
+                    </Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+            {/* --搜索栏-- */}
+            <Table
+              tableLayout="auto"
+              style={{
+                wordBreak: "break-all",
+              }}
+              size="small"
+              bordered
+              showSizeChanger={false}
+              dataSource={campaigns}
+              columns={this.columns}
+              pagination={false}
             />
-        <div className="pagination">
-          <Pagination
-            pageSize={size}
-            current={currentPage}
-            onChange={this.handleTableChange}
-            total={this.totalPages}
-            showTotal={(total) => `总共 ${total} 条数据`}
-            size="small"
-            />
-        </div>
-        <Modal
-            title={typeTitle}
-            visible={this.state.showCSV}
-            onOk={this.handleOk}
-            onCancel={this.handleCancel}
-            footer={[]}
-            >
-          <div>
-            <div class="market-number">
-              {typeTitle === "分配票券" ? (
-                <span>当前可分配数量：{this.state.number}</span>
-                ) : (
-                <span>当前可发放数量：{this.state.number}</span>
-                )}
+            <div className="pagination">
+              <Pagination
+                pageSize={size}
+                current={currentPage}
+                onChange={this.handleTableChange}
+                total={this.totalPages}
+                showTotal={(total) => `总共 ${total} 条数据`}
+                size="small"
+              />
             </div>
-            <Descriptions title={"请上传" + `${typeName}`} column={2}>
-              <Descriptions.Item label="格式">csv</Descriptions.Item>
-              <Descriptions.Item label="表头">
-                {typeStr === "transfer" ? "员工号,数量" : "客户手机号 "}
-              </Descriptions.Item>
-              {typeStr === "transfer" ? (
-                <Descriptions.Item label="最大许可">
-                  100个 员工
-                </Descriptions.Item>
-                ) : (
-                <Descriptions.Item label=""></Descriptions.Item>
-                )}
+            <Modal
+              title={typeTitle}
+              visible={this.state.showCSV}
+              onOk={this.handleOk}
+              onCancel={this.handleCancel}
+              footer={[]}
+            >
+              <div>
+                <div class="market-number">
+                  {typeTitle === "分配票券" ? (
+                    <span>当前可分配数量：{this.state.number}</span>
+                  ) : (
+                    <span>当前可发放数量：{this.state.number}</span>
+                  )}
+                </div>
+                <Descriptions title={"请上传" + `${typeName}`} column={2}>
+                  <Descriptions.Item label="格式">csv</Descriptions.Item>
+                  <Descriptions.Item label="表头">
+                    {typeStr === "transfer" ? "员工号,数量" : "客户手机号 "}
+                  </Descriptions.Item>
+                  {typeStr === "transfer" ? (
+                    <Descriptions.Item label="最大许可">
+                      100个 员工
+                    </Descriptions.Item>
+                  ) : (
+                    <Descriptions.Item label=""></Descriptions.Item>
+                  )}
 
-              <Descriptions.Item label="数据示例">
-                {typeStr === "transfer" ? "001,300" : "18512342534"}
-              </Descriptions.Item>
-              { /* {typeStr === "distributions" ? (
+                  <Descriptions.Item label="数据示例">
+                    {typeStr === "transfer" ? "001,300" : "18512342534"}
+                  </Descriptions.Item>
+                  {/* {typeStr === "distributions" ? (
                 <Descriptions.Item label="是否只发自己的客户">
                   <Switch defaultChecked onChange={this.onSwitchChange} />
                 </Descriptions.Item>
               ) : (
                 ""
-              )} */ }
-            </Descriptions>
-            <Row>
-              <Col>
-                <ReactFileReader
-            handleFiles={this.handleFiles}
-            fileTypes={".csv"}
-            >
-                  <Button
-            type="primary"
-            disabled={this.state.number === 0 ? true : false}
-            >
-                    <UploadOutlined />
-                    选择文件并上传
-                  </Button>
-                </ReactFileReader>
-              </Col>
-              <Col>
-                {this.state.number === 0 ? (
-                <Button
-                type="primary"
-                style={{
-                    marginLeft: "10px"
-                }}
-                onClick={this.handleCancel}
-                >
-                    关闭
-                  </Button>
-                ) : null}
-              </Col>
-            </Row>
+              )} */}
+                </Descriptions>
+                <Row>
+                  <Col>
+                    <ReactFileReader
+                      handleFiles={this.handleFiles}
+                      fileTypes={".csv"}
+                    >
+                      <Button
+                        type="primary"
+                        disabled={this.state.number === 0 ? true : false}
+                      >
+                        <UploadOutlined />
+                        选择文件并上传
+                      </Button>
+                    </ReactFileReader>
+                  </Col>
+                  <Col>
+                    {this.state.number === 0 ? (
+                      <Button
+                        type="primary"
+                        style={{
+                          marginLeft: "10px",
+                        }}
+                        onClick={this.handleCancel}
+                      >
+                        关闭
+                      </Button>
+                    ) : null}
+                  </Col>
+                </Row>
+              </div>
+            </Modal>
           </div>
-        </Modal>
-      </div>
         );
     };
     render() {

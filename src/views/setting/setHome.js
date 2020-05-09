@@ -520,7 +520,7 @@ class Setting extends Component {
           style={{ wordBreak: "break-all" }}
           size="small"
           bordered
-          showSizeChanger
+          showSizeChanger={false}
           dataSource={campaigns}
           columns={columns}
           pagination={false}

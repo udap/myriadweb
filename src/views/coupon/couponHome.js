@@ -15,17 +15,12 @@ import {
   Pagination,
 } from "antd";
 import storageUtils from "../../utils/storageUtils";
-import {
-  reqGetCoupons,
-  reqPublishDis,
-  reqGetClients,
-} from "../../api";
+import { reqGetCoupons, reqPublishDis, reqGetClients } from "../../api";
 import { Loading } from "../../components";
 import { couponType } from "../../utils/memoryUtils";
 import comEvents from "../../utils/comEvents";
 import "../../css/common.less";
 import "./index.less";
-
 
 const { Option } = Select;
 
@@ -53,7 +48,7 @@ class CouponHome extends Component {
     /*搜索框 */
     searchClientTxt: "",
     loading: false,
-    chooseRadio:'owner'
+    chooseRadio: "owner",
   };
   componentDidMount() {
     this.getMarkets(null, 1);
@@ -207,6 +202,7 @@ class CouponHome extends Component {
 获取列表数据
 */
   getMarkets = async (values, currentPage, size, chooseRadio) => {
+    console.log("CouponHome -> getMarkets -> values", values)
     let typeStr = chooseRadio ? chooseRadio : this.state.chooseRadio;
     //owner 我的
     let parmas =
@@ -229,7 +225,7 @@ class CouponHome extends Component {
             merchantCode: values ? values.merchantCode : "",
             codeType: this.state.codeType,
           };
-   
+
     const result = await reqGetCoupons(parmas);
     const cont = result && result.data ? result.data.entries : [];
     let data = [];
@@ -249,33 +245,31 @@ class CouponHome extends Component {
         });
       }
     }
-    this.totalPages =
-      result && result.data ? result.data.total * result.data.size : 0;
+    this.totalPages = result && result.data ? result.data.totalElements : 0;
     this.setState({
       inited: true,
       campaigns: data,
-      total: result.data ? result.data.total * result.data.size : 0,
-      searchTxt: "",
+      total: result.data ? result.data.totalElements : 0,
+      merchantCode: "",
       loading: false,
     });
-    //parseInt((this.receipts.length - 1) / PAGE_SIZE) + 1;//
   };
-  onChange = (values) => {
-    if (values.length !== 0) {
-      this.setState({
-        hasChoose: true,
-        chooseValue: values,
-        merchantCode: values.merchantCode,
-      });
-      //this.getMarkets(values, 0);
-    }
-  };
+  // onChange = (values) => {
+  //   if (values.length !== 0) {
+  //     this.setState({
+  //       hasChoose: true,
+  //       chooseValue: values,
+  //       merchantCode: values.merchantCode,
+  //     });
+  //     //this.getMarkets(values, 0);
+  //   }
+  // };
   handleChange = (value) => {
     this.setState({
       codeType: value,
     });
   };
-  c;
+
   enterLoading = () => {
     this.setState({
       loading: true,
@@ -369,6 +363,7 @@ class CouponHome extends Component {
       listTotal,
       listData,
       searchClientTxt,
+      merchantCode,
     } = this.state;
 
     return (
@@ -397,13 +392,17 @@ class CouponHome extends Component {
                 </Radio.Group>
               </Form.Item>
             </Col>
-            <Col>
+            <Col span={6}>
               <Form.Item name="merchantCode">
-                <Row>
-                  <Col span={16}>
-                    <Input placeholder="请输入商户编码" allowClear />
+                    <Input
+                      placeholder="请输入商户编码"
+                      allowClear
+                    />
+                  </Form.Item>
                   </Col>
-                  <Col span={8} className="mid">
+                    <Col>
+                  <Form.Item className="mid">
+                
                     <Select
                       defaultValue="UPCODE"
                       style={{ width: 120 }}
@@ -411,8 +410,6 @@ class CouponHome extends Component {
                     >
                       <Option value="UPCODE">银联码</Option>
                     </Select>
-                  </Col>
-                </Row>
               </Form.Item>
             </Col>
             <Col>
@@ -448,7 +445,7 @@ class CouponHome extends Component {
             total={this.totalPages}
             showSizeChanger={false}
             size="small"
-            //showTotal={(total) => `总共 ${total} 条数据`}
+            showTotal={(total) => `总共 ${total} 条数据`}
           />
         </div>
         <Modal

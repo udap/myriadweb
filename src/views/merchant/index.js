@@ -302,7 +302,7 @@ class Merchant extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
-          size="middle"
+          size="small"
           bordered
           dataSource={campaigns}
           columns={columns}
