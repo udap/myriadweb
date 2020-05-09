@@ -45,7 +45,7 @@ const listAddType = [
   },
 ];
 
-
+//请求权限
 var Operation = {
   MANAGE_ORGANIZATION: "MANAGE_ORGANIZATION",
   LIST_SUBSIDIARIES: "LIST_SUBSIDIARIES",
@@ -130,6 +130,23 @@ var Operation = {
   VIEW_REDEMPTION: "VIEW_REDEMPTION",
   VIEW_DISTRIBUTION: "VIEW_DISTRIBUTION",
 };
+
+//发放列表
+//PENDING, SUCCESS, FAILED;
+const distributionsType = [
+  { PENDING: "等待中" },
+  { SUCCESS: "成功" },
+  { FAILED: "失败" },
+];
+//API, SMS, WALLET, EMAIL
+const distributionsChannel = [];
+//结算状态 用的 listType
+const redemptionsType = [
+  { INITIATED: "草稿" },
+  { SUBMITTED: "审核中" },
+  { PROCESSED: "已结算" },
+  { FAILED: "失败" },
+];
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
@@ -138,4 +155,6 @@ export {
   listType, //结算中心
   listAddType, //结算添加类型
   Operation, //权限判断,
+  distributionsType, //发放列表
+  redemptionsType,//结算状态
 };

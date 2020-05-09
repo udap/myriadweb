@@ -257,21 +257,24 @@ class MarketHome extends Component {
         let typeStr = type ? type : this.state.value;
         //一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
         //都需要传status=NON_EXPIRED
-        const parmas = typeStr === "merchant"
+        const parmas =
+          typeStr === "merchant"
             ? {
-                page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+                page:
+                  currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
                 size: this.state.size,
-                participantId: storageUtils.getUser().orgId,
-                status: "NON_EXPIRED",
+                participantId: storageUtils.getUser().id,
+                status: "NEW_OR_EFFECTIVE",
                 searchTxt: value,
-            }
+              }
             : {
-                page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+                page:
+                  currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
                 size: this.state.size,
                 partyId: storageUtils.getUser().orgId,
                 status: "NON_EXPIRED",
                 searchTxt: value,
-            };
+              };
         const result = await reqGetMarkets(parmas);
         const cont = result && result.data ? result.data.content : [];
         this.totalPages = result && result.data ? result.data.totalElements : 1;

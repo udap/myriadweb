@@ -1,28 +1,16 @@
 import React, { Component } from "react";
 import {
   Button,
-  Form,
   Input,
-  Select,
   PageHeader,
-  Switch,
-  DatePicker,
-  Steps,
-  Card,
   Col,
   Row,
-  Upload,
   Table,
-  Radio,
-  message,
   Modal,
-  Divider,
-  Pagination,
 } from "antd";
 import { ExclamationCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 import {
-  reqGetCampaigns,
   reqPostParties,
   reqDelParty,
   reqGetMerchants,
@@ -42,7 +30,7 @@ class JoinOrg extends Component {
   state = {
     currentPage: 1,
     listSize: 10,
-    size: 10,
+    size: 6,
     total: 10,
     data: [],
     selectedRowKeys: [], // Check here to configure the default column
@@ -120,17 +108,12 @@ class JoinOrg extends Component {
       {
         title: "操作",
         render: (item) => {
-          console.log(
-            "MarketHome -> initColumns -> item",
-            item,
-            this.state.parties
-          );
           const { partyId } = item;
           return (
             <span>
               <b
                 onClick={() => {
-                  this.addItem(partyId);
+                  this.addOneItem(partyId);
                 }}
                 className="ant-green-link cursor"
               >
@@ -145,13 +128,12 @@ class JoinOrg extends Component {
   /*
 获取添加选择列表数据 加号
 */
-  getOrgs = async (currentPage,searchTxt) => {
+  getOrgs = async (currentPage, searchTxt) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
       excludeCampaignId: this.state.id,
-      searchTxt:searchTxt
     };
     const result = await reqGetMerchants(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -159,7 +141,7 @@ class JoinOrg extends Component {
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.content.length; i++) {
         data.push({
-          key: i,
+          key: cont.content[i].merchant.id.toString(),
           partyId: cont.content[i].merchant.id,
           uid: cont.content[i].merchant.uid,
           name: cont.content[i].merchant.name,
@@ -176,6 +158,7 @@ class JoinOrg extends Component {
         result && result.data && result.data.content ? cont.totalElements : 1,
       loading: false,
       inited: true,
+      searchTxt: "",
     });
   };
   showList = () => {
@@ -201,35 +184,33 @@ class JoinOrg extends Component {
   };
 
   onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
+    this.setState({
+      selectedRowKeys,
+    });
   };
 
-  // start = () => {
-  //   this.setState({ loading: true });
-  //   let data = this.state.data;
-  //   let selectedRowKeys = this.state.selectedRowKeys;
-  //   for (var j = 0; j <= selectedRowKeys.length - 1; j++) {
-  //     let index = selectedRowKeys[j];
+  start = () => {
+    this.setState({ loading: true });
+    let data = this.state.data; //获取的参与商户列表数据
+    let selectedRowKeys = this.state.selectedRowKeys;
+    if (selectedRowKeys.length !== 0) {
+      for (var i = 0; i < selectedRowKeys.length; i++) {
+        this.state.list.push({ partyId: selectedRowKeys[i], type: "MERCHANT" });
+      }
+      this.addItem(this.state.list);
+    }
 
-  //     this.setState({
-  //       list: this.state.list.push(data[index].uid),
-  //     });
-  //   }
-  // ajax request after empty completing
-  //   setTimeout(() => {
-  //     this.setState({
-  //       list: [],
-  //       selectedRowKeys: [],
-  //       loading: false,
-  //     });
-  //   }, 1000);
-  // };
-
-  addItem = async (partyId) => {
+    this.setState({
+      list: [],
+      selectedRowKeys: [],
+      loading: false,
+    });
+    this.handleCancel();
+  };
+  addOneItem = async (id) => {
     this.setState({ loading: true });
     let params = {
-      type: "MERCHANT",
-      partyId: partyId,
+      parts: [{ partyId: id, type: "MERCHANT" }],
     };
     const result = await reqPostParties(this.state.id, params);
     this.setState({
@@ -237,6 +218,22 @@ class JoinOrg extends Component {
       parties: [],
       currentPage: 1,
     });
+
+    this.getMarket(this.state.id);
+  };
+
+  addItem = async (newList) => {
+    this.setState({ loading: true });
+    let params = {
+      parts: newList,
+    };
+    const result = await reqPostParties(this.state.id, params);
+    this.setState({
+      visible: false,
+      parties: [],
+      currentPage: 1,
+    });
+
     this.getMarket(this.state.id);
   };
 
@@ -264,21 +261,21 @@ class JoinOrg extends Component {
   //   this.getOrgs(current, pageSize);
   // };
   handleOrgChange = (e) => {
-    console.log("CouponHome -> handleOrgChange -> value", e.target);
     this.setState({
       searchTxt: e.target.value,
     });
   };
   searchValue = (value) => {
+    this.setState({
+      selectedRowKeys: [],
+    });
     this.getOrgs(1, this.state.searchTxt);
   };
   render() {
     const {
-      inited,
       loading,
-      //selectedRowKeys,
+      selectedRowKeys,
       data,
-      isNew,
       parties,
       size,
       listSize,
@@ -288,11 +285,13 @@ class JoinOrg extends Component {
       totalList,
       searchTxt,
     } = this.state;
-    // const rowSelection = {
-    //   selectedRowKeys,
-    //   onChange: this.onSelectChange,
-    // };
-    //const hasSelected = selectedRowKeys.length > 0;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+      hideDefaultSelections: true,
+      //selections: [Table.SELECTION_ALL],
+    };
+    const hasSelected = selectedRowKeys.length > 0;
     return (
       <div>
         <div>
@@ -312,28 +311,16 @@ class JoinOrg extends Component {
               total: parties.length,
             }}
           />
-          <div style={{ marginBottom: 16, marginTop: 16 }}>
-            <Button
-              type="primary"
-              onClick={this.backHome}
-              //onClick={this.start}
-              //disabled={!hasSelected}
-              loading={loading}
-            >
-              提交
-            </Button>
-            {/* <span style={{ marginLeft: 8 }}>
-                {hasSelected ? `选择了 ${selectedRowKeys.length} 个商户` : ""}
-              </span> 、简称、商户号码*/}
-          </div>
         </div>
 
         <Modal
+          className="markrt"
           title="入驻商户"
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[]}
+          width="60%"
         >
           {this.state.inited ? (
             <div>
@@ -358,13 +345,34 @@ class JoinOrg extends Component {
                   </Button>
                 </Col>
               </Row>
+
               <Table
                 size="middle"
                 columns={this.listColumns}
                 dataSource={data}
-                pagination={false}
+                pagination={{
+                  pageSize: size,
+                  total: this.totalPages,
+                  onChange: this.handleTableChange,
+                  showTotal: (total) => `总共 ${total} 条数据`,
+                }}
+                rowSelection={rowSelection}
               />
-              <div class="pagination">
+              <div style={{ marginBottom: 16, marginTop: 16 }}>
+                <Button
+                  type="primary"
+                  onClick={this.backHome}
+                  onClick={this.start}
+                  disabled={!hasSelected}
+                  loading={loading}
+                >
+                  提交
+                </Button>
+                <span style={{ marginLeft: 8 }}>
+                  {hasSelected ? `选择了 ${selectedRowKeys.length} 个商户` : ""}
+                </span>
+              </div>
+              {/* <div className="pagination">
                 <Pagination
                   pageSize={size}
                   current={currentPage}
@@ -374,7 +382,7 @@ class JoinOrg extends Component {
                   //showSizeChanger={false}
                   //onShowSizeChange={this.onShowSizeChange}
                 />
-              </div>
+              </div> */}
             </div>
           ) : (
             <Loading />
