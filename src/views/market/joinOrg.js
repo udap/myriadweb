@@ -313,7 +313,7 @@ class JoinOrg extends Component {
         </div>
         <div style={{ marginBottom: 16, marginTop: 16 }}>
           <Button type="primary" onClick={this.backHome}>
-            完成
+            提交
           </Button>
         </div>
         <Modal
