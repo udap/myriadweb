@@ -134,6 +134,7 @@ class JoinOrg extends Component {
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
       excludeCampaignId: this.state.id,
+      searchTxt: searchTxt,
     };
     const result = await reqGetMerchants(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -158,12 +159,12 @@ class JoinOrg extends Component {
         result && result.data && result.data.content ? cont.totalElements : 1,
       loading: false,
       inited: true,
-      searchTxt: "",
     });
   };
   showList = () => {
     this.setState({
       visible: true,
+      searchTxt:''
     });
     this.getOrgs(1);
   };
