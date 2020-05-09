@@ -421,7 +421,6 @@ class MarketHome extends Component {
               }}
               size="small"
               bordered
-              showSizeChanger={false}
               dataSource={campaigns}
               columns={this.columns}
               pagination={false}
@@ -434,6 +433,7 @@ class MarketHome extends Component {
                 total={this.totalPages}
                 showTotal={(total) => `总共 ${total} 条数据`}
                 size="small"
+                showSizeChanger={false}
               />
             </div>
             <Modal

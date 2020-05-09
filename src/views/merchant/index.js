@@ -310,6 +310,7 @@ class Merchant extends Component {
         />
         <div className="pagination">
           <Pagination
+            size="small"
             pageSize={size}
             current={currentPage}
             onChange={this.handleTableChange}
