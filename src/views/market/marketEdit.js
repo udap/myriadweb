@@ -34,6 +34,7 @@ import comEvents from "../../utils/comEvents";
 import { Loading, AntdIcon, LinkBtn } from "../../components";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
+import "moment/locale/zh-cn";
 import JoinOrg from "./joinOrg";
 import "./index.less";
 const layout = {
