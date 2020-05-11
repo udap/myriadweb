@@ -51,7 +51,9 @@ class OrgFormDialog extends Component {
       licenseNo: props.organize ? props.organize.licenseNo : "",
       fullName: props.organize ? props.organize.fullName : "",
       name: props.organize ? props.organize.name : "",
-      phone: props.organize?props.organize.phone:storageUtils.getUser().cellphone,
+      phone: props.organize
+        ? props.organize.phone
+        : storageUtils.getUser().cellphone,
       postalCode: props.organize ? props.organize.postalCode : "",
       address: props.organize ? props.organize.address : "",
       street: props.street ? props.organize.street : "",
@@ -59,6 +61,7 @@ class OrgFormDialog extends Component {
       city: props.organize ? props.organize.city : "重庆市",
       district: props.organize ? props.organize.district : "渝北区",
       inited: true,
+      code: props.organize.upCode ? props.organize.upCode : "",
     };
   }
   componentDidMount() {
@@ -86,7 +89,9 @@ class OrgFormDialog extends Component {
       city: values.residence[1],
       district: values.residence[2],
       parentOrgUid: "",
+      upCode: values.code,
     };
+    console.log("OrgFormDialog -> onFinish -> params", params)
     const result = await regAddOrg(params);
     if (
       result &&
@@ -147,6 +152,7 @@ class OrgFormDialog extends Component {
       postalCode,
       street,
       address,
+      code,
     } = this.state;
     return (
       <div className="OrgFormDialog">
@@ -162,6 +168,7 @@ class OrgFormDialog extends Component {
             postalCode: postalCode,
             street: street,
             address: address,
+            code: code,
           }}
           onFinish={this.onFinish}
           onFinishFailed={this.onFinishFailed}
@@ -181,17 +188,13 @@ class OrgFormDialog extends Component {
           >
             <Input disabled={this.state.isNew ? false : true} />
           </Form.Item>
-          <Form.Item
-            label="营业执照号码"
-            name="licenseNo"
-          >
+          <Form.Item label="营业执照号码" name="licenseNo">
             <Input disabled={this.state.isNew ? false : true} />
           </Form.Item>
-          <Form.Item
-            label="联系电话"
-            name="phone"
-            rules={[{ required: true }]}
-          >
+            <Form.Item label="银联商户码" name="code">
+              <Input disabled={this.state.isNew ? false : true} />
+            </Form.Item>
+          <Form.Item label="联系电话" name="phone" rules={[{ required: true }]}>
             <Input disabled={this.state.isNew ? false : true} />
           </Form.Item>
           {this.state.isNew ? (
@@ -232,11 +235,9 @@ class OrgFormDialog extends Component {
               </Form.Item>
             </div>
           )}
-
           <Form.Item label="邮政编码" name="postalCode" rules={[{ max: 6 }]}>
             <Input disabled={this.state.isNew ? false : true} />
           </Form.Item>
-
           {this.state.isNew ? (
             <Form.Item {...tailLayout}>
               <Button type="primary" htmlType="submit">

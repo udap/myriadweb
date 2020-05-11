@@ -129,7 +129,7 @@ const privateRoutes = [
         pathname: "/admin/setting",
         component: Setting,
         title: "结算中心",
-        icon: "MoneyCollectOutlined",
+        icon: "TransactionOutlined",
         isTop: false, //顶级菜单
         exact: true,
         isNav: true,

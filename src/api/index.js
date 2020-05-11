@@ -106,6 +106,9 @@ export const reqShowParties = (id) =>
 //新增参与商户
 export const reqPostParties = (id, params) =>
   ajax.post(BASE + "/myriad/campaigns/" + id + "/parties", params);
+  //删除参与商户
+export const reqDelMerchant = (uid) =>
+         ajax.delete(BASE + "/merchants/" + uid);
 //删除参与机构
 export const reqDelParty = (id, partyId) =>
   ajax.delete(BASE + "/myriad/campaigns/" + id + "/parties/" + partyId);

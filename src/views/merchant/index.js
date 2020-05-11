@@ -21,7 +21,7 @@ import {
   FolderViewOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { reqAddMerchant, reqGetAuthCode } from "../../api";
+import { reqAddMerchant, reqGetAuthCode, reqDelMerchant } from "../../api";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 
 import storageUtils from "../../utils/storageUtils";
@@ -115,6 +115,8 @@ class Merchant extends Component {
         let item = cont.content[i].merchant;
 
         list.push({
+          id: item.id,
+          uid: item.uid,
           address: item.address,
           name: item.name,
           phone: item.phone,
@@ -152,6 +154,10 @@ class Merchant extends Component {
   };
   addItem = () => {
     this.props.history.push("/admin/merchant/edit/new");
+  };
+  delItem = async (uid) => {
+    const result = await reqDelMerchant(uid);
+    this.getMerchant(1);
   };
   onFinish = async (values) => {
     let params = {
@@ -239,20 +245,44 @@ class Merchant extends Component {
         title: "银联商户号",
         dataIndex: "upCode",
         key: "upCode",
-        ellipsis: true,
       },
 
       {
         title: "电话",
         dataIndex: "phone",
         key: "phone",
-        ellipsis: true,
       },
       {
         title: "地址",
         dataIndex: "address",
         key: "address",
-        ellipsis: true,
+      },
+      {
+        title: "操作",
+        width: 100,
+        render: (item) => {
+          return (
+            <b
+              onClick={() => {
+                let that = this;
+                confirm({
+                  title: "确认删除商户【" + item.name + "】?",
+                  icon: <ExclamationCircleOutlined />,
+                  okText: "确认",
+                  okType: "danger",
+                  cancelText: "取消",
+                  onOk() {
+                    that.delItem(item.uid);
+                  },
+                  onCancel() {},
+                });
+              }}
+              className="ant-pink-link cursor"
+            >
+              删除
+            </b>
+          );
+        },
       },
     ];
     return (

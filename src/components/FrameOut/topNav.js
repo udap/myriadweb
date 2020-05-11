@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { Layout, Menu, Row, Col, Modal, message } from "antd";
+import { Layout, Menu, Row, Col, Modal, notification } from "antd";
 import { AntdIcon, LinkBtn } from "../../components";
 import storageUtils from "../../utils/storageUtils";
 import {
@@ -61,13 +61,18 @@ class TopNav extends Component {
         selectedKeys: key,
       });
     } else {
-      message.info("您尚未加入任何结构！请注册新机构或者退出");
+      notification.info({ message: "您尚未加入任何结构！请注册新机构或者退出"});
       this.props.history.push("/admin/dashboard");
     }
   };
   //获取当前员工详情;
   getAuthCode = async () => {
     let id = storageUtils.getUser().orgUid;
+    let isAdmin = storageUtils.getUser().admin;
+    if(isAdmin) {
+      notification.info({ message: "对不起，您没有权限！" });
+      return false;
+    }
     let curInfo = await reqGetAuthCode(id);
     console.log("getAuthCode -> curInfo", curInfo)
     if (curInfo) {
@@ -92,7 +97,7 @@ class TopNav extends Component {
     if (storageUtils.getUser().orgUid) {
       this.getAuthCode();
     } else {
-      message.info("您尚未加入任何结构！请注册新机构或者退出");
+      notification.info({ message:"您尚未加入任何结构！请注册新机构或者退出"});
       this.props.history.push("/admin/dashboard");
     }
   };
@@ -136,7 +141,7 @@ class TopNav extends Component {
                 </Menu.Item>
                 <li className="ant-menu-item" onClick={this.info}>
                   <FieldNumberOutlined />
-                  生成授权码
+                  机构授权码
                 </li>
               </SubMenu>
             </Menu>

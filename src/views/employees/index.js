@@ -16,7 +16,7 @@ import {
 } from "@ant-design/icons";
 
 import storageUtils from "../../utils/storageUtils";
-import { reqGetEmployees } from "../../api";
+import { reqPermit, reqGetEmployees } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
 
@@ -33,8 +33,18 @@ class Employees extends Component {
     total: 1,
   };
   componentDidMount() {
-    this.getEmployees(1);
+    this.getList(1);
   }
+  getList = async () => {
+    const result = await reqPermit("LIST_EMPLOYEES");
+    if (result) {
+      this.getEmployees(1);
+    } else {
+      this.setState({
+        inited: true,
+      });
+    }
+  };
   /*
 获取列表数据
 */
@@ -45,9 +55,9 @@ class Employees extends Component {
       orgUid: storageUtils.getUser().orgUid,
     };
     const result = await reqGetEmployees(parmas);
-    console.log("Employees -> getEmployees -> result", result)
+    console.log("Employees -> getEmployees -> result", result);
     const cont = result && result.data ? result.data.content : [];
-    
+
     this.totalPages =
       result && result.data ? result.data.content.totalElements : 1;
     this.setState({
@@ -58,7 +68,7 @@ class Employees extends Component {
   };
   searchValue = (value) => {};
   addItem = () => {
-   // this.props.history.push("/admin/employees/" + "new");
+    // this.props.history.push("/admin/employees/" + "new");
   };
   handleTableChange = (page) => {
     this.setState({
@@ -94,11 +104,7 @@ class Employees extends Component {
         title: "员工编码",
         dataIndex: "code",
         key: "code",
-         render: (text) => (
-          <span>
-            {text?text:'-'}
-          </span>
-        ),
+        render: (text) => <span>{text ? text : "-"}</span>,
       },
       {
         title: "操作",
@@ -151,9 +157,11 @@ class Employees extends Component {
           //     enterButton
           //   />
           // }
-          extra={[
-           // <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
-          ]}
+          extra={
+            [
+              // <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
+            ]
+          }
         ></PageHeader>
         <Table
           size="middle"

@@ -14,7 +14,13 @@ import {
   PlusCircleOutlined,
   ApartmentOutlined,
   InteractionOutlined,
+  TransactionOutlined,
+  createFromIconfontCN,
 } from "@ant-design/icons";
+
+const IconFont = createFromIconfontCN({
+  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
+});
 
 //显示antd图标组件
 class AntdIcon extends Component {
@@ -50,6 +56,8 @@ class AntdIcon extends Component {
         return <MoneyCollectOutlined />;
       case "InteractionOutlined":
         return <InteractionOutlined />;
+      case "TransactionOutlined":
+        return <TransactionOutlined />;
       default:
         return <DashboardOutlined />;
     }
