@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { PageHeader } from "antd";
+import { PageHeader, Row, Col, notification, Modal, Divider } from "antd";
 import storageUtils from "../../utils/storageUtils";
 import { Loading } from "../../components";
-import { regGetCurOrg } from "../../api";
+import { regGetCurOrg, reqGetAuthCode } from "../../api";
 import OrgFormDialog from "./orgFormDialog";
-
+import './index.less'
 //没有数据组件
 class MyOrgs extends Component {
   state = {
@@ -38,7 +38,7 @@ class MyOrgs extends Component {
     });
   };
 
-  closeEditing = (changed,uid) => {
+  closeEditing = (changed, uid) => {
     this.setState({
       isNew: false,
       inited: false,
@@ -46,19 +46,74 @@ class MyOrgs extends Component {
     });
     if (changed) this.regGetCurOrg(uid);
   };
-
+  //获取授权码;
+  getAuthCode = async () => {
+    let orgUid = storageUtils.getUser().orgUid;
+    let isAdmin = storageUtils.getUser().admin;
+    console.log("MyOrgs -> getAuthCode -> getUser", storageUtils.getUser());
+    if (!isAdmin) {
+      notification.info({ message: "对不起，您没有权限！" });
+      return false;
+    }
+    let curInfo = await reqGetAuthCode(orgUid);
+    console.log("getAuthCode -> curInfo", curInfo);
+    if (curInfo) {
+      let cont = curInfo.data.content ? curInfo.data.content : [];
+      console.log("FormDialog -> getMerchant -> cont", cont);
+      this.setState({
+        authCode: cont,
+      });
+      Modal.info({
+        content: (
+          <div className="authCode">
+            <p>
+              当前授权码是<span>{this.state.authCode}</span>
+              ,请尽快和相关机构分享授权码
+            </p>
+          </div>
+        ),
+      });
+    }
+  };
   render() {
     return (
       <div style={{ height: "100%" }}>
         <PageHeader
-          className="site-page-header-responsive"
-          //onBack={() => window.history.back()}
+          className="site-page-header-responsive cont"
           title={
             this.state.campaigns && this.state.hasOrg ? "我的机构" : "注册机构"
           }
         ></PageHeader>
+
         {this.state.hasOrg ? (
           <div>
+            <Row className="action">
+              <Col className="title">
+                <span>操作：</span>
+              </Col>
+              <Col className="actionItems">
+                {/* <b
+                  onClick={() => {
+                    //this.props.history.push("/admin/market/detail/" + id);
+                  }}
+                  className="ant-green-link cursor"
+                >
+                  编辑
+                </b> */}
+                <b
+                  onClick={() => {
+                    this.props.history.push("/admin/employees");
+                  }}
+                  className="ant-green-link cursor"
+                >
+                  员工管理
+                </b>
+                <Divider type="vertical" />
+                <b onClick={this.getAuthCode} className="ant-green-link cursor">
+                  动态授权码
+                </b>
+              </Col>
+            </Row>
             {this.state.inited ? (
               <OrgFormDialog
                 organize={this.state.campaigns}

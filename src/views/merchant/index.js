@@ -4,24 +4,17 @@ import {
   Table,
   PageHeader,
   Input,
-  Divider,
   Modal,
   Pagination,
   Row,
   Col,
   Form,
-  message,
-  Menu,
-  Select,
-  notification
 } from "antd";
 import {
-  SearchOutlined,
   PlusSquareFilled,
-  FolderViewOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { reqAddMerchant, reqGetAuthCode, reqDelMerchant } from "../../api";
+import { reqAddMerchant, reqDelMerchant } from "../../api";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 
 import storageUtils from "../../utils/storageUtils";
@@ -29,7 +22,6 @@ import { reqGetMerchants } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
 
-const { Search } = Input;
 const { confirm } = Modal;
 const layout = {
   labelCol: {
@@ -85,13 +77,7 @@ class Merchant extends Component {
     });
   };
 
-  handleOk = (e) => {
-    console.log(e);
-    this.onFinish();
-  };
-
   handleCancel = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });

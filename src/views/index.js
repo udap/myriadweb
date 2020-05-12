@@ -23,10 +23,6 @@ const Employees = Loadable({
   loading: Loading,
 });
 
-const FormDialog = Loadable({
-  loader: () => import("./employees/FormDialog"),
-  loading: Loading,
-});
 const Market = Loadable({
   loader: () => import("./market"),
   loading: Loading,
@@ -98,6 +94,5 @@ export {
   Exchange,
   Setting,
   SetDetail,
-  FormDialog,
   Merchant,
 };

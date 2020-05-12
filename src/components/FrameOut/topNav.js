@@ -1,21 +1,13 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { Layout, Menu, Row, Col, Modal, notification } from "antd";
+import { Menu, Row, Col, Modal, notification } from "antd";
 import { AntdIcon, LinkBtn } from "../../components";
 import storageUtils from "../../utils/storageUtils";
-import {
-  ExclamationCircleOutlined,
-  FieldNumberOutlined,
-} from "@ant-design/icons";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 //获取titile
 import comEvents from "../../utils/comEvents";
 import "./index.less";
-import {
-  MailOutlined,
-  AppstoreOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import { reqGetAuthCode } from "../../api";
+import { SettingOutlined } from "@ant-design/icons";
 
 const { SubMenu } = Menu;
 const { confirm } = Modal;
@@ -61,43 +53,9 @@ class TopNav extends Component {
         selectedKeys: key,
       });
     } else {
-      notification.info({ message: "您尚未加入任何结构！请注册新机构或者退出"});
-      this.props.history.push("/admin/dashboard");
-    }
-  };
-  //获取当前员工详情;
-  getAuthCode = async () => {
-    let id = storageUtils.getUser().orgUid;
-    let isAdmin = storageUtils.getUser().admin;
-    if(isAdmin) {
-      notification.info({ message: "对不起，您没有权限！" });
-      return false;
-    }
-    let curInfo = await reqGetAuthCode(id);
-    console.log("getAuthCode -> curInfo", curInfo)
-    if (curInfo) {
-      let cont = curInfo.data.content ? curInfo.data.content : [];
-      console.log("FormDialog -> getMerchant -> cont", cont);
-      this.setState({
-        authCode: cont,
+      notification.info({
+        message: "您尚未加入任何结构！请注册新机构或者退出",
       });
-      Modal.info({
-        content: (
-          <div className="authCode">
-            <p>
-              当前授权码是<span>{this.state.authCode}</span>
-              ,请尽快和相关机构分享授权码
-            </p>
-          </div>
-        ),
-      });
-    }
-  };
-  info = () => {
-    if (storageUtils.getUser().orgUid) {
-      this.getAuthCode();
-    } else {
-      notification.info({ message:"您尚未加入任何结构！请注册新机构或者退出"});
       this.props.history.push("/admin/dashboard");
     }
   };
@@ -131,18 +89,10 @@ class TopNav extends Component {
                   <AntdIcon name="BankOutlined" />
                   我的机构
                 </Menu.Item>
-                <Menu.Item key="/admin/employees">
-                  <AntdIcon name="UsergroupAddOutlined" />
-                  员工管理
-                </Menu.Item>
                 <Menu.Item key="/admin/merchant">
                   <AntdIcon name="ApartmentOutlined" />
                   入驻商户
                 </Menu.Item>
-                <li className="ant-menu-item" onClick={this.info}>
-                  <FieldNumberOutlined />
-                  机构授权码
-                </li>
               </SubMenu>
             </Menu>
           </Col>

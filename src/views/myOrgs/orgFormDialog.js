@@ -40,8 +40,6 @@ const tailLayout = {
 
 const options = [province];
 
-const { confirm } = Modal;
-
 @withRouter
 class OrgFormDialog extends Component {
   constructor(props) {
@@ -64,15 +62,7 @@ class OrgFormDialog extends Component {
       code: props.organize.upCode ? props.organize.upCode : "",
     };
   }
-  componentDidMount() {
-    console.log(
-      "OrgFormDialog -> componentDidMount -> storageUtils.user.cellphone;",
-      this.props.organize,
-      storageUtils.getUser().cellphone,
-      this.state.phone
-    );
-    
-  }
+  componentDidMount() {}
   onFinish = async (values) => {
     this.setState({
       inited: false,
@@ -91,7 +81,6 @@ class OrgFormDialog extends Component {
       parentOrgUid: "",
       upCode: values.code,
     };
-    console.log("OrgFormDialog -> onFinish -> params", params)
     const result = await regAddOrg(params);
     if (
       result &&

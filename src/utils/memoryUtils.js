@@ -23,6 +23,14 @@ const listType = [
   { FAILED: "失败" },
 ];
 
+const empolyStatus = [
+  { NEW: "新建" },
+  { ACTIVE: "已启用" },
+  { SUSPENDED: "已暂停" },
+  { TERMINATED: "已终止" },
+];
+const roleType = [{ ADMIN: "管理员" },{ STAFF: "普通人员" }];
+
 //结算的类型
 //NONE, MONTHLY, QUARTERLY, ;
 //按月结算，按季度结算，按年结算，按活动结算
@@ -156,5 +164,7 @@ export {
   listAddType, //结算添加类型
   Operation, //权限判断,
   distributionsType, //发放列表
-  redemptionsType,//结算状态
+  redemptionsType, //结算状态
+  empolyStatus, //员工状态
+  roleType, //角色
 };

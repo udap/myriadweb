@@ -166,8 +166,11 @@ export const reqGetGroup = (orgid) =>
     params: { size: 200, orgUid: orgid },
   });
 //添加员工
-export const reqAddEmployees = (orgUid, params) =>
-  ajax.post(BASE + "/employees?orgUid=" + orgUid, params);
+export const reqAddEmployees = (params) =>
+  ajax.post(BASE + "/employees", params);
+  //删除员工
+export const reqDelEmploy = (uid) =>
+         ajax.delete(BASE + "/employees/" + uid);
 /*
 员工管理 END
  */

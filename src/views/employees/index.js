@@ -7,21 +7,66 @@ import {
   Divider,
   Modal,
   Pagination,
+  Form,
+  Row,
+  Col,
+  notification,
+  Select,
+  Tag
 } from "antd";
 import {
   SearchOutlined,
   PlusSquareFilled,
   FolderViewOutlined,
   ExclamationCircleOutlined,
+  RollbackOutlined,
 } from "@ant-design/icons";
-
+import { empolyStatus, roleType } from "../../utils/memoryUtils";
+import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
-import { reqPermit, reqGetEmployees } from "../../api";
+import {
+  reqPermit,
+  reqGetEmployees,
+  reqDelEmploy,
+  reqAddEmployees,
+  reqGetGroup,
+  reqGetEmployee,
+} from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
+const layout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+    lg: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+    lg: { span: 12 },
+  },
+};
+const tailLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+    lg: {
+      span: 12,
+      offset: 6,
+    },
+  },
+};
 
 const { Search } = Input;
 const { confirm } = Modal;
+const { Option } = Select;
+const { TextArea } = Input;
 
 class Employees extends Component {
   state = {
@@ -31,6 +76,18 @@ class Employees extends Component {
     currentPage: 1,
     size: 8,
     total: 1,
+    /*添加员工 */
+    visible: false,
+    isNew: true,
+    name: "",
+    cellphone: "",
+    admin: "",
+    desc: "",
+    groupId: "",
+    orgUid: "",
+    code: "",
+    groups: [],
+    curInfo: {},
   };
   componentDidMount() {
     this.getList(1);
@@ -45,17 +102,21 @@ class Employees extends Component {
       });
     }
   };
+
+  searchValue = (value) => {
+    this.getEmployees(1, value.searchTxt);
+  };
   /*
 获取列表数据
 */
-  getEmployees = async (currentPage) => {
+  getEmployees = async (currentPage, searchTxt) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
+      searchTxt: searchTxt,
     };
     const result = await reqGetEmployees(parmas);
-    console.log("Employees -> getEmployees -> result", result);
     const cont = result && result.data ? result.data.content : [];
 
     this.totalPages =
@@ -66,15 +127,153 @@ class Employees extends Component {
       inited: true,
     });
   };
-  searchValue = (value) => {};
-  addItem = () => {
-    // this.props.history.push("/admin/employees/" + "new");
-  };
+  /*分页 */
   handleTableChange = (page) => {
     this.setState({
       currentPage: page,
     });
     this.getEmployees(page);
+  };
+  addItem = () => {
+    this.setState({
+      visible: true,
+    });
+    this.getGroups();
+  };
+  deleteItem = async (id) => {
+    let result = await reqDelEmploy(id);
+    if (result.data.retcode === 0) {
+      notification.success({ message: "删除成功" });
+      this.getEmployees(1);
+    }
+  };
+
+  backIndex = () => {
+    this.props.history.push("/admin/myOrgs");
+  };
+  //获取当前员工详情
+  getEmployee = async (id) => {
+    let curInfo = await reqGetEmployee(id);
+    let cont = curInfo.data.content ? curInfo.data.content : [];
+    this.setState({
+      inited: true,
+      curInfo: cont,
+    });
+  };
+  //获取员工所在组
+  getGroups = async () => {
+    let orgUid = storageUtils.getUser().orgUid;
+    let groups = await reqGetGroup(orgUid);
+    let cont = groups.data.content ? groups.data.content.content : [];
+    this.setState({
+      inited: true,
+      groups: cont,
+      orgUid: orgUid,
+    });
+  };
+  onFinish = async (values) => {
+    let params = {
+      name: values.name,
+      cellphone: values.cellphone,
+      admin: values.admin,
+      desc: values.desc,
+      code: values.code,
+      groupId: values.groupId,
+      orgUid: storageUtils.getUser().orgUid,
+    };
+
+    const result = await reqAddEmployees(params);
+    if (result.data.retcode === 0) {
+      notification.success({ message: "添加成功" });
+      this.setState({
+        visible: false,
+      });
+      this.getEmployees(1);
+    } else if (result.data.retcode === 412002) {
+      notification.error({ message: result.data.msg });
+    }
+  };
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+  onFinishFailed = (errorInfo) => {};
+  renderEmpolyContent = () => {
+    const {
+      name,
+      cellphone,
+      admin,
+      desc,
+      groupId,
+      orgUid,
+      code,
+      groups,
+    } = this.state.curInfo;
+    const onGenderChange = (value) => {
+    };
+
+    return (
+      <Form
+        {...layout}
+        name="basic"
+        initialValues={{
+          name: name,
+          cellphone: cellphone,
+          admin: admin,
+          desc: desc,
+          groupId: this.state.isNew ? groupId : groups[0].name,
+          code: code,
+        }}
+        onFinish={this.onFinish}
+        validateMessages={defaultValidateMessages.defaultValidateMessages}
+      >
+        <Form.Item
+          label="员工姓名"
+          name="name"
+          rules={[{ required: true }, { max: 32 }]}
+        >
+          <Input disabled={this.state.isNew ? false : true} />
+        </Form.Item>
+        <Form.Item
+          label="手机号码"
+          name="cellphone"
+          rules={[{ required: true }, { max: 13 }]}
+        >
+          <Input disabled={this.state.isNew ? false : true} />
+        </Form.Item>
+        <Form.Item label="员工编号" name="code" rules={[{ max: 20 }]}>
+          <Input disabled={this.state.isNew ? false : true} />
+        </Form.Item>
+        <Form.Item
+          label={this.state.isNew ? "请选择组" : "员工所在组"}
+          name="groupId"
+        >
+          {this.state.isNew ? (
+            <Select placeholder="请选择组" onChange={onGenderChange} allowClear>
+              {this.state.groups.map((item, index) => (
+                <Option key={item.id} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          ) : (
+            <Input disabled={this.state.isNew ? false : true} />
+          )}
+        </Form.Item>
+        <Form.Item label="备注" name="desc" >
+          <TextArea rows={4} />
+        </Form.Item>
+
+        {this.state.isNew ? (
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit">
+              提交
+            </Button>
+          </Form.Item>
+        ) : null}
+      </Form>
+    );
   };
   renderContent = () => {
     const { campaigns, size, currentPage, total } = this.state;
@@ -107,38 +306,60 @@ class Employees extends Component {
         render: (text) => <span>{text ? text : "-"}</span>,
       },
       {
-        title: "操作",
-        dataIndex: "action",
-        key: "action",
-        render: (text, record) => (
+        title: "角色",
+        dataIndex: "role",
+        key: "role",
+        render: (text) => (
           <span>
-            -
+            <Tag color="green" key={text}>
+              {roleType.map((item, index) => (
+                <span key={index}>{item[text]}</span>
+              ))}
+            </Tag>
+          </span>
+        ),
+      },
+      {
+        title: "状态",
+        dataIndex: "status",
+        key: "status",
+        render: (text) => (
+          <span>
+            <Tag color="green" key={text}>
+              {empolyStatus.map((item, index) => (
+                <span key={index}>{item[text]}</span>
+              ))}
+            </Tag>
+          </span>
+        ),
+      },
+      {
+        title: "操作",
+        render: (chooseItem) => (
+          <span>
             {/* <b onClick={() => {}} className="ant-green-link cursor">
               调用
             </b>
             <Divider type="vertical" />
+             */}
             <b
               onClick={() => {
                 let that = this;
                 confirm({
-                  title: "确认离职吗?",
+                  title: "确认删除员工【" + chooseItem.name + "】吗?",
                   icon: <ExclamationCircleOutlined />,
-                  content: "离职之后将不可恢复，请谨慎操作！",
                   okText: "确认",
                   okType: "danger",
                   cancelText: "取消",
                   onOk() {
-                    console.log("OK");
-                  },
-                  onCancel() {
-                    console.log("Cancel");
+                    that.deleteItem(chooseItem.uid);
                   },
                 });
               }}
               className="ant-pink-link cursor"
             >
-              离职
-            </b> */}
+              删除
+            </b>
           </span>
         ),
       },
@@ -148,21 +369,43 @@ class Employees extends Component {
         <PageHeader
           className="site-page-header-responsive cont"
           title="员工管理"
-          // subTitle={
-          //   <Search
-          //     placeholder="请输入信息查询"
-          //     onSearch={(value) => {
-          //       this.searchValue(value);
-          //     }}
-          //     enterButton
-          //   />
-          // }
-          extra={
-            [
-              // <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
-            ]
-          }
+          extra={[
+            <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
+            <RollbackOutlined className="setIcon" onClick={this.backIndex} />,
+          ]}
         ></PageHeader>
+        {/* --搜索栏-- */}
+        <Form
+          onFinish={this.searchValue}
+          layout="horizontal"
+          name="advanced_search"
+          className="ant-advanced-search-form"
+          initialValues={{
+            searchTxt: "",
+          }}
+        >
+          <Row>
+            <Col span={9}>
+              <Form.Item name="searchTxt" label="查询条件">
+                <Input placeholder="请输入名称或手机号进行搜索" allowClear />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  className="cursor searchBtn"
+                  htmlType="submit"
+                  loading={this.state.loading}
+                  onClick={this.enterLoading}
+                >
+                  搜索
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+        {/* --搜索栏-- */}
         <Table
           size="middle"
           bordered
@@ -172,6 +415,7 @@ class Employees extends Component {
         />
         <div class="pagination">
           <Pagination
+            size="middle"
             pageSize={size}
             current={currentPage}
             onChange={this.handleTableChange}
@@ -179,6 +423,15 @@ class Employees extends Component {
             showTotal={(total) => `总共 ${total} 条数据`}
           />
         </div>
+
+        <Modal
+          title="添加员工"
+          visible={this.state.visible}
+          onCancel={this.handleCancel}
+          footer={null}
+        >
+          {this.renderEmpolyContent()}
+        </Modal>
       </div>
     );
   };
