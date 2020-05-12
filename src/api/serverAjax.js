@@ -32,16 +32,12 @@ axios.interceptors.response.use(
   function (response) {
     // 对响应数据做点什么
     if (response.status === 200 || response.success) {
-      if (
-        response.data.retcode === 1 ||
-        response.data.retcode === 404001 ||
-        response.data.retcode === 401
-      ) {
+      if (response.data.retcode !== 0) {
         //message.error(response.data.msg);
         notification.error({
           message: response.data.msg,
         });
-       return response;
+        return response;
         //return response.data;
       } else {
         return response;

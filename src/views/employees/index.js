@@ -189,8 +189,6 @@ class Employees extends Component {
         visible: false,
       });
       this.getEmployees(1);
-    } else if (result.data.retcode === 412002) {
-      notification.error({ message: result.data.msg });
     }
   };
   handleCancel = () => {
@@ -407,7 +405,7 @@ class Employees extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
-          size="middle"
+          size="small"
           bordered
           dataSource={campaigns}
           columns={columns}
@@ -415,7 +413,7 @@ class Employees extends Component {
         />
         <div class="pagination">
           <Pagination
-            size="middle"
+            size="small"
             pageSize={size}
             current={currentPage}
             onChange={this.handleTableChange}
