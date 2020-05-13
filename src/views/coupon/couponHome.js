@@ -215,6 +215,7 @@ class CouponHome extends Component {
             issuerId: "",
             merchantCode: values ? values.merchantCode : "",
             codeType: this.state.codeType,
+            searchTxt: values ? values.searchCouponTxt : "",
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
@@ -224,6 +225,7 @@ class CouponHome extends Component {
             issuerId: this.state.publisherId,
             merchantCode: values ? values.merchantCode : "",
             codeType: this.state.codeType,
+            searchTxt: values ? values.searchCouponTxt : "",
           };
 
     const result = await reqGetCoupons(parmas);
@@ -364,6 +366,7 @@ class CouponHome extends Component {
       listData,
       searchClientTxt,
       merchantCode,
+      searchCouponTxt,
     } = this.state;
 
     return (
@@ -380,6 +383,7 @@ class CouponHome extends Component {
           className="ant-advanced-search-form"
           initialValues={{
             merchantCode: "",
+            searchCouponTxt: "",
             group: "owner",
           }}
         >
@@ -393,23 +397,27 @@ class CouponHome extends Component {
               </Form.Item>
             </Col>
             <Col span={6}>
+              <Form.Item name="searchCouponTxt">
+                <Input
+                  placeholder="输入券号、活动名或活动标签查询"
+                  allowClear
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
               <Form.Item name="merchantCode">
-                    <Input
-                      placeholder="请输入商户编码"
-                      allowClear
-                    />
-                  </Form.Item>
-                  </Col>
-                    <Col>
-                  <Form.Item className="mid">
-                
-                    <Select
-                      defaultValue="UPCODE"
-                      style={{ width: 120 }}
-                      onChange={this.handleChange}
-                    >
-                      <Option value="UPCODE">银联码</Option>
-                    </Select>
+                <Input placeholder="请输入商户编码" allowClear />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item className="mid">
+                <Select
+                  defaultValue="UPCODE"
+                  style={{ width: 120 }}
+                  onChange={this.handleChange}
+                >
+                  <Option value="UPCODE">银联码</Option>
+                </Select>
               </Form.Item>
             </Col>
             <Col>
