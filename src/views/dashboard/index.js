@@ -36,6 +36,7 @@ class Dashboard extends Component {
         onOk() {
           //清空缓存localStorage
           storageUtils.removeUser();
+          storageUtils.removeOrg();
           storageUtils.removeToken();
           //user = {};
           //返回登陆页
@@ -46,6 +47,8 @@ class Dashboard extends Component {
         inited: false,
       });
     } else {
+      //存储机构信息
+      storageUtils.saveOrg(result.data.content); //保存到localStorage中
       this.setState({
         inited: true,
         showContent: true,
@@ -84,6 +87,7 @@ class Dashboard extends Component {
       onOk: () => {
         //清空缓存localStorage
         storageUtils.removeUser();
+        storageUtils.removeOrg();
         storageUtils.removeToken();
         //user = {};
         //返回登陆页

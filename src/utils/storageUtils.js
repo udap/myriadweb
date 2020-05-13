@@ -23,6 +23,24 @@ const removeUser = () => {
   localStore.removeItem(USER_KEY);
 };
 
+
+const ORG_KEY = "org";
+//window.sessionStorage.setItem;
+/*保存user*/
+const saveOrg = (user) => {
+  localStore.setItem(ORG_KEY, JSON.stringify(user));
+};
+/*读取user*/
+const getOrg = () => {
+  return JSON.parse(localStore.getItem(ORG_KEY)) || {};
+};
+
+/*移除user*/
+const removeOrg = () => {
+  localStore.removeItem(ORG_KEY);
+};
+
+
 const TOKEN = "token";
 
 /*保存Token*/
@@ -46,6 +64,9 @@ export default {
   saveUser,
   getUser,
   removeUser,
+  saveOrg,
+  getOrg,
+  removeOrg,
   saveToken,
   getToken,
   removeToken,

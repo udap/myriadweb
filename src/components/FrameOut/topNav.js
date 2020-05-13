@@ -37,6 +37,7 @@ class TopNav extends Component {
       onOk: () => {
         //清空缓存localStorage
         storageUtils.removeUser();
+        storageUtils.removeOrg();
         storageUtils.removeToken();
         //user = {};
         //返回登陆页

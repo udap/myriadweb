@@ -32,13 +32,11 @@ axios.interceptors.response.use(
   function (response) {
     // 对响应数据做点什么
     if (response.status === 200 || response.success) {
-      if (response.data.retcode !== 0) {
-        //message.error(response.data.msg);
+      if (response.data.retcode && response.data.retcode !== 0) {
         notification.error({
           message: response.data.msg,
         });
         return response;
-        //return response.data;
       } else {
         return response;
       }
@@ -57,6 +55,7 @@ axios.interceptors.response.use(
        });
       //清空缓存localStorage
       storageUtils.removeUser();
+      storageUtils.removeOrg();
       storageUtils.removeToken();
       //返回登陆页
       window.location.href = "/login#/login";

@@ -12,14 +12,14 @@ import {
   Col,
   notification,
   Select,
-  Tag
+  Tag,
+  Switch,
 } from "antd";
 import {
   SearchOutlined,
   PlusSquareFilled,
   FolderViewOutlined,
   ExclamationCircleOutlined,
-  RollbackOutlined,
 } from "@ant-design/icons";
 import { empolyStatus, roleType } from "../../utils/memoryUtils";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
@@ -172,6 +172,7 @@ class Employees extends Component {
     });
   };
   onFinish = async (values) => {
+    console.log("Employees -> onFinish -> values", values);
     let params = {
       name: values.name,
       cellphone: values.cellphone,
@@ -181,7 +182,6 @@ class Employees extends Component {
       groupId: values.groupId,
       orgUid: storageUtils.getUser().orgUid,
     };
-
     const result = await reqAddEmployees(params);
     if (result.data.retcode === 0) {
       notification.success({ message: "添加成功" });
@@ -196,6 +196,11 @@ class Employees extends Component {
       visible: false,
     });
   };
+  onSwitchChange = (value) => {
+    this.setState({
+      admin: value,
+    });
+  };
   onFinishFailed = (errorInfo) => {};
   renderEmpolyContent = () => {
     const {
@@ -208,9 +213,14 @@ class Employees extends Component {
       code,
       groups,
     } = this.state.curInfo;
-    const onGenderChange = (value) => {
-    };
-
+    const onGenderChange = (value) => {};
+    /*当前机构是admin  并且当前机构是顶级机构 可以设置是否管理员 */
+    const ableSetAdmin =
+      storageUtils.getUser().admin &&
+      JSON.stringify(storageUtils.getOrg().parent) === "{}";
+      console.log("Employees -> onGenderChange -> storageUtils.getOrg()", storageUtils.getOrg())
+      //如果是admin 不需要选择员工所在组
+    let isAdmin = this.state.admin;
     return (
       <Form
         {...layout}
@@ -243,23 +253,69 @@ class Employees extends Component {
         <Form.Item label="员工编号" name="code" rules={[{ max: 20 }]}>
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
-        <Form.Item
-          label={this.state.isNew ? "请选择组" : "员工所在组"}
-          name="groupId"
-        >
-          {this.state.isNew ? (
-            <Select placeholder="请选择组" onChange={onGenderChange} allowClear>
-              {this.state.groups.map((item, index) => (
-                <Option key={item.id} value={item.id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          ) : (
-            <Input disabled={this.state.isNew ? false : true} />
-          )}
-        </Form.Item>
-        <Form.Item label="备注" name="desc" >
+
+        {ableSetAdmin ? (
+          <Form.Item label="是否管理员" name="admin">
+            <Switch onChange={this.onSwitchChange} />
+          </Form.Item>
+        ) : null}
+        {isAdmin ? (
+          <Form.Item
+            label="员工所在组"
+            name="groupId"
+            rules={[
+              {
+                required: false,
+              },
+            ]}
+          >
+            {this.state.isNew ? (
+              <Select
+                placeholder="员工所在组"
+                onChange={onGenderChange}
+                allowClear
+              >
+                {this.state.groups.map((item, index) => (
+                  <Option key={item.id} value={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            ) : (
+              <Input disabled={this.state.isNew ? false : true} />
+            )}
+          </Form.Item>
+        ) : (
+          <span>
+            <Form.Item
+              label="员工所在组"
+              name="groupId"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              {this.state.isNew ? (
+                <Select
+                  placeholder="员工所在组"
+                  onChange={onGenderChange}
+                  allowClear
+                >
+                  {this.state.groups.map((item, index) => (
+                    <Option key={item.id} value={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              ) : (
+                <Input disabled={this.state.isNew ? false : true} />
+              )}
+            </Form.Item>
+          </span>
+        )}
+
+        <Form.Item label="备注" name="desc">
           <TextArea rows={4} />
         </Form.Item>
 
@@ -369,8 +425,8 @@ class Employees extends Component {
           title="员工管理"
           extra={[
             <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
-            <RollbackOutlined className="setIcon" onClick={this.backIndex} />,
           ]}
+          onBack={this.backIndex}
         ></PageHeader>
         {/* --搜索栏-- */}
         <Form
