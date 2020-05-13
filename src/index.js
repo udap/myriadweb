@@ -33,7 +33,6 @@ ReactDOM.render(
         <Route
           path="/admin"
           render={(rootProps) => {
-            console.log("rootProps", rootProps);
             return <App {...rootProps} />;
           }}
         />

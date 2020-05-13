@@ -42,7 +42,10 @@ class FrameOut extends Component {
     selectedKeys: "/admin/dashboard",
     openKey: [],
   };
-
+  componentDidMount() {
+    //渲染前调用一次 为render数据做准备
+    this.getNavMap(navsLeft);
+  }
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -128,13 +131,6 @@ class FrameOut extends Component {
       }
     });
   };
-
-  //渲染前调用一次 为render数据做准备
-  componentWillMount() {
-    this.menuNodes = this.getNavMap(navsLeft);
-  }
-
-  componentDidMount() {}
   getTitle = () => {
     // 得到当前请求路径
     const path = this.props.location.pathname;
@@ -159,7 +155,7 @@ class FrameOut extends Component {
     return title;
   };
   render() {
-    const {openKey}  = this.state
+    const { openKey } = this.state;
     const { location } = this.props;
     // //获取当前页面的路径地址
     const path = location.pathname;
@@ -195,7 +191,7 @@ class FrameOut extends Component {
                 onOpenChange={this.onOpenChange}
                 defaultOpenKeys={[openKey]}
               >
-                {this.menuNodes}
+                {this.getNavMap(navsLeft)}
               </Menu>
             </Sider>
             <Layout

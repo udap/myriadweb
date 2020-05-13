@@ -12,7 +12,7 @@ import {
   Pagination,
 } from "antd";
 import storageUtils from "../../utils/storageUtils";
-import { reqPermit, reqDistributionsLists } from "../../api";
+import { reqPermit, reqGetDistributions } from "../../api";
 import { Loading } from "../../components";
 import { distributionsType } from "../../utils/memoryUtils";
 import "../../css/common.less";
@@ -36,6 +36,7 @@ class Provide extends Component {
     hasAuthority: false,
   };
   componentDidMount() {
+    this.initColumns();
     this.getList();
   }
   getList = async () => {
@@ -52,9 +53,6 @@ class Provide extends Component {
       });
     }
   };
-  componentWillMount() {
-    this.initColumns();
-  }
 
   initColumns() {
     //券号	营销活动	客户	发放时间	状态
@@ -116,7 +114,7 @@ class Provide extends Component {
             searchTxt: values ? values.merchantCode : "",
           };
 
-    const result = await reqDistributionsLists(parmas);
+    const result = await reqGetDistributions(parmas);
     const cont =
       result && result.data && result.data.content
         ? result.data.content.entries

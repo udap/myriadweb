@@ -18,7 +18,7 @@ import storageUtils from "../../utils/storageUtils";
 import { listType, listAddType } from "../../utils/memoryUtils";
 import {
   reqPermit,
-  reqGetList,
+  reqGetSettlements,
   reqDelSettlement,
   reqPutSettlement,
   reqAgreeSettlement,
@@ -45,7 +45,6 @@ class Setting extends Component {
     inited: false,
     campaigns: [],
     addNew: false,
-    showCSV: false,
     typeStr: null,
     customerOnly: true,
     chooseItem: {
@@ -63,6 +62,7 @@ class Setting extends Component {
     title: "审批机构", //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
   };
   componentDidMount() {
+    this.initColumns();
     this.getList();
   }
   getList = async () => {
@@ -75,9 +75,6 @@ class Setting extends Component {
       });
     }
   };
-  componentWillMount() {
-    this.initColumns();
-  }
 
   initColumns() {
     /*审批机构表头*/
@@ -416,7 +413,7 @@ class Setting extends Component {
             //status: "SUBMITTED",
             searchTxt: this.state.searchTxt,
           };
-    const result = await reqGetList(parmas);
+    const result = await reqGetSettlements(parmas);
     const cont =
       result && result.data && result.data.content
         ? result.data.content.entries

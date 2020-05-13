@@ -4,7 +4,6 @@
 */
 import store from "store";
 let localStore = window.sessionStorage || sessionStorage;
-console.log("store,sessionStorage", localStore);
 const USER_KEY = "user";
 //window.sessionStorage.setItem;
 /*保存user*/

@@ -6,6 +6,7 @@ import {
   Input,
   Divider,
   Modal,
+  Drawer,
   Pagination,
   Form,
   Row,
@@ -27,7 +28,7 @@ import storageUtils from "../../utils/storageUtils";
 import {
   reqPermit,
   reqGetEmployees,
-  reqDelEmploy,
+  reqDelEmployee,
   reqAddEmployees,
   reqGetGroup,
   reqGetEmployee,
@@ -141,7 +142,7 @@ class Employees extends Component {
     this.getGroups();
   };
   deleteItem = async (id) => {
-    let result = await reqDelEmploy(id);
+    let result = await reqDelEmployee(id);
     if (result.data.retcode === 0) {
       notification.success({ message: "删除成功" });
       this.getEmployees(1);
@@ -172,7 +173,6 @@ class Employees extends Component {
     });
   };
   onFinish = async (values) => {
-    console.log("Employees -> onFinish -> values", values);
     let params = {
       name: values.name,
       cellphone: values.cellphone,
@@ -218,8 +218,7 @@ class Employees extends Component {
     const ableSetAdmin =
       storageUtils.getUser().admin &&
       JSON.stringify(storageUtils.getOrg().parent) === "{}";
-      console.log("Employees -> onGenderChange -> storageUtils.getOrg()", storageUtils.getOrg())
-      //如果是admin 不需要选择员工所在组
+    //如果是admin 不需要选择员工所在组
     let isAdmin = this.state.admin;
     return (
       <Form
@@ -256,7 +255,7 @@ class Employees extends Component {
 
         {ableSetAdmin ? (
           <Form.Item label="是否管理员" name="admin">
-            <Switch onChange={this.onSwitchChange} />
+            <Switch checked={this.state.admin} onChange={this.onSwitchChange} />
           </Form.Item>
         ) : null}
         {isAdmin ? (
@@ -389,6 +388,7 @@ class Employees extends Component {
       },
       {
         title: "操作",
+        key: "action",
         render: (chooseItem) => (
           <span>
             {/* <b onClick={() => {}} className="ant-green-link cursor">
@@ -424,7 +424,11 @@ class Employees extends Component {
           className="site-page-header-responsive cont"
           title="员工管理"
           extra={[
-            <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
+            <PlusSquareFilled
+              key="add"
+              className="setIcon"
+              onClick={this.addItem}
+            />,
           ]}
           onBack={this.backIndex}
         ></PageHeader>
@@ -467,7 +471,7 @@ class Employees extends Component {
           columns={columns}
           pagination={false}
         />
-        <div class="pagination">
+        <div className="pagination">
           <Pagination
             size="small"
             pageSize={size}
@@ -478,14 +482,15 @@ class Employees extends Component {
           />
         </div>
 
-        <Modal
+        <Drawer
           title="添加员工"
+          width={620}
           visible={this.state.visible}
-          onCancel={this.handleCancel}
+          onClose={this.handleCancel}
           footer={null}
         >
           {this.renderEmpolyContent()}
-        </Modal>
+        </Drawer>
       </div>
     );
   };

@@ -1,7 +1,5 @@
 function versionLX() {
-  console.log("envVersion", process.env.NODE_ENV);
   let version = process.env.NODE_ENV;
-  console.log("versionLX -> version", version)
   switch (version) {
     case "development":
       return ""; //开发版
@@ -17,7 +15,6 @@ function versionLX() {
 
 //调用
 const host = versionLX();
-console.log("host","versionLX",host)
 
 
 module.exports = {

@@ -38,6 +38,7 @@ class JoinOrg extends Component {
   componentDidMount() {
     let id = this.props.id;
     console.log("JoinOrg -> componentDidMount -> id", id)
+    this.initColumns();
     if (id) {
       this.setState({
         id: this.props.id,
@@ -46,9 +47,6 @@ class JoinOrg extends Component {
       this.getMarket(id);
     }
     this.getOrgs(1); //this.state.currentPage
-  }
-  componentWillMount() {
-    this.initColumns();
   }
   initColumns() {
     this.columns = [
@@ -190,7 +188,6 @@ class JoinOrg extends Component {
 
   start = () => {
     this.setState({ loading: true });
-    let data = this.state.data; //获取的参与商户列表数据
     let selectedRowKeys = this.state.selectedRowKeys;
     if (selectedRowKeys.length !== 0) {
       for (var i = 0; i < selectedRowKeys.length; i++) {

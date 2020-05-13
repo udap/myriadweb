@@ -72,9 +72,13 @@ const SetDetail = Loadable({
   loader: () => import("./setting/setForm"),
   loading: Loading,
 });
-;
 const Merchant = Loadable({
   loader: () => import("./merchant"),
+  loading: Loading,
+});
+
+const Groups = Loadable({
+  loader: () => import("./groups"),
   loading: Loading,
 });
 //同时更新routers路由
@@ -95,4 +99,5 @@ export {
   Setting,
   SetDetail,
   Merchant,
+  Groups,
 };

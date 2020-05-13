@@ -3,7 +3,7 @@ import { Upload, Button, Descriptions } from "antd";
 import Papa from 'papaparse'; // 解析cvs插件 市面上使用较多的
 import jschardet from 'jschardet'; // 编码识别
 import { UploadOutlined } from "@ant-design/icons";
-import { reqTransfer, reqDistributions } from "../../api";
+import { reqBatchTransfer, reqBatchDistribution } from "../../api";
 import { withRouter } from "react-router-dom";
 
 
@@ -45,7 +45,7 @@ import { withRouter } from "react-router-dom";
             formData.append('csvFile',this.$refs.file.files[0])
             formData.append('campaignId',this.state.id)
             console.log("Csv -> save -> formData", formData)
-            const result=this.reqTransfer(formData)
+            const result=this.reqBatchTransfer(formData)
             console.log("Csv -> save -> result", result)
         }
   render() {

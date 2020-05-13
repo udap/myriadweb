@@ -6,7 +6,6 @@ import { FrameOut } from "./components";
 class App extends Component {
   constructor(props) {
     super(props);
-    console.log("App -> constructor -> props", props);
     //监测地址栏是否发生变化 修改地址title
     // this.props.history.listen((location) => {
     //   window.document.title = curTtile;
@@ -40,7 +39,7 @@ class App extends Component {
     });
   }
 
-  componentWillUnmount() {
+  componentDidMount() {
     // window.onbeforeunload = function (e) {
     //   var storage = window.sessionStorage || sessionStorage;
     //   storage.clear();

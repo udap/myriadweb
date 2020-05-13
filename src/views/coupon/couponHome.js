@@ -51,10 +51,8 @@ class CouponHome extends Component {
     chooseRadio: "owner",
   };
   componentDidMount() {
-    this.getMarkets(null, 1);
-  }
-  componentWillMount() {
     this.initColumns();
+    this.getMarkets(null, 1);
   }
   publishItem = async (clientId) => {
     const parmas = {
@@ -63,7 +61,6 @@ class CouponHome extends Component {
     };
     //customerId-客户弹窗选择
     const result = await reqPublishDis(parmas);
-    console.log("CouponHome -> publishItem -> result", result);
     //status;票券发券
     this.getMarkets(null, this.state.currentPage);
     this.setState({
@@ -202,7 +199,6 @@ class CouponHome extends Component {
 获取列表数据
 */
   getMarkets = async (values, currentPage, size, chooseRadio) => {
-    console.log("CouponHome -> getMarkets -> values", values)
     let typeStr = chooseRadio ? chooseRadio : this.state.chooseRadio;
     //owner 我的
     let parmas =
@@ -278,7 +274,6 @@ class CouponHome extends Component {
     });
   };
   onFinish = (values) => {
-    console.log("CouponHome -> onFinish -> values", values);
     this.getMarkets(values, 1);
   };
   handleTableChange = (page) => {

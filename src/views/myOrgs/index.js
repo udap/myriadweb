@@ -88,9 +88,6 @@ class MyOrgs extends Component {
         {this.state.hasOrg ? (
           <div>
             <Row className="action">
-              <Col className="title">
-                <span>操作：</span>
-              </Col>
               <Col className="actionItems">
                 {/* <b
                   onClick={() => {
@@ -107,6 +104,15 @@ class MyOrgs extends Component {
                   className="ant-green-link cursor"
                 >
                   员工管理
+                </b>
+                <Divider type="vertical" />
+                <b
+                  onClick={() => {
+                    this.props.history.push("/admin/groups");
+                  }}
+                  className="ant-green-link cursor"
+                >
+                  分组管理
                 </b>
                 <Divider type="vertical" />
                 <b onClick={this.getAuthCode} className="ant-green-link cursor">

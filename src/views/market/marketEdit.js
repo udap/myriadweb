@@ -23,7 +23,7 @@ import {
 } from "@ant-design/icons";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
-  reqGetCampaigns,
+  reqGetCampaignById,
   reqAddCampaign,
   reqPutConfig,
   reqPostConfig,
@@ -134,7 +134,7 @@ class MarketEdit extends Component {
   }
   //获取当前活动详情
   getMarket = async (id) => {
-    let curInfo = await reqGetCampaigns(id);
+    let curInfo = await reqGetCampaignById(id);
     let cont = curInfo.data ? curInfo.data : [];
     let voucherConfig = cont.voucherConfig;
     this.setState({

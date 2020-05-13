@@ -23,7 +23,7 @@ import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import comEvents from "../../utils/comEvents";
 import {
   reqGetOrgLists,
-  reqGetMerchantList,
+  reqGetCampaigns,
   reqAddSettlement,
 } from "../../api";
 import "./index.less";
@@ -55,6 +55,7 @@ class SetDetail extends Component {
     currentItem: "",
   };
   componentDidMount() {
+    this.initColumns();
     this.setState({
       beginDate: comEvents.formatDate(
         new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
@@ -94,10 +95,7 @@ class SetDetail extends Component {
       this.props.history.push("/admin/setting");
     }
   };
-  onGenderChange = (value) => {};
-  componentWillMount() {
-    this.initColumns();
-  }
+
   initColumns() {
     this.listColumns = [
       {
@@ -194,7 +192,7 @@ class SetDetail extends Component {
         partyType: "MERCHANT",
       };
 
-      result = await reqGetMerchantList(parmas);
+      result = await reqGetCampaigns(parmas);
       const cont = result && result.data ? result.data.content : [];
       if (cont.length !== 0) {
         for (let i = 0; i < cont.length; i++) {

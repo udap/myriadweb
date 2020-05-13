@@ -16,6 +16,7 @@ import {
   MarketEdit,
   MarketDetail,
   Merchant,
+  Groups,
 } from "../views";
 
 //公共路由
@@ -92,7 +93,12 @@ const privateRoutes = [
     icon: "UsergroupAddOutlined",
     isTop: false, //顶级菜单
   },
-
+  {
+    pathname: "/admin/groups",
+    component: Groups,
+    title: "分组管理",
+    isTop: false, //顶级菜单
+  },
   {
     pathname: "/admin/merchant",
     component: Merchant,

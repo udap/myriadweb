@@ -3,7 +3,6 @@
 */
 import ajax from "./serverAjax";
 import { host } from "../utils/config";
-import { Operation } from "../utils/memoryUtils";
 import { notification } from "antd";
 
 let BASE = host;
@@ -49,11 +48,12 @@ dashboard END
 /*
 营销活动 START
  */
-//获取营销活动列表
-export const reqGetMarkets = (params) =>
+//获取营销活动列表reqGetMarkets
+export const reqGetCampaigns = (params) =>
   ajax.get(BASE + "/myriad/campaigns", { params: params });
-//获取活动详情
-export const reqGetCampaigns = (id) => ajax(BASE + "/myriad/campaigns/" + id);
+//获取活动详情reqGetCampaigns
+export const reqGetCampaignById = (id) =>
+  ajax(BASE + "/myriad/campaigns/" + id);
 //删除某个活动
 export const reqDelCampaign = (id) =>
   ajax.delete(BASE + "/myriad/campaigns/" + id);
@@ -61,23 +61,19 @@ export const reqDelCampaign = (id) =>
 export const reqPublishCampaign = (id) =>
   ajax.put(BASE + "/myriad/campaigns/" + id + "/activate");
 //获取分配数量'/myriad/vouchers/count?campaignId=' + couponuid + '&owner=' + wx.getStorageSync('userId')
- export const reqGetNumber = (campaignId, owner) =>
-          ajax.get(
-            BASE +
-              "/myriad/vouchers/count?campaignId=" +
-              campaignId +
-              "&owner=" +
-              owner
-          );
+export const reqGetNumber = (campaignId, owner) =>
+  ajax.get(
+    BASE + "/myriad/vouchers/count?campaignId=" + campaignId + "&owner=" + owner
+  );
 
-//批量分配
-export const reqTransfer = (params) =>
+//批量分配reqTransfer
+export const reqBatchTransfer = (params) =>
   ajax.post(BASE + " /myriad/vouchers/batchTransfer", params, {
     "Content-Type": "multipart/form-data",
   });
 
-//批量发放
-export const reqDistributions = (params) =>
+//批量发放reqDistributions
+export const reqBatchDistribution = (params) =>
   ajax.post(BASE + " /myriad/distributions/batch", params, {
     "Content-Type": "multipart/form-data",
   });
@@ -106,9 +102,8 @@ export const reqShowParties = (id) =>
 //新增参与商户
 export const reqPostParties = (id, params) =>
   ajax.post(BASE + "/myriad/campaigns/" + id + "/parties", params);
-  //删除参与商户
-export const reqDelMerchant = (uid) =>
-         ajax.delete(BASE + "/merchants/" + uid);
+//删除参与商户
+export const reqDelMerchant = (uid) => ajax.delete(BASE + "/merchants/" + uid);
 //删除参与机构
 export const reqDelParty = (id, partyId) =>
   ajax.delete(BASE + "/myriad/campaigns/" + id + "/parties/" + partyId);
@@ -136,16 +131,18 @@ export const regGetOrgs = (params) => ajax(BASE + "/organizations");
 //权限判断
 export const reqPermit = (str) =>
   ajax
-    .get(BASE + "/accounts/me/permissions/any?operations=" + Operation[str])
+    .get(BASE + "/accounts/me/permissions/any?operations=" + str)
     .then(function (response) {
-      if (response.data.retcode===0 && !response.data.content) {
+      if (response.data.retcode === 0 && !response.data.content) {
         notification.warn({
           message: "对不起，您没有权限！",
         });
-      } 
+      }
       return response.data.content;
-    })
-
+    });
+//获取所有权限
+export const reqGetPermissions = () =>
+  ajax.get(BASE + "/accounts/me/permissions");
 /*
 注册机构 END
  */
@@ -160,7 +157,7 @@ export const reqGetEmployees = (params) =>
 //获取员工详情
 export const reqGetEmployee = (id) => ajax(BASE + "/employee/" + id);
 
-//获取员工所在组 getGroup
+//获取员工所在组
 export const reqGetGroup = (orgid) =>
   ajax.get(BASE + "/groups", {
     params: { size: 200, orgUid: orgid },
@@ -168,9 +165,8 @@ export const reqGetGroup = (orgid) =>
 //添加员工
 export const reqAddEmployees = (params) =>
   ajax.post(BASE + "/employees", params);
-  //删除员工
-export const reqDelEmploy = (uid) =>
-         ajax.delete(BASE + "/employees/" + uid);
+//删除员工reqDelEmploy
+export const reqDelEmployee = (uid) => ajax.delete(BASE + "/employees/" + uid);
 /*
 员工管理 END
  */
@@ -224,13 +220,11 @@ export const reqPublishDis = (params) =>
 /*
 结算管理 START
  */
-//  查询结算单
-export const reqGetList = (params) =>
+//  查询结算单reqGetList
+export const reqGetSettlements = (params) =>
   ajax.get(BASE + "/myriad/settlements", { params: params });
 
-// 查询商户参与的活动：
-export const reqGetMerchantList = (params) =>
-  ajax.get(BASE + "/myriad/campaigns", { params: params });
+// 查询商户参与的活动：reqGetCampaigns
 // 查询商户加入的机构：
 export const reqGetOrgLists = (uid, params) =>
   ajax.get(BASE + "/merchants/" + uid + "/orgs", { params: params });
@@ -246,57 +240,49 @@ export const reqDelSettlement = (id) =>
 // 提交结算单
 // PUT /myriad/settlements/{id}/submit
 // json 参数：
-// merchantId 当前机构id  
-  export const reqPutSettlement = (id, params) =>
-           ajax.put(BASE + "/myriad/settlements/" + id + "/submit", params);
+// merchantId 当前机构id
+export const reqPutSettlement = (id, params) =>
+  ajax.put(BASE + "/myriad/settlements/" + id + "/submit", params);
 //   审批结算单
 // PUT /myriad/settlements/{id}/approve
 // json 参数：
 // marketerId 当前机构id
-   export const reqAgreeSettlement = (id, params) =>
-            ajax.put(BASE + "/myriad/settlements/" + id + "/approve", params);
-  
-  
+export const reqAgreeSettlement = (id, params) =>
+  ajax.put(BASE + "/myriad/settlements/" + id + "/approve", params);
+
 /*
 结算管理 END
  */
 
+//核销记录 reqGetExchangeLists;
+export const reqGetRedemptions = (params) =>
+  ajax.get(BASE + "/myriad/redemptions", {
+    params: params,
+  });
+/*核销记录*/
 
+/*发放记录reqDistributionsLists*/
+export const reqGetDistributions = (params) =>
+  ajax.get(BASE + "/myriad/distributions", {
+    params: params,
+  });
+/*发放记录*/
 
- /*核销记录*/
-//  核销记录--发行机构。
-// 请求 GET /myriad/redemptions
-// issuerId = 当前机构
-// searchTxt 搜索框
-export const reqGetExchangeLists = (params) =>
-         ajax.get(BASE + "/myriad/redemptions", {
-           params: params,
-         });
-
-// 核销记录--核销机构。
-// 请求 GET /myriad/redemptions
-// merchantId = 当前机构
-// searchTxt 搜索框
-// export const reqGetOrgLists = (uid, params) =>
-//   ajax.get(BASE + "/merchants/" + uid + "/orgs", { params: params });
-
-
- /*核销记录*/
-
-
- /*发放记录*/
-//  发放记录--我的。
-// 请求 GET /myriad/distributions
-// ownerId = 当前用户id
-// searchTxt 搜索框
-export const reqDistributionsLists = (params) =>
-         ajax.get(BASE + "/myriad/distributions", {
-           params: params,
-         });
-
-// 发放记录--发行机构。
-// 请求 GET /myriad/distributions
-// issuerId = 当前机构
-// searchTxt 搜索框
-
- /*发放记录*/
+/*
+分组管理 START
+ */
+/*分页查询机构的组列表*/
+export const reqGetGroups = (params) =>
+  ajax.get(BASE + "/groups", {
+    params: params,
+  });
+//添加分组
+export const reqPostGroup = (params) =>
+  ajax.post(BASE + "/groups", params, {
+    "Content-Type": "multipart/form-data",
+  });
+//删除分组 后台没有
+export const reqDelGroup = (id) => ajax.delete(BASE + "/groups/" + id);
+/*
+分组管理 END
+ */

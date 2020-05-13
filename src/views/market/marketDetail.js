@@ -13,7 +13,7 @@ import {
 import { RollbackOutlined } from "@ant-design/icons";
 
 import storageUtils from "../../utils/storageUtils";
-import { reqGetCampaigns } from "../../api";
+import { reqGetCampaignById } from "../../api";
 import { Loading } from "../../components";
 import JoinOrg from "./joinOrg";
 import "./index.less";
@@ -56,11 +56,11 @@ class MarketDetail extends Component {
       current: 2,
       //curInfo: Product[id],
     });
-    this.reqGetCampaigns(id);
+    this.reqGetCampaignById(id);
   }
   //获取活动详情
-  reqGetCampaigns = async (id) => {
-    let curInfo = await reqGetCampaigns(id);
+  reqGetCampaignById = async (id) => {
+    let curInfo = await reqGetCampaignById(id);
     let cont = curInfo && curInfo.data ? curInfo.data : [];
     console.log("FormDialog -> getEmployee -> cont", cont);
     this.setState({

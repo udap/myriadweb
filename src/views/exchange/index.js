@@ -12,7 +12,7 @@ import {
   Pagination,
 } from "antd";
 import storageUtils from "../../utils/storageUtils";
-import { reqPermit, reqGetExchangeLists } from "../../api";
+import { reqPermit, reqGetRedemptions } from "../../api";
 import { Loading } from "../../components";
 import { distributionsType, redemptionsType } from "../../utils/memoryUtils";
 import "../../css/common.less";
@@ -37,6 +37,7 @@ class Exchange extends Component {
     hasAuthority: false,
   };
   componentDidMount() {
+    this.initColumns();
     this.getList();
   }
   getList = async () => {
@@ -54,10 +55,6 @@ class Exchange extends Component {
       });
     }
   };
-  componentWillMount() {
-    this.initColumns();
-  }
-
   initColumns() {
     //显示券号，活动，发券机构，核销机构，核销时间，核销状态以及结算状态
     this.marketColumns = [
@@ -170,7 +167,7 @@ class Exchange extends Component {
             searchTxt: searchTxt,
           };
 
-    const result = await reqGetExchangeLists(parmas);
+    const result = await reqGetRedemptions(parmas);
     const cont =
       result && result.data && result.data.content
         ? result.data.content.entries
