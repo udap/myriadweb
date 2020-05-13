@@ -16,7 +16,7 @@ import {
 import { RollbackOutlined } from "@ant-design/icons";
 import moment from "moment";
 import storageUtils from "../../utils/storageUtils";
-import { listAddType } from "../../utils/memoryUtils";
+import { settlementTypes } from "../../utils/memoryUtils";
 /*公共表单验证提示 */
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 /*公共事件 */
@@ -299,7 +299,7 @@ class SetDetail extends Component {
               onChange={this.onGenderChange}
               allowClear
             >
-              {listAddType.map((item) => {
+              {settlementTypes.map((item) => {
                 return <Option value={item.value}>{item.name}</Option>;
               })}
             </Select>

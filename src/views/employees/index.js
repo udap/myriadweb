@@ -22,7 +22,7 @@ import {
   FolderViewOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { empolyStatus, roleType } from "../../utils/memoryUtils";
+import { employeeStatuses, roleTypes } from "../../utils/memoryUtils";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
 import {
@@ -365,7 +365,7 @@ class Employees extends Component {
         render: (text) => (
           <span>
             <Tag color="green" key={text}>
-              {roleType.map((item, index) => (
+              {roleTypes.map((item, index) => (
                 <span key={index}>{item[text]}</span>
               ))}
             </Tag>
@@ -379,7 +379,7 @@ class Employees extends Component {
         render: (text) => (
           <span>
             <Tag color="green" key={text}>
-              {empolyStatus.map((item, index) => (
+              {employeeStatuses.map((item, index) => (
                 <span key={index}>{item[text]}</span>
               ))}
             </Tag>

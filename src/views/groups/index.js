@@ -22,7 +22,7 @@ import {
   FolderViewOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { empolyStatus, roleType, Operation } from "../../utils/memoryUtils";
+import { Operation } from "../../utils/memoryUtils";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
 import {

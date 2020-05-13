@@ -14,7 +14,7 @@ import {
 import storageUtils from "../../utils/storageUtils";
 import { reqPermit, reqGetRedemptions } from "../../api";
 import { Loading } from "../../components";
-import { distributionsType, redemptionsType } from "../../utils/memoryUtils";
+import { redemptionStatuses, settlementStatuses } from "../../utils/memoryUtils";
 import "../../css/common.less";
 
 class Exchange extends Component {
@@ -82,16 +82,15 @@ class Exchange extends Component {
         title: "状态",
         render: (chooseItem) => {
           const { status, settlementStatus } = chooseItem;
-          //redemptionsType 结算状态
           return (
             <div>
               <Tag color="green" key={status}>
-                {distributionsType.map((item, index) => (
+                {redemptionStatuses.map((item, index) => (
                   <span key={index}>{item[status]}</span>
                 ))}
               </Tag>
               {settlementStatus!=='-'?<Tag color="green" key={settlementStatus}>
-                {redemptionsType.map((item, index) => (
+                {settlementStatuses.map((item, index) => (
                   <span key={index}>{item[settlementStatus]}</span>
                 ))}
               </Tag>:''}
@@ -126,16 +125,16 @@ class Exchange extends Component {
         title: "状态",
         render: (chooseItem) => {
           const { status, settlementStatus } = chooseItem;
-          //redemptionsType 结算状态
+          //show settlementStatus 结算状态
           return (
             <div>
               <Tag color="green" key={status}>
-                {distributionsType.map((item, index) => (
+                {redemptionStatuses.map((item, index) => (
                   <span key={index}>{item[status]}</span>
                 ))}
               </Tag>
               <Tag color="green" key={settlementStatus}>
-                {redemptionsType.map((item, index) => (
+                {settlementStatuses.map((item, index) => (
                   <span key={index}>{item[settlementStatus]}</span>
                 ))}
               </Tag>

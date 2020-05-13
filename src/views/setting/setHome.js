@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import storageUtils from "../../utils/storageUtils";
-import { listType, listAddType } from "../../utils/memoryUtils";
+import { settlementStatus, settlementTypes } from "../../utils/memoryUtils";
 import {
   reqPermit,
   reqGetSettlements,
@@ -94,7 +94,7 @@ class Setting extends Component {
           return (
             <div>
               <Tag color="blue" key={text}>
-                {listAddType.map((item, index) =>
+                {settlementTypes.map((item, index) =>
                   item.value === text ? (
                     <span key={index}>{item.name}</span>
                   ) : null
@@ -146,7 +146,7 @@ class Setting extends Component {
           return (
             <div>
               <Tag color="green" key={text}>
-                {listType.map((item, index) => (
+                {settlementStatus.map((item, index) => (
                   <span key={index}>{item[text]}</span>
                 ))}
               </Tag>
@@ -220,7 +220,7 @@ class Setting extends Component {
           return (
             <div>
               <Tag color="blue" key={text}>
-                {listAddType.map((item, index) =>
+                {settlementTypes.map((item, index) =>
                   item.value === text ? (
                     <span key={index}>{item.name}</span>
                   ) : null
@@ -272,7 +272,7 @@ class Setting extends Component {
           return (
             <div>
               <Tag color="green" key={text}>
-                {listType.map((item, index) => (
+                {settlementStatus.map((item, index) => (
                   <span key={index}>{item[text]}</span>
                 ))}
               </Tag>

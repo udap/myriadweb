@@ -27,7 +27,7 @@ import {
 } from "@ant-design/icons";
 
 import storageUtils from "../../utils/storageUtils";
-import { marketType } from "../../utils/memoryUtils";
+import { campaignStatuses } from "../../utils/memoryUtils";
 import {
   reqGetCampaigns,
   reqDelCampaign,
@@ -130,7 +130,7 @@ class MarketHome extends Component {
           return (
             <div>
               <Tag color="green" key={text}>
-                {marketType.map((item, index) => (
+                {campaignStatuses.map((item, index) => (
                   <span key={index}>{item[text]}</span>
                 ))}
               </Tag>
