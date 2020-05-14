@@ -168,10 +168,10 @@ class MarketEdit extends Component {
     let timeEffective = new Date(this.state.effective).getTime();
     let timeExpiry = new Date(this.state.expiry).getTime();
 
-    if (timeExpiry <= timeEffective) {
-      message.info("结束时间必须大于开始时间");
-      return false;
-    }
+    // if (timeExpiry <= timeEffective) {
+    //   message.info("结束时间必须大于开始时间");
+    //   return false;
+    // }
     let params = {
       reqOrg: storageUtils.getUser().orgUid,
       reqUser: storageUtils.getUser().uid,
@@ -395,9 +395,7 @@ class MarketEdit extends Component {
               moment(effective, dateFormat),
               moment(expiry, dateFormat),
             ]}
-            disabled={[false, this.state.disabledExpiry]}
             onChange={this.changeDate}
-            disabledDate={this.disabledDate}
           />
         </Form.Item>
 

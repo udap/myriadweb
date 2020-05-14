@@ -44,7 +44,7 @@ const layout = {
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 16 },
-    lg: { span: 18 },
+    lg: { span: 20 },
   },
 };
 const tailLayout = {
@@ -58,7 +58,7 @@ const tailLayout = {
       offset: 8,
     },
     lg: {
-      span: 18,
+      span: 20,
       offset: 4,
     },
   },
@@ -221,21 +221,12 @@ class Groups extends Component {
   //   return false;
   // };
   onFinish = async (values) => {
+    console.log("Groups -> onFinish -> values", values)
     if (this.state.operations.length === 0) {
       notification.error({ message: "权限不能为空" });
       return false;
     }
-    // var errorMsg = this._validate();
-    // if (errorMsg) {
-    //   notification.error({ message: errorMsg });
-    // } else {
-    let { name, description, template, operations } = this.state;
-    // let params = {
-    //   name: name,
-    //   description: description,
-    //   template: template,
-    //   operations: operations,
-    // };
+    let { operations } = this.state;
     let params = {
       name: values.name,
       description: values.description,
@@ -272,25 +263,15 @@ class Groups extends Component {
     const {
       name,
       description,
-      template,
       operations,
       //分组权限
       mockData,
-      targetKeys,
     } = this.state;
-    const onGenderChange = (value) => {};
-    /*当前机构是admin  并且当前机构是顶级机构 可以设置是否管理员 */
-    const ableSetAdmin =
-      storageUtils.getUser().admin &&
-      JSON.stringify(storageUtils.getOrg().parent) === "{}";
-    //如果是admin 不需要选择员工所在组
-    let isAdmin = this.state.admin;
     return (
       <Form
         {...layout}
         name="basic"
         initialValues={{
-          template: template,
           name: name,
           description: description,
           operations: operations,
@@ -301,7 +282,7 @@ class Groups extends Component {
         <Form.Item
           label="名称"
           name="name"
-          rules={[{ required: true }, {  max: 45 }]}
+          rules={[{ required: true }, { max: 45 }]}
         >
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
@@ -312,7 +293,11 @@ class Groups extends Component {
         >
           <TextArea rows={4} />
         </Form.Item>
-        <Form.Item label="权限" name="operations">
+        <Form.Item
+          label="权限"
+          name="operations"
+          //rules={[{ required: true }]}
+        >
           <TransferComponent
             treeData={mockData}
             chooseItem={this.choosehandle}
@@ -372,12 +357,12 @@ class Groups extends Component {
       <div>
         <PageHeader
           className="site-page-header-responsive cont"
-          title="分组管理"
+          title="权限与分组"
           extra={[
             <PlusSquareFilled
               key="add"
               className="setIcon"
-              //onClick={this.addItem}
+              onClick={this.addItem}
             />,
           ]}
           onBack={this.backIndex}
@@ -433,24 +418,11 @@ class Groups extends Component {
         </div>
 
         <Drawer
-          title="添加分组"
-          width="80%"
+          title="新增权限与分组"
+          width={620}
           visible={this.state.visible}
           onClose={this.handleCancel}
-          footer={null
-            // <div
-            //   style={{
-            //     textAlign: "right",
-            //   }}
-            // >
-            //   <Button onClick={this.onClose} style={{ marginRight: 8 }}>
-            //     取消
-            //   </Button>
-            //   <Button onClick={this.onFinish} type="primary">
-            //     提交
-            //   </Button>
-            // </div>
-          }
+          footer={null}
         >
           {this.renderAddForm()}
         </Drawer>

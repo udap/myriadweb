@@ -112,13 +112,13 @@ class OrgFormDialog extends Component {
           that.props.history.replace("/login");
         },
       });
+    }else{
+      this.setState({
+        inited: true,
+      });
     }
 
     // this.props.onClose(true, uid);
-  };
-
-  onFinishFailed = (errorInfo) => {
-    message.error("验证不通过");
   };
 
   onChange = (value) => {

@@ -56,6 +56,16 @@ class JoinOrg extends Component {
         key: "partyName",
       },
       {
+        title: "银联商户码",
+        dataIndex: "partyUpCode",
+        key: "partyUpCode",
+      },
+      {
+        title: "商户地址",
+        dataIndex: "partyAddress",
+        key: "partyAddress",
+      },
+      {
         title: "操作",
         render: (item) => {
           const { partyId } = item;
@@ -98,8 +108,8 @@ class JoinOrg extends Component {
       },
       {
         title: "银联商户码",
-        dataIndex: "code",
-        key: "code",
+        dataIndex: "upCode",
+        key: "upCode",
       },
       // {
       //   title: "操作",
@@ -143,7 +153,7 @@ class JoinOrg extends Component {
           uid: cont.content[i].merchant.uid,
           name: cont.content[i].merchant.name,
           fullName: cont.content[i].merchant.fullName,
-          code: cont.content[i].upCode,
+          upCode: cont.content[i].merchant.upCode,
         });
       }
     }
@@ -375,6 +385,7 @@ class JoinOrg extends Component {
               {/* <div className="pagination">
                 <Pagination
                   pageSize={size}
+                  current={currentPage}
                   current={currentPage}
                   onChange={this.handleTableChange}
                   total={this.totalPages}

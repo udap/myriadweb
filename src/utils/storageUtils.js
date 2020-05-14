@@ -2,10 +2,9 @@
 /*
 存储本地数据
 */
-import store from "store";
+//import store from "store";
 let localStore = window.sessionStorage || sessionStorage;
 const USER_KEY = "user";
-//window.sessionStorage.setItem;
 /*保存user*/
 const saveUser = (user) => {
   localStore.setItem(USER_KEY, JSON.stringify(user));
@@ -24,7 +23,6 @@ const removeUser = () => {
 
 
 const ORG_KEY = "org";
-//window.sessionStorage.setItem;
 /*保存user*/
 const saveOrg = (user) => {
   localStore.setItem(ORG_KEY, JSON.stringify(user));

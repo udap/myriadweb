@@ -149,7 +149,7 @@ class MarketHome extends Component {
             <span>
               {status === "INITIATED" ? (
                 <span>
-                  {/* <b
+                  <b
                             onClick={() => {
                                 this.props.history.push("/admin/market/edit/" + id);
                             }}
@@ -157,7 +157,7 @@ class MarketHome extends Component {
                             >
                     查看
                   </b>
-                  <Divider type="vertical" /> */}
+                  <Divider type="vertical" />
                   <Popconfirm
                     title="确认发布吗?"
                     onConfirm={this.publishItem.bind(this, id)}
@@ -277,7 +277,7 @@ class MarketHome extends Component {
     this.setState({
       currentPage: 1,
     });
-    this.getMarkets(null, 1);
+    this.getMarkets("", 1, "merchant");
   };
   /*
 获取列表数据
@@ -294,6 +294,7 @@ class MarketHome extends Component {
             participantId: storageUtils.getUser().id,
             status: "NEW_OR_EFFECTIVE",
             searchTxt: value,
+            sort:'updatedAt,desc'
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
@@ -301,6 +302,7 @@ class MarketHome extends Component {
             partyId: storageUtils.getUser().orgId,
             status: "NON_EXPIRED",
             searchTxt: value,
+            sort:'updatedAt,desc'
           };
     const result = await reqGetCampaigns(parmas);
     const cont = result && result.data ? result.data.content : [];

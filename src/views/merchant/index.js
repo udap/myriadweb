@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Form,
+  Drawer,
 } from "antd";
 import {
   PlusSquareFilled,
@@ -21,7 +22,7 @@ import storageUtils from "../../utils/storageUtils";
 import { reqGetMerchants } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
-
+import './index.less';
 const { confirm } = Modal;
 const layout = {
   labelCol: {
@@ -106,7 +107,8 @@ class Merchant extends Component {
           address: item.address,
           name: item.name,
           phone: item.phone,
-          upCode: cont.content[i].upCode,
+          upCode: item.upCode,
+          authorizedAt: cont.content[i].authorizedAt,
         });
       }
     }
@@ -205,10 +207,13 @@ class Merchant extends Component {
               htmlType="submit"
               loading={this.state.loading}
             >
-              保存
+              提交
             </Button>
           </Form.Item>
         ) : null}
+        <Form.Item {...tailLayout}>
+          <p class="description">说明：请向入驻商户索取动态授权码及银联商户码</p>
+        </Form.Item>
       </Form>
     );
   };
@@ -242,6 +247,11 @@ class Merchant extends Component {
         title: "地址",
         dataIndex: "address",
         key: "address",
+      },
+      {
+        title: "入驻时间",
+        dataIndex: "authorizedAt",
+        key: "authorizedAt",
       },
       {
         title: "操作",
@@ -334,14 +344,15 @@ class Merchant extends Component {
             showTotal={(total) => `总共 ${total} 条数据`}
           />
         </div>
-        <Modal
+        <Drawer
+          width={620}
           title="添加入驻商户"
           visible={this.state.visible}
-          onCancel={this.handleCancel}
+          onClose={this.handleCancel}
           footer={null}
         >
           {this.renderForm()}
-        </Modal>
+        </Drawer>
       </div>
     );
   };

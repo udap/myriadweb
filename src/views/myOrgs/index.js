@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { PageHeader, Row, Col, notification, Modal, Divider } from "antd";
+import { PageHeader, Row, Col, notification, Drawer, Divider } from "antd";
 import storageUtils from "../../utils/storageUtils";
 import { Loading } from "../../components";
 import { regGetCurOrg, reqGetAuthCode } from "../../api";
@@ -11,6 +11,7 @@ class MyOrgs extends Component {
     inited: false,
     campaigns: {},
     hasOrg: false,
+    visible: false,
   };
 
   componentDidMount() {
@@ -50,30 +51,23 @@ class MyOrgs extends Component {
   getAuthCode = async () => {
     let orgUid = storageUtils.getUser().orgUid;
     let isAdmin = storageUtils.getUser().admin;
-    console.log("MyOrgs -> getAuthCode -> getUser", storageUtils.getUser());
     if (!isAdmin) {
       notification.info({ message: "对不起，您没有权限！" });
       return false;
     }
     let curInfo = await reqGetAuthCode(orgUid);
-    console.log("getAuthCode -> curInfo", curInfo);
     if (curInfo) {
       let cont = curInfo.data.content ? curInfo.data.content : [];
-      console.log("FormDialog -> getMerchant -> cont", cont);
       this.setState({
         authCode: cont,
-      });
-      Modal.info({
-        content: (
-          <div className="authCode">
-            <p>
-              当前授权码是<span>{this.state.authCode}</span>
-              ,请尽快和相关机构分享授权码
-            </p>
-          </div>
-        ),
+        visible: true,
       });
     }
+  };
+  onClose=()=>{
+    this.setState({
+      visible: false,
+    });
   };
   render() {
     return (
@@ -112,7 +106,7 @@ class MyOrgs extends Component {
                   }}
                   className="ant-green-link cursor"
                 >
-                  分组管理
+                  权限与分组
                 </b>
                 <Divider type="vertical" />
                 <b onClick={this.getAuthCode} className="ant-green-link cursor">
@@ -137,6 +131,23 @@ class MyOrgs extends Component {
             isNew={true}
           />
         )}
+
+        <Drawer
+          width={620}
+          title="动态授权码"
+          onClose={this.onClose}
+          visible={this.state.visible}
+        >
+          <div className="authCode">
+            <p>
+              当前授权码是<span>{this.state.authCode}</span>
+              ,请尽快和相关机构分享授权码。该授权码在 30 分钟后失效。
+            </p>
+            <small className="description">
+              说明：如果某个营销机构希望邀请您的机构作为核销机构参与该营销机构发起的营销活动，您需要生成并提供一个限时有效的动态授权码给该营销机构。
+            </small>
+          </div>
+        </Drawer>
       </div>
     );
   }
