@@ -16,7 +16,7 @@ import {
 import { RollbackOutlined } from "@ant-design/icons";
 import moment from "moment";
 import storageUtils from "../../utils/storageUtils";
-import { settlementTypes } from "../../utils/memoryUtils";
+import { settlementTypes } from "../../utils/constants";
 /*公共表单验证提示 */
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 /*公共事件 */
@@ -30,7 +30,7 @@ import "./index.less";
 
 const { Option } = Select;
 const { Search } = Input;
-class SetDetail extends Component {
+class SettlementDetail extends Component {
   state = {
     /**发布客户 */
     visible: false,
@@ -92,7 +92,7 @@ class SetDetail extends Component {
     const result = await reqAddSettlement(params);
     if (result.data.retcode === 0) {
       notification.success({ message: "创建成功！" });
-      this.props.history.push("/admin/setting");
+      this.props.history.push("/admin/settlement");
     }
   };
 
@@ -143,7 +143,7 @@ class SetDetail extends Component {
   };
   /*返回上一页*/
   backIndex = () => {
-    this.props.history.push("/admin/setting");
+    this.props.history.push("/admin/settlement");
   };
   /*选择客户机构 */
   choose = (title) => {
@@ -427,4 +427,4 @@ class SetDetail extends Component {
   }
 }
 
-export default SetDetail;
+export default SettlementDetail;

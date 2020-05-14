@@ -34,8 +34,12 @@ withRouter 是一个高阶组件 用来包装非路由组件，返回一个新�
 
 @withRouter
 class FrameOut extends Component {
-  rootSubmenuKeys = ["/admin/settings"];
-  rootSubmenuChildKeys = ["/admin/myOrgs", "/admin/merchant", "/admin/setting"];
+  rootSubmenuKeys = ["/admin/settlement"];
+  rootSubmenuChildKeys = [
+    "/admin/myOrgs",
+    "/admin/merchant",
+    "/admin/settlement",
+  ];
   state = {
     collapsed: false,
     current: "mail",

@@ -12,31 +12,34 @@ const NotFound = Loadable({
   loader: () => import('./notFound'),
   loading: Loading
 });
-
+const Empty = Loadable({
+  loader: () => import("./empty"),
+  loading: Loading,
+});
 const Dashboard = Loadable({
   loader: () => import('./dashboard'),
   loading: Loading
 });
 
-const Employees = Loadable({
-  loader: () => import("./employees"),
+const Employee = Loadable({
+  loader: () => import("./employee"),
   loading: Loading,
 });
 
-const Market = Loadable({
-  loader: () => import("./market"),
+const Campaign = Loadable({
+  loader: () => import("./campaign"),
   loading: Loading,
 });
-const MarketHome = Loadable({
-  loader: () => import("./market/marketHome"),
+const CampaignHome = Loadable({
+  loader: () => import("./campaign/campaignHome"),
   loading: Loading,
 });
-const MarketEdit= Loadable({
-  loader: () => import("./market/marketEdit"),
+const CampaignEdit = Loadable({
+  loader: () => import("./campaign/campaignEdit"),
   loading: Loading,
 });
-const MarketDetail = Loadable({
-  loader: () => import("./market/marketDetail"),
+const CampaignDetail = Loadable({
+  loader: () => import("./campaign/campaignDetail"),
   loading: Loading,
 });
 const Coupon = Loadable({
@@ -49,27 +52,27 @@ const CouponHome = Loadable({
 });
 
 
-const Provide = Loadable({
-  loader: () => import('./provide'),
-  loading: Loading
+const Distribution = Loadable({
+  loader: () => import("./distribution"),
+  loading: Loading,
 });
 
-const Exchange = Loadable({
-  loader: () => import('./exchange'),
-  loading: Loading
+const Redemption = Loadable({
+  loader: () => import("./redemption"),
+  loading: Loading,
 });
 
 const Login = Loadable({
-  loader: () => import('./Login'),
+  loader: () => import('./login'),
   loading: Loading
 });
 
-const Setting = Loadable({
-  loader: () => import("./setting/setHome"),
+const SettlementHome = Loadable({
+  loader: () => import("./settlement/settlementHome"),
   loading: Loading,
 });
-const SetDetail = Loadable({
-  loader: () => import("./setting/setForm"),
+const SettlementDetail = Loadable({
+  loader: () => import("./settlement/settlementDetail"),
   loading: Loading,
 });
 const Merchant = Loadable({
@@ -78,26 +81,27 @@ const Merchant = Loadable({
 });
 
 const Groups = Loadable({
-  loader: () => import("./groups"),
+  loader: () => import("./group"),
   loading: Loading,
 });
 //同时更新routers路由
 export {
   MyOrgs,
   Dashboard,
-  Employees,
+  Employee,
   Login,
   NotFound,
-  Market,
-  MarketHome,
-  MarketEdit,
-  MarketDetail,
+  Empty,
+  Campaign,
+  CampaignHome,
+  CampaignEdit,
+  CampaignDetail,
   Coupon,
   CouponHome,
-  Provide,
-  Exchange,
-  Setting,
-  SetDetail,
+  Distribution,
+  Redemption,
+  SettlementHome,
+  SettlementDetail,
   Merchant,
   Groups,
 };

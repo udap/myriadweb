@@ -6,7 +6,7 @@ import {
   PoweroffOutlined,
 } from "@ant-design/icons";
 import "./index.less";
-import { reqLogin, reqVerify, reqToken } from "../../api";
+import { reqLogin, reqVerify } from "../../api";
 import storageUtils from "../../utils/storageUtils";
 import { Redirect } from "react-router-dom";
 

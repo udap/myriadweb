@@ -22,7 +22,7 @@ import {
   FolderViewOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { Operation } from "../../utils/memoryUtils";
+import { Operations } from "../../utils/constants";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
 import {
@@ -110,7 +110,7 @@ class Groups extends Component {
     for (let i = 0; i < cont.length; i++) {
       const key = cont[i].operation || cont[i]; //`${path}-${i}`;
       const treeNode = {
-        title: Operation[key],
+        title: Operations[key],
         key,
       };
       if (cont[i].children && cont[i].children.length > 0) {

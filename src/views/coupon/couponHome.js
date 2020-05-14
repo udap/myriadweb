@@ -17,7 +17,7 @@ import {
 import storageUtils from "../../utils/storageUtils";
 import { reqGetCoupons, reqPublishDis, reqGetClients } from "../../api";
 import { Loading } from "../../components";
-import { couponStatuses } from "../../utils/memoryUtils";
+import { couponStatuses } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
 import "../../css/common.less";
 import "./index.less";

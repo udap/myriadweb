@@ -85,7 +85,7 @@ class MyOrgs extends Component {
               <Col className="actionItems">
                 {/* <b
                   onClick={() => {
-                    //this.props.history.push("/admin/market/detail/" + id);
+                    //this.props.history.push("/admin/campaign/detail/" + id);
                   }}
                   className="ant-green-link cursor"
                 >
@@ -93,7 +93,7 @@ class MyOrgs extends Component {
                 </b> */}
                 <b
                   onClick={() => {
-                    this.props.history.push("/admin/employees");
+                    this.props.history.push("/admin/employee");
                   }}
                   className="ant-green-link cursor"
                 >
@@ -102,7 +102,7 @@ class MyOrgs extends Component {
                 <Divider type="vertical" />
                 <b
                   onClick={() => {
-                    this.props.history.push("/admin/groups");
+                    this.props.history.push("/admin/group");
                   }}
                   className="ant-green-link cursor"
                 >

@@ -1,20 +1,21 @@
 //引入文件
 import {
   Dashboard,
-  Employees,
+  Employee,
   Login,
   NotFound,
-  Market,
-  MarketHome,
+  Empty,
+  Campaign,
+  //CampaignHome,
+  CampaignEdit,
+  CampaignDetail,
   Coupon,
-  CouponHome,
-  Provide,
-  Exchange,
-  Setting,
-  SetDetail,
+  //CouponHome,
+  Distribution,
+  Redemption,
+  SettlementHome,
+  SettlementDetail,
   MyOrgs,
-  MarketEdit,
-  MarketDetail,
   Merchant,
   Groups,
 } from "../views";
@@ -42,25 +43,24 @@ const privateRoutes = [
   },
 
   {
-    pathname: "/admin/market",
-    component: Market,
+    pathname: "/admin/campaign",
+    component: Campaign,
     title: "营销活动",
     icon: "GiftOutlined",
     isTop: true, //顶级菜单
     exact: true,
   },
   //动态路由
-
   {
-    pathname: "/admin/market/detail/:id",
-    component: MarketDetail,
+    pathname: "/admin/campaign/detail/:id",
+    component: CampaignDetail,
     title: "活动详情",
     icon: "",
     isTop: false, //顶级菜单
   },
   {
-    pathname: "/admin/market/edit/:id",
-    component: MarketEdit,
+    pathname: "/admin/campaign/edit/:id",
+    component: CampaignEdit,
     title: "新增活动",
     icon: "",
     isTop: false, //顶级菜单
@@ -73,28 +73,28 @@ const privateRoutes = [
     isTop: true, //顶级菜单
   },
   {
-    pathname: "/admin/provide",
-    component: Provide,
+    pathname: "/admin/distribution",
+    component: Distribution,
     title: "发放记录",
     icon: "BarChartOutlined",
     isTop: true, //顶级菜单
   },
   {
-    pathname: "/admin/exchange",
-    component: Exchange,
+    pathname: "/admin/redemption",
+    component: Redemption,
     title: "核销记录",
     icon: "InteractionOutlined",
     isTop: true, //顶级菜单
   },
   {
-    pathname: "/admin/employees",
-    component: Employees,
+    pathname: "/admin/employee",
+    component: Employee,
     title: "员工管理",
     icon: "UsergroupAddOutlined",
     isTop: false, //顶级菜单
   },
   {
-    pathname: "/admin/groups",
+    pathname: "/admin/group",
     component: Groups,
     title: "分组管理",
     isTop: false, //顶级菜单
@@ -108,8 +108,8 @@ const privateRoutes = [
     exact: true,
   },
   {
-    pathname: "/admin/settings",
-    component: Setting,
+    pathname: "",
+    component: Empty,
     title: "设置",
     icon: "SettingOutlined",
     isTop: true, //顶级菜单
@@ -131,8 +131,8 @@ const privateRoutes = [
         isNav: true,
       },
       {
-        pathname: "/admin/setting",
-        component: Setting,
+        pathname: "/admin/settlement",
+        component: SettlementHome,
         title: "结算中心",
         icon: "TransactionOutlined",
         isTop: false, //顶级菜单
@@ -140,8 +140,8 @@ const privateRoutes = [
         isNav: true,
       },
       {
-        pathname: "/admin/setting/new",
-        component: SetDetail,
+        pathname: "/admin/settlement/new",
+        component: SettlementDetail,
         title: "新增结算",
         icon: "MoneyCollectOutlined",
         isTop: false, //顶级菜单
