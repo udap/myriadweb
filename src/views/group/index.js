@@ -289,14 +289,13 @@ class Groups extends Component {
         <Form.Item
           label="描述"
           name="description"
-          rules={[{ required: true }, { max: 255 }]}
+          rules={[{ max: 255 }]}
         >
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item
           label="权限"
           name="operations"
-          //rules={[{ required: true }]}
         >
           <TransferComponent
             treeData={mockData}
