@@ -14,7 +14,7 @@ import {
 import storageUtils from "../../utils/storageUtils";
 import { reqPermit, reqGetDistributions } from "../../api";
 import { Loading } from "../../components";
-import { distributionsType } from "../../utils/memoryUtils";
+import { distributionStatuses } from "../../utils/memoryUtils";
 import "../../css/common.less";
 
 class Provide extends Component {
@@ -84,7 +84,7 @@ class Provide extends Component {
         render: (text) => {
           return (
             <Tag color="green" key={text}>
-              {distributionsType.map((item, index) => (
+              {distributionStatuses.map((item, index) => (
                 <span key={index}>{item[text]}</span>
               ))}
             </Tag>

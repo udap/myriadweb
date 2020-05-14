@@ -17,7 +17,7 @@ import {
 import storageUtils from "../../utils/storageUtils";
 import { reqGetCoupons, reqPublishDis, reqGetClients } from "../../api";
 import { Loading } from "../../components";
-import { couponType } from "../../utils/memoryUtils";
+import { couponStatuses } from "../../utils/memoryUtils";
 import comEvents from "../../utils/comEvents";
 import "../../css/common.less";
 import "./index.less";
@@ -132,7 +132,7 @@ class CouponHome extends Component {
         render: (text) => {
           return (
             <Tag color="green" key={text}>
-              {couponType.map((item, index) => (
+              {couponStatuses.map((item, index) => (
                 <span key={index}>{item[text]}</span>
               ))}
             </Tag>

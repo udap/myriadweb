@@ -1,13 +1,13 @@
 const user = {};
 const token = "";
-const marketType = [
+const campaignStatuses = [
   //INITIATED 草稿, ACTIVATING 券正在生成, ACTIVATED 券已生成, REJECTED 审批拒绝, ARCHIVED 已删除, TERMINATED 已终止;
   { INITIATED: "草稿" },
-  { ACTIVATING: "正在发布" },
+  { ACTIVATING: "发布中" },
   { ACTIVATED: "已发布" },
   { TERMINATED: "已撤销" },
 ];
-const couponType = [
+const couponStatuses = [
   { NEW: "新券" }, // 可发布
   { PENDING: "未生效" }, // 未生效
   { ACTIVE: "可用" }, //  可用
@@ -15,25 +15,25 @@ const couponType = [
   { EXPIRED: "已过期" }, // 已过期
 ];
 
-const listType = [
+const settlementStatuses = [
   { INITIATED: "草稿" },
   { SUBMITTED: "审核中" },
   { PROCESSED: "审核通过" },
   { FAILED: "失败" },
 ];
 
-const empolyStatus = [
-  { NEW: "新建" },
-  { ACTIVE: "已启用" },
-  { SUSPENDED: "已暂停" },
-  { TERMINATED: "已终止" },
+const employeeStatuses = [
+  { NEW: "新增" },
+  { ACTIVE: "在职" },
+  { SUSPENDED: "停职" },
+  { TERMINATED: "离职" },
 ];
-const roleType = [{ ADMIN: "管理员" }, { STAFF: "普通人员" }];
+const roleTypes = [{ ADMIN: "管理员" }, { STAFF: "职员" }];
 
 //结算的类型
 //NONE, MONTHLY, QUARTERLY, ;
 //按月结算，按季度结算，按年结算，按活动结算
-const listAddType = [
+const settlementTypes = [
   {
     value: "NONE",
     name: "按活动结算",
@@ -53,7 +53,7 @@ const listAddType = [
 ];
 
 //请求权限
-var Operation = {
+var Operations = {
   MANAGE_ORGANIZATION: "机构管理",
   LIST_SUBSIDIARIES: "查询机构列表",
   VIEW_ORGANIZATION: "显示机构详情",
@@ -150,28 +150,28 @@ var Operation = {
 
 //发放列表
 //PENDING, SUCCESS, FAILED;
-const distributionsType = [
-  { PENDING: "等待中" },
+const distributionStatuses = [
+  { PENDING: "发放中" },
   { SUCCESS: "成功" },
   { FAILED: "失败" },
 ];
-//结算状态 用的 listType
-const redemptionsType = [
-  { INITIATED: "草稿" },
-  { SUBMITTED: "审核中" },
-  { PROCESSED: "已结算" },
+
+const redemptionStatuses = [
+  { PENDING: "发放中" },
+  { SUCCESS: "成功" },
   { FAILED: "失败" },
 ];
+
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
-  marketType, //营销活动
-  couponType, //票券管理
-  listType, //结算中心
-  listAddType, //结算添加类型
-  Operation, //权限判断,
-  distributionsType, //发放列表
-  redemptionsType, //结算状态
-  empolyStatus, //员工状态
-  roleType, //员工角色
+  campaignStatuses, //营销活动
+  couponStatuses, //票券管理
+  settlementStatuses, //结算中心
+  settlementTypes, //结算添加类型
+  Operations, //权限判断,
+  distributionStatuses, //发放列表
+  redemptionStatuses, //核销列表
+  employeeStatuses, //员工状态
+  roleTypes, //员工角色
 };
