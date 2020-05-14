@@ -43,23 +43,42 @@
   justify-content: flex-end;
   margin-top: 16px;
 }
-.mid{
+.mid {
   display: flex;
   align-items: center;
 }
-.fr{
+.fr {
   display: flex;
   align-items: flex-end;
 }
-
-.backIcon{
-  font-size: 24px!important;
-  color:@greenColor;
+.backIcon {
+  font-size: 24px !important;
+  color: @greenColor;
   margin-left: 10px;
   cursor: pointer;
 }
-.description{
+.description {
   color: #bbb;
   display: block;
   font-size: 14px;
+}
+.defaultGraph {
+  border-radius: 2px 2px 0 0;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 130px;
+  background: #ececec;
+  color: #fff;
+}
+/*抽屉公共样式*/
+form.ant-form {
+  .ant-form-item-label {
+    padding: 0;
+  }
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
 }

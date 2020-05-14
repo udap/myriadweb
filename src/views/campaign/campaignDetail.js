@@ -80,13 +80,7 @@ class CampaignDetail extends Component {
         <PageHeader
           className="site-page-header-responsive"
           title="活动详情"
-          extra={[
-            <RollbackOutlined
-              style={style}
-              className="backIcon"
-              onClick={this.backIndex}
-            />,
-          ]}
+          onBack={this.backIndex}
         ></PageHeader>
         <Card bordered={false} className="detail">
           <Descriptions

@@ -35,34 +35,6 @@ import {
 } from "../../api";
 import { Loading, TransferComponent } from "../../components";
 import "../../css/common.less";
-const layout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-    lg: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-    lg: { span: 20 },
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-    lg: {
-      span: 20,
-      offset: 4,
-    },
-  },
-};
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -88,7 +60,6 @@ class Groups extends Component {
   };
   componentDidMount() {
     this.getList(1);
-    this.getPermissions();
   }
   getList = async () => {
     const result = await reqPermit("LIST_GROUPS");
@@ -269,7 +240,7 @@ class Groups extends Component {
     } = this.state;
     return (
       <Form
-        {...layout}
+        layout="vertical"
         name="basic"
         initialValues={{
           name: name,
@@ -303,7 +274,8 @@ class Groups extends Component {
           />
         </Form.Item>
         {this.state.isNew ? (
-          <Form.Item {...tailLayout}>
+          <Form.Item 
+          >
             <Button type="primary" htmlType="submit">
               提交
             </Button>
@@ -399,6 +371,7 @@ class Groups extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
+          rowKey="id"
           size="small"
           bordered
           dataSource={groups}

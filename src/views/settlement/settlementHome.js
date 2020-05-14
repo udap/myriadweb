@@ -464,7 +464,7 @@ class SettlementHome extends Component {
           className="site-page-header-responsive cont"
           title="结算中心"
           extra={[
-            <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
+            <PlusSquareFilled key="add" className="setIcon" onClick={this.addItem} />,
           ]}
         ></PageHeader>
         {/* --搜索栏-- */}
@@ -513,8 +513,7 @@ class SettlementHome extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
-          tableLayout="auto"
-          style={{ wordBreak: "break-all" }}
+          rowKey="uid"
           size="small"
           bordered
           showSizeChanger={false}

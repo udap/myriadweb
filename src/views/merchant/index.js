@@ -11,10 +11,7 @@ import {
   Form,
   Drawer,
 } from "antd";
-import {
-  PlusSquareFilled,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import { reqAddMerchant, reqDelMerchant } from "../../api";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 
@@ -22,36 +19,8 @@ import storageUtils from "../../utils/storageUtils";
 import { reqGetMerchants } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
-import './index.less';
+import "./index.less";
 const { confirm } = Modal;
-const layout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-    lg: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-    lg: { span: 12 },
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-    lg: {
-      span: 12,
-      offset: 6,
-    },
-  },
-};
 
 class Merchant extends Component {
   state = {
@@ -170,7 +139,7 @@ class Merchant extends Component {
 
     return (
       <Form
-        {...layout}
+        layout="vertical"
         name="basic"
         initialValues={{
           apCode: apCode,
@@ -201,7 +170,7 @@ class Merchant extends Component {
         </Form.Item> */}
 
         {this.state.isNew ? (
-          <Form.Item {...tailLayout}>
+          <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
@@ -209,11 +178,9 @@ class Merchant extends Component {
             >
               提交
             </Button>
+            <p class="description">请向入驻商户索取动态授权码及银联商户码</p>
           </Form.Item>
         ) : null}
-        <Form.Item {...tailLayout}>
-          <p class="description">说明：请向入驻商户索取动态授权码及银联商户码</p>
-        </Form.Item>
       </Form>
     );
   };
@@ -242,16 +209,19 @@ class Merchant extends Component {
         title: "电话",
         dataIndex: "phone",
         key: "phone",
+        responsive: ["md"],
       },
       {
         title: "地址",
         dataIndex: "address",
         key: "address",
+        responsive: ["lg"],
       },
       {
         title: "入驻时间",
         dataIndex: "authorizedAt",
         key: "authorizedAt",
+        responsive: ["lg"],
       },
       {
         title: "操作",
@@ -287,7 +257,7 @@ class Merchant extends Component {
           className="site-page-header-responsive cont"
           title="商户列表"
           extra={[
-            <PlusSquareFilled className="setIcon" onClick={this.showModal} />,
+            <PlusSquareFilled key="add" className="setIcon" onClick={this.showModal} />,
           ]}
         ></PageHeader>
         {/* --搜索栏-- */}
@@ -305,8 +275,6 @@ class Merchant extends Component {
               <Form.Item name="searchTxt" label="查询条件">
                 <Input
                   placeholder="请输入名字、银联商户号 、电话或地址进行搜索"
-                  // name="searchTxt"
-                  //value={searchTxt}
                   allowClear
                 />
               </Form.Item>
@@ -328,6 +296,7 @@ class Merchant extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
+          rowKey="id"
           size="small"
           bordered
           dataSource={campaigns}
@@ -345,7 +314,7 @@ class Merchant extends Component {
           />
         </div>
         <Drawer
-          width={620}
+          width={320}
           title="添加入驻商户"
           visible={this.state.visible}
           onClose={this.handleCancel}

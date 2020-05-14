@@ -391,6 +391,8 @@ class CouponHome extends Component {
                 </Radio.Group>
               </Form.Item>
             </Col>
+          </Row>
+          <Row>
             <Col span={6}>
               <Form.Item name="searchCouponTxt">
                 <Input
@@ -406,11 +408,7 @@ class CouponHome extends Component {
             </Col>
             <Col>
               <Form.Item className="mid">
-                <Select
-                  defaultValue="UPCODE"
-                  style={{ width: 120 }}
-                  onChange={this.handleChange}
-                >
+                <Select defaultValue="UPCODE" onChange={this.handleChange}>
                   <Option value="UPCODE">银联码</Option>
                 </Select>
               </Form.Item>
@@ -431,11 +429,9 @@ class CouponHome extends Component {
           </Row>
         </Form>
         <Table
-          tableLayout="auto"
-          style={{ wordBreak: "break-all" }}
+          rowKey="key"
           size="small"
           bordered
-          rowKey="_id"
           dataSource={campaigns}
           columns={this.columns}
           pagination={false}

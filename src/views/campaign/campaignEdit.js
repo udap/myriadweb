@@ -5,7 +5,6 @@ import {
   Form,
   Input,
   message,
-  Select,
   PageHeader,
   Switch,
   DatePicker,
@@ -13,14 +12,10 @@ import {
   Card,
   Col,
   Row,
-  Upload,
   Radio,
   InputNumber,
   List,
 } from "antd";
-import {
-  RollbackOutlined
-} from "@ant-design/icons";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
   reqGetCampaignById,
@@ -324,7 +319,7 @@ class CampaignEdit extends Component {
           <List
             dataSource={this.state.listData}
             renderItem={(item) => (
-              <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+              <Col xs={24} sm={24} md={24} lg={12} xl={8}>
                 <Card bordered={false}>
                   <List.Item key={item.name}>
                     <Card bordered={false}>
@@ -684,9 +679,7 @@ class CampaignEdit extends Component {
         <PageHeader
           className="site-page-header-responsive"
           title={this.state.isNew ? "创建活动" : "活动详情"}
-          extra={[
-            <RollbackOutlined className="backIcon" onClick={this.backIndex} />,
-          ]}
+          onBack={this.backIndex}
         ></PageHeader>
         {this.state.inited ? this.renderContent() : <Loading />}
       </div>

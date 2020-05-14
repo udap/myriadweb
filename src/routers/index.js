@@ -149,6 +149,13 @@ const privateRoutes = [
       },
     ],
   },
+  {
+    pathname: "/admin/empty",
+    component: Empty,
+    title: "空页面",
+    icon: "",
+    isTop: false, //顶级菜单
+  },
 ];
 
 export { commonRoutes, privateRoutes };

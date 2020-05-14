@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 //加载中
-import { Button, Form, Input, Cascader, message, Modal } from "antd";
+import { Button, Form, Input, Cascader, Modal, Card } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import { regAddOrg } from "../../api";
 import province from "../../utils/province";
 import storageUtils from "../../utils/storageUtils";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 import { Loading } from "../../components";
 import "../../css/common.less";
+import "./index.less";
+const { Meta } = Card;
 const layout = {
   labelCol: {
     xs: { span: 24 },
@@ -112,7 +114,7 @@ class OrgFormDialog extends Component {
           that.props.history.replace("/login");
         },
       });
-    }else{
+    } else {
       this.setState({
         inited: true,
       });
@@ -181,9 +183,9 @@ class OrgFormDialog extends Component {
           <Form.Item label="营业执照号码" name="licenseNo">
             <Input disabled={this.state.isNew ? false : true} />
           </Form.Item>
-            <Form.Item label="银联商户码" name="code">
-              <Input disabled={this.state.isNew ? false : true} />
-            </Form.Item>
+          <Form.Item label="银联商户码" name="code">
+            <Input disabled={this.state.isNew ? false : true} />
+          </Form.Item>
           <Form.Item label="联系电话" name="phone" rules={[{ required: true }]}>
             <Input disabled={this.state.isNew ? false : true} />
           </Form.Item>
@@ -239,10 +241,27 @@ class OrgFormDialog extends Component {
       </div>
     );
   };
+  _renderCard = () => {
+    const { fullName, phone, address } = this.state;
+    return (
+      <Card
+        style={{ width: 300 }}
+        cover={<PictureOutlined className="defaultGraph" />}
+        actions={[
+          <EyeOutlined  key="view" />,
+          <EditOutlined key="edit" />
+        ]}
+      >
+        <Meta className="orgTitle" title={fullName} />
+        <p>{address}</p>
+        <p style={{marginBottom:0}}>{phone}</p>
+      </Card>
+    );
+  };
   render() {
     return (
       <div style={{ height: "100%" }}>
-        {this.state.inited ? this._renderCont() : <Loading />}
+        {this.state.inited ? this._renderCard() : <Loading />}
       </div>
     );
   }

@@ -232,11 +232,9 @@ class Distribution extends Component {
         ) : null}
 
         <Table
-          tableLayout="auto"
-          style={{ wordBreak: "break-all" }}
+          rowKey="key"
           size="small"
           bordered
-          rowKey="_id"
           dataSource={campaigns}
           columns={this.columns}
           pagination={false}

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 
 class Empty extends Component {
     render() {
-        return <div>Empty</div>;
+        return (
+            <div>Empty</div>
+        );
     }
 }
 

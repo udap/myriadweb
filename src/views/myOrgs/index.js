@@ -133,7 +133,7 @@ class MyOrgs extends Component {
         )}
 
         <Drawer
-          width={620}
+          width={410}
           title="动态授权码"
           onClose={this.onClose}
           visible={this.state.visible}
@@ -144,7 +144,7 @@ class MyOrgs extends Component {
               ,请尽快和相关机构分享授权码。该授权码在 30 分钟后失效。
             </p>
             <small className="description">
-              说明：如果某个营销机构希望邀请您的机构作为核销机构参与该营销机构发起的营销活动，您需要生成并提供一个限时有效的动态授权码给该营销机构。
+              如果某个营销机构希望邀请您的机构作为核销机构参与该营销机构发起的营销活动，您需要生成并提供一个限时有效的动态授权码给该营销机构。
             </small>
           </div>
         </Drawer>

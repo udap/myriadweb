@@ -4,7 +4,6 @@ import {
   Table,
   PageHeader,
   Input,
-  Divider,
   Modal,
   Drawer,
   Pagination,
@@ -16,12 +15,7 @@ import {
   Tag,
   Switch,
 } from "antd";
-import {
-  SearchOutlined,
-  PlusSquareFilled,
-  FolderViewOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
@@ -35,36 +29,7 @@ import {
 } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
-const layout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-    lg: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-    lg: { span: 12 },
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-    lg: {
-      span: 12,
-      offset: 6,
-    },
-  },
-};
 
-const { Search } = Input;
 const { confirm } = Modal;
 const { Option } = Select;
 const { TextArea } = Input;
@@ -222,8 +187,9 @@ class Employee extends Component {
     let isAdmin = this.state.admin;
     return (
       <Form
-        {...layout}
+        //{...layout}
         name="basic"
+        layout="vertical"
         initialValues={{
           name: name,
           cellphone: cellphone,
@@ -249,6 +215,7 @@ class Employee extends Component {
         >
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
+
         <Form.Item label="员工编号" name="code" rules={[{ max: 20 }]}>
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
@@ -319,7 +286,9 @@ class Employee extends Component {
         </Form.Item>
 
         {this.state.isNew ? (
-          <Form.Item {...tailLayout}>
+          <Form.Item
+          //{...tailLayout}
+          >
             <Button type="primary" htmlType="submit">
               提交
             </Button>
@@ -357,6 +326,22 @@ class Employee extends Component {
         dataIndex: "code",
         key: "code",
         render: (text) => <span>{text ? text : "-"}</span>,
+      },
+      {
+        title: "分组",
+        dataIndex: "groups",
+        key: "groups",
+        render: (groups) => (
+          <div>
+            {groups.length !== 0
+              ? groups.map((group) => (
+                  <Tag color="blue" key={group.id}>
+                    {group.name}
+                  </Tag>
+                ))
+              : "-"}
+          </div>
+        ),
       },
       {
         title: "角色",
@@ -465,6 +450,7 @@ class Employee extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
+          rowKey="uid"
           size="small"
           bordered
           dataSource={campaigns}
@@ -483,8 +469,8 @@ class Employee extends Component {
         </div>
 
         <Drawer
+          width={400}
           title="添加员工"
-          width={620}
           visible={this.state.visible}
           onClose={this.handleCancel}
           footer={null}

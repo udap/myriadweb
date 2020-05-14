@@ -6,11 +6,9 @@ import {
   Input,
   Tag,
   Divider,
-  message,
   Modal,
   Popconfirm,
   Descriptions,
-  Switch,
   notification,
   Pagination,
   Form,
@@ -19,10 +17,7 @@ import {
   Radio,
 } from "antd";
 import {
-  SearchOutlined,
   PlusSquareFilled,
-  FolderViewOutlined,
-  ExclamationCircleOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 
@@ -42,9 +37,6 @@ import comEvents from "../../utils/comEvents";
 import "./index.less";
 import "../../css/common.less";
 
-const { Search } = Input;
-const { confirm } = Modal;
-const Product = [];
 const renderContent = (value, row, index) => {
   const obj = {
     children: value,
@@ -143,7 +135,7 @@ class CampaignHome extends Component {
         //fixed: "right",
         width: 150,
         render: (chooseItem) => {
-          const { id, status, effectiveness } = chooseItem;
+          const { id, status } = chooseItem;
           //INITIATED的时候前端可以查看/修改/发布；ACTIVATED的时候前端可以查看/分配票券
           return (
             <span>
@@ -396,7 +388,6 @@ class CampaignHome extends Component {
       campaigns,
       size,
       typeStr,
-      chooseItem,
       total,
       currentPage,
       searchTxt,
@@ -409,7 +400,7 @@ class CampaignHome extends Component {
           className="site-page-header-responsive cont"
           title="营销活动"
           extra={[
-            <PlusSquareFilled className="setIcon" onClick={this.addItem} />,
+            <PlusSquareFilled key="add" className="setIcon" onClick={this.addItem} />,
           ]}
         ></PageHeader>
         {/* --搜索栏-- */}
@@ -454,10 +445,7 @@ class CampaignHome extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
-          tableLayout="auto"
-          style={{
-            wordBreak: "break-all",
-          }}
+          rowKey="uid"
           size="small"
           bordered
           dataSource={campaigns}

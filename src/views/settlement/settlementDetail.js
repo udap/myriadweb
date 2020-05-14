@@ -13,7 +13,6 @@ import {
   PageHeader,
   notification,
 } from "antd";
-import { RollbackOutlined } from "@ant-design/icons";
 import moment from "moment";
 import storageUtils from "../../utils/storageUtils";
 import { settlementTypes } from "../../utils/constants";
@@ -21,15 +20,10 @@ import { settlementTypes } from "../../utils/constants";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 /*公共事件 */
 import comEvents from "../../utils/comEvents";
-import {
-  reqGetOrgLists,
-  reqGetCampaigns,
-  reqAddSettlement,
-} from "../../api";
+import { reqGetOrgLists, reqGetCampaigns, reqAddSettlement } from "../../api";
 import "./index.less";
 
 const { Option } = Select;
-const { Search } = Input;
 class SettlementDetail extends Component {
   state = {
     /**发布客户 */
@@ -276,9 +270,7 @@ class SettlementDetail extends Component {
         <PageHeader
           className="site-page-header-responsive"
           title="新增结算"
-          extra={[
-            <RollbackOutlined className="backIcon" onClick={this.backIndex} />,
-          ]}
+          onBack={this.backIndex}
         ></PageHeader>
         <Form
           labelCol={{ span: 6 }}
