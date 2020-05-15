@@ -1,10 +1,10 @@
 const ChinaRegions = [{
 value: "北京市",
 label: "北京市",
-"children": [{
+children: [{
 value: "北京市",
 label: "北京市",
-"children": [{
+children: [{
 value: "东城区",
 label: "东城区"
 }, {
@@ -63,10 +63,10 @@ label: "延庆县"
 }, {
 value: "天津市",
 label: "天津市",
-"children": [{
+children: [{
 value: "天津市",
 label: "天津市",
-"children": [{
+children: [{
 value: "和平区",
 label: "和平区"
 }, {
@@ -125,10 +125,10 @@ label: "蓟 县"
 }, {
 value: "河北省",
 label: "河北省",
-"children": [{
+children: [{
 value: "石家庄市",
 label: "石家庄市",
-"children": [{
+children: [{
 value: "长安区",
 label: "长安区"
 }, {
@@ -201,7 +201,7 @@ label: "鹿泉市"
 }, {
 value: "唐山市",
 label: "唐山市",
-"children": [{
+children: [{
 value: "路南区",
 label: "路南区"
 }, {
@@ -250,7 +250,7 @@ label: "迁安市"
 }, {
 value: "秦皇岛市",
 label: "秦皇岛市",
-"children": [{
+children: [{
 value: "海港区",
 label: "海港区"
 }, {
@@ -275,7 +275,7 @@ label: "卢龙县"
 }, {
 value: "邯郸市",
 label: "邯郸市",
-"children": [{
+children: [{
 value: "邯山区",
 label: "邯山区"
 }, {
@@ -336,7 +336,7 @@ label: "武安市"
 }, {
 value: "邢台市",
 label: "邢台市",
-"children": [{
+children: [{
 value: "桥东区",
 label: "桥东区"
 }, {
@@ -397,7 +397,7 @@ label: "沙河市"
 }, {
 value: "保定市",
 label: "保定市",
-"children": [{
+children: [{
 value: "新市区",
 label: "新市区"
 }, {
@@ -476,7 +476,7 @@ label: "高碑店市"
 }, {
 value: "张家口",
 label: "张家口",
-"children": [{
+children: [{
 value: "桥东区",
 label: "桥东区"
 }, {
@@ -531,7 +531,7 @@ label: "崇礼县"
 }, {
 value: "承德市",
 label: "承德市",
-"children": [{
+children: [{
 value: "双桥区",
 label: "双桥区"
 }, {
@@ -568,7 +568,7 @@ label: "围场满族蒙古族自治县"
 }, {
 value: "沧州市",
 label: "沧州市",
-"children": [{
+children: [{
 value: "新华区",
 label: "新华区"
 }, {
@@ -620,7 +620,7 @@ label: "河间市"
 }, {
 value: "廊坊市",
 label: "廊坊市",
-"children": [{
+children: [{
 value: "安次区",
 label: "安次区"
 }, {
@@ -651,7 +651,7 @@ label: "三河市"
 }, {
 value: "衡水市",
 label: "衡水市",
-"children": [{
+children: [{
 value: "桃城区",
 label: "桃城区"
 }, {
@@ -689,10 +689,10 @@ label: "深州市"
 }, {
 value: "山西省",
 label: "山西省",
-"children": [{
+children: [{
 value: "太原市",
 label: "太原市",
-"children": [{
+children: [{
 value: "小店区",
 label: "小店区"
 }, {
@@ -726,7 +726,7 @@ label: "古交市"
 }, {
 value: "大同市",
 label: "大同市",
-"children": [{
+children: [{
 value: "城 区",
 label: "城 区"
 }, {
@@ -763,7 +763,7 @@ label: "大同县"
 }, {
 value: "阳泉市",
 label: "阳泉市",
-"children": [{
+children: [{
 value: "城 区",
 label: "城 区"
 }, {
@@ -782,7 +782,7 @@ label: "盂 县"
 }, {
 value: "长治市",
 label: "长治市",
-"children": [{
+children: [{
 value: "城 区",
 label: "城 区"
 }, {
@@ -825,7 +825,7 @@ label: "潞城市"
 }, {
 value: "晋城市",
 label: "晋城市",
-"children": [{
+children: [{
 value: "城 区",
 label: "城 区"
 }, {
@@ -847,7 +847,7 @@ label: "高平市"
 }, {
 value: "朔州市",
 label: "朔州市",
-"children": [{
+children: [{
 value: "朔城区",
 label: "朔城区"
 }, {
@@ -869,7 +869,7 @@ label: "怀仁县"
 }, {
 value: "忻州市",
 label: "忻州市",
-"children": [{
+children: [{
 value: "忻府区",
 label: "忻府区"
 }, {
@@ -915,7 +915,7 @@ label: "偏关县"
 }, {
 value: "吕梁市",
 label: "吕梁市",
-"children": [{
+children: [{
 value: "离石区",
 label: "离石区"
 }, {
@@ -958,7 +958,7 @@ label: "交口县"
 }, {
 value: "晋中市",
 label: "晋中市",
-"children": [{
+children: [{
 value: "榆次市",
 label: "榆次市"
 }, {
@@ -995,7 +995,7 @@ label: "灵石县"
 }, {
 value: "临汾市",
 label: "临汾市",
-"children": [{
+children: [{
 value: "临汾市",
 label: "临汾市"
 }, {
@@ -1050,7 +1050,7 @@ label: "汾西县"
 }, {
 value: "运城市",
 label: "运城市",
-"children": [{
+children: [{
 value: "运城市",
 label: "运城市"
 }, {
@@ -1094,10 +1094,10 @@ label: "垣曲县"
 }, {
 value: "内蒙古",
 label: "内蒙古",
-"children": [{
+children: [{
 value: "呼和浩特市",
 label: "呼和浩特市",
-"children": [{
+children: [{
 value: "新城区",
 label: "新城区"
 }, {
@@ -1128,7 +1128,7 @@ label: "武川县"
 }, {
 value: "包头市",
 label: "包头市",
-"children": [{
+children: [{
 value: "东河区",
 label: "东河区"
 }, {
@@ -1159,7 +1159,7 @@ label: "达尔罕茂明安联合旗"
 }, {
 value: "乌海市",
 label: "乌海市",
-"children": [{
+children: [{
 value: "海勃湾区",
 label: "海勃湾区"
 }, {
@@ -1172,7 +1172,7 @@ label: "乌达区"
 }, {
 value: "赤峰市",
 label: "赤峰市",
-"children": [{
+children: [{
 value: "红山区",
 label: "红山区"
 }, {
@@ -1212,7 +1212,7 @@ label: "敖汉旗"
 }, {
 value: "呼伦贝尔市",
 label: "呼伦贝尔市",
-"children": [{
+children: [{
 value: "海拉尔市",
 label: "海拉尔市"
 }, {
@@ -1255,7 +1255,7 @@ label: "陈巴尔虎旗"
 }, {
 value: "兴安盟",
 label: "兴安盟",
-"children": [{
+children: [{
 value: "乌兰浩特市",
 label: "乌兰浩特市"
 }, {
@@ -1277,7 +1277,7 @@ label: "突泉县"
 }, {
 value: "通辽市",
 label: "通辽市",
-"children": [{
+children: [{
 value: "科尔沁区",
 label: "科尔沁区"
 }, {
@@ -1305,7 +1305,7 @@ label: "扎鲁特旗"
 }, {
 value: "锡林郭勒盟",
 label: "锡林郭勒盟",
-"children": [{
+children: [{
 value: "二连浩特市",
 label: "二连浩特市"
 }, {
@@ -1345,7 +1345,7 @@ label: "多伦县"
 }, {
 value: "乌兰察布盟",
 label: "乌兰察布盟",
-"children": [{
+children: [{
 value: "集宁市",
 label: "集宁市"
 }, {
@@ -1382,7 +1382,7 @@ label: "四子王旗"
 }, {
 value: "伊克昭盟",
 label: "伊克昭盟",
-"children": [{
+children: [{
 value: "东胜市",
 label: "东胜市"
 }, {
@@ -1410,7 +1410,7 @@ label: "伊金霍洛旗"
 }, {
 value: "巴彦淖尔盟",
 label: "巴彦淖尔盟",
-"children": [{
+children: [{
 value: "临河市",
 label: "临河市"
 }, {
@@ -1435,7 +1435,7 @@ label: "杭锦后旗"
 }, {
 value: "阿拉善盟",
 label: "阿拉善盟",
-"children": [{
+children: [{
 value: "阿拉善左旗",
 label: "阿拉善左旗"
 }, {
@@ -1449,10 +1449,10 @@ label: "额济纳旗"
 }, {
 value: "辽宁省",
 label: "辽宁省",
-"children": [{
+children: [{
 value: "沈阳市",
 label: "沈阳市",
-"children": [{
+children: [{
 value: "沈河区",
 label: "沈河区"
 }, {
@@ -1498,7 +1498,7 @@ label: "其他"
 }, {
 value: "大连市",
 label: "大连市",
-"children": [{
+children: [{
 value: "西岗区",
 label: "西岗区"
 }, {
@@ -1535,7 +1535,7 @@ label: "其他"
 }, {
 value: "鞍山市",
 label: "鞍山市",
-"children": [{
+children: [{
 value: "铁东区",
 label: "铁东区"
 }, {
@@ -1563,7 +1563,7 @@ label: "其他"
 }, {
 value: "抚顺市",
 label: "抚顺市",
-"children": [{
+children: [{
 value: "顺城区",
 label: "顺城区"
 }, {
@@ -1591,7 +1591,7 @@ label: "其他"
 }, {
 value: "本溪市",
 label: "本溪市",
-"children": [{
+children: [{
 value: "平山区",
 label: "平山区"
 }, {
@@ -1616,7 +1616,7 @@ label: "其他"
 }, {
 value: "丹东市",
 label: "丹东市",
-"children": [{
+children: [{
 value: "振兴区",
 label: "振兴区"
 }, {
@@ -1641,7 +1641,7 @@ label: "其他"
 }, {
 value: "锦州市",
 label: "锦州市",
-"children": [{
+children: [{
 value: "太和区",
 label: "太和区"
 }, {
@@ -1669,7 +1669,7 @@ label: "其他"
 }, {
 value: "营口市",
 label: "营口市",
-"children": [{
+children: [{
 value: "站前区",
 label: "站前区"
 }, {
@@ -1694,7 +1694,7 @@ label: "其他"
 }, {
 value: "阜新市",
 label: "阜新市",
-"children": [{
+children: [{
 value: "海州区",
 label: "海州区"
 }, {
@@ -1722,7 +1722,7 @@ label: "其他"
 }, {
 value: "辽阳市",
 label: "辽阳市",
-"children": [{
+children: [{
 value: "白塔区",
 label: "白塔区"
 }, {
@@ -1750,7 +1750,7 @@ label: "其他"
 }, {
 value: "盘锦",
 label: "盘锦",
-"children": [{
+children: [{
 value: "双台子区",
 label: "双台子区"
 }, {
@@ -1769,7 +1769,7 @@ label: "其他"
 }, {
 value: "铁岭市",
 label: "铁岭市",
-"children": [{
+children: [{
 value: "银州区",
 label: "银州区"
 }, {
@@ -1797,7 +1797,7 @@ label: "其他"
 }, {
 value: "朝阳市",
 label: "朝阳市",
-"children": [{
+children: [{
 value: "双塔区",
 label: "双塔区"
 }, {
@@ -1825,7 +1825,7 @@ label: "其他"
 }, {
 value: "葫芦岛市",
 label: "葫芦岛市",
-"children": [{
+children: [{
 value: "龙港区",
 label: "龙港区"
 }, {
@@ -1850,7 +1850,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -1858,10 +1858,10 @@ label: "其他"
 }, {
 value: "吉林省",
 label: "吉林省",
-"children": [{
+children: [{
 value: "长春市",
 label: "长春市",
-"children": [{
+children: [{
 value: "朝阳区",
 label: "朝阳区"
 }, {
@@ -1898,7 +1898,7 @@ label: "其他"
 }, {
 value: "吉林市",
 label: "吉林市",
-"children": [{
+children: [{
 value: "船营区",
 label: "船营区"
 }, {
@@ -1932,7 +1932,7 @@ label: "其他"
 }, {
 value: "四平",
 label: "四平",
-"children": [{
+children: [{
 value: "铁西区",
 label: "铁西区"
 }, {
@@ -1957,7 +1957,7 @@ label: "其他"
 }, {
 value: "辽源市",
 label: "辽源市",
-"children": [{
+children: [{
 value: "龙山区",
 label: "龙山区"
 }, {
@@ -1976,7 +1976,7 @@ label: "其他"
 }, {
 value: "通化市",
 label: "通化市",
-"children": [{
+children: [{
 value: "东昌区",
 label: "东昌区"
 }, {
@@ -2004,7 +2004,7 @@ label: "其他"
 }, {
 value: "白山市",
 label: "白山市",
-"children": [{
+children: [{
 value: "八道江区",
 label: "八道江区"
 }, {
@@ -2029,7 +2029,7 @@ label: "其他"
 }, {
 value: "松原市",
 label: "松原市",
-"children": [{
+children: [{
 value: "宁江区",
 label: "宁江区"
 }, {
@@ -2051,7 +2051,7 @@ label: "其他"
 }, {
 value: "白城市",
 label: "白城市",
-"children": [{
+children: [{
 value: "洮北区",
 label: "洮北区"
 }, {
@@ -2073,7 +2073,7 @@ label: "其他"
 }, {
 value: "延边朝鲜族自治州",
 label: "延边朝鲜族自治州",
-"children": [{
+children: [{
 value: "延吉市",
 label: "延吉市"
 }, {
@@ -2104,7 +2104,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -2112,10 +2112,10 @@ label: "其他"
 }, {
 value: "黑龙江省",
 label: "黑龙江省",
-"children": [{
+children: [{
 value: "哈尔滨市",
 label: "哈尔滨市",
-"children": [{
+children: [{
 value: "松北区",
 label: "松北区"
 }, {
@@ -2176,7 +2176,7 @@ label: "其他"
 }, {
 value: "齐齐哈尔市",
 label: "齐齐哈尔市",
-"children": [{
+children: [{
 value: "龙沙区",
 label: "龙沙区"
 }, {
@@ -2231,7 +2231,7 @@ label: "其他"
 }, {
 value: "鹤岗市",
 label: "鹤岗市",
-"children": [{
+children: [{
 value: "兴山区",
 label: "兴山区"
 }, {
@@ -2262,7 +2262,7 @@ label: "其他"
 }, {
 value: "双鸭山",
 label: "双鸭山",
-"children": [{
+children: [{
 value: "尖山区",
 label: "尖山区"
 }, {
@@ -2293,7 +2293,7 @@ label: "其他"
 }, {
 value: "鸡西市",
 label: "鸡西市",
-"children": [{
+children: [{
 value: "鸡冠区",
 label: "鸡冠区"
 }, {
@@ -2327,7 +2327,7 @@ label: "其他"
 }, {
 value: "大庆市",
 label: "大庆市",
-"children": [{
+children: [{
 value: "萨尔图区",
 label: "萨尔图区"
 }, {
@@ -2361,7 +2361,7 @@ label: "其他"
 }, {
 value: "伊春市",
 label: "伊春市",
-"children": [{
+children: [{
 value: "伊春区",
 label: "伊春区"
 }, {
@@ -2419,7 +2419,7 @@ label: "其他"
 }, {
 value: "牡丹江市",
 label: "牡丹江市",
-"children": [{
+children: [{
 value: "爱民区",
 label: "爱民区"
 }, {
@@ -2456,7 +2456,7 @@ label: "其他"
 }, {
 value: "佳木斯市",
 label: "佳木斯市",
-"children": [{
+children: [{
 value: "向阳区",
 label: "向阳区"
 }, {
@@ -2493,7 +2493,7 @@ label: "其他"
 }, {
 value: "七台河市",
 label: "七台河市",
-"children": [{
+children: [{
 value: "桃山区",
 label: "桃山区"
 }, {
@@ -2512,7 +2512,7 @@ label: "其他"
 }, {
 value: "黑河市",
 label: "黑河市",
-"children": [{
+children: [{
 value: "爱辉区",
 label: "爱辉区"
 }, {
@@ -2537,7 +2537,7 @@ label: "其他"
 }, {
 value: "绥化市",
 label: "绥化市",
-"children": [{
+children: [{
 value: "北林区",
 label: "北林区"
 }, {
@@ -2574,7 +2574,7 @@ label: "其他"
 }, {
 value: "大兴安岭地区",
 label: "大兴安岭地区",
-"children": [{
+children: [{
 value: "呼玛县",
 label: "呼玛县"
 }, {
@@ -2593,7 +2593,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -2601,10 +2601,10 @@ label: "其他"
 }, {
 value: "上海市",
 label: "上海市",
-"children": [{
+children: [{
 value: "上海市",
 label: "上海市",
-"children": [{
+children: [{
 value: "黄浦区",
 label: "黄浦区"
 }, {
@@ -2669,10 +2669,10 @@ label: "其他"
 }, {
 value: "江苏省",
 label: "江苏省",
-"children": [{
+children: [{
 value: "南京市",
 label: "南京市",
-"children": [{
+children: [{
 value: "玄武区",
 label: "玄武区"
 }, {
@@ -2718,7 +2718,7 @@ label: "其他"
 }, {
 value: "苏州市",
 label: "苏州市",
-"children": [{
+children: [{
 value: "金阊区",
 label: "金阊区"
 }, {
@@ -2758,7 +2758,7 @@ label: "其他"
 }, {
 value: "无锡市",
 label: "无锡市",
-"children": [{
+children: [{
 value: "崇安区",
 label: "崇安区"
 }, {
@@ -2789,7 +2789,7 @@ label: "其他"
 }, {
 value: "常州市",
 label: "常州市",
-"children": [{
+children: [{
 value: "钟楼区",
 label: "钟楼区"
 }, {
@@ -2817,7 +2817,7 @@ label: "其他"
 }, {
 value: "镇江市",
 label: "镇江市",
-"children": [{
+children: [{
 value: "京口区",
 label: "京口区"
 }, {
@@ -2842,7 +2842,7 @@ label: "其他"
 }, {
 value: "南通市",
 label: "南通市",
-"children": [{
+children: [{
 value: "崇川区",
 label: "崇川区"
 }, {
@@ -2873,7 +2873,7 @@ label: "其他"
 }, {
 value: "泰州市",
 label: "泰州市",
-"children": [{
+children: [{
 value: "海陵区",
 label: "海陵区"
 }, {
@@ -2898,7 +2898,7 @@ label: "其他"
 }, {
 value: "扬州市",
 label: "扬州市",
-"children": [{
+children: [{
 value: "广陵区",
 label: "广陵区"
 }, {
@@ -2926,7 +2926,7 @@ label: "其他"
 }, {
 value: "盐城市",
 label: "盐城市",
-"children": [{
+children: [{
 value: "亭湖区",
 label: "亭湖区"
 }, {
@@ -2960,7 +2960,7 @@ label: "其他"
 }, {
 value: "连云港市",
 label: "连云港市",
-"children": [{
+children: [{
 value: "新浦区",
 label: "新浦区"
 }, {
@@ -2988,7 +2988,7 @@ label: "其他"
 }, {
 value: "徐州市",
 label: "徐州市",
-"children": [{
+children: [{
 value: "云龙区",
 label: "云龙区"
 }, {
@@ -3028,7 +3028,7 @@ label: "其他"
 }, {
 value: "淮安市",
 label: "淮安市",
-"children": [{
+children: [{
 value: "清河区",
 label: "清河区"
 }, {
@@ -3059,7 +3059,7 @@ label: "其他"
 }, {
 value: "宿迁市",
 label: "宿迁市",
-"children": [{
+children: [{
 value: "宿城区",
 label: "宿城区"
 }, {
@@ -3081,7 +3081,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -3089,10 +3089,10 @@ label: "其他"
 }, {
 value: "浙江省",
 label: "浙江省",
-"children": [{
+children: [{
 value: "杭州市",
 label: "杭州市",
-"children": [{
+children: [{
 value: "拱墅区",
 label: "拱墅区"
 }, {
@@ -3138,7 +3138,7 @@ label: "其他"
 }, {
 value: "宁波市",
 label: "宁波市",
-"children": [{
+children: [{
 value: "海曙区",
 label: "海曙区"
 }, {
@@ -3178,7 +3178,7 @@ label: "其他"
 }, {
 value: "温州市",
 label: "温州市",
-"children": [{
+children: [{
 value: "鹿城区",
 label: "鹿城区"
 }, {
@@ -3218,7 +3218,7 @@ label: "其他"
 }, {
 value: "嘉兴市",
 label: "嘉兴市",
-"children": [{
+children: [{
 value: "秀城区",
 label: "秀城区"
 }, {
@@ -3246,7 +3246,7 @@ label: "其他"
 }, {
 value: "湖州市",
 label: "湖州市",
-"children": [{
+children: [{
 value: "吴兴区",
 label: "吴兴区"
 }, {
@@ -3268,7 +3268,7 @@ label: "其他"
 }, {
 value: "绍兴市",
 label: "绍兴市",
-"children": [{
+children: [{
 value: "越城区",
 label: "越城区"
 }, {
@@ -3293,7 +3293,7 @@ label: "其他"
 }, {
 value: "金华市",
 label: "金华市",
-"children": [{
+children: [{
 value: "婺城区",
 label: "婺城区"
 }, {
@@ -3327,7 +3327,7 @@ label: "其他"
 }, {
 value: "衢州市",
 label: "衢州市",
-"children": [{
+children: [{
 value: "柯城区",
 label: "柯城区"
 }, {
@@ -3352,7 +3352,7 @@ label: "其他"
 }, {
 value: "舟山市",
 label: "舟山市",
-"children": [{
+children: [{
 value: "定海区",
 label: "定海区"
 }, {
@@ -3371,7 +3371,7 @@ label: "其他"
 }, {
 value: "台州市",
 label: "台州市",
-"children": [{
+children: [{
 value: "椒江区",
 label: "椒江区"
 }, {
@@ -3405,7 +3405,7 @@ label: "其他"
 }, {
 value: "丽水市",
 label: "丽水市",
-"children": [{
+children: [{
 value: "莲都区",
 label: "莲都区"
 }, {
@@ -3439,7 +3439,7 @@ label: "其他"
 }, {
 value: "其他市",
 label: "其他市",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -3447,10 +3447,10 @@ label: "其他"
 }, {
 value: "安徽省",
 label: "安徽省",
-"children": [{
+children: [{
 value: "合肥市",
 label: "合肥市",
-"children": [{
+children: [{
 value: "庐阳区",
 label: "庐阳区"
 }, {
@@ -3478,7 +3478,7 @@ label: "其他"
 }, {
 value: "芜湖市",
 label: "芜湖市",
-"children": [{
+children: [{
 value: "镜湖区",
 label: "镜湖区"
 }, {
@@ -3506,7 +3506,7 @@ label: "其他"
 }, {
 value: "蚌埠市",
 label: "蚌埠市",
-"children": [{
+children: [{
 value: "蚌山区",
 label: "蚌山区"
 }, {
@@ -3534,7 +3534,7 @@ label: "其他"
 }, {
 value: "淮南市",
 label: "淮南市",
-"children": [{
+children: [{
 value: "田家庵区",
 label: "田家庵区"
 }, {
@@ -3559,7 +3559,7 @@ label: "其他"
 }, {
 value: "马鞍山市",
 label: "马鞍山市",
-"children": [{
+children: [{
 value: "雨山区",
 label: "雨山区"
 }, {
@@ -3578,7 +3578,7 @@ label: "其他"
 }, {
 value: "淮北市",
 label: "淮北市",
-"children": [{
+children: [{
 value: "相山区",
 label: "相山区"
 }, {
@@ -3597,7 +3597,7 @@ label: "其他"
 }, {
 value: "铜陵市",
 label: "铜陵市",
-"children": [{
+children: [{
 value: "铜官山区",
 label: "铜官山区"
 }, {
@@ -3616,7 +3616,7 @@ label: "其他"
 }, {
 value: "安庆市",
 label: "安庆市",
-"children": [{
+children: [{
 value: "迎江区",
 label: "迎江区"
 }, {
@@ -3656,7 +3656,7 @@ label: "其他"
 }, {
 value: "黄山市",
 label: "黄山市",
-"children": [{
+children: [{
 value: "屯溪区",
 label: "屯溪区"
 }, {
@@ -3684,7 +3684,7 @@ label: "其他"
 }, {
 value: "滁州市",
 label: "滁州市",
-"children": [{
+children: [{
 value: "琅琊区",
 label: "琅琊区"
 }, {
@@ -3715,7 +3715,7 @@ label: "其他"
 }, {
 value: "阜阳市",
 label: "阜阳市",
-"children": [{
+children: [{
 value: "颍州区",
 label: "颍州区"
 }, {
@@ -3746,7 +3746,7 @@ label: "其他"
 }, {
 value: "宿州市",
 label: "宿州市",
-"children": [{
+children: [{
 value: "埇桥区",
 label: "埇桥区"
 }, {
@@ -3768,7 +3768,7 @@ label: "其他"
 }, {
 value: "巢湖市",
 label: "巢湖市",
-"children": [{
+children: [{
 value: "居巢区",
 label: "居巢区"
 }, {
@@ -3790,7 +3790,7 @@ label: "其他"
 }, {
 value: "六安市",
 label: "六安市",
-"children": [{
+children: [{
 value: "金安区",
 label: "金安区"
 }, {
@@ -3818,7 +3818,7 @@ label: "其他"
 }, {
 value: "亳州市",
 label: "亳州市",
-"children": [{
+children: [{
 value: "谯城区",
 label: "谯城区"
 }, {
@@ -3837,7 +3837,7 @@ label: "其他"
 }, {
 value: "池州市",
 label: "池州市",
-"children": [{
+children: [{
 value: "贵池区",
 label: "贵池区"
 }, {
@@ -3856,7 +3856,7 @@ label: "其他"
 }, {
 value: "宣城市",
 label: "宣城市",
-"children": [{
+children: [{
 value: "宣州区",
 label: "宣州区"
 }, {
@@ -3884,7 +3884,7 @@ label: "其他"
 }, {
 value: "其他市",
 label: "其他市",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -3892,10 +3892,10 @@ label: "其他"
 }, {
 value: "福建省",
 label: "福建省",
-"children": [{
+children: [{
 value: "福州市",
 label: "福州市",
-"children": [{
+children: [{
 value: "鼓楼区",
 label: "鼓楼区"
 }, {
@@ -3941,7 +3941,7 @@ label: "其他"
 }, {
 value: "厦门市",
 label: "厦门市",
-"children": [{
+children: [{
 value: "思明区",
 label: "思明区"
 }, {
@@ -3966,7 +3966,7 @@ label: "其他"
 }, {
 value: "莆田市",
 label: "莆田市",
-"children": [{
+children: [{
 value: "城厢区",
 label: "城厢区"
 }, {
@@ -3988,7 +3988,7 @@ label: "其他"
 }, {
 value: "三明市",
 label: "三明市",
-"children": [{
+children: [{
 value: "梅列区",
 label: "梅列区"
 }, {
@@ -4031,7 +4031,7 @@ label: "其他"
 }, {
 value: "泉州市",
 label: "泉州市",
-"children": [{
+children: [{
 value: "鲤城区",
 label: "鲤城区"
 }, {
@@ -4074,7 +4074,7 @@ label: "其他"
 }, {
 value: "漳州市",
 label: "漳州市",
-"children": [{
+children: [{
 value: "芗城区",
 label: "芗城区"
 }, {
@@ -4114,7 +4114,7 @@ label: "其他"
 }, {
 value: "南平市",
 label: "南平市",
-"children": [{
+children: [{
 value: "延平区",
 label: "延平区"
 }, {
@@ -4151,7 +4151,7 @@ label: "其他"
 }, {
 value: "龙岩市",
 label: "龙岩市",
-"children": [{
+children: [{
 value: "新罗区",
 label: "新罗区"
 }, {
@@ -4179,7 +4179,7 @@ label: "其他"
 }, {
 value: "宁德市",
 label: "宁德市",
-"children": [{
+children: [{
 value: "蕉城区",
 label: "蕉城区"
 }, {
@@ -4213,7 +4213,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -4221,10 +4221,10 @@ label: "其他"
 }, {
 value: "江西省",
 label: "江西省",
-"children": [{
+children: [{
 value: "南昌市",
 label: "南昌市",
-"children": [{
+children: [{
 value: "东湖区",
 label: "东湖区"
 }, {
@@ -4258,7 +4258,7 @@ label: "其他"
 }, {
 value: "景德镇市",
 label: "景德镇市",
-"children": [{
+children: [{
 value: "珠山区",
 label: "珠山区"
 }, {
@@ -4277,7 +4277,7 @@ label: "其他"
 }, {
 value: "萍乡市",
 label: "萍乡市",
-"children": [{
+children: [{
 value: "安源区",
 label: "安源区"
 }, {
@@ -4299,7 +4299,7 @@ label: "其他"
 }, {
 value: "九江市",
 label: "九江市",
-"children": [{
+children: [{
 value: "浔阳区",
 label: "浔阳区"
 }, {
@@ -4342,7 +4342,7 @@ label: "其他"
 }, {
 value: "新余市",
 label: "新余市",
-"children": [{
+children: [{
 value: "渝水区",
 label: "渝水区"
 }, {
@@ -4355,7 +4355,7 @@ label: "其他"
 }, {
 value: "鹰潭市",
 label: "鹰潭市",
-"children": [{
+children: [{
 value: "月湖区",
 label: "月湖区"
 }, {
@@ -4371,7 +4371,7 @@ label: "其他"
 }, {
 value: "赣州市",
 label: "赣州市",
-"children": [{
+children: [{
 value: "章贡区",
 label: "章贡区"
 }, {
@@ -4432,7 +4432,7 @@ label: "其他"
 }, {
 value: "吉安市",
 label: "吉安市",
-"children": [{
+children: [{
 value: "吉州区",
 label: "吉州区"
 }, {
@@ -4478,7 +4478,7 @@ label: "其他"
 }, {
 value: "宜春市",
 label: "宜春市",
-"children": [{
+children: [{
 value: "袁州区",
 label: "袁州区"
 }, {
@@ -4515,7 +4515,7 @@ label: "其他"
 }, {
 value: "抚州市",
 label: "抚州市",
-"children": [{
+children: [{
 value: "临川区",
 label: "临川区"
 }, {
@@ -4555,7 +4555,7 @@ label: "其他"
 }, {
 value: "上饶市",
 label: "上饶市",
-"children": [{
+children: [{
 value: "信州区",
 label: "信州区"
 }, {
@@ -4598,7 +4598,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -4606,10 +4606,10 @@ label: "其他"
 }, {
 value: "山东省",
 label: "山东省",
-"children": [{
+children: [{
 value: "济南市",
 label: "济南市",
-"children": [{
+children: [{
 value: "市中区",
 label: "市中区"
 }, {
@@ -4646,7 +4646,7 @@ label: "其他"
 }, {
 value: "青岛市",
 label: "青岛市",
-"children": [{
+children: [{
 value: "市南区",
 label: "市南区"
 }, {
@@ -4689,7 +4689,7 @@ label: "其他"
 }, {
 value: "淄博市",
 label: "淄博市",
-"children": [{
+children: [{
 value: "张店区",
 label: "张店区"
 }, {
@@ -4720,7 +4720,7 @@ label: "其他"
 }, {
 value: "枣庄市",
 label: "枣庄市",
-"children": [{
+children: [{
 value: "市中区",
 label: "市中区"
 }, {
@@ -4745,7 +4745,7 @@ label: "其他"
 }, {
 value: "东营市",
 label: "东营市",
-"children": [{
+children: [{
 value: "东营区",
 label: "东营区"
 }, {
@@ -4767,7 +4767,7 @@ label: "其他"
 }, {
 value: "烟台市",
 label: "烟台市",
-"children": [{
+children: [{
 value: "芝罘区",
 label: "芝罘区"
 }, {
@@ -4810,7 +4810,7 @@ label: "其他"
 }, {
 value: "潍坊市",
 label: "潍坊市",
-"children": [{
+children: [{
 value: "潍城区",
 label: "潍城区"
 }, {
@@ -4853,7 +4853,7 @@ label: "其他"
 }, {
 value: "济宁市",
 label: "济宁市",
-"children": [{
+children: [{
 value: "市中区",
 label: "市中区"
 }, {
@@ -4896,7 +4896,7 @@ label: "其他"
 }, {
 value: "泰安市",
 label: "泰安市",
-"children": [{
+children: [{
 value: "泰山区",
 label: "泰山区"
 }, {
@@ -4921,7 +4921,7 @@ label: "其他"
 }, {
 value: "威海市",
 label: "威海市",
-"children": [{
+children: [{
 value: "环翠区",
 label: "环翠区"
 }, {
@@ -4940,7 +4940,7 @@ label: "其他"
 }, {
 value: "日照市",
 label: "日照市",
-"children": [{
+children: [{
 value: "东港区",
 label: "东港区"
 }, {
@@ -4959,7 +4959,7 @@ label: "其他"
 }, {
 value: "莱芜市",
 label: "莱芜市",
-"children": [{
+children: [{
 value: "莱城区",
 label: "莱城区"
 }, {
@@ -4972,7 +4972,7 @@ label: "其他"
 }, {
 value: "临沂市",
 label: "临沂市",
-"children": [{
+children: [{
 value: "兰山区",
 label: "兰山区"
 }, {
@@ -5015,7 +5015,7 @@ label: "其他"
 }, {
 value: "德州市",
 label: "德州市",
-"children": [{
+children: [{
 value: "德城区",
 label: "德城区"
 }, {
@@ -5055,7 +5055,7 @@ label: "其他"
 }, {
 value: "聊城市",
 label: "聊城市",
-"children": [{
+children: [{
 value: "东昌府区",
 label: "东昌府区"
 }, {
@@ -5086,7 +5086,7 @@ label: "其他"
 }, {
 value: "滨州市",
 label: "滨州市",
-"children": [{
+children: [{
 value: "滨城区",
 label: "滨城区"
 }, {
@@ -5114,7 +5114,7 @@ label: "其他"
 }, {
 value: "菏泽市",
 label: "菏泽市",
-"children": [{
+children: [{
 value: "牡丹区",
 label: "牡丹区"
 }, {
@@ -5148,7 +5148,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -5156,10 +5156,10 @@ label: "其他"
 }, {
 value: "河南省",
 label: "河南省",
-"children": [{
+children: [{
 value: "郑州市",
 label: "郑州市",
-"children": [{
+children: [{
 value: "中原区",
 label: "中原区"
 }, {
@@ -5202,7 +5202,7 @@ label: "其他"
 }, {
 value: "开封市",
 label: "开封市",
-"children": [{
+children: [{
 value: "鼓楼区",
 label: "鼓楼区"
 }, {
@@ -5239,7 +5239,7 @@ label: "其他"
 }, {
 value: "洛阳市",
 label: "洛阳市",
-"children": [{
+children: [{
 value: "西工区",
 label: "西工区"
 }, {
@@ -5291,7 +5291,7 @@ label: "其他"
 }, {
 value: "平顶山市",
 label: "平顶山市",
-"children": [{
+children: [{
 value: "新华区",
 label: "新华区"
 }, {
@@ -5328,7 +5328,7 @@ label: "其他"
 }, {
 value: "安阳市",
 label: "安阳市",
-"children": [{
+children: [{
 value: "北关区",
 label: "北关区"
 }, {
@@ -5362,7 +5362,7 @@ label: "其他"
 }, {
 value: "鹤壁市",
 label: "鹤壁市",
-"children": [{
+children: [{
 value: "淇滨区",
 label: "淇滨区"
 }, {
@@ -5384,7 +5384,7 @@ label: "其他"
 }, {
 value: "新乡市",
 label: "新乡市",
-"children": [{
+children: [{
 value: "卫滨区",
 label: "卫滨区"
 }, {
@@ -5427,7 +5427,7 @@ label: "其他"
 }, {
 value: "焦作市",
 label: "焦作市",
-"children": [{
+children: [{
 value: "解放区",
 label: "解放区"
 }, {
@@ -5464,7 +5464,7 @@ label: "其他"
 }, {
 value: "濮阳市",
 label: "濮阳市",
-"children": [{
+children: [{
 value: "华龙区",
 label: "华龙区"
 }, {
@@ -5489,7 +5489,7 @@ label: "其他"
 }, {
 value: "许昌市",
 label: "许昌市",
-"children": [{
+children: [{
 value: "魏都区",
 label: "魏都区"
 }, {
@@ -5514,7 +5514,7 @@ label: "其他"
 }, {
 value: "漯河市",
 label: "漯河市",
-"children": [{
+children: [{
 value: "源汇区",
 label: "源汇区"
 }, {
@@ -5536,7 +5536,7 @@ label: "其他"
 }, {
 value: "三门峡市",
 label: "三门峡市",
-"children": [{
+children: [{
 value: "湖滨区",
 label: "湖滨区"
 }, {
@@ -5561,7 +5561,7 @@ label: "其他"
 }, {
 value: "南阳市",
 label: "南阳市",
-"children": [{
+children: [{
 value: "卧龙区",
 label: "卧龙区"
 }, {
@@ -5607,7 +5607,7 @@ label: "其他"
 }, {
 value: "商丘市",
 label: "商丘市",
-"children": [{
+children: [{
 value: "梁园区",
 label: "梁园区"
 }, {
@@ -5641,7 +5641,7 @@ label: "其他"
 }, {
 value: "信阳市",
 label: "信阳市",
-"children": [{
+children: [{
 value: "浉河区",
 label: "浉河区"
 }, {
@@ -5678,7 +5678,7 @@ label: "其他"
 }, {
 value: "周口市",
 label: "周口市",
-"children": [{
+children: [{
 value: "川汇区",
 label: "川汇区"
 }, {
@@ -5715,7 +5715,7 @@ label: "其他"
 }, {
 value: "驻马店市",
 label: "驻马店市",
-"children": [{
+children: [{
 value: "驿城区",
 label: "驿城区"
 }, {
@@ -5752,7 +5752,7 @@ label: "其他"
 }, {
 value: "焦作市",
 label: "焦作市",
-"children": [{
+children: [{
 value: "济源市",
 label: "济源市"
 }, {
@@ -5762,7 +5762,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -5770,10 +5770,10 @@ label: "其他"
 }, {
 value: "湖北省",
 label: "湖北省",
-"children": [{
+children: [{
 value: "武汉市",
 label: "武汉市",
-"children": [{
+children: [{
 value: "江岸区",
 label: "江岸区"
 }, {
@@ -5819,7 +5819,7 @@ label: "其他"
 }, {
 value: "黄石市",
 label: "黄石市",
-"children": [{
+children: [{
 value: "黄石港区",
 label: "黄石港区"
 }, {
@@ -5844,7 +5844,7 @@ label: "其他"
 }, {
 value: "十堰市",
 label: "十堰市",
-"children": [{
+children: [{
 value: "张湾区",
 label: "张湾区"
 }, {
@@ -5875,7 +5875,7 @@ label: "其他"
 }, {
 value: "荆州市",
 label: "荆州市",
-"children": [{
+children: [{
 value: "沙市区",
 label: "沙市区"
 }, {
@@ -5906,7 +5906,7 @@ label: "其他"
 }, {
 value: "宜昌市",
 label: "宜昌市",
-"children": [{
+children: [{
 value: "西陵区",
 label: "西陵区"
 }, {
@@ -5952,7 +5952,7 @@ label: "其他"
 }, {
 value: "襄樊市",
 label: "襄樊市",
-"children": [{
+children: [{
 value: "襄城区",
 label: "襄城区"
 }, {
@@ -5986,7 +5986,7 @@ label: "其他"
 }, {
 value: "鄂州市",
 label: "鄂州市",
-"children": [{
+children: [{
 value: "鄂城区",
 label: "鄂城区"
 }, {
@@ -6002,7 +6002,7 @@ label: "其他"
 }, {
 value: "荆门市",
 label: "荆门市",
-"children": [{
+children: [{
 value: "东宝区",
 label: "东宝区"
 }, {
@@ -6024,7 +6024,7 @@ label: "其他"
 }, {
 value: "孝感市",
 label: "孝感市",
-"children": [{
+children: [{
 value: "孝南区",
 label: "孝南区"
 }, {
@@ -6052,7 +6052,7 @@ label: "其他"
 }, {
 value: "黄冈市",
 label: "黄冈市",
-"children": [{
+children: [{
 value: "黄州区",
 label: "黄州区"
 }, {
@@ -6089,7 +6089,7 @@ label: "其他"
 }, {
 value: "咸宁市",
 label: "咸宁市",
-"children": [{
+children: [{
 value: "咸安区",
 label: "咸安区"
 }, {
@@ -6114,7 +6114,7 @@ label: "其他"
 }, {
 value: "随州市",
 label: "随州市",
-"children": [{
+children: [{
 value: "曾都区",
 label: "曾都区"
 }, {
@@ -6127,7 +6127,7 @@ label: "其他"
 }, {
 value: "恩施土家族苗族自治州",
 label: "恩施土家族苗族自治州",
-"children": [{
+children: [{
 value: "恩施市",
 label: "恩施市"
 }, {
@@ -6158,35 +6158,35 @@ label: "其他"
 }, {
 value: "仙桃市",
 label: "仙桃市",
-"children": [{
+children: [{
 value: "仙桃",
 label: "仙桃"
 }]
 }, {
 value: "天门市",
 label: "天门市",
-"children": [{
+children: [{
 value: "天门",
 label: "天门"
 }]
 }, {
 value: "潜江市",
 label: "潜江市",
-"children": [{
+children: [{
 value: "潜江",
 label: "潜江"
 }]
 }, {
 value: "神农架林区",
 label: "神农架林区",
-"children": [{
+children: [{
 value: "神农架林区",
 label: "神农架林区"
 }]
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -6194,10 +6194,10 @@ label: "其他"
 }, {
 value: "湖南省",
 label: "湖南省",
-"children": [{
+children: [{
 value: "长沙市",
 label: "长沙市",
-"children": [{
+children: [{
 value: "岳麓区",
 label: "岳麓区"
 }, {
@@ -6231,7 +6231,7 @@ label: "其他"
 }, {
 value: "株洲市",
 label: "株洲市",
-"children": [{
+children: [{
 value: "天元区",
 label: "天元区"
 }, {
@@ -6265,7 +6265,7 @@ label: "其他"
 }, {
 value: "湘潭市",
 label: "湘潭市",
-"children": [{
+children: [{
 value: "岳塘区",
 label: "岳塘区"
 }, {
@@ -6287,7 +6287,7 @@ label: "其他"
 }, {
 value: "衡阳市",
 label: "衡阳市",
-"children": [{
+children: [{
 value: "雁峰区",
 label: "雁峰区"
 }, {
@@ -6330,7 +6330,7 @@ label: "其他"
 }, {
 value: "邵阳市",
 label: "邵阳市",
-"children": [{
+children: [{
 value: "双清区",
 label: "双清区"
 }, {
@@ -6373,7 +6373,7 @@ label: "其他"
 }, {
 value: "岳阳市",
 label: "岳阳市",
-"children": [{
+children: [{
 value: "岳阳楼区",
 label: "岳阳楼区"
 }, {
@@ -6407,7 +6407,7 @@ label: "其他"
 }, {
 value: "常德市",
 label: "常德市",
-"children": [{
+children: [{
 value: "武陵区",
 label: "武陵区"
 }, {
@@ -6441,7 +6441,7 @@ label: "其他"
 }, {
 value: "张家界市",
 label: "张家界市",
-"children": [{
+children: [{
 value: "永定区",
 label: "永定区"
 }, {
@@ -6460,7 +6460,7 @@ label: "其他"
 }, {
 value: "益阳市",
 label: "益阳市",
-"children": [{
+children: [{
 value: "赫山区",
 label: "赫山区"
 }, {
@@ -6485,7 +6485,7 @@ label: "其他"
 }, {
 value: "郴州市",
 label: "郴州市",
-"children": [{
+children: [{
 value: "北湖区",
 label: "北湖区"
 }, {
@@ -6525,7 +6525,7 @@ label: "其他"
 }, {
 value: "永州市",
 label: "永州市",
-"children": [{
+children: [{
 value: "冷水滩区",
 label: "冷水滩区"
 }, {
@@ -6565,7 +6565,7 @@ label: "其他"
 }, {
 value: "怀化市",
 label: "怀化市",
-"children": [{
+children: [{
 value: "鹤城区",
 label: "鹤城区"
 }, {
@@ -6608,7 +6608,7 @@ label: "其他"
 }, {
 value: "娄底市",
 label: "娄底市",
-"children": [{
+children: [{
 value: "娄星区",
 label: "娄星区"
 }, {
@@ -6630,7 +6630,7 @@ label: "其他"
 }, {
 value: "湘西土家族苗族自治州",
 label: "湘西土家族苗族自治州",
-"children": [{
+children: [{
 value: "吉首市",
 label: "吉首市"
 }, {
@@ -6661,7 +6661,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -6669,10 +6669,10 @@ label: "其他"
 }, {
 value: "广东省",
 label: "广东省",
-"children": [{
+children: [{
 value: "广州市",
 label: "广州市",
-"children": [{
+children: [{
 value: "越秀区",
 label: "越秀区"
 }, {
@@ -6715,7 +6715,7 @@ label: "其他"
 }, {
 value: "深圳市",
 label: "深圳市",
-"children": [{
+children: [{
 value: "福田区",
 label: "福田区"
 }, {
@@ -6740,7 +6740,7 @@ label: "其他"
 }, {
 value: "东莞市",
 label: "东莞市",
-"children": [{
+children: [{
 value: "莞城",
 label: "莞城"
 }, {
@@ -6762,14 +6762,14 @@ label: "其他"
 }, {
 value: "中山市",
 label: "中山市",
-"children": [{
+children: [{
 value: "中山",
 label: "中山"
 }]
 }, {
 value: "潮州市",
 label: "潮州市",
-"children": [{
+children: [{
 value: "湘桥区",
 label: "湘桥区"
 }, {
@@ -6785,7 +6785,7 @@ label: "其他"
 }, {
 value: "揭阳市",
 label: "揭阳市",
-"children": [{
+children: [{
 value: "榕城区",
 label: "榕城区"
 }, {
@@ -6807,7 +6807,7 @@ label: "其他"
 }, {
 value: "云浮市",
 label: "云浮市",
-"children": [{
+children: [{
 value: "云城区",
 label: "云城区"
 }, {
@@ -6829,7 +6829,7 @@ label: "其他"
 }, {
 value: "珠海市",
 label: "珠海市",
-"children": [{
+children: [{
 value: "香洲区",
 label: "香洲区"
 }, {
@@ -6845,7 +6845,7 @@ label: "其他"
 }, {
 value: "汕头市",
 label: "汕头市",
-"children": [{
+children: [{
 value: "金平区",
 label: "金平区"
 }, {
@@ -6873,7 +6873,7 @@ label: "其他"
 }, {
 value: "韶关市",
 label: "韶关市",
-"children": [{
+children: [{
 value: "浈江区",
 label: "浈江区"
 }, {
@@ -6910,7 +6910,7 @@ label: "其他"
 }, {
 value: "佛山市",
 label: "佛山市",
-"children": [{
+children: [{
 value: "禅城区",
 label: "禅城区"
 }, {
@@ -6932,7 +6932,7 @@ label: "其他"
 }, {
 value: "江门市",
 label: "江门市",
-"children": [{
+children: [{
 value: "蓬江区",
 label: "蓬江区"
 }, {
@@ -6960,7 +6960,7 @@ label: "其他"
 }, {
 value: "湛江市",
 label: "湛江市",
-"children": [{
+children: [{
 value: "赤坎区",
 label: "赤坎区"
 }, {
@@ -6994,7 +6994,7 @@ label: "其他"
 }, {
 value: "茂名市",
 label: "茂名市",
-"children": [{
+children: [{
 value: "茂南区",
 label: "茂南区"
 }, {
@@ -7019,7 +7019,7 @@ label: "其他"
 }, {
 value: "肇庆市",
 label: "肇庆市",
-"children": [{
+children: [{
 value: "端州区",
 label: "端州区"
 }, {
@@ -7050,7 +7050,7 @@ label: "其他"
 }, {
 value: "惠州市",
 label: "惠州市",
-"children": [{
+children: [{
 value: "惠城区",
 label: "惠城区"
 }, {
@@ -7072,7 +7072,7 @@ label: "其他"
 }, {
 value: "梅州市",
 label: "梅州市",
-"children": [{
+children: [{
 value: "梅江区",
 label: "梅江区"
 }, {
@@ -7103,7 +7103,7 @@ label: "其他"
 }, {
 value: "汕尾市",
 label: "汕尾市",
-"children": [{
+children: [{
 value: "城区",
 label: "城区"
 }, {
@@ -7122,7 +7122,7 @@ label: "其他"
 }, {
 value: "河源市",
 label: "河源市",
-"children": [{
+children: [{
 value: "源城区",
 label: "源城区"
 }, {
@@ -7147,7 +7147,7 @@ label: "其他"
 }, {
 value: "阳江市",
 label: "阳江市",
-"children": [{
+children: [{
 value: "江城区",
 label: "江城区"
 }, {
@@ -7166,7 +7166,7 @@ label: "其他"
 }, {
 value: "清远市",
 label: "清远市",
-"children": [{
+children: [{
 value: "清城区",
 label: "清城区"
 }, {
@@ -7198,10 +7198,10 @@ label: "其他"
 }, {
 value: "广西",
 label: "广西",
-"children": [{
+children: [{
 value: "南宁市",
 label: "南宁市",
-"children": [{
+children: [{
 value: "青秀区",
 label: "青秀区"
 }, {
@@ -7244,7 +7244,7 @@ label: "其他"
 }, {
 value: "柳州市",
 label: "柳州市",
-"children": [{
+children: [{
 value: "城中区",
 label: "城中区"
 }, {
@@ -7281,7 +7281,7 @@ label: "其他"
 }, {
 value: "桂林市",
 label: "桂林市",
-"children": [{
+children: [{
 value: "象山区",
 label: "象山区"
 }, {
@@ -7339,7 +7339,7 @@ label: "其他"
 }, {
 value: "梧州市",
 label: "梧州市",
-"children": [{
+children: [{
 value: "万秀区",
 label: "万秀区"
 }, {
@@ -7367,7 +7367,7 @@ label: "其他"
 }, {
 value: "北海市",
 label: "北海市",
-"children": [{
+children: [{
 value: "海城区",
 label: "海城区"
 }, {
@@ -7386,7 +7386,7 @@ label: "其他"
 }, {
 value: "防城港市",
 label: "防城港市",
-"children": [{
+children: [{
 value: "港口区",
 label: "港口区"
 }, {
@@ -7405,7 +7405,7 @@ label: "其他"
 }, {
 value: "钦州市",
 label: "钦州市",
-"children": [{
+children: [{
 value: "钦南区",
 label: "钦南区"
 }, {
@@ -7424,7 +7424,7 @@ label: "其他"
 }, {
 value: "贵港市",
 label: "贵港市",
-"children": [{
+children: [{
 value: "港北区",
 label: "港北区"
 }, {
@@ -7446,7 +7446,7 @@ label: "其他"
 }, {
 value: "玉林市",
 label: "玉林市",
-"children": [{
+children: [{
 value: "玉州区",
 label: "玉州区"
 }, {
@@ -7471,7 +7471,7 @@ label: "其他"
 }, {
 value: "百色市",
 label: "百色市",
-"children": [{
+children: [{
 value: "右江区",
 label: "右江区"
 }, {
@@ -7514,7 +7514,7 @@ label: "其他"
 }, {
 value: "贺州市",
 label: "贺州市",
-"children": [{
+children: [{
 value: "八步区",
 label: "八步区"
 }, {
@@ -7533,7 +7533,7 @@ label: "其他"
 }, {
 value: "河池市",
 label: "河池市",
-"children": [{
+children: [{
 value: "金城江区",
 label: "金城江区"
 }, {
@@ -7573,7 +7573,7 @@ label: "其他"
 }, {
 value: "来宾市",
 label: "来宾市",
-"children": [{
+children: [{
 value: "兴宾区",
 label: "兴宾区"
 }, {
@@ -7598,7 +7598,7 @@ label: "其他"
 }, {
 value: "崇左市",
 label: "崇左市",
-"children": [{
+children: [{
 value: "江州区",
 label: "江州区"
 }, {
@@ -7626,7 +7626,7 @@ label: "其他"
 }, {
 value: "其他市",
 label: "其他市",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -7634,10 +7634,10 @@ label: "其他"
 }, {
 value: "海南省",
 label: "海南省",
-"children": [{
+children: [{
 value: "海口市",
 label: "海口市",
-"children": [{
+children: [{
 value: "龙华区",
 label: "龙华区"
 }, {
@@ -7656,7 +7656,7 @@ label: "其他"
 }, {
 value: "三亚市",
 label: "三亚市",
-"children": [{
+children: [{
 value: "三亚市",
 label: "三亚市"
 }, {
@@ -7666,119 +7666,119 @@ label: "其他"
 }, {
 value: "五指山市",
 label: "五指山市",
-"children": [{
+children: [{
 value: "五指山",
 label: "五指山"
 }]
 }, {
 value: "琼海市",
 label: "琼海市",
-"children": [{
+children: [{
 value: "琼海",
 label: "琼海"
 }]
 }, {
 value: "儋州市",
 label: "儋州市",
-"children": [{
+children: [{
 value: "儋州",
 label: "儋州"
 }]
 }, {
 value: "文昌市",
 label: "文昌市",
-"children": [{
+children: [{
 value: "文昌",
 label: "文昌"
 }]
 }, {
 value: "万宁市",
 label: "万宁市",
-"children": [{
+children: [{
 value: "万宁",
 label: "万宁"
 }]
 }, {
 value: "东方市",
 label: "东方市",
-"children": [{
+children: [{
 value: "东方",
 label: "东方"
 }]
 }, {
 value: "澄迈县",
 label: "澄迈县",
-"children": [{
+children: [{
 value: "澄迈县",
 label: "澄迈县"
 }]
 }, {
 value: "定安县",
 label: "定安县",
-"children": [{
+children: [{
 value: "定安县",
 label: "定安县"
 }]
 }, {
 value: "屯昌县",
 label: "屯昌县",
-"children": [{
+children: [{
 value: "屯昌县",
 label: "屯昌县"
 }]
 }, {
 value: "临高县",
 label: "临高县",
-"children": [{
+children: [{
 value: "临高县",
 label: "临高县"
 }]
 }, {
 value: "白沙黎族自治县",
 label: "白沙黎族自治县",
-"children": [{
+children: [{
 value: "白沙黎族自治县",
 label: "白沙黎族自治县"
 }]
 }, {
 value: "昌江黎族自治县",
 label: "昌江黎族自治县",
-"children": [{
+children: [{
 value: "昌江黎族自治县",
 label: "昌江黎族自治县"
 }]
 }, {
 value: "乐东黎族自治县",
 label: "乐东黎族自治县",
-"children": [{
+children: [{
 value: "乐东黎族自治县",
 label: "乐东黎族自治县"
 }]
 }, {
 value: "陵水黎族自治县",
 label: "陵水黎族自治县",
-"children": [{
+children: [{
 value: "陵水黎族自治县",
 label: "陵水黎族自治县"
 }]
 }, {
 value: "保亭黎族苗族自治县",
 label: "保亭黎族苗族自治县",
-"children": [{
+children: [{
 value: "保亭黎族苗族自治县",
 label: "保亭黎族苗族自治县"
 }]
 }, {
 value: "琼中黎族苗族自治县",
 label: "琼中黎族苗族自治县",
-"children": [{
+children: [{
 value: "琼中黎族苗族自治县",
 label: "琼中黎族苗族自治县"
 }]
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -7786,10 +7786,10 @@ label: "其他"
 }, {
 value: "重庆市",
 label: "重庆市",
-"children": [{
+children: [{
 value: "重庆市",
 label: "重庆市",
-"children": [{
+children: [{
 value: "渝中区",
 label: "渝中区"
 }, {
@@ -7917,10 +7917,10 @@ label: "其他"
 }, {
 value: "四川省",
 label: "四川省",
-"children": [{
+children: [{
 value: "成都市",
 label: "成都市",
-"children": [{
+children: [{
 value: "青羊区",
 label: "青羊区"
 }, {
@@ -7984,7 +7984,7 @@ label: "其他"
 }, {
 value: "自贡市",
 label: "自贡市",
-"children": [{
+children: [{
 value: "大安区",
 label: "大安区"
 }, {
@@ -8009,7 +8009,7 @@ label: "其他"
 }, {
 value: "攀枝花市",
 label: "攀枝花市",
-"children": [{
+children: [{
 value: "仁和区",
 label: "仁和区"
 }, {
@@ -8031,7 +8031,7 @@ label: "其他"
 }, {
 value: "泸州市",
 label: "泸州市",
-"children": [{
+children: [{
 value: "江阳区",
 label: "江阳区"
 }, {
@@ -8059,7 +8059,7 @@ label: "其他"
 }, {
 value: "德阳市",
 label: "德阳市",
-"children": [{
+children: [{
 value: "旌阳区",
 label: "旌阳区"
 }, {
@@ -8084,7 +8084,7 @@ label: "其他"
 }, {
 value: "绵阳市",
 label: "绵阳市",
-"children": [{
+children: [{
 value: "涪城区",
 label: "涪城区"
 }, {
@@ -8118,7 +8118,7 @@ label: "其他"
 }, {
 value: "广元市",
 label: "广元市",
-"children": [{
+children: [{
 value: "元坝区",
 label: "元坝区"
 }, {
@@ -8146,7 +8146,7 @@ label: "其他"
 }, {
 value: "遂宁市",
 label: "遂宁市",
-"children": [{
+children: [{
 value: "船山区",
 label: "船山区"
 }, {
@@ -8168,7 +8168,7 @@ label: "其他"
 }, {
 value: "内江市",
 label: "内江市",
-"children": [{
+children: [{
 value: "市中区",
 label: "市中区"
 }, {
@@ -8190,7 +8190,7 @@ label: "其他"
 }, {
 value: "乐山市",
 label: "乐山市",
-"children": [{
+children: [{
 value: "市中区",
 label: "市中区"
 }, {
@@ -8230,7 +8230,7 @@ label: "其他"
 }, {
 value: "南充",
 label: "南充",
-"children": [{
+children: [{
 value: "顺庆区",
 label: "顺庆区"
 }, {
@@ -8264,7 +8264,7 @@ label: "其他"
 }, {
 value: "眉山市",
 label: "眉山市",
-"children": [{
+children: [{
 value: "东坡区",
 label: "东坡区"
 }, {
@@ -8289,7 +8289,7 @@ label: "其他"
 }, {
 value: "宜宾市",
 label: "宜宾市",
-"children": [{
+children: [{
 value: "翠屏区",
 label: "翠屏区"
 }, {
@@ -8326,7 +8326,7 @@ label: "其他"
 }, {
 value: "广安市",
 label: "广安市",
-"children": [{
+children: [{
 value: "广安区",
 label: "广安区"
 }, {
@@ -8348,7 +8348,7 @@ label: "其他"
 }, {
 value: "达州市",
 label: "达州市",
-"children": [{
+children: [{
 value: "通川区",
 label: "通川区"
 }, {
@@ -8376,7 +8376,7 @@ label: "其他"
 }, {
 value: "雅安市",
 label: "雅安市",
-"children": [{
+children: [{
 value: "雨城区",
 label: "雨城区"
 }, {
@@ -8407,7 +8407,7 @@ label: "其他"
 }, {
 value: "巴中市",
 label: "巴中市",
-"children": [{
+children: [{
 value: "巴州区",
 label: "巴州区"
 }, {
@@ -8426,7 +8426,7 @@ label: "其他"
 }, {
 value: "资阳市",
 label: "资阳市",
-"children": [{
+children: [{
 value: "雁江区",
 label: "雁江区"
 }, {
@@ -8445,7 +8445,7 @@ label: "其他"
 }, {
 value: "阿坝藏族羌族自治州",
 label: "阿坝藏族羌族自治州",
-"children": [{
+children: [{
 value: "马尔康县",
 label: "马尔康县"
 }, {
@@ -8491,7 +8491,7 @@ label: "其他"
 }, {
 value: "甘孜藏族自治州",
 label: "甘孜藏族自治州",
-"children": [{
+children: [{
 value: "康定县",
 label: "康定县"
 }, {
@@ -8552,7 +8552,7 @@ label: "其他"
 }, {
 value: "凉山彝族自治州",
 label: "凉山彝族自治州",
-"children": [{
+children: [{
 value: "西昌市",
 label: "西昌市"
 }, {
@@ -8610,7 +8610,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -8618,10 +8618,10 @@ label: "其他"
 }, {
 value: "贵州省",
 label: "贵州省",
-"children": [{
+children: [{
 value: "贵阳市",
 label: "贵阳市",
-"children": [{
+children: [{
 value: "南明区",
 label: "南明区"
 }, {
@@ -8658,7 +8658,7 @@ label: "其他"
 }, {
 value: "六盘水市",
 label: "六盘水市",
-"children": [{
+children: [{
 value: "钟山区",
 label: "钟山区"
 }, {
@@ -8677,7 +8677,7 @@ label: "其他"
 }, {
 value: "遵义市",
 label: "遵义市",
-"children": [{
+children: [{
 value: "红花岗区",
 label: "红花岗区"
 }, {
@@ -8726,7 +8726,7 @@ label: "其他"
 }, {
 value: "安顺市",
 label: "安顺市",
-"children": [{
+children: [{
 value: "西秀区",
 label: "西秀区"
 }, {
@@ -8751,7 +8751,7 @@ label: "其他"
 }, {
 value: "铜仁地区",
 label: "铜仁地区",
-"children": [{
+children: [{
 value: "铜仁市",
 label: "铜仁市"
 }, {
@@ -8788,7 +8788,7 @@ label: "其他"
 }, {
 value: "毕节地区",
 label: "毕节地区",
-"children": [{
+children: [{
 value: "毕节市",
 label: "毕节市"
 }, {
@@ -8819,7 +8819,7 @@ label: "其他"
 }, {
 value: "黔西南布依族苗族自治州",
 label: "黔西南布依族苗族自治州",
-"children": [{
+children: [{
 value: "兴义市",
 label: "兴义市"
 }, {
@@ -8850,7 +8850,7 @@ label: "其他"
 }, {
 value: "黔东南苗族侗族自治州",
 label: "黔东南苗族侗族自治州",
-"children": [{
+children: [{
 value: "凯里市",
 label: "凯里市"
 }, {
@@ -8905,7 +8905,7 @@ label: "其他"
 }, {
 value: "黔南布依族苗族自治州",
 label: "黔南布依族苗族自治州",
-"children": [{
+children: [{
 value: "都匀市",
 label: "都匀市"
 }, {
@@ -8948,7 +8948,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -8956,10 +8956,10 @@ label: "其他"
 }, {
 value: "云南省",
 label: "云南省",
-"children": [{
+children: [{
 value: "昆明市",
 label: "昆明市",
-"children": [{
+children: [{
 value: "盘龙区",
 label: "盘龙区"
 }, {
@@ -9008,7 +9008,7 @@ label: "其他"
 }, {
 value: "曲靖市",
 label: "曲靖市",
-"children": [{
+children: [{
 value: "麒麟区",
 label: "麒麟区"
 }, {
@@ -9042,7 +9042,7 @@ label: "其他"
 }, {
 value: "玉溪市",
 label: "玉溪市",
-"children": [{
+children: [{
 value: "红塔区",
 label: "红塔区"
 }, {
@@ -9076,7 +9076,7 @@ label: "其他"
 }, {
 value: "保山市",
 label: "保山市",
-"children": [{
+children: [{
 value: "隆阳区",
 label: "隆阳区"
 }, {
@@ -9098,7 +9098,7 @@ label: "其他"
 }, {
 value: "昭通市",
 label: "昭通市",
-"children": [{
+children: [{
 value: "昭阳区",
 label: "昭阳区"
 }, {
@@ -9138,7 +9138,7 @@ label: "其他"
 }, {
 value: "丽江市",
 label: "丽江市",
-"children": [{
+children: [{
 value: "古城区",
 label: "古城区"
 }, {
@@ -9160,7 +9160,7 @@ label: "其他"
 }, {
 value: "普洱市",
 label: "普洱市",
-"children": [{
+children: [{
 value: "思茅区",
 label: "思茅区"
 }, {
@@ -9197,7 +9197,7 @@ label: "其他"
 }, {
 value: "临沧市",
 label: "临沧市",
-"children": [{
+children: [{
 value: "临翔区",
 label: "临翔区"
 }, {
@@ -9228,7 +9228,7 @@ label: "其他"
 }, {
 value: "德宏傣族景颇族自治州",
 label: "德宏傣族景颇族自治州",
-"children": [{
+children: [{
 value: "潞西市",
 label: "潞西市"
 }, {
@@ -9250,7 +9250,7 @@ label: "其他"
 }, {
 value: "怒江傈僳族自治州",
 label: "怒江傈僳族自治州",
-"children": [{
+children: [{
 value: "泸水县",
 label: "泸水县"
 }, {
@@ -9269,7 +9269,7 @@ label: "其他"
 }, {
 value: "迪庆藏族自治州",
 label: "迪庆藏族自治州",
-"children": [{
+children: [{
 value: "香格里拉县",
 label: "香格里拉县"
 }, {
@@ -9285,7 +9285,7 @@ label: "其他"
 }, {
 value: "大理白族自治州",
 label: "大理白族自治州",
-"children": [{
+children: [{
 value: "大理市",
 label: "大理市"
 }, {
@@ -9328,7 +9328,7 @@ label: "其他"
 }, {
 value: "楚雄彝族自治州",
 label: "楚雄彝族自治州",
-"children": [{
+children: [{
 value: "楚雄市",
 label: "楚雄市"
 }, {
@@ -9365,7 +9365,7 @@ label: "其他"
 }, {
 value: "红河哈尼族彝族自治州",
 label: "红河哈尼族彝族自治州",
-"children": [{
+children: [{
 value: "蒙自县",
 label: "蒙自县"
 }, {
@@ -9411,7 +9411,7 @@ label: "其他"
 }, {
 value: "文山壮族苗族自治州",
 label: "文山壮族苗族自治州",
-"children": [{
+children: [{
 value: "文山县",
 label: "文山县"
 }, {
@@ -9442,7 +9442,7 @@ label: "其他"
 }, {
 value: "西双版纳傣族自治州",
 label: "西双版纳傣族自治州",
-"children": [{
+children: [{
 value: "景洪市",
 label: "景洪市"
 }, {
@@ -9458,7 +9458,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -9466,10 +9466,10 @@ label: "其他"
 }, {
 value: "西藏",
 label: "西藏",
-"children": [{
+children: [{
 value: "拉萨市",
 label: "拉萨市",
-"children": [{
+children: [{
 value: "城关区",
 label: "城关区"
 }, {
@@ -9500,7 +9500,7 @@ label: "其他"
 }, {
 value: "那曲地区",
 label: "那曲地区",
-"children": [{
+children: [{
 value: "那曲县",
 label: "那曲县"
 }, {
@@ -9537,7 +9537,7 @@ label: "其他"
 }, {
 value: "昌都地区",
 label: "昌都地区",
-"children": [{
+children: [{
 value: "昌都县",
 label: "昌都县"
 }, {
@@ -9577,7 +9577,7 @@ label: "其他"
 }, {
 value: "林芝地区",
 label: "林芝地区",
-"children": [{
+children: [{
 value: "林芝县",
 label: "林芝县"
 }, {
@@ -9605,7 +9605,7 @@ label: "其他"
 }, {
 value: "山南地区",
 label: "山南地区",
-"children": [{
+children: [{
 value: "乃东县",
 label: "乃东县"
 }, {
@@ -9648,7 +9648,7 @@ label: "其他"
 }, {
 value: "日喀则地区",
 label: "日喀则地区",
-"children": [{
+children: [{
 value: "日喀则市",
 label: "日喀则市"
 }, {
@@ -9709,7 +9709,7 @@ label: "其他"
 }, {
 value: "阿里地区",
 label: "阿里地区",
-"children": [{
+children: [{
 value: "噶尔县",
 label: "噶尔县"
 }, {
@@ -9737,7 +9737,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -9745,10 +9745,10 @@ label: "其他"
 }, {
 value: "陕西省",
 label: "陕西省",
-"children": [{
+children: [{
 value: "西安市",
 label: "西安市",
-"children": [{
+children: [{
 value: "莲湖区",
 label: "莲湖区"
 }, {
@@ -9794,7 +9794,7 @@ label: "其他"
 }, {
 value: "铜川市",
 label: "铜川市",
-"children": [{
+children: [{
 value: "耀州区",
 label: "耀州区"
 }, {
@@ -9813,7 +9813,7 @@ label: "其他"
 }, {
 value: "宝鸡市",
 label: "宝鸡市",
-"children": [{
+children: [{
 value: "渭滨区",
 label: "渭滨区"
 }, {
@@ -9856,7 +9856,7 @@ label: "其他"
 }, {
 value: "咸阳市",
 label: "咸阳市",
-"children": [{
+children: [{
 value: "秦都区",
 label: "秦都区"
 }, {
@@ -9905,7 +9905,7 @@ label: "其他"
 }, {
 value: "渭南市",
 label: "渭南市",
-"children": [{
+children: [{
 value: "临渭区",
 label: "临渭区"
 }, {
@@ -9945,7 +9945,7 @@ label: "其他"
 }, {
 value: "延安市",
 label: "延安市",
-"children": [{
+children: [{
 value: "宝塔区",
 label: "宝塔区"
 }, {
@@ -9991,7 +9991,7 @@ label: "其他"
 }, {
 value: "汉中市",
 label: "汉中市",
-"children": [{
+children: [{
 value: "汉台区",
 label: "汉台区"
 }, {
@@ -10031,7 +10031,7 @@ label: "其他"
 }, {
 value: "榆林市",
 label: "榆林市",
-"children": [{
+children: [{
 value: "榆阳区",
 label: "榆阳区"
 }, {
@@ -10074,7 +10074,7 @@ label: "其他"
 }, {
 value: "安康市",
 label: "安康市",
-"children": [{
+children: [{
 value: "汉滨区",
 label: "汉滨区"
 }, {
@@ -10111,7 +10111,7 @@ label: "其他"
 }, {
 value: "商洛市",
 label: "商洛市",
-"children": [{
+children: [{
 value: "商州区",
 label: "商州区"
 }, {
@@ -10139,7 +10139,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -10147,10 +10147,10 @@ label: "其他"
 }, {
 value: "甘肃省",
 label: "甘肃省",
-"children": [{
+children: [{
 value: "兰州市",
 label: "兰州市",
-"children": [{
+children: [{
 value: "城关区",
 label: "城关区"
 }, {
@@ -10181,7 +10181,7 @@ label: "其他"
 }, {
 value: "嘉峪关市",
 label: "嘉峪关市",
-"children": [{
+children: [{
 value: "嘉峪关市",
 label: "嘉峪关市"
 }, {
@@ -10191,7 +10191,7 @@ label: "其他"
 }, {
 value: "金昌市",
 label: "金昌市",
-"children": [{
+children: [{
 value: "金川区",
 label: "金川区"
 }, {
@@ -10204,7 +10204,7 @@ label: "其他"
 }, {
 value: "白银市",
 label: "白银市",
-"children": [{
+children: [{
 value: "白银区",
 label: "白银区"
 }, {
@@ -10226,7 +10226,7 @@ label: "其他"
 }, {
 value: "天水市",
 label: "天水市",
-"children": [{
+children: [{
 value: "清水县",
 label: "清水县"
 }, {
@@ -10254,7 +10254,7 @@ label: "其他"
 }, {
 value: "武威市",
 label: "武威市",
-"children": [{
+children: [{
 value: "凉州区",
 label: "凉州区"
 }, {
@@ -10273,7 +10273,7 @@ label: "其他"
 }, {
 value: "酒泉市",
 label: "酒泉市",
-"children": [{
+children: [{
 value: "肃州区",
 label: "肃州区"
 }, {
@@ -10301,7 +10301,7 @@ label: "其他"
 }, {
 value: "张掖市",
 label: "张掖市",
-"children": [{
+children: [{
 value: "甘州区",
 label: "甘州区"
 }, {
@@ -10326,7 +10326,7 @@ label: "其他"
 }, {
 value: "庆阳市",
 label: "庆阳市",
-"children": [{
+children: [{
 value: "西峰区",
 label: "西峰区"
 }, {
@@ -10357,7 +10357,7 @@ label: "其他"
 }, {
 value: "平凉市",
 label: "平凉市",
-"children": [{
+children: [{
 value: "崆峒区",
 label: "崆峒区"
 }, {
@@ -10385,7 +10385,7 @@ label: "其他"
 }, {
 value: "定西市",
 label: "定西市",
-"children": [{
+children: [{
 value: "安定区",
 label: "安定区"
 }, {
@@ -10413,7 +10413,7 @@ label: "其他"
 }, {
 value: "陇南市",
 label: "陇南市",
-"children": [{
+children: [{
 value: "武都区",
 label: "武都区"
 }, {
@@ -10447,7 +10447,7 @@ label: "其他"
 }, {
 value: "临夏回族自治州",
 label: "临夏回族自治州",
-"children": [{
+children: [{
 value: "临夏市",
 label: "临夏市"
 }, {
@@ -10478,7 +10478,7 @@ label: "其他"
 }, {
 value: "甘南藏族自治州",
 label: "甘南藏族自治州",
-"children": [{
+children: [{
 value: "合作市",
 label: "合作市"
 }, {
@@ -10509,7 +10509,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -10517,10 +10517,10 @@ label: "其他"
 }, {
 value: "青海省",
 label: "青海省",
-"children": [{
+children: [{
 value: "西宁市",
 label: "西宁市",
-"children": [{
+children: [{
 value: "城中区",
 label: "城中区"
 }, {
@@ -10548,7 +10548,7 @@ label: "其他"
 }, {
 value: "海东地区",
 label: "海东地区",
-"children": [{
+children: [{
 value: "平安县",
 label: "平安县"
 }, {
@@ -10573,7 +10573,7 @@ label: "其他"
 }, {
 value: "海北藏族自治州",
 label: "海北藏族自治州",
-"children": [{
+children: [{
 value: "海晏县",
 label: "海晏县"
 }, {
@@ -10592,7 +10592,7 @@ label: "其他"
 }, {
 value: "海南藏族自治州",
 label: "海南藏族自治州",
-"children": [{
+children: [{
 value: "共和县",
 label: "共和县"
 }, {
@@ -10614,7 +10614,7 @@ label: "其他"
 }, {
 value: "黄南藏族自治州",
 label: "黄南藏族自治州",
-"children": [{
+children: [{
 value: "同仁县",
 label: "同仁县"
 }, {
@@ -10633,7 +10633,7 @@ label: "其他"
 }, {
 value: "果洛藏族自治州",
 label: "果洛藏族自治州",
-"children": [{
+children: [{
 value: "玛沁县",
 label: "玛沁县"
 }, {
@@ -10658,7 +10658,7 @@ label: "其他"
 }, {
 value: "玉树藏族自治州",
 label: "玉树藏族自治州",
-"children": [{
+children: [{
 value: "玉树县",
 label: "玉树县"
 }, {
@@ -10683,7 +10683,7 @@ label: "其他"
 }, {
 value: "海西蒙古族藏族自治州",
 label: "海西蒙古族藏族自治州",
-"children": [{
+children: [{
 value: "德令哈市",
 label: "德令哈市"
 }, {
@@ -10705,7 +10705,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -10713,10 +10713,10 @@ label: "其他"
 }, {
 value: "宁夏",
 label: "宁夏",
-"children": [{
+children: [{
 value: "银川市",
 label: "银川市",
-"children": [{
+children: [{
 value: "兴庆区",
 label: "兴庆区"
 }, {
@@ -10741,7 +10741,7 @@ label: "其他"
 }, {
 value: "石嘴山市",
 label: "石嘴山市",
-"children": [{
+children: [{
 value: "大武口区",
 label: "大武口区"
 }, {
@@ -10757,7 +10757,7 @@ label: "其他"
 }, {
 value: "吴忠市",
 label: "吴忠市",
-"children": [{
+children: [{
 value: "利通区",
 label: "利通区"
 }, {
@@ -10776,7 +10776,7 @@ label: "其他"
 }, {
 value: "固原市",
 label: "固原市",
-"children": [{
+children: [{
 value: "原州区",
 label: "原州区"
 }, {
@@ -10798,7 +10798,7 @@ label: "其他"
 }, {
 value: "中卫市",
 label: "中卫市",
-"children": [{
+children: [{
 value: "沙坡头区",
 label: "沙坡头区"
 }, {
@@ -10814,7 +10814,7 @@ label: "其他"
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他"
 }]
@@ -10822,10 +10822,10 @@ label: "其他"
 }, {
 value: "新疆",
 label: "新疆",
-"children": [{
+children: [{
 value: "乌鲁木齐市",
 label: "乌鲁木齐市",
-"children": [{
+children: [{
 value: "天山区",
 label: "天山区"
 }, {
@@ -10856,7 +10856,7 @@ label: "其他"
 }, {
 value: "克拉玛依市",
 label: "克拉玛依市",
-"children": [{
+children: [{
 value: "克拉玛依区",
 label: "克拉玛依区"
 }, {
@@ -10875,7 +10875,7 @@ label: "其他"
 }, {
 value: "吐鲁番地区",
 label: "吐鲁番地区",
-"children": [{
+children: [{
 value: "吐鲁番市",
 label: "吐鲁番市"
 }, {
@@ -10891,7 +10891,7 @@ label: "其他"
 }, {
 value: "哈密地区",
 label: "哈密地区",
-"children": [{
+children: [{
 value: "哈密市",
 label: "哈密市"
 }, {
@@ -10907,7 +10907,7 @@ label: "其他"
 }, {
 value: "和田地区",
 label: "和田地区",
-"children": [{
+children: [{
 value: "和田市",
 label: "和田市"
 }, {
@@ -10938,7 +10938,7 @@ label: "其他"
 }, {
 value: "阿克苏地区",
 label: "阿克苏地区",
-"children": [{
+children: [{
 value: "阿克苏市",
 label: "阿克苏市"
 }, {
@@ -10972,7 +10972,7 @@ label: "其他"
 }, {
 value: "喀什地区",
 label: "喀什地区",
-"children": [{
+children: [{
 value: "喀什市",
 label: "喀什市"
 }, {
@@ -11015,7 +11015,7 @@ label: "其他"
 }, {
 value: "克孜勒苏柯尔克孜自治州",
 label: "克孜勒苏柯尔克孜自治州",
-"children": [{
+children: [{
 value: "阿图什市",
 label: "阿图什市"
 }, {
@@ -11034,7 +11034,7 @@ label: "其他"
 }, {
 value: "巴音郭楞蒙古自治州",
 label: "巴音郭楞蒙古自治州",
-"children": [{
+children: [{
 value: "库尔勒市",
 label: "库尔勒市"
 }, {
@@ -11068,7 +11068,7 @@ label: "其他"
 }, {
 value: "昌吉回族自治州",
 label: "昌吉回族自治州",
-"children": [{
+children: [{
 value: "昌吉市",
 label: "昌吉市"
 }, {
@@ -11099,7 +11099,7 @@ label: "其他"
 }, {
 value: "博尔塔拉蒙古自治州",
 label: "博尔塔拉蒙古自治州",
-"children": [{
+children: [{
 value: "博乐市",
 label: "博乐市"
 }, {
@@ -11115,35 +11115,35 @@ label: "其他"
 }, {
 value: "石河子",
 label: "石河子",
-"children": [{
+children: [{
 value: "石河子",
 label: "石河子"
 }]
 }, {
 value: "阿拉尔",
 label: "阿拉尔",
-"children": [{
+children: [{
 value: "阿拉尔",
 label: "阿拉尔",
 }]
 }, {
 value: "图木舒克",
 label: "图木舒克",
-"children": [{
+children: [{
 value: "图木舒克",
 label: "图木舒克",
 }]
 }, {
 value: "五家渠",
 label: "五家渠",
-"children": [{
+children: [{
 value: "五家渠",
 label: "五家渠",
 }]
 }, {
 value: "伊犁哈萨克自治州",
 label: "伊犁哈萨克自治州",
-"children": [{
+children: [{
 value: "伊宁市",
 label: "伊宁市",
 }, {
@@ -11186,7 +11186,7 @@ label: "其他",
 }, {
 value: "其他",
 label: "其他",
-"children": [{
+children: [{
 value: "其他",
 label: "其他",
 }]
@@ -11194,10 +11194,10 @@ label: "其他",
 }, {
 value: "台湾省",
 label: "台湾省",
-"children": [{
+children: [{
 value: "台北市",
 label: "台北市",
-"children": [{
+children: [{
 value: "内湖区",
 label: "内湖区",
 }, {
@@ -11237,7 +11237,7 @@ label: "北投区",
 }, {
 value: "新北市",
 label: "新北市",
-"children": [{
+children: [{
 value: "板桥区",
 label: "板桥区",
 }, {
@@ -11253,28 +11253,28 @@ label: "其他",
 }, {
 value: "桃园市",
 label: "桃园市",
-"children": [{
+children: [{
 value: "其他",
 label: "其他",
 }]
 }, {
 value: "台中市",
 label: "台中市",
-"children": [{
+children: [{
 value: "其他",
 label: "其他",
 }]
 }, {
 value: "台南市",
 label: "台南市",
-"children": [{
+children: [{
 value: "其他",
 label: "其他",
 }]
 }, {
 value: "高雄市",
 label: "高雄市",
-"children": [{
+children: [{
 value: "其他",
 label: "其他",
 }]
@@ -11282,10 +11282,10 @@ label: "其他",
 }, {
 value: "澳门",
 label: "澳门",
-"children": [{
+children: [{
 value: "澳门",
 label: "澳门",
-"children": [{
+children: [{
 value: "花地玛堂区",
 label: "花地玛堂区",
 }, {
@@ -11317,10 +11317,10 @@ label: "其他",
 }, {
 value: "香港",
 label: "香港",
-"children": [{
+children: [{
 value: "香港",
 label: "香港",
-"children": [{
+children: [{
 value: "深水埗区",
 label: "深水埗区",
 }, {
@@ -11380,4 +11380,6 @@ label: "其他",
 }]
 }]
 }];
-export default ChinaRegions;
+export {
+    ChinaRegions
+} 
