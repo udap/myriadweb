@@ -26,13 +26,12 @@ import {
 } from "../../api";
 import OrgFormDialog from "./orgFormDialog";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
-//注册机构
-import ChinaRegions from "../../utils/china-regions";
+//注册机构ChinaRegions
+import {ChinaRegions} from "../../utils/china-regions";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import "./index.less";
 import "../../css/common.less";
 const { Meta } = Card;
-const options = [ChinaRegions];
 const layout = {
   labelCol: {
     xs: { span: 24 },
@@ -283,6 +282,9 @@ class MyOrgs extends Component {
       </Drawer>
     );
   };
+  displayRender=(label) =>{
+  return label[label.length - 1];
+}
   //机构编辑表单
   _renderFormCont = () => {
     const {
@@ -374,11 +376,7 @@ class MyOrgs extends Component {
                   },
                 ]}
               >
-                <Cascader
-                  defaultValue={["重庆市", "重庆市", "渝北区"]}
-                  options={options}
-                  //onChange={this.onChange}
-                />
+                <Cascader options={ChinaRegions} onChange={this.onChange} />
               </Form.Item>
             </Col>
             <Col span={12}>

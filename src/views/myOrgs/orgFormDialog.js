@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import { Button, Form, Input, Cascader, Modal, Card } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import { regAddOrg } from "../../api";
-import province from "../../utils/province";
+import { ChinaRegions } from "../../utils/china-regions";
 import storageUtils from "../../utils/storageUtils";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 import { Loading } from "../../components";
@@ -39,8 +39,6 @@ const tailLayout = {
     },
   },
 };
-
-const options = [province];
 
 @withRouter
 class OrgFormDialog extends Component {
@@ -203,7 +201,7 @@ class OrgFormDialog extends Component {
               >
                 <Cascader
                   defaultValue={["重庆市", "重庆市", "渝北区"]}
-                  options={options}
+                  options={ChinaRegions}
                   onChange={this.onChange}
                   disabled={this.state.isNew ? false : true}
                 />
