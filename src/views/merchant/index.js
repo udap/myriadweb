@@ -171,7 +171,11 @@ class Merchant extends Component {
 
         {this.state.isNew ? (
           <Form.Item>
+            <Button type="default" onClick={this.handleCancel}>
+              取消
+            </Button>
             <Button
+              className="margin-left"
               type="primary"
               htmlType="submit"
               loading={this.state.loading}
@@ -257,7 +261,11 @@ class Merchant extends Component {
           className="site-page-header-responsive cont"
           title="商户列表"
           extra={[
-            <PlusSquareFilled key="add" className="setIcon" onClick={this.showModal} />,
+            <PlusSquareFilled
+              key="add"
+              className="setIcon"
+              onClick={this.showModal}
+            />,
           ]}
         ></PageHeader>
         {/* --搜索栏-- */}

@@ -241,27 +241,11 @@ class OrgFormDialog extends Component {
       </div>
     );
   };
-  _renderCard = () => {
-    const { fullName, phone, address } = this.state;
-    return (
-      <Card
-        style={{ width: 300 }}
-        cover={<PictureOutlined className="defaultGraph" />}
-        actions={[
-          <EyeOutlined  key="view" />,
-          <EditOutlined key="edit" />
-        ]}
-      >
-        <Meta className="orgTitle" title={fullName} />
-        <p>{address}</p>
-        <p style={{marginBottom:0}}>{phone}</p>
-      </Card>
-    );
-  };
+  
   render() {
     return (
       <div style={{ height: "100%" }}>
-        {this.state.inited ? this._renderCard() : <Loading />}
+        {this.state.inited ? this._renderCont() : <Loading />}
       </div>
     );
   }

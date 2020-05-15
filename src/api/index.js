@@ -124,6 +124,9 @@ export const regAddOrg = (params) => ajax.post(BASE + "/organizations", params);
 //查看当前机构
 export const regGetCurOrg = (params) =>
   ajax.get(BASE + "/organizations/" + params);
+//修改机构信息
+export const regPutCurOrg = (uid,params) =>
+         ajax.put(BASE + "/organizations/" + uid,params);
 
 //获取机构列表
 export const regGetOrgs = (params) => ajax(BASE + "/organizations");
@@ -281,8 +284,10 @@ export const reqPostGroup = (params) =>
   ajax.post(BASE + "/groups", params, {
     "Content-Type": "multipart/form-data",
   });
-//删除分组 后台没有
+//删除某个分组 后台没有 假写
 export const reqDelGroup = (id) => ajax.delete(BASE + "/groups/" + id);
+//查询某个组的详情
+export const reqGetGroupItem = (id) => ajax.get(BASE + "/groups/" + id);
 /*
 分组管理 END
  */

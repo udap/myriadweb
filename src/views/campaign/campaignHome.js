@@ -19,6 +19,7 @@ import {
 import {
   PlusSquareFilled,
   UploadOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
 import storageUtils from "../../utils/storageUtils";
@@ -36,14 +37,14 @@ import { Loading } from "../../components";
 import comEvents from "../../utils/comEvents";
 import "./index.less";
 import "../../css/common.less";
-
-const renderContent = (value, row, index) => {
-  const obj = {
-    children: value,
-    props: {},
-  };
-  return obj;
-};
+const {confirm} = Modal
+// const renderContent = (value, row, index) => {
+//   const obj = {
+//     children: value,
+//     props: {},
+//   };
+//   return obj;
+// };
 class CampaignHome extends Component {
   state = {
     inited: false,
@@ -98,7 +99,7 @@ class CampaignHome extends Component {
         key: "effective",
         colSpan: 2,
         width: 110,
-        render: renderContent,
+        //render: renderContent,
       },
       {
         title: "终止时间",
@@ -135,7 +136,7 @@ class CampaignHome extends Component {
         //fixed: "right",
         width: 150,
         render: (chooseItem) => {
-          const { id, status } = chooseItem;
+          const { id, status,name } = chooseItem;
           //INITIATED的时候前端可以查看/修改/发布；ACTIVATED的时候前端可以查看/分配票券
           return (
             <span>
@@ -169,12 +170,12 @@ class CampaignHome extends Component {
                     修改
                   </b> */}
 
-                  {/* <Divider type="vertical" />
+                  <Divider type="vertical" />
                    <b
                     onClick={() => {
                       let that = this;
                       confirm({
-                        title: "确认删除该营销活动?",
+                        title: "确认删除【" + name + "】?",
                         icon: <ExclamationCircleOutlined />,
                         okText: "确认",
                         okType: "danger",
@@ -182,13 +183,12 @@ class CampaignHome extends Component {
                         onOk() {
                           that.delItem(id);
                         },
-                        onCancel() {},
                       });
                     }}
-                    className="ant-pink-link"
+                    className="ant-pink-link cursor"
                   >
                     删除
-                  </b>  */}
+                  </b> 
                 </span>
               ) : status === "ACTIVATED" ? (
                 <span>

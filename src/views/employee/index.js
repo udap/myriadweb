@@ -14,6 +14,7 @@ import {
   Select,
   Tag,
   Switch,
+  Divider,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
@@ -187,7 +188,6 @@ class Employee extends Component {
     let isAdmin = this.state.admin;
     return (
       <Form
-        //{...layout}
         name="basic"
         layout="vertical"
         initialValues={{
@@ -286,10 +286,11 @@ class Employee extends Component {
         </Form.Item>
 
         {this.state.isNew ? (
-          <Form.Item
-          //{...tailLayout}
-          >
-            <Button type="primary" htmlType="submit">
+          <Form.Item>
+            <Button type="default" onClick={this.handleCancel}>
+              取消
+            </Button>
+            <Button className="margin-left" type="primary" htmlType="submit">
               提交
             </Button>
           </Form.Item>
@@ -375,12 +376,20 @@ class Employee extends Component {
         title: "操作",
         key: "action",
         render: (chooseItem) => (
-          <span>
+          <div>
             {/* <b onClick={() => {}} className="ant-green-link cursor">
               调用
             </b>
             <Divider type="vertical" />
-             */}
+             
+            <b onClick={() => {}} className="ant-green-link cursor">
+              查看
+            </b>
+            <Divider type="vertical" />
+            <b onClick={() => {}} className="ant-blue-link">
+              修改
+            </b>
+            <Divider type="vertical" />*/}
             <b
               onClick={() => {
                 let that = this;
@@ -399,7 +408,7 @@ class Employee extends Component {
             >
               删除
             </b>
-          </span>
+          </div>
         ),
       },
     ];
