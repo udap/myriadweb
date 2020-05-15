@@ -228,47 +228,22 @@ class MyOrgs extends Component {
           onClose={this.onClose}
           visible={this.state.showView}
         >
-          <p className="site-description-item-profile-p">机构信息</p>
-          <Row>
-            <Col span={12}>
-              <DescriptionItem title="机构名称" content={fullName} />
-            </Col>
-            <Col span={12}>
-              <DescriptionItem title="机构简称" content={name} />
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <DescriptionItem title="营业执照号码" content={licenseNo} />
-            </Col>
-            <Col span={12}>
-              <DescriptionItem title="银联商户码" content={code} />
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <DescriptionItem title="联系电话" content={phone} />
-            </Col>
-            <Col span={12}>
-              <DescriptionItem title="邮政编码" content={postalCode} />
-            </Col>
-          </Row>
           <Row>
             <Col span={24}>
-              <DescriptionItem title="详细地址" content={address} />
+            <Descriptions bordered column={1}>
+              <Descriptions.Item label="名称">{fullName}</Descriptions.Item>
+              <Descriptions.Item label="简称">{name}</Descriptions.Item>
+              <Descriptions.Item label="营业执照号码">{licenseNo}</Descriptions.Item>
+              <Descriptions.Item label="银联商户码">{code}</Descriptions.Item>
+              <Descriptions.Item label="联系电话">{phone}</Descriptions.Item>
+              <Descriptions.Item label="地址">{address}</Descriptions.Item>
+              <Descriptions.Item label="邮政编码">{postalCode}</Descriptions.Item>
+              {parent.name ? (
+                  <Descriptions.Item label="上级机构">{parent.name}</Descriptions.Item>
+                ) : null}
+            </Descriptions>
             </Col>
           </Row>
-          {parent.name ? (
-            <div>
-              <Divider />
-              <p className="site-description-item-profile-p">父机构信息</p>
-              <Row>
-                <Col span={12}>
-                  <DescriptionItem title="机构名称" content={parent.name} />
-                </Col>
-              </Row>
-            </div>
-          ) : null}
         </Drawer>
       </div>
     );
