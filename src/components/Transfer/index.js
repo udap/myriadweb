@@ -37,7 +37,6 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
   return (
     <Transfer
       {...restProps}
-      operations={["添加", "移除"]}
       targetKeys={targetKeys}
       dataSource={transferDataSource}
       className="tree-transfer"
@@ -87,7 +86,7 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
 
 class TransferComponent extends Component {
   state = {
-    targetKeys: [],
+    targetKeys: this.props.targetKeys ? this.props.targetKeys : [],
   };
 
   onChange = (targetKeys) => {
@@ -102,6 +101,7 @@ class TransferComponent extends Component {
     return (
       <div>
         <TreeTransfer
+          titles={["可设置权限", "分组权限"]}
           dataSource={treeData}
           targetKeys={targetKeys}
           onChange={this.onChange}
