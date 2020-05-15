@@ -27,12 +27,12 @@ import {
 import OrgFormDialog from "./orgFormDialog";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 //注册机构
-import province from "../../utils/province";
+import regions from "../../utils/china-regions";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import "./index.less";
 import "../../css/common.less";
 const { Meta } = Card;
-const options = [province];
+const options = [regions];
 const layout = {
   labelCol: {
     xs: { span: 24 },
