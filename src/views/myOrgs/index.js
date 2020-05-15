@@ -320,24 +320,23 @@ class MyOrgs extends Component {
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item
-                label="机构简称"
-                name="name"
-                rules={[{ required: true }, { max: 20 }]}
+                label="名称"
+                name="fullName"
+                rules={[{ required: true }, { max: 45 }]}
               >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="营业执照号码" name="licenseNo">
                 <Input />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="银联商户码" name="code">
+              <Form.Item
+                label="简称"
+                name="name"
+                rules={[{ required: true }, { max: 20 }]}
+              >
                 <Input />
               </Form.Item>
             </Col>
@@ -347,6 +346,18 @@ class MyOrgs extends Component {
                 name="phone"
                 rules={[{ required: true }]}
               >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="营业执照号码" name="licenseNo">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="银联商户码" name="code">
                 <Input />
               </Form.Item>
             </Col>
