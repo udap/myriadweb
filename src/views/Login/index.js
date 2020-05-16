@@ -206,7 +206,7 @@ class Login extends Component {
                       },
                       {
                         len: 6,
-                        message: "验证码不少于6位数字!",
+                        message: "验证码只能是6位数字!",
                       },
                     ]}
                   >
