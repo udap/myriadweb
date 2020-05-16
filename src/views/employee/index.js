@@ -62,14 +62,7 @@ class Employee extends Component {
     this.getList(1);
   }
   getList = async () => {
-    const result = await reqPermit("LIST_EMPLOYEES");
-    if (result) {
       this.getEmployees(1);
-    } else {
-      this.setState({
-        inited: true,
-      });
-    }
   };
 
   searchValue = (value) => {
@@ -103,18 +96,38 @@ class Employee extends Component {
     });
     this.getEmployees(page);
   };
-  addItem = () => {
-    this.setState({
-      visible: true,
-    });
-    this.getGroups();
-  };
-  deleteItem = async (id) => {
-    let result = await reqDelEmployee(id);
-    if (result.data.retcode === 0) {
-      notification.success({ message: "删除成功" });
-      this.getEmployees(1);
+  addItem = async() => {
+    const result = await reqPermit("CREATE_EMPLOYEE");
+    if (result) {
+        this.setState({
+        visible: true,
+      });
+      this.getGroups();
     }
+  };
+  hasPower=async(chooseItem)=>{
+     const result = await reqPermit("DELETE_EMPLOYEE");
+     if (result) {
+    let that = this;
+     confirm({
+       title: "确认删除员工【" + chooseItem.name + "】吗?",
+       icon: <ExclamationCircleOutlined />,
+       okText: "确认",
+       okType: "danger",
+       cancelText: "取消",
+       onOk() {
+         that.deleteItem(chooseItem.uid);
+       },
+     });
+    }
+  }
+  deleteItem = async (id) => {
+        let resultDel = await reqDelEmployee(id);
+        if (resultDel.data.retcode === 0) {
+          notification.success({ message: "删除成功" });
+          this.getEmployees(1);
+        }
+    
   };
 
   backIndex = () => {
@@ -413,17 +426,8 @@ class Employee extends Component {
 
             <b
               onClick={() => {
-                let that = this;
-                confirm({
-                  title: "确认删除员工【" + chooseItem.name + "】吗?",
-                  icon: <ExclamationCircleOutlined />,
-                  okText: "确认",
-                  okType: "danger",
-                  cancelText: "取消",
-                  onOk() {
-                    that.deleteItem(chooseItem.uid);
-                  },
-                });
+                this.hasPower(chooseItem);
+               
               }}
               className="ant-pink-link cursor"
             >

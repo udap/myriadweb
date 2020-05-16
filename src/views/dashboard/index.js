@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import storageUtils from "../../utils/storageUtils";
-import { reqPermit, reqGetAccounts, regGetCurOrg } from "../../api";
+import { reqGetAccounts, regGetCurOrg } from "../../api";
 import { message, Modal, Result } from "antd";
 import { ExclamationCircleOutlined, SmileOutlined } from "@ant-design/icons";
 import { LinkBtn } from "../../components";
@@ -69,7 +69,6 @@ class Dashboard extends Component {
       //user
       let hasOrg = data && data.orgUid;
       if (hasOrg) {
-          //const result = await reqPermit("CREATE_SETTLEMENT");
           this.regGetCurOrg();
       } else {
         this.setState({

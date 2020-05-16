@@ -13,20 +13,13 @@ import {
   Col,
   notification,
   Select,
-  Tag,
-  Switch,
   Descriptions,
-  Transfer,
 } from "antd";
-import {
-  SearchOutlined,
-  PlusSquareFilled,
-  FolderViewOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { PlusSquareFilled } from "@ant-design/icons";
 import { Operations } from "../../utils/constants";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
+import comEvents from "../../utils/comEvents";
 import {
   reqPermit,
   reqGetPermissions,
@@ -39,9 +32,6 @@ import {
 import { Loading, TransferComponent } from "../../components";
 import "../../css/common.less";
 
-const { Search } = Input;
-const { confirm } = Modal;
-const { Option } = Select;
 const { TextArea } = Input;
 
 class Groups extends Component {
@@ -69,16 +59,9 @@ class Groups extends Component {
     this.getList(1);
   }
   getList = async () => {
-    const result = await reqPermit("LIST_GROUPS");
-    if (result) {
-      //保存机构的所有权限存起来
-      this.getPermissions();
-      this.getGroups(1);
-    } else {
-      this.setState({
-        inited: true,
-      });
-    }
+    //保存机构的所有权限存起来
+    this.getPermissions();
+    this.getGroups(1);
   };
 
   searchValue = (value) => {
@@ -137,8 +120,9 @@ class Groups extends Component {
     });
     this.getGroups(page);
   };
+
   //添加分组
-  addItem = () => {
+  addItem = async () => {
     this.setState({
       targetKeys: [],
       isNew: true,
@@ -157,6 +141,7 @@ class Groups extends Component {
   backIndex = () => {
     this.props.history.push("/admin/myOrgs");
   };
+
   //获取点击组详情
   reqGetGroupItem = async (id, type) => {
     let curInfo = await reqGetGroupItem(id);
@@ -244,9 +229,7 @@ class Groups extends Component {
   renderGroupForm = () => {
     const { operationsData, targetKeys, isNew } = this.state;
     let name = isNew ? this.state.name : this.state.curInfo.name;
-    let description = isNew
-      ? this.state.description
-      : this.state.curInfo.desc;
+    let description = isNew ? this.state.description : this.state.curInfo.desc;
     let operations = isNew
       ? this.state.targetKeys
       : this.state.curInfo.operations;
@@ -338,8 +321,17 @@ class Groups extends Component {
               <Divider type="vertical" />
               <b
                 onClick={() => {
+                  let self = this;
                   //this.getPermissions(id)
-                  this.reqGetGroupItem(id, "edit");
+                  comEvents.hasPower(
+                    self,
+                    reqPermit,
+                    "UPDATE_GROUP",
+                    "reqGetGroupItem",
+                    chooseItem.id,
+                    "edit"
+                  );
+                  //this.reqGetGroupItem(id, "edit");
                 }}
                 className="ant-blue-link cursor"
               >
@@ -377,7 +369,10 @@ class Groups extends Component {
             <PlusSquareFilled
               key="add"
               className="setIcon"
-              onClick={this.addItem}
+              onClick={() => {
+                let self = this;
+                comEvents.hasPower(self, reqPermit, "CREATE_GROUP", "addItem");
+              }}
             />,
           ]}
           onBack={this.backIndex}

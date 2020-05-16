@@ -10,9 +10,11 @@ import {
   Col,
   Form,
   Drawer,
+  notification,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
-import { reqAddMerchant, reqDelMerchant } from "../../api";
+import comEvents from "../../utils/comEvents";
+import { reqPermit, reqAddMerchant, reqDelMerchant } from "../../api";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 
 import storageUtils from "../../utils/storageUtils";
@@ -110,9 +112,19 @@ class Merchant extends Component {
     });
   };
   addItem = () => {
+    let isAdmin = storageUtils.getUser().admin;
+    if (!isAdmin) {
+      notification.info({ message: "对不起，您没有权限！" });
+      return false;
+    }
     this.props.history.push("/admin/merchant/edit/new");
   };
   delItem = async (uid) => {
+    let isAdmin = storageUtils.getUser().admin;
+    if (!isAdmin) {
+      notification.info({ message: "对不起，您没有权限！" });
+      return false;
+    }
     const result = await reqDelMerchant(uid);
     this.getMerchant(1);
   };
@@ -194,6 +206,20 @@ class Merchant extends Component {
     });
     this.getMerchant(page);
   };
+  showDetalConfirm = (item) => {
+    let that = this;
+    return confirm({
+      title: "确认删除商户【" + item.name + "】?",
+      icon: <ExclamationCircleOutlined />,
+      okText: "确认",
+      okType: "danger",
+      cancelText: "取消",
+      onOk() {
+        that.delItem(item.uid);
+      },
+      onCancel() {},
+    });
+  };
   renderContent = () => {
     const { campaigns, size, currentPage, total, searchTxt } = this.state;
     //名字 银联商户码(upCode) 电话 地址
@@ -234,18 +260,15 @@ class Merchant extends Component {
           return (
             <b
               onClick={() => {
-                let that = this;
-                confirm({
-                  title: "确认删除商户【" + item.name + "】?",
-                  icon: <ExclamationCircleOutlined />,
-                  okText: "确认",
-                  okType: "danger",
-                  cancelText: "取消",
-                  onOk() {
-                    that.delItem(item.uid);
-                  },
-                  onCancel() {},
-                });
+                let self = this;
+                //showDetalConfirm;
+                comEvents.hasPower(
+                  self,
+                  reqPermit,
+                  "MANAGE_ORGANIZATION",
+                  "showDetalConfirm",
+                  item
+                );
               }}
               className="ant-pink-link cursor"
             >
@@ -264,7 +287,15 @@ class Merchant extends Component {
             <PlusSquareFilled
               key="add"
               className="setIcon"
-              onClick={this.showModal}
+              onClick={() => {
+                let self = this;
+                comEvents.hasPower(
+                  self,
+                  reqPermit,
+                  "MANAGE_ORGANIZATION",
+                  "showModal"
+                );
+              }}
             />,
           ]}
         ></PageHeader>

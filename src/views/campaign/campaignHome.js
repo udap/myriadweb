@@ -24,7 +24,9 @@ import {
 
 import storageUtils from "../../utils/storageUtils";
 import { campaignStatuses } from "../../utils/constants";
+import comEvents from "../../utils/comEvents";
 import {
+  reqPermit,
   reqGetCampaigns,
   reqDelCampaign,
   reqPublishCampaign,
@@ -34,7 +36,6 @@ import {
 } from "../../api";
 import ReactFileReader from "react-file-reader";
 import { Loading } from "../../components";
-import comEvents from "../../utils/comEvents";
 import "./index.less";
 import "../../css/common.less";
 const {confirm} = Modal
@@ -251,13 +252,14 @@ class CampaignHome extends Component {
     });
   };
   addItem = () => {
-    if (storageUtils.getUser().orgId === 1 && storageUtils.getUser().admin) {
-      this.props.history.push("/admin/campaign/edit/new");
-    } else {
-      notification.error({
-        message: "目前只支持【重庆农商行总行】创建活动。",
-      });
-    }
+    // if (storageUtils.getUser().orgId === 1 && storageUtils.getUser().admin) {
+    //   this.props.history.push("/admin/campaign/edit/new");
+    // } else {
+    //   notification.error({
+    //     message: "目前只支持【重庆农商行总行】创建活动。",
+    //   });
+    // }
+    this.props.history.push("/admin/campaign/edit/new");
   };
 
   delItem = async (id) => {
@@ -400,7 +402,15 @@ class CampaignHome extends Component {
           className="site-page-header-responsive cont"
           title="营销活动"
           extra={[
-            <PlusSquareFilled key="add" className="setIcon" onClick={this.addItem} />,
+            <PlusSquareFilled key="add" className="setIcon" onClick={() => {
+                let self = this;
+                comEvents.hasPower(
+                  self,
+                  reqPermit,
+                  "CREATE_CAMPAIGN",
+                  "addItem"
+                );
+              }} />,
           ]}
         ></PageHeader>
         {/* --搜索栏-- */}

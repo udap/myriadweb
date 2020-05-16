@@ -1,19 +1,19 @@
-import {privateRoutes} from '../routers'
+import { privateRoutes } from "../routers";
 //获取当前页面的title
-const getTitle = (pathname)=>{
-    let title;
-    privateRoutes.forEach((item) => {
-        if (item.pathname === pathname) {
-            title = item.title;
-        } else if (item.children) {
-            const cItem = item.children.find((cItem) => cItem.pathname === pathname);
-            if (cItem) {
-            title = cItem.title;
-            }
-        }
-    });
-    return title;
-}
+const getTitle = (pathname) => {
+  let title;
+  privateRoutes.forEach((item) => {
+    if (item.pathname === pathname) {
+      title = item.title;
+    } else if (item.children) {
+      const cItem = item.children.find((cItem) => cItem.pathname === pathname);
+      if (cItem) {
+        title = cItem.title;
+      }
+    }
+  });
+  return title;
+};
 const formatNumber = (n) => {
   n = n.toString();
   return n[1] ? n : "0" + n;
@@ -41,9 +41,19 @@ console.log("今天：" + GetDateStr(0));
 console.log("明天：" + GetDateStr(1));
 console.log("后天：" + GetDateStr(2));
 console.log("大后天：" + GetDateStr(3));*/
-
+const hasPower = async (self, reqPermit, str, handleName, id, type) => {
+  const result = await reqPermit(str);
+  if (result) {
+    if (handleName) {
+      self[handleName](id, type);
+    } else {
+      return result;
+    }
+  }
+};
 export default {
   getTitle,
   formatDate,
   getDateStr,
+  hasPower,
 };

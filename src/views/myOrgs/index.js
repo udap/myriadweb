@@ -19,6 +19,7 @@ import { withRouter } from "react-router-dom";
 import storageUtils from "../../utils/storageUtils";
 import { Loading } from "../../components";
 import {
+  reqPermit,
   regGetCurOrg,
   reqGetAuthCode,
   regAddOrg,
@@ -27,8 +28,9 @@ import {
 import OrgFormDialog from "./orgFormDialog";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 //注册机构ChinaRegions
-import {ChinaRegions} from "../../utils/china-regions";
+import { ChinaRegions } from "../../utils/china-regions";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
+import comEvents from "../../utils/comEvents";
 import "./index.less";
 import "../../css/common.less";
 const { Meta } = Card;
@@ -73,6 +75,7 @@ class MyOrgs extends Component {
     showView: false,
     //机构编辑
     showEdit: false,
+    showAuthCode: false,
   };
 
   componentDidMount() {
@@ -86,6 +89,13 @@ class MyOrgs extends Component {
         hasOrg: false,
       });
     }
+
+    //是否显示动态授权码
+    let self = this;
+    let showCode = comEvents.hasPower(self, reqPermit, "MANAGE_ORGANIZATION");
+    this.setState({
+      showAuthCode: showCode,
+    });
   }
   //获取当前机构信息
   regGetCurOrg = async (newOrg) => {
@@ -135,6 +145,8 @@ class MyOrgs extends Component {
   //机构卡片信息
   renderOrgCard = () => {
     const { fullName, phone, address } = this.state.organization;
+    const { showAuthCode } = this.state;
+
     return (
       <div>
         <Row className="action">
@@ -164,10 +176,14 @@ class MyOrgs extends Component {
             >
               权限与分组
             </b>
-            <Divider type="vertical" />
-            <b onClick={this.getAuthCode} className="ant-green-link cursor">
-              动态授权码
-            </b>
+            {showAuthCode ? (
+              <span>
+                <Divider type="vertical" />
+                <b onClick={this.getAuthCode} className="ant-green-link cursor">
+                  动态授权码
+                </b>
+              </span>
+            ) : null}
           </Col>
         </Row>
         <Card
@@ -229,18 +245,24 @@ class MyOrgs extends Component {
         >
           <Row>
             <Col span={24}>
-            <Descriptions bordered column={1}>
-              <Descriptions.Item label="名称">{fullName}</Descriptions.Item>
-              <Descriptions.Item label="简称">{name}</Descriptions.Item>
-              <Descriptions.Item label="营业执照号码">{licenseNo}</Descriptions.Item>
-              <Descriptions.Item label="银联商户码">{code}</Descriptions.Item>
-              <Descriptions.Item label="联系电话">{phone}</Descriptions.Item>
-              <Descriptions.Item label="地址">{address}</Descriptions.Item>
-              <Descriptions.Item label="邮政编码">{postalCode}</Descriptions.Item>
-              {parent.name ? (
-                  <Descriptions.Item label="上级机构">{parent.name}</Descriptions.Item>
+              <Descriptions bordered column={1}>
+                <Descriptions.Item label="名称">{fullName}</Descriptions.Item>
+                <Descriptions.Item label="简称">{name}</Descriptions.Item>
+                <Descriptions.Item label="营业执照号码">
+                  {licenseNo}
+                </Descriptions.Item>
+                <Descriptions.Item label="银联商户码">{code}</Descriptions.Item>
+                <Descriptions.Item label="联系电话">{phone}</Descriptions.Item>
+                <Descriptions.Item label="地址">{address}</Descriptions.Item>
+                <Descriptions.Item label="邮政编码">
+                  {postalCode}
+                </Descriptions.Item>
+                {parent.name ? (
+                  <Descriptions.Item label="上级机构">
+                    {parent.name}
+                  </Descriptions.Item>
                 ) : null}
-            </Descriptions>
+              </Descriptions>
             </Col>
           </Row>
         </Drawer>
@@ -264,7 +286,6 @@ class MyOrgs extends Component {
           <small className="description">
             如果某个营销机构希望邀请您的机构作为核销机构参与该营销机构发起的营销活动，您需要生成并提供一个限时有效的动态授权码给该营销机构。
           </small>
-         
         </div>
       </Drawer>
     );
@@ -282,9 +303,9 @@ class MyOrgs extends Component {
       </Drawer>
     );
   };
-  displayRender=(label) =>{
-  return label[label.length - 1];
-}
+  displayRender = (label) => {
+    return label[label.length - 1];
+  };
   //机构编辑表单
   _renderFormCont = () => {
     const {

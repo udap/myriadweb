@@ -144,8 +144,8 @@ var Operations = {
   SUBMIT_SETTLEMENT: "提交结算",
   APPROVE_SETTLEMENT: "同意结算",
   DELETE_SETTLEMENT: "删除结算",
-  //VIEW_REDEMPTION: "核销记录",
-  //VIEW_DISTRIBUTION: "发放记录",
+  VIEW_REDEMPTION: "核销记录",
+  VIEW_DISTRIBUTION: "发放记录",
 };
 
 //发放列表

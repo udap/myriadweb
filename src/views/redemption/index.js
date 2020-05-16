@@ -12,7 +12,7 @@ import {
   Pagination,
 } from "antd";
 import storageUtils from "../../utils/storageUtils";
-import { reqPermit, reqGetRedemptions } from "../../api";
+import { reqGetRedemptions } from "../../api";
 import { Loading } from "../../components";
 import { redemptionStatuses, settlementStatuses } from "../../utils/constants";
 import "../../css/common.less";
