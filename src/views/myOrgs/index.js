@@ -242,7 +242,7 @@ class MyOrgs extends Component {
       licenseNo,
       phone,
       address,
-      code,
+      upCode,
       postalCode,
       parent,
     } = this.state.organization;
@@ -262,7 +262,7 @@ class MyOrgs extends Component {
                 <Descriptions.Item label="营业执照号码">
                   {licenseNo}
                 </Descriptions.Item>
-                <Descriptions.Item label="银联商户码">{code}</Descriptions.Item>
+                <Descriptions.Item label="银联商户码">{upCode}</Descriptions.Item>
                 <Descriptions.Item label="联系电话">{phone}</Descriptions.Item>
                 <Descriptions.Item label="地址">{address}</Descriptions.Item>
                 <Descriptions.Item label="邮政编码">
