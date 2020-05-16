@@ -246,7 +246,7 @@ class Groups extends Component {
     let name = isNew ? this.state.name : this.state.curInfo.name;
     let description = isNew
       ? this.state.description
-      : this.state.curInfo.description;
+      : this.state.curInfo.desc;
     let operations = isNew
       ? this.state.targetKeys
       : this.state.curInfo.operations;
