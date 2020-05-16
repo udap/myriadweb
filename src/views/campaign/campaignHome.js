@@ -252,14 +252,13 @@ class CampaignHome extends Component {
     });
   };
   addItem = () => {
-    // if (storageUtils.getUser().orgId === 1 && storageUtils.getUser().admin) {
-    //   this.props.history.push("/admin/campaign/edit/new");
-    // } else {
-    //   notification.error({
-    //     message: "目前只支持【重庆农商行总行】创建活动。",
-    //   });
-    // }
-    this.props.history.push("/admin/campaign/edit/new");
+    if (storageUtils.getUser().orgId === 1) {
+      this.props.history.push("/admin/campaign/edit/new");
+    } else {
+      notification.error({
+        message: "目前只支持【重庆农商行总行】创建活动。",
+      });
+    }
   };
 
   delItem = async (id) => {
