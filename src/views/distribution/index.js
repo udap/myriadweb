@@ -40,18 +40,10 @@ class Distribution extends Component {
     this.getList();
   }
   getList = async () => {
-    const result = await reqPermit("VIEW_DISTRIBUTION");
-    if (result) {
       this.getMarkets(null, 1);
       this.setState({
         hasAuthority: true,
       });
-    } else {
-      this.setState({
-        inited: true,
-        hasAuthority: false,
-      });
-    }
   };
 
   initColumns() {

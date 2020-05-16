@@ -41,19 +41,11 @@ class Redemption extends Component {
     this.getList();
   }
   getList = async () => {
-    const result = await reqPermit("VIEW_REDEMPTION");
-    if (result) {
       //有权限
       this.setState({
         hasAuthority: true,
       });
       this.getMarkets(null, 1);
-    } else {
-      this.setState({
-        inited: true,
-        hasAuthority: false,
-      });
-    }
   };
   initColumns() {
     //显示券号，活动，发券机构，核销机构，核销时间，核销状态以及结算状态
