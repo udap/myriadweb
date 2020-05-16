@@ -397,16 +397,20 @@ class Employee extends Component {
               查看
             </b>
             <Divider type="vertical" />*/}
-            {chooseItem.status==='NEW'?<Popconfirm
-              title="确认激活吗?"
-              onConfirm={this.activateEmployee.bind(this, chooseItem.uid)}
-              okText="确认"
-              cancelText="取消"
-            >
-              <b className="ant-green-link cursor">激活</b>
-            </Popconfirm>:null}
-            
-            <Divider type="vertical" />
+            {chooseItem.status === "NEW" ? (
+              <b>
+                <Popconfirm
+                  title="确认激活吗?"
+                  onConfirm={this.activateEmployee.bind(this, chooseItem.uid)}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <b className="ant-green-link cursor">激活</b>
+                </Popconfirm>
+                <Divider type="vertical" />
+              </b>
+            ) : null}
+
             <b
               onClick={() => {
                 let that = this;
