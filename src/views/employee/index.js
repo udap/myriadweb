@@ -124,7 +124,7 @@ class Employee extends Component {
     const result = await reqPermit("UPDATE_EMPLOYEE");
     if (result) {
       let that = this;
-        confirm({
+      confirm({
         title: "确认激活员工【" + chooseItem.name + "】吗?",
         icon: <ExclamationCircleOutlined />,
         okText: "确认",
@@ -135,7 +135,7 @@ class Employee extends Component {
       });
     }
   };
- 
+
   deleteItem = async (id) => {
     let resultDel = await reqDelEmployee(id);
     if (resultDel.data.retcode === 0) {
@@ -263,61 +263,23 @@ class Employee extends Component {
             <Switch checked={this.state.admin} onChange={this.onSwitchChange} />
           </Form.Item>
         ) : null}
-        {isAdmin ? (
-          <Form.Item
-            label="员工所在组"
-            name="groupId"
-            rules={[
-              {
-                required: false,
-              },
-            ]}
-          >
-            {this.state.isNew ? (
-              <Select
-                placeholder="员工所在组"
-                onChange={onGenderChange}
-                allowClear
-              >
-                {this.state.groups.map((item, index) => (
-                  <Option key={item.id} value={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
-            ) : (
-              <Input disabled={this.state.isNew ? false : true} />
-            )}
-          </Form.Item>
-        ) : (
-          <span>
-            <Form.Item
-              label="员工所在组"
-              name="groupId"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+        <Form.Item label="员工所在组" name="groupId">
+          {this.state.isNew ? (
+            <Select
+              placeholder="员工所在组"
+              onChange={onGenderChange}
+              allowClear
             >
-              {this.state.isNew ? (
-                <Select
-                  placeholder="员工所在组"
-                  onChange={onGenderChange}
-                  allowClear
-                >
-                  {this.state.groups.map((item, index) => (
-                    <Option key={item.id} value={item.id}>
-                      {item.name}
-                    </Option>
-                  ))}
-                </Select>
-              ) : (
-                <Input disabled={this.state.isNew ? false : true} />
-              )}
-            </Form.Item>
-          </span>
-        )}
+              {this.state.groups.map((item, index) => (
+                <Option key={item.id} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          ) : (
+            <Input disabled={this.state.isNew ? false : true} />
+          )}
+        </Form.Item>
 
         <Form.Item label="备注" name="desc">
           <TextArea rows={4} />
