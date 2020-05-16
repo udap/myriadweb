@@ -15,7 +15,6 @@ import {
   Tag,
   Switch,
   Divider,
-  Popconfirm,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
@@ -62,7 +61,7 @@ class Employee extends Component {
     this.getList(1);
   }
   getList = async () => {
-      this.getEmployees(1);
+    this.getEmployees(1);
   };
 
   searchValue = (value) => {
@@ -96,38 +95,53 @@ class Employee extends Component {
     });
     this.getEmployees(page);
   };
-  addItem = async() => {
+  addItem = async () => {
     const result = await reqPermit("CREATE_EMPLOYEE");
     if (result) {
-        this.setState({
+      this.setState({
         visible: true,
       });
       this.getGroups();
     }
   };
-  hasPower=async(chooseItem)=>{
-     const result = await reqPermit("DELETE_EMPLOYEE");
-     if (result) {
-    let that = this;
-     confirm({
-       title: "确认删除员工【" + chooseItem.name + "】吗?",
-       icon: <ExclamationCircleOutlined />,
-       okText: "确认",
-       okType: "danger",
-       cancelText: "取消",
-       onOk() {
-         that.deleteItem(chooseItem.uid);
-       },
-     });
+  hasPower = async (chooseItem) => {
+    const result = await reqPermit("DELETE_EMPLOYEE");
+    if (result) {
+      let that = this;
+      confirm({
+        title: "确认删除员工【" + chooseItem.name + "】吗?",
+        icon: <ExclamationCircleOutlined />,
+        okText: "确认",
+        okType: "danger",
+        cancelText: "取消",
+        onOk() {
+          that.deleteItem(chooseItem.uid);
+        },
+      });
     }
-  }
+  };
+  hasActivatePower = async (chooseItem) => {
+    const result = await reqPermit("UPDATE_EMPLOYEE");
+    if (result) {
+      let that = this;
+        confirm({
+        title: "确认激活员工【" + chooseItem.name + "】吗?",
+        icon: <ExclamationCircleOutlined />,
+        okText: "确认",
+        cancelText: "取消",
+        onOk() {
+          that.activateEmployee(chooseItem.uid);
+        },
+      });
+    }
+  };
+ 
   deleteItem = async (id) => {
-        let resultDel = await reqDelEmployee(id);
-        if (resultDel.data.retcode === 0) {
-          notification.success({ message: "删除成功" });
-          this.getEmployees(1);
-        }
-    
+    let resultDel = await reqDelEmployee(id);
+    if (resultDel.data.retcode === 0) {
+      notification.success({ message: "删除成功" });
+      this.getEmployees(1);
+    }
   };
 
   backIndex = () => {
@@ -412,14 +426,14 @@ class Employee extends Component {
             <Divider type="vertical" />*/}
             {chooseItem.status === "NEW" ? (
               <b>
-                <Popconfirm
-                  title="确认激活吗?"
-                  onConfirm={this.activateEmployee.bind(this, chooseItem.uid)}
-                  okText="确认"
-                  cancelText="取消"
+                <b
+                  className="ant-green-link cursor"
+                  onClick={() => {
+                    this.hasActivatePower(chooseItem);
+                  }}
                 >
-                  <b className="ant-green-link cursor">激活</b>
-                </Popconfirm>
+                  激活
+                </b>
                 <Divider type="vertical" />
               </b>
             ) : null}
@@ -427,7 +441,6 @@ class Employee extends Component {
             <b
               onClick={() => {
                 this.hasPower(chooseItem);
-               
               }}
               className="ant-pink-link cursor"
             >

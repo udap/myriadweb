@@ -75,7 +75,6 @@ class MyOrgs extends Component {
     showView: false,
     //机构编辑
     showEdit: false,
-    showAuthCode: false,
   };
 
   componentDidMount() {
@@ -89,14 +88,8 @@ class MyOrgs extends Component {
         hasOrg: false,
       });
     }
-
-    //是否显示动态授权码
-    let self = this;
-    let showCode = comEvents.hasPower(self, reqPermit, "MANAGE_ORGANIZATION");
-    this.setState({
-      showAuthCode: showCode,
-    });
   }
+ 
   //获取当前机构信息
   regGetCurOrg = async (newOrg) => {
     let uid = newOrg ? newOrg : storageUtils.getUser().orgUid;
@@ -120,11 +113,11 @@ class MyOrgs extends Component {
   //获取授权码;
   getAuthCode = async () => {
     let orgUid = storageUtils.getUser().orgUid;
-    let isAdmin = storageUtils.getUser().admin;
-    if (!isAdmin) {
-      notification.info({ message: "对不起，您没有权限！" });
-      return false;
-    }
+    // let isAdmin = storageUtils.getUser().admin;
+    // if (!isAdmin) {
+    //   notification.info({ message: "对不起，您没有权限！" });
+    //   return false;
+    // }
     let curInfo = await reqGetAuthCode(orgUid);
     if (curInfo) {
       let cont = curInfo.data.content ? curInfo.data.content : [];
@@ -142,10 +135,15 @@ class MyOrgs extends Component {
       showView: false,
     });
   };
+  showEdit = () => {
+    this.setState({
+      showEdit: true,
+    });
+  };
   //机构卡片信息
   renderOrgCard = () => {
     const { fullName, phone, address } = this.state.organization;
-    const { showAuthCode } = this.state;
+    const { manageOrg } = this.state;
 
     return (
       <div>
@@ -176,14 +174,23 @@ class MyOrgs extends Component {
             >
               权限与分组
             </b>
-            {showAuthCode ? (
               <span>
                 <Divider type="vertical" />
-                <b onClick={this.getAuthCode} className="ant-green-link cursor">
+                <b
+                  onClick={() => {
+                    let self = this;
+                    comEvents.hasPower(
+                      self,
+                      reqPermit,
+                      "MANAGE_ORGANIZATION",
+                      "getAuthCode"
+                    );
+                  }}
+                  className="ant-green-link cursor"
+                >
                   动态授权码
                 </b>
               </span>
-            ) : null}
           </Col>
         </Row>
         <Card
@@ -203,9 +210,13 @@ class MyOrgs extends Component {
               key="edit"
               className="ant-green-link"
               onClick={() => {
-                this.setState({
-                  showEdit: true,
-                });
+                let self = this;
+                comEvents.hasPower(
+                  self,
+                  reqPermit,
+                  "MANAGE_ORGANIZATION",
+                  "showEdit"
+                );
               }}
             />,
           ]}
