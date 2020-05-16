@@ -15,6 +15,8 @@ import {
   Select,
   Tag,
   Switch,
+  Descriptions,
+  Transfer,
 } from "antd";
 import {
   SearchOutlined,
@@ -31,7 +33,8 @@ import {
   reqGetGroups,
   reqDelGroup,
   reqPostGroup,
-  reqGetEmployee,
+  reqGetGroupItem,
+  reqPutGroup,
 } from "../../api";
 import { Loading, TransferComponent } from "../../components";
 import "../../css/common.less";
@@ -47,16 +50,20 @@ class Groups extends Component {
     groups: [],
     addNew: false,
     currentPage: 1,
-    size: 8,
+    size: 20,
     total: 1,
-    /*添加组 */
+    //添加组
     visible: false,
     isNew: true,
     name: "",
     description: "",
     template: "",
-    operations: "",
-    mockData: [],
+    //当前组
+    curInfo: {},
+    showDetail: false,
+    //修改组
+    operationsData: [],
+    targetKeys: [],
   };
   componentDidMount() {
     this.getList(1);
@@ -64,6 +71,8 @@ class Groups extends Component {
   getList = async () => {
     const result = await reqPermit("LIST_GROUPS");
     if (result) {
+      //保存机构的所有权限存起来
+      this.getPermissions();
       this.getGroups(1);
     } else {
       this.setState({
@@ -75,8 +84,8 @@ class Groups extends Component {
   searchValue = (value) => {
     this.getGroups(1, value.searchTxt);
   };
+  //组织树控件的数据
   tree = (cont) => {
-    //组织树控件的数据
     const list = [];
     for (let i = 0; i < cont.length; i++) {
       const key = cont[i].operation || cont[i]; //`${path}-${i}`;
@@ -98,12 +107,10 @@ class Groups extends Component {
       result && result.data && result.data.content ? result.data.content : [];
     const tree = this.tree(cont);
     this.setState({
-      mockData: tree,
+      operationsData: tree,
     });
   };
-  /*
-获取组列表数据
-*/
+  //获取组列表数据
   getGroups = async (currentPage, searchTxt) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
@@ -123,19 +130,22 @@ class Groups extends Component {
       inited: true,
     });
   };
-  /*分页 */
+  //列表分页
   handleTableChange = (page) => {
     this.setState({
       currentPage: page,
     });
     this.getGroups(page);
   };
+  //添加分组
   addItem = () => {
     this.setState({
+      targetKeys: [],
+      isNew: true,
       visible: true,
     });
-    this.getPermissions();
   };
+  //删除分组
   deleteItem = async (id) => {
     let result = await reqDelGroup(id);
     if (result.data.retcode === 0) {
@@ -143,80 +153,80 @@ class Groups extends Component {
       this.getGroups(1);
     }
   };
-
+  //返回上一页
   backIndex = () => {
     this.props.history.push("/admin/myOrgs");
   };
-  //获取当前员工详情
-  getEmployee = async (id) => {
-    let curInfo = await reqGetEmployee(id);
+  //获取点击组详情
+  reqGetGroupItem = async (id, type) => {
+    let curInfo = await reqGetGroupItem(id);
     let cont = curInfo.data.content ? curInfo.data.content : [];
     this.setState({
       inited: true,
       curInfo: cont,
+      operations: cont.operations,
+      targetKeys: cont.operations,
     });
+    if (curInfo.data.retcode === 0 && type === "edit") {
+      this.setState({
+        visible: true,
+        isNew: false,
+      });
+    } else {
+      this.setState({
+        showDetail: true,
+      });
+    }
   };
-  // _validate = () => {
-  //   var constraints = {
-  //     name: { presence: { message: "^名称不能为空" } },
-  //     description: { presence: { message: "^描述不能为空" } },
-  //     operations: { presence: { message: "^权限不能为空" } },
-  //   };
-  //   let { name, description, operations } = this.state;
-  //   var attributes = {
-  //     name: name,
-  //     description: description,
-  //     operations: operations,
-  //   };
-  //   var errors = validate(attributes, constraints);
-  //   if (errors) {
-  //     var result = "",
-  //       attr;
-  //     for (attr in errors) {
-  //       result = result + "<li><span>" + errors[attr] + "</span></li>";
-  //     }
-  //     result = result + "";
-  //     return (
-  //       <div
-  //         style={{ color: "red", textAlign: "center" }}
-  //         dangerouslySetInnerHTML={{ __html: result }}
-  //       ></div>
-  //     );
-  //   }
-  //   var newGroup = {};
-  //   if (!this.state.isNew)
-  //   newGroup.name = name;
-  //   newGroup.description = description;
-  //   newGroup.operations = operations;
-  //   this.newGroup = newGroup;
-  //   return false;
-  // };
+
   onFinish = async (values) => {
-    console.log("Groups -> onFinish -> values", values)
-    if (this.state.operations.length === 0) {
+    if (this.state.targetKeys.length === 0) {
       notification.error({ message: "权限不能为空" });
       return false;
     }
-    let { operations } = this.state;
-    let params = {
-      name: values.name,
-      description: values.description,
-      operations: operations,
-      orgUid: storageUtils.getUser().orgUid,
-    };
-    const result = await reqPostGroup(params);
-    if (result.data.retcode === 0) {
-      notification.success({ message: "添加成功" });
-      this.setState({
-        visible: false,
-      });
-      this.getGroups(1);
+    let { targetKeys, isNew, curInfo } = this.state;
+
+    let params = isNew
+      ? {
+          name: values.name,
+          description: values.description,
+          operations: targetKeys,
+          orgUid: storageUtils.getUser().orgUid,
+        }
+      : {
+          id: curInfo.id,
+          name: values.name,
+          description: values.description,
+          operations: targetKeys,
+        };
+    if (this.state.isNew) {
+      //添加组
+      const result = await reqPostGroup(params);
+      if (result.data.retcode === 0) {
+        notification.success({ message: "添加成功" });
+        this.setState({
+          visible: false,
+        });
+        this.getGroups(1);
+      }
+    } else {
+      //修改组
+      const result = await reqPutGroup(this.state.curInfo.id, params);
+      if (result.data.retcode === 0) {
+        notification.success({ message: "更新成功" });
+        this.setState({
+          visible: false,
+        });
+        this.getGroups(1);
+      }
     }
+
     //}
   };
-  handleCancel = () => {
+  onClose = () => {
     this.setState({
       visible: false,
+      showDetail: false,
     });
   };
   onSwitchChange = (value) => {
@@ -225,67 +235,80 @@ class Groups extends Component {
     });
   };
   choosehandle = (value) => {
-    console.log("Groups -> choosehandle -> value", value);
     this.setState({
-      operations: value,
+      targetKeys: value,
     });
   };
-  renderAddForm = () => {
-    const {
-      name,
-      description,
-      operations,
-      //分组权限
-      mockData,
-    } = this.state;
+
+  //组权限表单
+  renderGroupForm = () => {
+    const { operationsData, targetKeys, isNew } = this.state;
+    let name = isNew ? this.state.name : this.state.curInfo.name;
+    let description = isNew
+      ? this.state.description
+      : this.state.curInfo.description;
+    let operations = isNew
+      ? this.state.targetKeys
+      : this.state.curInfo.operations;
     return (
-      <Form
-        layout="vertical"
-        name="basic"
-        initialValues={{
-          name: name,
-          description: description,
-          operations: operations,
-        }}
-        onFinish={this.onFinish}
-        validateMessages={defaultValidateMessages.defaultValidateMessages}
+      <Drawer
+        title={isNew ? "新增权限与分组" : "编辑权限与分组"}
+        width={620}
+        visible={this.state.visible}
+        onClose={this.onClose}
+        footer={null}
       >
-        <Form.Item
-          label="名称"
-          name="name"
-          rules={[{ required: true }, { max: 45 }]}
+        <Form
+          layout="vertical"
+          name="basic"
+          initialValues={{
+            name: name,
+            description: description,
+            operations: operations,
+          }}
+          onFinish={this.onFinish}
+          validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
-          <Input disabled={this.state.isNew ? false : true} />
-        </Form.Item>
-        <Form.Item
-          label="描述"
-          name="description"
-          rules={[{ max: 255 }]}
-        >
-          <TextArea rows={4} />
-        </Form.Item>
-        <Form.Item
-          label="权限"
-          name="operations"
-        >
-          <TransferComponent
-            treeData={mockData}
-            chooseItem={this.choosehandle}
-          />
-        </Form.Item>
-        {this.state.isNew ? (
-          <Form.Item 
+          <Form.Item
+            label="名称"
+            name="name"
+            rules={[{ required: true }, { max: 45 }]}
           >
-            <Button type="primary" htmlType="submit">
+            <Input />
+          </Form.Item>
+          <Form.Item label="描述" name="description" rules={[{ max: 255 }]}>
+            <TextArea rows={4} />
+          </Form.Item>
+          <Form.Item label="权限" name="operations">
+            <TransferComponent
+              treeData={operationsData}
+              chooseItem={this.choosehandle}
+              targetKeys={targetKeys}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button type="default" onClick={this.onClose}>
+              取消
+            </Button>
+            <Button className="margin-left" type="primary" htmlType="submit">
               提交
             </Button>
           </Form.Item>
-        ) : null}
-      </Form>
+        </Form>
+      </Drawer>
     );
   };
+  //组列表
   renderContent = () => {
-    const { groups, size, currentPage, total } = this.state;
+    const {
+      groups,
+      size,
+      currentPage,
+      total,
+      showDetail,
+      isNew,
+      visible,
+    } = this.state;
     const columns = [
       {
         title: "名称",
@@ -300,9 +323,29 @@ class Groups extends Component {
       {
         title: "操作",
         key: "action",
-        render: (chooseItem) => (
-          <span>
-            {/* <b
+        render: (chooseItem) => {
+          const { id } = chooseItem;
+          return (
+            <div>
+              <b
+                onClick={() => {
+                  this.reqGetGroupItem(id, "view");
+                }}
+                className="ant-green-link cursor"
+              >
+                查看
+              </b>
+              <Divider type="vertical" />
+              <b
+                onClick={() => {
+                  //this.getPermissions(id)
+                  this.reqGetGroupItem(id, "edit");
+                }}
+                className="ant-blue-link cursor"
+              >
+                修改
+              </b>
+              {/*<b
               onClick={() => {
                 let that = this;
                 confirm({
@@ -320,8 +363,9 @@ class Groups extends Component {
             >
               删除
             </b> */}
-          </span>
-        ),
+            </div>
+          );
+        },
       },
     ];
     return (
@@ -388,15 +432,40 @@ class Groups extends Component {
             showTotal={(total) => `总共 ${total} 条数据`}
           />
         </div>
-
+        {visible ? this.renderGroupForm() : null}
+        {showDetail ? this.renderGroupDetail() : null}
+      </div>
+    );
+  };
+  //查看组的详情
+  renderGroupDetail = () => {
+    let { name, desc, operations } = this.state.curInfo;
+    return (
+      <div>
         <Drawer
-          title="新增权限与分组"
-          width={620}
-          visible={this.state.visible}
-          onClose={this.handleCancel}
+          title="权限与分组"
+          width={520}
+          visible={this.state.showDetail}
+          onClose={this.onClose}
           footer={null}
         >
-          {this.renderAddForm()}
+          <Descriptions
+            bordered
+            size="small"
+            column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
+          >
+            <Descriptions.Item label="名称">{name}</Descriptions.Item>
+            <Descriptions.Item label="描述">
+              {desc ? desc : "-"}
+            </Descriptions.Item>
+            <Descriptions.Item label="权限">
+              {operations && operations.length !== 0
+                ? operations.map((item, index) => (
+                    <div key={index}>{Operations[item]}</div>
+                  ))
+                : "-"}
+            </Descriptions.Item>
+          </Descriptions>
         </Drawer>
       </div>
     );

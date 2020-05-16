@@ -31,8 +31,6 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
   flatten(dataSource);
 
  function handleScroll (direction, e){
-   console.log("direction:", direction);
-   console.log("target:", e.target);
  };
   return (
     <Transfer
@@ -90,7 +88,6 @@ class TransferComponent extends Component {
   };
 
   onChange = (targetKeys) => {
-    console.log("Target Keys:", targetKeys);
     this.setState({ targetKeys });
     this.props.chooseItem(targetKeys);
   };

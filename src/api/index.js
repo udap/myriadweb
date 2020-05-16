@@ -20,9 +20,7 @@ var env = process.env.NODE_ENV;
 //   BASE = `https://gift-test.xinongtech.com`; // 生产环境
 // }
 
-/*
-LOGIN START
- */
+//LOGIN START
 //获取验证码
 export const reqVerify = (cellphone) =>
   ajax(BASE + "/public/login/phoneCode?cellphone=" + cellphone);
@@ -32,22 +30,14 @@ export const reqLogin = (values) =>
 //重新获取token
 export const reqToken = (values) =>
   ajax.get(BASE + "/auth/refresh_token", { params: values });
-/*
-LOGIN END
- */
+//LOGIN END
 
-/*
-dashboard START
- */
+//dashboard START
 //登陆后获取个人信息 /accounts/em;
 export const reqGetAccounts = () => ajax(BASE + "/accounts/me");
-/*
-dashboard END 
- */
+//dashboard END
 
-/*
-营销活动 START
- */
+//营销活动 START
 //获取营销活动列表reqGetMarkets
 export const reqGetCampaigns = (params) =>
   ajax.get(BASE + "/myriad/campaigns", { params: params });
@@ -107,26 +97,19 @@ export const reqDelMerchant = (uid) => ajax.delete(BASE + "/merchants/" + uid);
 //删除参与机构
 export const reqDelParty = (id, partyId) =>
   ajax.delete(BASE + "/myriad/campaigns/" + id + "/parties/" + partyId);
-/*
-营销活动 END
- */
+//营销活动 END
 
-/*
-TOPNAV START
- */
-/*
+//TOPNAV START
 
- /*
-一.注册机构 START
- */
+//一.注册机构 START
 //注册机构
 export const regAddOrg = (params) => ajax.post(BASE + "/organizations", params);
 //查看当前机构
 export const regGetCurOrg = (params) =>
   ajax.get(BASE + "/organizations/" + params);
 //修改机构信息
-export const regPutCurOrg = (uid,params) =>
-         ajax.put(BASE + "/organizations/" + uid,params);
+export const regPutCurOrg = (uid, params) =>
+  ajax.put(BASE + "/organizations/" + uid, params);
 
 //获取机构列表
 export const regGetOrgs = (params) => ajax(BASE + "/organizations");
@@ -146,14 +129,9 @@ export const reqPermit = (str) =>
 //获取所有权限
 export const reqGetPermissions = () =>
   ajax.get(BASE + "/accounts/me/permissions");
-/*
-注册机构 END
- */
+//注册机构 END
 
-/*
-二.员工管理 START
- */
-
+//二.员工管理 START
 //获取员工列表
 export const reqGetEmployees = (params) =>
   ajax.get(BASE + "/employees", { params: params });
@@ -170,13 +148,14 @@ export const reqAddEmployees = (params) =>
   ajax.post(BASE + "/employees", params);
 //删除员工reqDelEmploy
 export const reqDelEmployee = (uid) => ajax.delete(BASE + "/employees/" + uid);
-/*
-员工管理 END
- */
+//激活员工
+export const reqActivateEmployee = (uid) =>
+         ajax.put(BASE + "/employees/" + uid + "/activate");
 
-/*
-三.商户管理 START
- */
+//员工管理 END
+
+//三.商户管理 START
+
 //获取商户管理列表
 export const reqGetMerchants = (params) =>
   ajax.get(BASE + "/merchants", { params: params });
@@ -184,29 +163,17 @@ export const reqGetMerchants = (params) =>
 //添加商户
 export const reqAddMerchant = (params) =>
   ajax.post(BASE + "/merchants", params);
-/*
-商户管理 END
- */
+//商户管理 END
 
-/*
-四：授权码 START
- */
+//四：授权码 START
 //获取供应商的授权码
 export const reqGetAuthCode = (params) =>
   ajax.get(BASE + "/organizations/" + params + "/merchantAuthCode");
+//授权码
 
-/*
-授权码 END
- */
+//TOPNAV END
 
-/*
-TOPNAV END
- */
-
-/*
-票券管理 START
- */
-
+//票券管理 START
 //获取票券管理列表
 export const reqGetCoupons = (params) =>
   ajax.get(BASE + "/myriad/vouchers", { params: params });
@@ -216,13 +183,9 @@ export const reqGetClients = (params) =>
 export const reqPublishDis = (params) =>
   ajax.post(BASE + "/myriad/distributions", params);
 
-/*
-票券管理 END
- */
+//票券管理 END
 
-/*
-结算管理 START
- */
+//结算管理 START
 //  查询结算单reqGetList
 export const reqGetSettlements = (params) =>
   ajax.get(BASE + "/myriad/settlements", { params: params });
@@ -253,28 +216,23 @@ export const reqPutSettlement = (id, params) =>
 export const reqAgreeSettlement = (id, params) =>
   ajax.put(BASE + "/myriad/settlements/" + id + "/approve", params);
 
-/*
-结算管理 END
- */
-
+//结算管理 END
 //核销记录 reqGetExchangeLists;
 export const reqGetRedemptions = (params) =>
   ajax.get(BASE + "/myriad/redemptions", {
     params: params,
   });
-/*核销记录*/
+//核销记录
 
-/*发放记录reqDistributionsLists*/
+//发放记录reqDistributionsLists
 export const reqGetDistributions = (params) =>
   ajax.get(BASE + "/myriad/distributions", {
     params: params,
   });
-/*发放记录*/
+//发放记录
 
-/*
-分组管理 START
- */
-/*分页查询机构的组列表*/
+//分组管理 START
+//分页查询机构的组列表
 export const reqGetGroups = (params) =>
   ajax.get(BASE + "/groups", {
     params: params,
@@ -284,10 +242,11 @@ export const reqPostGroup = (params) =>
   ajax.post(BASE + "/groups", params, {
     "Content-Type": "multipart/form-data",
   });
+//修改分组
+export const reqPutGroup = (id, params) =>
+  ajax.put(BASE + "/groups/" + id, params);
 //删除某个分组 后台没有 假写
 export const reqDelGroup = (id) => ajax.delete(BASE + "/groups/" + id);
 //查询某个组的详情
 export const reqGetGroupItem = (id) => ajax.get(BASE + "/groups/" + id);
-/*
-分组管理 END
- */
+//分组管理 END

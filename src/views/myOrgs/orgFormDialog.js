@@ -6,11 +6,9 @@ import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import { regAddOrg } from "../../api";
 import { ChinaRegions } from "../../utils/china-regions";
 import storageUtils from "../../utils/storageUtils";
-import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 import { Loading } from "../../components";
 import "../../css/common.less";
 import "./index.less";
-const { Meta } = Card;
 const layout = {
   labelCol: {
     xs: { span: 24 },
@@ -150,7 +148,7 @@ class OrgFormDialog extends Component {
           {...layout}
           name="basic"
           initialValues={{
-            residence: ["重庆市", "重庆市", "渝北区"],
+            residence: [province, city, district],
             fullName: fullName,
             name: name,
             licenseNo: licenseNo,

@@ -15,6 +15,7 @@ import {
   Tag,
   Switch,
   Divider,
+  Popconfirm,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
@@ -27,6 +28,7 @@ import {
   reqAddEmployees,
   reqGetGroup,
   reqGetEmployee,
+  reqActivateEmployee,
 } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
@@ -41,7 +43,7 @@ class Employee extends Component {
     campaigns: [],
     addNew: false,
     currentPage: 1,
-    size: 8,
+    size: 20,
     total: 1,
     /*添加员工 */
     visible: false,
@@ -167,7 +169,16 @@ class Employee extends Component {
       admin: value,
     });
   };
-  onFinishFailed = (errorInfo) => {};
+  activateEmployee = async (uid) => {
+    const result = await reqActivateEmployee(uid);
+    if (result.data.retcode === 0) {
+      notification.success({ message: "激活成功" });
+      this.setState({
+        visible: false,
+      });
+      this.getEmployees(1);
+    }
+  };
   renderEmpolyContent = () => {
     const {
       name,
@@ -385,11 +396,17 @@ class Employee extends Component {
             <b onClick={() => {}} className="ant-green-link cursor">
               查看
             </b>
-            <Divider type="vertical" />
-            <b onClick={() => {}} className="ant-blue-link">
-              修改
-            </b>
             <Divider type="vertical" />*/}
+            {chooseItem.status==='NEW'?<Popconfirm
+              title="确认激活吗?"
+              onConfirm={this.activateEmployee.bind(this, chooseItem.uid)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <b className="ant-green-link cursor">激活</b>
+            </Popconfirm>:null}
+            
+            <Divider type="vertical" />
             <b
               onClick={() => {
                 let that = this;
