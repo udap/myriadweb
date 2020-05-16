@@ -105,7 +105,7 @@ class Dashboard extends Component {
     return (
       <Result
         status="warning"
-        title="您尚未加入任何结构！请注册新机构或者退出"
+        title="您尚未加入任何机构。请联系您的机构管理员或注册您的机构。"
         extra={
           <div>
             <LinkBtn color="#1890ff" onClick={this.address.bind(this, "exit")}>
