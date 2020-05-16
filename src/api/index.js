@@ -58,13 +58,13 @@ export const reqGetNumber = (campaignId, owner) =>
 
 //批量分配reqTransfer
 export const reqBatchTransfer = (params) =>
-  ajax.post(BASE + " /myriad/vouchers/batchTransfer", params, {
+  ajax.post(BASE + "/myriad/vouchers/batchTransfer", params, {
     "Content-Type": "multipart/form-data",
   });
 
 //批量发放reqDistributions
 export const reqBatchDistribution = (params) =>
-  ajax.post(BASE + " /myriad/distributions/batch", params, {
+  ajax.post(BASE + "/myriad/distributions/batch", params, {
     "Content-Type": "multipart/form-data",
   });
 
