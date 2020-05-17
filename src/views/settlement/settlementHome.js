@@ -51,7 +51,7 @@ class SettlementHome extends Component {
       name: "活动",
     },
     currentPage: 1,
-    size: 3,//20,
+    size: 20,
     total: 0,
     /*搜索框 */
     searchTxt: "",
