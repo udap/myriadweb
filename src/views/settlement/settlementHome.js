@@ -129,7 +129,7 @@ class SettlementHome extends Component {
         title: "票券数量",
         dataIndex: "amount",
         key: "amount",
-        width: 110,
+        width: 80,
       },
       {
         title: "结算时间",
@@ -255,7 +255,7 @@ class SettlementHome extends Component {
         title: "票券数量",
         dataIndex: "amount",
         key: "amount",
-        width: 110,
+        width: 80,
       },
       {
         title: "结算时间",
