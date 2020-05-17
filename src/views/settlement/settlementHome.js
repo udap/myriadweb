@@ -157,7 +157,7 @@ class SettlementHome extends Component {
       {
         title: "操作",
         //fixed: "right",
-        width: 150,
+        width: 110,
         render: (chooseItem) => {
           //操作（状态为草稿是，可以删除和提交操作，其中“提交”按钮只显示在机构提交页；状态为提交时，对于机构审批页，只有“批准”操作按钮）
           const { id, status } = chooseItem;
@@ -283,7 +283,7 @@ class SettlementHome extends Component {
       {
         title: "操作",
         //fixed: "right",
-        width: 150,
+        width: 110,
         render: (chooseItem) => {
           //操作（状态为草稿是，可以删除和提交操作，其中“提交”按钮只显示在机构提交页；状态为提交时，对于机构审批页，只有“批准”操作按钮）
           const { id, status } = chooseItem;
