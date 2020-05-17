@@ -28,7 +28,7 @@ class Merchant extends Component {
   state = {
     visible: false,
     inited: false,
-    campaigns: [],
+    merchants: [],
     isNew: true,
     apCode: "",
     wpCode: "",
@@ -89,7 +89,7 @@ class Merchant extends Component {
         ? result.data.content.totalElements
         : 1;
     this.setState({
-      campaigns: list,
+      merchants: list,
       total:
         result && result.data && result.data.content
           ? result.data.content.totalElements
@@ -221,11 +221,11 @@ class Merchant extends Component {
     });
   };
   renderContent = () => {
-    const { campaigns, size, currentPage, total, searchTxt } = this.state;
+    const { merchants, size, currentPage, total, searchTxt } = this.state;
     //名字 银联商户码(upCode) 电话 地址
     const columns = [
       {
-        title: "名字",
+        title: "商户名",
         dataIndex: "name",
         key: "name",
       },
@@ -234,7 +234,6 @@ class Merchant extends Component {
         dataIndex: "upCode",
         key: "upCode",
       },
-
       {
         title: "电话",
         dataIndex: "phone",
@@ -251,7 +250,7 @@ class Merchant extends Component {
         title: "入驻时间",
         dataIndex: "authorizedAt",
         key: "authorizedAt",
-        responsive: ["lg"],
+        responsive: ["md"],
       },
       {
         title: "操作",
@@ -282,7 +281,7 @@ class Merchant extends Component {
       <div>
         <PageHeader
           className="site-page-header-responsive cont"
-          title="商户列表"
+          title="入驻商户"
           extra={[
             <PlusSquareFilled
               key="add"
@@ -313,7 +312,7 @@ class Merchant extends Component {
             <Col span={9}>
               <Form.Item name="searchTxt" label="查询条件">
                 <Input
-                  placeholder="请输入名字、银联商户号 、电话或地址进行搜索"
+                  placeholder="请输入名字、商户号、电话或地址进行搜索"
                   allowClear
                 />
               </Form.Item>
@@ -338,7 +337,7 @@ class Merchant extends Component {
           rowKey="id"
           size="small"
           bordered
-          dataSource={campaigns}
+          dataSource={merchants}
           columns={columns}
           pagination={false}
         />

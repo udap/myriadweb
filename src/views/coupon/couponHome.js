@@ -27,7 +27,7 @@ const { Option } = Select;
 class CouponHome extends Component {
   state = {
     inited: false,
-    campaigns: [],
+    vouchers: [],
     addNew: false,
     publisherId: storageUtils.getUser().orgId,
     ownerId: storageUtils.getUser().id,
@@ -251,7 +251,7 @@ class CouponHome extends Component {
     this.totalPages = result && result.data ? result.data.totalElements : 0;
     this.setState({
       inited: true,
-      campaigns: data,
+      vouchers: data,
       total: result.data ? result.data.totalElements : 0,
       merchantCode: "",
       loading: false,
@@ -366,7 +366,7 @@ class CouponHome extends Component {
 
   renderContent = () => {
     const {
-      campaigns,
+      vouchers,
       size,
       total,
       currentPage,
@@ -448,7 +448,7 @@ class CouponHome extends Component {
           rowKey="key"
           size="small"
           bordered
-          dataSource={campaigns}
+          dataSource={vouchers}
           columns={this.columns}
           pagination={false}
         />

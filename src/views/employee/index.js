@@ -25,7 +25,7 @@ import {
   reqGetEmployees,
   reqDelEmployee,
   reqAddEmployees,
-  reqGetGroup,
+  reqGetGroups,
   reqGetEmployee,
   reqActivateEmployee,
 } from "../../api";
@@ -39,7 +39,7 @@ const { TextArea } = Input;
 class Employee extends Component {
   state = {
     inited: false,
-    campaigns: [],
+    employees: [],
     addNew: false,
     currentPage: 1,
     size: 20,
@@ -87,7 +87,7 @@ class Employee extends Component {
     this.totalPages =
       result && result.data ? result.data.content.totalElements : 1;
     this.setState({
-      campaigns: cont.content,
+      employees: cont.content,
       total: result && result.data ? result.data.content.totalElements : 1,
       inited: true,
     });
@@ -163,7 +163,7 @@ class Employee extends Component {
   //获取员工所在组
   getGroups = async () => {
     let orgUid = storageUtils.getUser().orgUid;
-    let groups = await reqGetGroup(orgUid);
+    let groups = await reqGetGroups(orgUid);
     let cont = groups.data.content ? groups.data.content.content : [];
     this.setState({
       inited: true,
@@ -300,7 +300,7 @@ class Employee extends Component {
     );
   };
   renderContent = () => {
-    const { campaigns, size, currentPage, total } = this.state;
+    const { employees, size, currentPage, total } = this.state;
     const columns = [
       {
         title: "姓名",
@@ -463,7 +463,7 @@ class Employee extends Component {
           rowKey="uid"
           size="small"
           bordered
-          dataSource={campaigns}
+          dataSource={employees}
           columns={columns}
           pagination={false}
         />
