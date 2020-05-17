@@ -49,6 +49,7 @@ class CouponHome extends Component {
     searchClientTxt: "",
     loading: false,
     chooseRadio: "owner",
+    searchCouponTxt: "",
   };
   componentDidMount() {
     this.initColumns();
@@ -211,7 +212,9 @@ class CouponHome extends Component {
             issuerId: "",
             merchantCode: values ? values.merchantCode : "",
             codeType: this.state.codeType,
-            searchTxt: values ? values.searchCouponTxt : "",
+            searchTxt: values
+              ? values.searchCouponTxt
+              : this.state.searchCouponTxt,
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
@@ -221,7 +224,9 @@ class CouponHome extends Component {
             issuerId: this.state.publisherId,
             merchantCode: values ? values.merchantCode : "",
             codeType: this.state.codeType,
-            searchTxt: values ? values.searchCouponTxt : "",
+            searchTxt: values
+              ? values.searchCouponTxt
+              : this.state.searchCouponTxt,
           };
 
     const result = await reqGetCoupons(parmas);
@@ -274,6 +279,10 @@ class CouponHome extends Component {
     });
   };
   onFinish = (values) => {
+    this.setState({
+      currentPage: 1,
+      searchCouponTxt: values.searchCouponTxt,
+    });
     this.getMarkets(values, 1);
   };
   handleTableChange = (page) => {
@@ -313,6 +322,14 @@ class CouponHome extends Component {
       searchClientTxt: "",
     });
   };
+  handleClientChange = (e) => {
+    this.setState({
+      searchClientTxt: e.target.value,
+    });
+  };
+  searchValue = () => {
+    this.getClient(1, this.state.searchClientTxt);
+  };
   /*
 获取选择列表数据 加号
 */
@@ -322,7 +339,7 @@ class CouponHome extends Component {
       size: this.state.listSize,
       orgUid: storageUtils.getUser().orgUid,
       restricted: true,
-      searchTxt: searchTxt ? searchTxt : "",
+      searchTxt: searchTxt ? searchTxt : this.state.searchClientTxt,
     };
     const result = await reqGetClients(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -342,7 +359,6 @@ class CouponHome extends Component {
     this.setState({
       listData: data,
       tolistTotaltal: result && result.data ? cont.totalElements : 0,
-      searchClientTxt: "",
       loading: false,
       // inited: true,
     });

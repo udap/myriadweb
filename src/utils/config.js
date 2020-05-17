@@ -5,7 +5,7 @@ function versionLX() {
       return ""; //开发版
       break;
     case "production":
-      return "/myriadapi"; //体验版
+      return ""; //体验版
       break;
     default:
       return "";

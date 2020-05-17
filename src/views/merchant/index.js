@@ -62,7 +62,7 @@ class Merchant extends Component {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
-      searchTxt: value, //this.state.searchTxt,
+      searchTxt: value?value:this.state.searchTxt,
     };
     const result = await reqGetMerchants(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -95,12 +95,12 @@ class Merchant extends Component {
           ? result.data.content.totalElements
           : 1,
       inited: true,
-      searchTxt: "",
       loading: false,
     });
   };
   searchValue = (value) => {
     this.setState({
+      currentPage:1,
       searchTxt: value.searchTxt,
     });
     this.getMerchant(1, value.searchTxt);

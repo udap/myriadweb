@@ -65,6 +65,10 @@ class Employee extends Component {
   };
 
   searchValue = (value) => {
+    this.setState({
+      currentPage:1,
+      searchTxt:value.searchTxt
+    });
     this.getEmployees(1, value.searchTxt);
   };
   /*
@@ -75,7 +79,7 @@ class Employee extends Component {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
-      searchTxt: searchTxt,
+      searchTxt: searchTxt?searchTxt:this.state.searchTxt,
     };
     const result = await reqGetEmployees(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -218,10 +222,10 @@ class Employee extends Component {
       groups,
     } = this.state.curInfo;
     const onGenderChange = (value) => {};
-    /*当前机构是admin  并且当前机构是顶级机构 可以设置是否管理员 */
-    const ableSetAdmin =
-      storageUtils.getUser().admin &&
-      JSON.stringify(storageUtils.getOrg().parent) === "{}";
+    /*当前机构是admin   可以设置是否管理员 */
+    //并且当前机构是顶级机构删除
+    const ableSetAdmin =storageUtils.getUser().admin; 
+      //&&JSON.stringify(storageUtils.getOrg().parent) === "{}";
     //如果是admin 不需要选择员工所在组
     let isAdmin = this.state.admin;
     return (
@@ -257,12 +261,9 @@ class Employee extends Component {
         <Form.Item label="员工编号" name="code" rules={[{ max: 20 }]}>
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
-
-        {ableSetAdmin ? (
           <Form.Item label="是否管理员" name="admin">
-            <Switch checked={this.state.admin} onChange={this.onSwitchChange} />
+            <Switch disabled={ableSetAdmin?false:true} checked={this.state.admin} onChange={this.onSwitchChange} />
           </Form.Item>
-        ) : null}
         <Form.Item label="员工所在组" name="groupId">
           {this.state.isNew ? (
             <Select

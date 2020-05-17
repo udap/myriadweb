@@ -104,7 +104,7 @@ class CampaignEdit extends Component {
       select: "AMOUNT",
       valueOff: "",
       totalSupply: "",
-      autoUpdate: true,
+      autoUpdate: false,
       amountLimit: 1,
       description: "",
       orgList: [],
@@ -150,7 +150,7 @@ class CampaignEdit extends Component {
         ? parseFloat(voucherConfig.discount.valueOff) / 100
         : "",
       totalSupply: voucherConfig ? voucherConfig.totalSupply : "",
-      autoUpdate: voucherConfig ? voucherConfig.autoUpdate : "",
+      autoUpdate: voucherConfig ? voucherConfig.autoUpdate : false,
       amountLimit: 1, //cont.amountLimit,
       description: voucherConfig ? voucherConfig.description : "",
 
@@ -524,11 +524,9 @@ class CampaignEdit extends Component {
           )}
           <Form.Item
             name="autoUpdate"
-            label="是否允许增发"
-            valuePropName="checked"
-            rules={[{ required: false }]}
+            label="是否自动增发"
           >
-            <Switch defaultChecked onChange={this.onSwitchChange} />
+            <Switch checked={this.state.autoUpdate} onChange={this.onSwitchChange} />
           </Form.Item>
 
           <Form.Item
@@ -651,7 +649,7 @@ class CampaignEdit extends Component {
         <Steps
           type="navigation"
           current={this.state.current}
-          onChange={this.onChange}
+          //onChange={this.onChange}
           className="site-navigation-steps"
         >
           {stepList.map((item, index) => (

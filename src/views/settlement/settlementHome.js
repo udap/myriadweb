@@ -51,7 +51,7 @@ class SettlementHome extends Component {
       name: "活动",
     },
     currentPage: 1,
-    size: 20,
+    size: 3,//20,
     total: 0,
     /*搜索框 */
     searchTxt: "",
@@ -330,6 +330,7 @@ class SettlementHome extends Component {
   searchValue = (value) => {
     this.setState({
       searchTxt: value.searchTxt,
+      currentPage:1,
       value: value.group,
     });
     this.getMarkets(value.searchTxt, 1, this.state.value);
@@ -430,7 +431,6 @@ class SettlementHome extends Component {
         result && result.data && result.data.content
           ? result.data.content.totalElements
           : 0,
-      searchTxt: null,
       loading: false,
     });
   };

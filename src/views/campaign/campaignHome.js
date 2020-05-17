@@ -243,6 +243,7 @@ class CampaignHome extends Component {
     this.setState({
       searchTxt: value.searchTxt,
       value: value.group,
+      currentPage: 1,
     });
     this.getMarkets(value.searchTxt, 1, this.state.value);
   };
@@ -286,16 +287,16 @@ class CampaignHome extends Component {
             size: this.state.size,
             participantId: storageUtils.getUser().id,
             status: "NEW_OR_EFFECTIVE",
-            searchTxt: value,
-            sort:'updatedAt,desc'
+            searchTxt: value ? value : this.state.searchTxt,
+            sort: "updatedAt,desc",
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
             partyId: storageUtils.getUser().orgId,
             status: "NON_EXPIRED",
-            searchTxt: value,
-            sort:'updatedAt,desc'
+            searchTxt: value ? value : this.state.searchTxt,
+            sort: "updatedAt,desc",
           };
     const result = await reqGetCampaigns(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -305,7 +306,7 @@ class CampaignHome extends Component {
       inited: true,
       campaigns: cont,
       total: result && result.data ? result.data.totalElements : 1,
-      searchTxt: "",
+      //searchTxt: "",
       loading: false,
     });
   };

@@ -162,13 +162,13 @@ class Redemption extends Component {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
             issuerId: this.state.publisherId,
-            searchTxt: searchTxt,
+            searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
             merchantId: this.state.publisherId,
-            searchTxt: searchTxt,
+            searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           };
 
     const result = await reqGetRedemptions(parmas);
@@ -208,7 +208,6 @@ class Redemption extends Component {
         result && result.data && result.data.content
           ? result.data.content.totalElements
           : 0,
-      searchTxt: "",
       loading: false,
     });
     //parseInt((this.receipts.length - 1) / PAGE_SIZE) + 1;//
@@ -226,6 +225,7 @@ class Redemption extends Component {
   };
   onFinish = (values) => {
     this.setState({
+      currentPage: 1,
       searchTxt: values.searchTxt,
     });
     this.getMarkets(null, 1, values.searchTxt);

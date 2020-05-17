@@ -140,7 +140,7 @@ class CampaignMerchant extends Component {
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
       excludeCampaignId: this.state.id,
-      searchTxt: searchTxt,
+      searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
     };
     const result = await reqGetMerchants(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -273,6 +273,7 @@ class CampaignMerchant extends Component {
   };
   searchValue = (value) => {
     this.setState({
+      currentPage: 1,
       selectedRowKeys: [],
     });
     this.getOrgs(1, this.state.searchTxt);
@@ -361,6 +362,7 @@ class CampaignMerchant extends Component {
                 columns={this.listColumns}
                 dataSource={data}
                 pagination={{
+                  current:currentPage,
                   pageSize: size,
                   total: this.totalPages,
                   onChange: this.handleTableChange,

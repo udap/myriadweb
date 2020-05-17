@@ -33,7 +33,12 @@ import { Loading, TransferComponent } from "../../components";
 import "../../css/common.less";
 
 const { TextArea } = Input;
-
+const scrollstyle = {
+  display: 'block',
+  maxHeight:'500px',
+  overflow:'auto',
+  overflowX:'hidden',
+}
 class Groups extends Component {
   state = {
     inited: false,
@@ -65,6 +70,10 @@ class Groups extends Component {
   };
 
   searchValue = (value) => {
+    this.setState({
+      currentPage:1,
+      searchTxt: value.searchTxt,
+    });
     this.getGroups(1, value.searchTxt);
   };
   //组织树控件的数据
@@ -99,7 +108,7 @@ class Groups extends Component {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
-      searchTxt: searchTxt,
+      searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
     };
     const result = await reqGetGroups(parmas);
     const cont =
@@ -453,12 +462,15 @@ class Groups extends Component {
             <Descriptions.Item label="描述">
               {desc ? desc : "-"}
             </Descriptions.Item>
-            <Descriptions.Item label="权限">
-              {operations && operations.length !== 0
+            <Descriptions.Item label="权限" > 
+            <div style={scrollstyle}> 
+            {operations && operations.length !== 0
                 ? operations.map((item, index) => (
                     <div key={index}>{Operations[item]}</div>
                   ))
                 : "-"}
+            </div>
+              
             </Descriptions.Item>
           </Descriptions>
         </Drawer>

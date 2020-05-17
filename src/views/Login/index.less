@@ -2,7 +2,8 @@
 		height:100%;
 		background: #f0f2f5 url(images/bg.svg);
 		background-size: 100% 100%;
-		.login{
+		.login,.OrgFormDialog{
+			min-width: 360px;
 			padding:10px;
 			color:#fff;
 			position:absolute;
@@ -19,8 +20,12 @@
 			font-size: 1.2rem;
 		}
 	}
-
-
+.orgForm .ant-form-item{
+	margin-bottom: 0!important;
+}
+.orgForm .marginBtm{
+	margin-bottom: 10px!important;
+}
 @media screen and (max-width:500px){
 .getCodeBtn .btnText{ display: none;}
 }

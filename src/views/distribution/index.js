@@ -97,13 +97,13 @@ class Distribution extends Component {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: size ? size : this.state.size,
             ownerId: this.state.ownerId,
-            searchTxt: values ? values.merchantCode : "",
+            searchTxt: values ? values : this.state.searchTxt,
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: size ? size : this.state.size,
             issuerId: this.state.publisherId,
-            searchTxt: values ? values.merchantCode : "",
+            searchTxt: values ? values : this.state.searchTxt,
           };
 
     const result = await reqGetDistributions(parmas);
@@ -137,7 +137,6 @@ class Distribution extends Component {
         result.data && result.data.content
           ? result.data.content.totalElements
           : 0,
-      searchTxt: "",
       loading: false,
     });
     //parseInt((this.receipts.length - 1) / PAGE_SIZE) + 1;//
@@ -149,7 +148,11 @@ class Distribution extends Component {
     });
   };
   onFinish = (values) => {
-    this.getMarkets(values, 1);
+    this.setState({
+      currentPage: 1,
+      searchTxt: values.searchTxt,
+    });
+    this.getMarkets(values.searchTxt, 1);
   };
   handleTableChange = (page) => {
     this.setState({
@@ -185,7 +188,7 @@ class Distribution extends Component {
             name="advanced_search"
             className="ant-advanced-search-form"
             initialValues={{
-              merchantCode: "",
+              searchTxt: "",
               group: "owner",
             }}
           >
@@ -199,7 +202,7 @@ class Distribution extends Component {
                 </Form.Item>
               </Col>
               <Col span={9}>
-                <Form.Item name="merchantCode">
+                <Form.Item name="searchTxt">
                   <Input
                     placeholder="请输入活动名、标签、票券号进行搜索"
                     allowClear
