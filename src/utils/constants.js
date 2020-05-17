@@ -16,7 +16,7 @@ const couponStatuses = [
 ];
 
 const settlementStatuses = [
-  { INITIATED: "草稿" },
+  { INITIATED: "预结算" },
   { SUBMITTED: "结算中" },
   { PROCESSED: "结算完成" },
   { FAILED: "结算失败" },
