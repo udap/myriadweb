@@ -17,9 +17,9 @@ const couponStatuses = [
 
 const settlementStatuses = [
   { INITIATED: "草稿" },
-  { SUBMITTED: "审核中" },
-  { PROCESSED: "审核通过" },
-  { FAILED: "失败" },
+  { SUBMITTED: "结算中" },
+  { PROCESSED: "结算完成" },
+  { FAILED: "结算失败" },
 ];
 
 const employeeStatuses = [
@@ -52,54 +52,68 @@ const settlementTypes = [
   },
 ];
 
+//发放列表
+//PENDING, SUCCESS, FAILED;
+const distributionStatuses = [
+  { PENDING: "发放中" },
+  { SUCCESS: "发放成功" },
+  { FAILED: "发放失败" },
+];
+
+const redemptionStatuses = [
+  { PENDING: "核销中" },
+  { SUCCESS: "核销成功" },
+  { FAILED: "核销失败" },
+];
+
 //请求权限
 var Operations = {
   MANAGE_ORGANIZATION: "管理机构",
   LIST_SUBSIDIARIES: "查询机构列表",
   VIEW_ORGANIZATION: "显示机构详情",
-  CREATE_SUBSIDIARY: "新增（下属）机构",
-  UPDATE_ORGANIZATION: "修改（当前或下属）机构",
-  DELETE_SUBSIDIARY: "删除（下属）机构",
+  CREATE_SUBSIDIARY: "添加下属机构",
+  UPDATE_ORGANIZATION: "修改机构信息",
+  DELETE_SUBSIDIARY: "删除下属机构",
   MANAGE_SHIPPING_ADDRESS: "管理收货地址",
   MANAGE_EMPLOYEE: "管理员工",
-  LIST_EMPLOYEES: "查询（当前或下属机构）员工列表",
-  VIEW_EMPLOYEE: "显示（当前或下属机构）员工详情",
-  CREATE_EMPLOYEE: "新增（当前或下属机构）员工",
-  UPDATE_EMPLOYEE: "修改（当前或下属机构）员工",
-  DELETE_EMPLOYEE: "删除（当前或下属机构）员工",
+  LIST_EMPLOYEES: "查询员工列表",
+  VIEW_EMPLOYEE: "显示员工详情",
+  CREATE_EMPLOYEE: "增加员工",
+  UPDATE_EMPLOYEE: "修改员工信息",
+  DELETE_EMPLOYEE: "删除员工",
   ONBOARDING: "确认员工加入机构",
-  TRANSFER_EMPLOYEE: "调离员工",
+  TRANSFER_EMPLOYEE: "调动员工",
   MANAGE_GROUP: "管理分组",
   LIST_GROUPS: "查询分组列表",
   CREATE_GROUP: "新增分组",
   VIEW_GROUP: "显示分组详情",
-  UPDATE_GROUP: "更新分组",
+  UPDATE_GROUP: "修改分组信息",
   DELETE_GROUP: "删除分组",
   MANAGE_DISTRIBUTION_POINT: "管理兑换门店",
-  LIST_DISTRIBUTION_POINTS: "查询（当前或下属机构）门店列表",
-  CREATE_DISTRIBUTION_POINT: "新增（当前或下属机构的）门店",
-  VIEW_DISTRIBUTION_POINT: "显示（当前或下属机构）门店详情",
-  UPDATE_DISTRIBUTION_POINT: "修改（当前或下属机构的）门店",
-  DELETE_DISTRIBUTION_POINT: "删除（当前或下属机构）门店",
-  JOIN_DISTRIBUTION_NETWORK: "加入（当前或下属机构）门店",
+  LIST_DISTRIBUTION_POINTS: "查询门店列表",
+  CREATE_DISTRIBUTION_POINT: "添加门店",
+  VIEW_DISTRIBUTION_POINT: "显示门店详情",
+  UPDATE_DISTRIBUTION_POINT: "修改门店信息",
+  DELETE_DISTRIBUTION_POINT: "删除门店",
+  JOIN_DISTRIBUTION_NETWORK: "加入门店",
   MANAGE_CAMPAIGN: "管理营销活动",
   LIST_CAMPAIGNS: "查询营销活动列表",
   VIEW_CAMPAIGN: "显示营销活动详情",
-  CREATE_CAMPAIGN: "新增营销活动",
-  UPDATE_CAMPAIGN: "修改营销活动",
+  CREATE_CAMPAIGN: "创建营销活动",
+  UPDATE_CAMPAIGN: "修改营销活动信息",
   DELETE_CAMPAIGN: "删除营销活动",
   CREATE_DURABLE_QRCODE: "生成领券二维码",
   MANAGE_CUSTOMER: "管理客户",
-  LIST_CUSTOMERS: "查询客户列表",
-  LIST_CUSTOMERS_INC_SUBS: "查询子机构的客户",
-  CREATE_CUSTOMER: "新增客户",
+  LIST_CUSTOMERS: "查询直属客户列表",
+  LIST_CUSTOMERS_INC_SUBS: "查询所有客户列表",
+  CREATE_CUSTOMER: "添加客户",
   VIEW_CUSTOMER: "查看客户详情",
-  UPDATE_CUSTOMER: "修改客户",
+  UPDATE_CUSTOMER: "修改客户信息",
   DELETE_CUSTOMER: "删除客户",
   TRANSFER_CUSTOMER: "移交客户",
   MANAGE_TAG: "管理标签",
   LIST_TAGS: "查看标签",
-  CREATE_TAG: "新增标签",
+  CREATE_TAG: "创建标签",
   DELETE_TAG: "删除标签",
   MANAGE_RESOURCE: "管理资源需求", //商品库管理 需求管理
   MANAGE_PRODUCT: "商品库管理",
@@ -116,12 +130,12 @@ var Operations = {
   REVIEW_DEMAND: "需求审批",
   DELETE_DEMAND: "删除或撤销需求",
   STATISTICS_DEMANDS: "需求统计",
-  MANAGE_MERCHANT: "管理商户",
-  LIST_MERCHANTS: "查询商户列表",
-  VIEW_MERCHANT: "查询商户详情",
-  CREATE_MERCHANT: "添加商户",
-  UPDATE_MERCHANT: "修改商户",
-  DELETE_MERCHANT: "删除商户",
+  MANAGE_MERCHANT: "管理入驻商户",
+  LIST_MERCHANTS: "查询入驻商户列表",
+  VIEW_MERCHANT: "查询入驻商户详情",
+  CREATE_MERCHANT: "添加入驻商户",
+  UPDATE_MERCHANT: "修改入驻商户信息",
+  DELETE_MERCHANT: "删除入驻商户",
   MANAGE_GIFT: "管理商品",
   LISTING: "上架商品",
   DELISTING: "下架商品",
@@ -137,30 +151,16 @@ var Operations = {
   MANAGE_ORDER: "管理订单",
   VIEW_LOGS: "查看日志",
   VIEW_ORG_CERTIFICATE_LOGS: "查询机构发券/兑换记录",
-  MANAGE_SETTLEMENT: "结算中心",
+  MANAGE_SETTLEMENT: "结算管理",
   LIST_SETTLEMENT: "结算列表",
-  CREATE_SETTLEMENT: "添加结算",
-  VIEW_SETTLEMENT: "查看结算",
+  CREATE_SETTLEMENT: "生成结算记录",
+  VIEW_SETTLEMENT: "查看结算详情",
   SUBMIT_SETTLEMENT: "提交结算",
-  APPROVE_SETTLEMENT: "同意结算",
+  APPROVE_SETTLEMENT: "审核结算",
   DELETE_SETTLEMENT: "删除结算",
   VIEW_REDEMPTION: "核销记录",
   VIEW_DISTRIBUTION: "发放记录",
 };
-
-//发放列表
-//PENDING, SUCCESS, FAILED;
-const distributionStatuses = [
-  { PENDING: "发放中" },
-  { SUCCESS: "成功" },
-  { FAILED: "失败" },
-];
-
-const redemptionStatuses = [
-  { PENDING: "发放中" },
-  { SUCCESS: "成功" },
-  { FAILED: "失败" },
-];
 
 export {
   user, //保存当前登录的user信息
