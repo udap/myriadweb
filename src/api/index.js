@@ -139,7 +139,7 @@ export const reqGetEmployees = (params) =>
 export const reqGetEmployee = (id) => ajax(BASE + "/employee/" + id);
 
 //获取员工所在组
-export const reqGetGroups = (orgid) =>
+export const reqGetGroupsByOrg = (orgid) =>
   ajax.get(BASE + "/groups", {
     params: { size: 200, orgUid: orgid },
   });

@@ -25,7 +25,7 @@ import {
   reqGetEmployees,
   reqDelEmployee,
   reqAddEmployees,
-  reqGetGroups,
+  reqGetGroupsByOrg,
   reqGetEmployee,
   reqActivateEmployee,
 } from "../../api";
@@ -163,7 +163,7 @@ class Employee extends Component {
   //获取员工所在组
   getGroups = async () => {
     let orgUid = storageUtils.getUser().orgUid;
-    let groups = await reqGetGroups(orgUid);
+    let groups = await reqGetGroupsByOrg(orgUid);
     let cont = groups.data.content ? groups.data.content.content : [];
     this.setState({
       inited: true,
