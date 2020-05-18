@@ -38,7 +38,7 @@ import ReactFileReader from "react-file-reader";
 import { Loading } from "../../components";
 import "./index.less";
 import "../../css/common.less";
-const {confirm} = Modal
+const { confirm } = Modal;
 // const renderContent = (value, row, index) => {
 //   const obj = {
 //     children: value,
@@ -137,7 +137,7 @@ class CampaignHome extends Component {
         //fixed: "right",
         width: 150,
         render: (chooseItem) => {
-          const { id, status,name } = chooseItem;
+          const { id, status, name } = chooseItem;
           //INITIATED的时候前端可以查看/修改/发布；ACTIVATED的时候前端可以查看/分配票券
           return (
             <span>
@@ -172,7 +172,7 @@ class CampaignHome extends Component {
                   </b> */}
 
                   <Divider type="vertical" />
-                   <b
+                  <b
                     onClick={() => {
                       let that = this;
                       confirm({
@@ -189,7 +189,7 @@ class CampaignHome extends Component {
                     className="ant-pink-link cursor"
                   >
                     删除
-                  </b> 
+                  </b>
                 </span>
               ) : status === "ACTIVATED" ? (
                 <span>
@@ -252,14 +252,8 @@ class CampaignHome extends Component {
       loading: true,
     });
   };
-  addItem = () => {
-    if (storageUtils.getUser().orgId === 1) {
-      this.props.history.push("/admin/campaign/edit/new");
-    } else {
-      notification.error({
-        message: "很抱歉，系统目前只允许部分机构创建营销活动",
-      });
-    }
+  addItem = async () => {
+    this.props.history.push("/admin/campaign/edit/new");
   };
 
   delItem = async (id) => {
@@ -402,7 +396,10 @@ class CampaignHome extends Component {
           className="site-page-header-responsive cont"
           title="营销活动"
           extra={[
-            <PlusSquareFilled key="add" className="setIcon" onClick={() => {
+            <PlusSquareFilled
+              key="add"
+              className="setIcon"
+              onClick={() => {
                 let self = this;
                 comEvents.hasPower(
                   self,
@@ -410,7 +407,8 @@ class CampaignHome extends Component {
                   "CREATE_CAMPAIGN",
                   "addItem"
                 );
-              }} />,
+              }}
+            />,
           ]}
         ></PageHeader>
         {/* --搜索栏-- */}

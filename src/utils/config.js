@@ -14,7 +14,8 @@ function versionLX() {
 
 
 //调用
-const host = versionLX();
+//const host = versionLX();
+const host = "/myriadapi";
 
 
 module.exports = {

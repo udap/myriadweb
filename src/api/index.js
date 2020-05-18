@@ -23,7 +23,7 @@ var env = process.env.NODE_ENV;
 //LOGIN START
 //获取验证码
 export const reqVerify = (cellphone) =>
-  ajax(BASE + "/public/login/phoneCode?cellphone=" + cellphone);
+ajax.get(BASE + "/public/login/phoneCode?cellphone=" + cellphone);
 //登录
 export const reqLogin = (values) =>
   ajax.get(BASE + "/public/login", { params: values });
@@ -34,7 +34,7 @@ export const reqToken = (values) =>
 
 //dashboard START
 //登陆后获取个人信息 /accounts/em;
-export const reqGetAccounts = () => ajax(BASE + "/accounts/me");
+export const reqGetAccounts = () => ajax.get(BASE + "/accounts/me");
 //dashboard END
 
 //营销活动 START
@@ -43,7 +43,7 @@ export const reqGetCampaigns = (params) =>
   ajax.get(BASE + "/myriad/campaigns", { params: params });
 //获取活动详情reqGetCampaigns
 export const reqGetCampaignById = (id) =>
-  ajax(BASE + "/myriad/campaigns/" + id);
+         ajax.get(BASE + "/myriad/campaigns/" + id);
 //删除某个活动
 export const reqDelCampaign = (id) =>
   ajax.delete(BASE + "/myriad/campaigns/" + id);
