@@ -5,8 +5,9 @@ import { ConfigProvider } from 'antd'
 // 配置中文
 import zhCN from 'antd/es/locale/zh_CN'
 // 开启路由操作
+//HashRouter的原因, 如果是BrowserRouter
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
   Route,
   Switch,
   Redirect,

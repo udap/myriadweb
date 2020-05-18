@@ -85,11 +85,32 @@ class TableEmpty extends Component {
     };
     // const result = await getListApi(parmas);
     // const cont = result && result.data ? result.data.content : [];
+    // let data = [];
+    // if (cont && cont.length !== 0) {
+    //   for (let i = 0; i < cont.length; i++) {
+    //     data.push({
+    //       key: i,
+    //       id: cont[i].id,
+    //       name: cont[i].merchantName,
+    //       //issuerName: cont[i].voucher.issuerName,
+    //       campaignName: cont[i].campaign.name,
+    //       voucher: cont[i].voucher.code,
+    //       status: cont[i].status,
+    //       updatedAt: cont[i].updatedAt,
+    //       orderId: cont[i].orderId,
+    //       settlementStatus:
+    //         cont[i].settlement && cont[i].settlement.status
+    //           ? cont[i].settlement.status
+    //           : "-",
+    //     });
+    //   }
+    // }
     // this.totalPages = result && result.data ? result.data.totalElements : 1;
     // this.setState({
     //   inited: true,
     //   listData: cont,
     //   totalPages: result && result.data ? result.data.totalElements : 1,
+    //   loading: false;
     // });
   };
   //返回上一页
@@ -130,7 +151,7 @@ class TableEmpty extends Component {
       <div>
         {/* 页表头 */}
         <PageHeader
-          className="site-page-header-responsive"
+          className="site-page-header-responsive cont"
           title="结算明细"
           onBack={this.backIndex}
         ></PageHeader>

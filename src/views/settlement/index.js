@@ -198,7 +198,10 @@ class SettlementHome extends Component {
               ) : (
                 <b
                   onClick={() => {
-                    this.props.history.push("/admin/settlement/" + id);
+                    this.props.history.push({
+                      pathname: "/admin/settlement/" + id,
+                      state: { chooseItem },
+                    });
                   }}
                   className="ant-green-link cursor"
                 >
@@ -314,7 +317,17 @@ class SettlementHome extends Component {
                   </b>
                 </span>
               ) : (
-                "-"
+                <b
+                  onClick={() => {
+                    this.props.history.push({
+                      pathname: "/admin/settlement/" + id,
+                      state: { chooseItem },
+                    });
+                  }}
+                  className="ant-green-link cursor"
+                >
+                  明细
+                </b>
               )}
             </span>
           );

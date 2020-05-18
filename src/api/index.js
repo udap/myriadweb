@@ -217,8 +217,10 @@ export const reqAgreeSettlement = (id, params) =>
   ajax.put(BASE + "/myriad/settlements/" + id + "/approve", params);
 //结算详情;
 //get / myriad / settlements / { id } / redemptions;
-export const reqGetSettlementDetail = (id) =>
-         ajax.get(BASE + "/myriad/settlements/" + id + "/redemptions");
+export const reqGetSettlementDetail = (id, params) =>
+         ajax.get(BASE + "/myriad/settlements/" + id + "/redemptions", {
+           params: params,
+         });
 
 
 
