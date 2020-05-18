@@ -68,7 +68,11 @@ const Login = Loadable({
 });
 
 const SettlementHome = Loadable({
-  loader: () => import("./settlement/settlementHome"),
+  loader: () => import("./settlement"),
+  loading: Loading,
+});
+const SettlementNew = Loadable({
+  loader: () => import("./settlement/settlementNew"),
   loading: Loading,
 });
 const SettlementDetail = Loadable({
@@ -101,6 +105,7 @@ export {
   Distribution,
   Redemption,
   SettlementHome,
+  SettlementNew,
   SettlementDetail,
   Merchant,
   Groups,

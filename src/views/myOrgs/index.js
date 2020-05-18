@@ -333,7 +333,7 @@ class MyOrgs extends Component {
       street,
       address,
       code,
-      upCpde,
+      upCode,
     } = this.state.organization;
     return (
       <div className="OrgFormDialog">

@@ -215,6 +215,13 @@ export const reqPutSettlement = (id, params) =>
 // marketerId 当前机构id
 export const reqAgreeSettlement = (id, params) =>
   ajax.put(BASE + "/myriad/settlements/" + id + "/approve", params);
+//结算详情;
+//get / myriad / settlements / { id } / redemptions;
+export const reqGetSettlementDetail = (id) =>
+         ajax.get(BASE + "/myriad/settlements/" + id + "/redemptions");
+
+
+
 
 //结算管理 END
 //核销记录 reqGetExchangeLists;

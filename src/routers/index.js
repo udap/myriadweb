@@ -14,6 +14,7 @@ import {
   Distribution,
   Redemption,
   SettlementHome,
+  SettlementNew,
   SettlementDetail,
   MyOrgs,
   Merchant,
@@ -141,10 +142,18 @@ const privateRoutes = [
       },
       {
         pathname: "/admin/settlement/new",
-        component: SettlementDetail,
+        component: SettlementNew,
         title: "新增结算",
         icon: "MoneyCollectOutlined",
         isTop: false, //顶级菜单
+        isNav: false,
+      },
+      {
+        pathname: "/admin/settlement/:id",
+        component: SettlementDetail,
+        title: "结算详情",
+        icon: "",
+        isTop: false,
         isNav: false,
       },
     ],

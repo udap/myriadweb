@@ -14,10 +14,11 @@ import {
 } from "antd";
 //import storageUtils from "../../utils/storageUtils";
 import Loading from "../../components/Loading";
-import { reqGetSettlementDetail } from "../../api";
+import //getListApi
+"../../api";
 import "./index.less";
 
-class SettlementDetail extends Component {
+class TableEmpty extends Component {
   state = {
     //表格数据
     inited: false,
@@ -78,16 +79,18 @@ class SettlementDetail extends Component {
   }
   //请求当前列表数据
   getLists = async (currentPage) => {
-    let id = this.props.match.params.id;
-    const result = await reqGetSettlementDetail(id);
-    console.log("getLists -> result", result)
-    const cont = result && result.data ? result.data.content : [];
-    this.totalPages = result && result.data ? result.data.totalElements : 1;
-    this.setState({
-      inited: true,
-      listData: cont.entries,
-      totalPages: result && result.data ? cont.totalElements : 1,
-    });
+    const parmas = {
+      page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+      size: this.state.size,
+    };
+    // const result = await getListApi(parmas);
+    // const cont = result && result.data ? result.data.content : [];
+    // this.totalPages = result && result.data ? result.data.totalElements : 1;
+    // this.setState({
+    //   inited: true,
+    //   listData: cont,
+    //   totalPages: result && result.data ? result.data.totalElements : 1,
+    // });
   };
   //返回上一页
   backIndex = () => {
@@ -144,10 +147,7 @@ class SettlementDetail extends Component {
           <Row>
             <Col span={9} label="查询条件">
               <Form.Item name="searchTxt">
-                <Input
-                  placeholder="请输入券号、活动名、活动标签、订单号进行搜索"
-                  allowClear
-                />
+                <Input placeholder="请输入名称进行搜索" allowClear />
               </Form.Item>
             </Col>
             <Col>
@@ -203,4 +203,4 @@ class SettlementDetail extends Component {
   }
 }
 
-export default SettlementDetail;
+export default TableEmpty;
