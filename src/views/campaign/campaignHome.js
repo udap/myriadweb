@@ -253,7 +253,13 @@ class CampaignHome extends Component {
     });
   };
   addItem = async () => {
-    this.props.history.push("/admin/campaign/edit/new");
+    if (storageUtils.getUser().orgId === 1) {
+      this.props.history.push("/admin/campaign/edit/new");
+    } else {
+      notification.error({
+        message: "很抱歉，系统目前只允许部分机构创建营销活动",
+      });
+    }
   };
 
   delItem = async (id) => {

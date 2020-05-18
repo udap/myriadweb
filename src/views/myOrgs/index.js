@@ -333,7 +333,7 @@ class MyOrgs extends Component {
       street,
       address,
       code,
-      upCpde,
+      upCode,
     } = this.state.organization;
     return (
       <div className="OrgFormDialog">
@@ -478,7 +478,7 @@ class MyOrgs extends Component {
       city: values.residence[1],
       district: values.residence[2],
       parentOrgUid: "",
-      upCode: values.code,
+      upCode: values.upCode,
     };
     const result = await regPutCurOrg(this.state.organization.uid, params);
     console.log("MyOrgs -> onFinish -> result", result);
