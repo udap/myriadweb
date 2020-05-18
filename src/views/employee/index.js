@@ -15,6 +15,8 @@ import {
   Tag,
   Switch,
   Divider,
+  Radio,
+  Descriptions,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
@@ -56,6 +58,9 @@ class Employee extends Component {
     code: "",
     groups: [],
     curInfo: {},
+    include: false,
+    //员工详情
+    showDetail: false,
   };
   componentDidMount() {
     this.getList(1);
@@ -66,20 +71,21 @@ class Employee extends Component {
 
   searchValue = (value) => {
     this.setState({
-      currentPage:1,
-      searchTxt:value.searchTxt
+      currentPage: 1,
+      searchTxt: value.searchTxt,
     });
     this.getEmployees(1, value.searchTxt);
   };
   /*
 获取列表数据
 */
-  getEmployees = async (currentPage, searchTxt) => {
+  getEmployees = async (currentPage, searchTxt, include) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
-      searchTxt: searchTxt?searchTxt:this.state.searchTxt,
+      searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
+      include: this.state.include,
     };
     const result = await reqGetEmployees(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -99,13 +105,22 @@ class Employee extends Component {
     });
     this.getEmployees(page);
   };
-  addItem = async () => {
-    const result = await reqPermit("CREATE_EMPLOYEE");
+  setItem = async (operate,permission,data) => {
+    const result = await reqPermit(permission);
     if (result) {
-      this.setState({
-        visible: true,
-      });
+      if (operate==='edit'){
+        this.setState({
+          showDetail: true,
+        });
+        this.getEmployee();
+      }else{
+        //add
+        this.setState({
+          visible: true,
+        });
+      }
       this.getGroups();
+        
     }
   };
   hasPower = async (chooseItem) => {
@@ -156,7 +171,7 @@ class Employee extends Component {
     let curInfo = await reqGetEmployee(id);
     let cont = curInfo.data.content ? curInfo.data.content : [];
     this.setState({
-      inited: true,
+      showDetail: true,
       curInfo: cont,
     });
   };
@@ -193,6 +208,7 @@ class Employee extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
+      showDetail: false,
     });
   };
   onSwitchChange = (value) => {
@@ -224,8 +240,8 @@ class Employee extends Component {
     const onGenderChange = (value) => {};
     /*当前机构是admin   可以设置是否管理员 */
     //并且当前机构是顶级机构删除
-    const ableSetAdmin =storageUtils.getUser().admin; 
-      //&&JSON.stringify(storageUtils.getOrg().parent) === "{}";
+    const ableSetAdmin = storageUtils.getUser().admin;
+    //&&JSON.stringify(storageUtils.getOrg().parent) === "{}";
     //如果是admin 不需要选择员工所在组
     let isAdmin = this.state.admin;
     return (
@@ -233,12 +249,12 @@ class Employee extends Component {
         name="basic"
         layout="vertical"
         initialValues={{
-          name: name,
-          cellphone: cellphone,
-          admin: admin,
-          desc: desc,
+          name: this.state.isNew ? "" : name,
+          cellphone: this.state.isNew ? "" : cellphone,
+          admin: this.state.isNew ? "" : admin,
+          desc: this.state.isNew ? "" : desc,
           groupId: this.state.isNew ? groupId : groups[0].name,
-          code: code,
+          code: this.state.isNew ? "" : code,
         }}
         onFinish={this.onFinish}
         validateMessages={defaultValidateMessages.defaultValidateMessages}
@@ -261,9 +277,13 @@ class Employee extends Component {
         <Form.Item label="员工编号" name="code" rules={[{ max: 20 }]}>
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
-          <Form.Item label="是否管理员" name="admin">
-            <Switch disabled={ableSetAdmin?false:true} checked={this.state.admin} onChange={this.onSwitchChange} />
-          </Form.Item>
+        <Form.Item label="是否管理员" name="admin">
+          <Switch
+            disabled={ableSetAdmin ? false : true}
+            checked={this.state.admin}
+            onChange={this.onSwitchChange}
+          />
+        </Form.Item>
         <Form.Item label="员工所在组" name="groupId">
           {this.state.isNew ? (
             <Select
@@ -299,8 +319,78 @@ class Employee extends Component {
       </Form>
     );
   };
+  /*radio 切换*/
+  onRadioChange = (e) => {
+    this.setState({
+      page: 0,
+      include: e.target.value,
+      currentPage: 1,
+    });
+    this.getEmployees(1, null, e.target.value);
+  };
+
+  //员工详情
+  renderDetail = () => {
+    const {
+      name,
+      cellphone,
+      admin,
+      desc,
+      org,
+      code,
+      groups,
+      role,
+      status,
+    } = this.state.curInfo;
+    return (
+      <div>
+        <Drawer
+          width={400}
+          title="员工详情"
+          visible={this.state.showDetail}
+          onClose={this.handleCancel}
+          footer={null}
+        >
+          <Row>
+            {/* 姓名 手机号 员工编码 分组 角色 状态 操作 */}
+            <Col span={24}>
+              <Descriptions bordered column={1}>
+                <Descriptions.Item label="姓名">{name}</Descriptions.Item>
+                <Descriptions.Item label="手机号">
+                  {cellphone}
+                </Descriptions.Item>
+                <Descriptions.Item label="员工编码">{code}</Descriptions.Item>
+                <Descriptions.Item label="是否管理员">
+                  {admin ? "是" : "否"}
+                </Descriptions.Item>
+                <Descriptions.Item label="部门">
+                  {org.name}
+                </Descriptions.Item>
+                <Descriptions.Item label="分组">
+                  {groups.map((item, index) => (
+                    <span key={index}>{item["name"]}</span>
+                  ))}
+                </Descriptions.Item>
+                <Descriptions.Item label="角色">
+                  {roleTypes.map((item, index) => (
+                    <span key={index}>{item[role]}</span>
+                  ))}
+                </Descriptions.Item>
+                <Descriptions.Item label="状态">
+                  {employeeStatuses.map((item, index) => (
+                    <span key={index}>{item[status]}</span>
+                  ))}
+                </Descriptions.Item>
+                <Descriptions.Item label="备注">{desc}</Descriptions.Item>
+              </Descriptions>
+            </Col>
+          </Row>
+        </Drawer>
+      </div>
+    );
+  };
   renderContent = () => {
-    const { employees, size, currentPage, total } = this.state;
+    const { employees, size, currentPage, total, showDetail } = this.state;
     const columns = [
       {
         title: "姓名",
@@ -328,6 +418,12 @@ class Employee extends Component {
         dataIndex: "code",
         key: "code",
         render: (text) => <span>{text ? text : "-"}</span>,
+      },
+      {
+        title: "部门",
+        dataIndex: "org",
+        key: "org",
+        render: (text) => <span>{text ? text.name : "-"}</span>,
       },
       {
         title: "分组",
@@ -376,23 +472,38 @@ class Employee extends Component {
       {
         title: "操作",
         key: "action",
+        width:180,
         render: (chooseItem) => (
           <div>
             {/* <b onClick={() => {}} className="ant-green-link cursor">
               调用
             </b>
-            <Divider type="vertical" />
-             
-            <b onClick={() => {}} className="ant-green-link cursor">
+            <Divider type="vertical" />*/}
+
+            <b
+              onClick={() => {
+                this.getEmployee(chooseItem.uid);
+              }}
+              className="ant-green-link cursor"
+            >
               查看
             </b>
-            <Divider type="vertical" />*/}
+            <Divider type="vertical" />
+            <b
+              onClick={() => {
+                this.setItem.bind(this,"edit", "UPDATE_EMPLOYEE", chooseItem.uid);
+              }}
+              className="ant-green-link cursor"
+            >
+              修改
+            </b>
+            <Divider type="vertical" />
             {chooseItem.status === "NEW" ? (
               <b>
                 <b
                   className="ant-green-link cursor"
                   onClick={() => {
-                    this.hasActivatePower(chooseItem);
+                    this.hasActivatePower.bind(this,chooseItem);
                   }}
                 >
                   激活
@@ -422,7 +533,7 @@ class Employee extends Component {
             <PlusSquareFilled
               key="add"
               className="setIcon"
-              onClick={this.addItem}
+              onClick={()=>{this.setItem('add','CREATE_EMPLOYEE')}}
             />,
           ]}
           onBack={this.backIndex}
@@ -438,8 +549,15 @@ class Employee extends Component {
           }}
         >
           <Row>
+            <Col>
+              <Form.Item name="group" label="查询条件">
+                <Radio.Group onChange={this.onRadioChange}>
+                  <Radio value="include">包括下属机构员工</Radio>
+                </Radio.Group>
+              </Form.Item>
+            </Col>
             <Col span={9}>
-              <Form.Item name="searchTxt" label="查询条件">
+              <Form.Item name="searchTxt">
                 <Input placeholder="请输入名称或手机号进行搜索" allowClear />
               </Form.Item>
             </Col>
@@ -487,6 +605,8 @@ class Employee extends Component {
         >
           {this.renderEmpolyContent()}
         </Drawer>
+
+        {showDetail ? this.renderDetail() : null}
       </div>
     );
   };

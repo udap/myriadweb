@@ -136,7 +136,7 @@ export const reqGetPermissions = () =>
 export const reqGetEmployees = (params) =>
   ajax.get(BASE + "/employees", { params: params });
 //获取员工详情
-export const reqGetEmployee = (id) => ajax(BASE + "/employee/" + id);
+export const reqGetEmployee = (uid) => ajax(BASE + "/employees/" + uid);
 
 //获取员工所在组
 export const reqGetGroupsByOrg = (orgid) =>

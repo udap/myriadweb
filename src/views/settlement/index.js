@@ -216,7 +216,7 @@ class SettlementHome extends Component {
     /*提交机构表头*/
     this.marketerColumns = [
       {
-        title: "提交机构",
+        title: "核销机构",
         dataIndex: "merchantName",
         key: "merchantName",
       },

@@ -44,7 +44,7 @@ class SettlementDetail extends Component {
   };
   componentDidMount() {
     let item = this.props.location.state.chooseItem;
-    console.log("SettlementDetail -> componentDidMount -> item", item)
+    console.log("SettlementDetail -> componentDidMount -> item", item);
     this.setState({
       item: item,
     });
@@ -276,7 +276,7 @@ class SettlementDetail extends Component {
         {/* 页表头 */}
         <PageHeader
           className="site-page-header-responsive cont"
-          title="结算明细"
+          title="结算详情"
           onBack={this.backIndex}
           extra={[
             <DownloadOutlined
@@ -286,17 +286,23 @@ class SettlementDetail extends Component {
             />,
           ]}
         ></PageHeader>
-        <Descriptions bordered column={1} size="small">
-          <Descriptions.Item label="审批机构">{marketerName}</Descriptions.Item>
-          <Descriptions.Item label="提交机构">{merchantName}</Descriptions.Item>
+        <Descriptions
+          bordered
+          column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
+          size="small"
+        >
+          <Descriptions.Item label="营销机构">{marketerName}</Descriptions.Item>
+          <Descriptions.Item label="核销机构">{merchantName}</Descriptions.Item>
           <Descriptions.Item label="结算类型">
             {settlementTypes.map((item, index) =>
               item.value === type ? <span key={index}>{item.name}</span> : null
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="活动名称">
-            {campaign&&campaign.name ? campaign.name : "-"}
-          </Descriptions.Item>
+          {campaign && campaign.name ? (
+            <Descriptions.Item label="活动名称">
+              {campaign.name}
+            </Descriptions.Item>
+          ) : null}
           <Descriptions.Item label="交易周期">
             {beginDate}至{endDate}
           </Descriptions.Item>
