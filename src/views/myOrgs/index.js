@@ -242,6 +242,7 @@ class MyOrgs extends Component {
       licenseNo,
       phone,
       address,
+      code,
       upCode,
       postalCode,
       parent,
@@ -259,6 +260,7 @@ class MyOrgs extends Component {
               <Descriptions bordered column={1}>
                 <Descriptions.Item label="名称">{fullName}</Descriptions.Item>
                 <Descriptions.Item label="简称">{name}</Descriptions.Item>
+                <Descriptions.Item label="机构编码">{code}</Descriptions.Item>
                 <Descriptions.Item label="营业执照号码">
                   {licenseNo}
                 </Descriptions.Item>
@@ -331,6 +333,7 @@ class MyOrgs extends Component {
       street,
       address,
       code,
+      upCpde,
     } = this.state.organization;
     return (
       <div className="OrgFormDialog">
@@ -348,6 +351,7 @@ class MyOrgs extends Component {
             street: street,
             address: address,
             code: code,
+            upCode: upCode,
           }}
           onFinish={this.onFinish}
           onFinishFailed={this.onFinishFailed}
@@ -385,13 +389,18 @@ class MyOrgs extends Component {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={8}>
+              <Form.Item label="机构编码" name="code">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
               <Form.Item label="营业执照号码" name="licenseNo">
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item label="银联商户码" name="code">
+            <Col span={8}>
+              <Form.Item label="银联商户码" name="upCode">
                 <Input />
               </Form.Item>
             </Col>
