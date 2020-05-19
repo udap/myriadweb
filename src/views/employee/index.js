@@ -480,6 +480,7 @@ class Employee extends Component {
         title: "部门",
         dataIndex: "org",
         key: "org",
+        width: 250,
         render: (text) => <span>{text ? text.name : "-"}</span>,
       },
       {
@@ -502,6 +503,7 @@ class Employee extends Component {
         title: "角色",
         dataIndex: "role",
         key: "role",
+        width: 80,
         render: (text) => (
           <span>
             <Tag color="green" key={text}>
@@ -516,6 +518,7 @@ class Employee extends Component {
         title: "状态",
         dataIndex: "status",
         key: "status",
+        width: 80,
         render: (text) => (
           <span>
             <Tag color="green" key={text}>
