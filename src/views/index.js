@@ -88,6 +88,11 @@ const Groups = Loadable({
   loader: () => import("./group"),
   loading: Loading,
 });
+const MyAccount = Loadable({
+  loader: () => import("./myAccount"),
+  loading: Loading,
+});
+
 //同时更新routers路由
 export {
   MyOrgs,
@@ -109,4 +114,5 @@ export {
   SettlementDetail,
   Merchant,
   Groups,
+  MyAccount,
 };

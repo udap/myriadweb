@@ -15,7 +15,13 @@ import {
   Select,
   Descriptions,
 } from "antd";
-import { PlusSquareFilled } from "@ant-design/icons";
+import {
+  PlusSquareFilled,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+  EyeOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { Operations } from "../../utils/constants";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
@@ -32,6 +38,7 @@ import {
 import { Loading, TransferComponent } from "../../components";
 import "../../css/common.less";
 
+const { confirm } = Modal;
 const { TextArea } = Input;
 const scrollstyle = {
   display: 'block',
@@ -315,6 +322,7 @@ class Groups extends Component {
       {
         title: "操作",
         key: "action",
+        width:120,
         render: (chooseItem) => {
           const { id } = chooseItem;
           return (
@@ -325,7 +333,7 @@ class Groups extends Component {
                 }}
                 className="ant-green-link cursor"
               >
-                查看
+                <EyeOutlined title="查看" />
               </b>
               <Divider type="vertical" />
               <b
@@ -344,26 +352,27 @@ class Groups extends Component {
                 }}
                 className="ant-blue-link cursor"
               >
-                修改
+                <EditOutlined title="修改" />
               </b>
-              {/*<b
-              onClick={() => {
-                let that = this;
-                confirm({
-                  title: "确认删除分组【" + chooseItem.name + "】吗?",
-                  icon: <ExclamationCircleOutlined />,
-                  okText: "确认",
-                  okType: "danger",
-                  cancelText: "取消",
-                  onOk() {
-                    that.deleteItem(chooseItem.id);
-                  },
-                });
-              }}
-              className="ant-pink-link cursor"
-            >
-              删除
-            </b> */}
+              <Divider type="vertical" />
+              <b
+                onClick={() => {
+                  let that = this;
+                  confirm({
+                    title: "确认删除分组【" + chooseItem.name + "】吗?",
+                    icon: <ExclamationCircleOutlined />,
+                    okText: "确认",
+                    okType: "danger",
+                    cancelText: "取消",
+                    onOk() {
+                      that.deleteItem(chooseItem.id);
+                    },
+                  });
+                }}
+                className="ant-pink-link cursor"
+              >
+                <DeleteOutlined title="删除"/>
+              </b>
             </div>
           );
         },

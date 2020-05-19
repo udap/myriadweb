@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { Button, Input, PageHeader, Col, Row, Table, Modal } from "antd";
-import { ExclamationCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  ExclamationCircleOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 
 import {
   reqPostParties,
@@ -88,7 +92,7 @@ class CampaignMerchant extends Component {
                 }}
                 className="ant-pink-link cursor"
               >
-                删除
+                <DeleteOutlined/>
               </b>
             </span>
           );

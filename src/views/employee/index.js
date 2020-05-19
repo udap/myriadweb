@@ -15,10 +15,18 @@ import {
   Tag,
   Switch,
   Divider,
-  Radio,
+  Checkbox,
   Descriptions,
 } from "antd";
-import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  PlusSquareFilled,
+  ExclamationCircleOutlined,
+  DeleteOutlined,
+  CheckCircleOutlined,
+  EditOutlined,
+  EyeOutlined,
+  UnlockOutlined,
+} from "@ant-design/icons";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
@@ -30,6 +38,7 @@ import {
   reqGetGroupsByOrg,
   reqGetEmployee,
   reqActivateEmployee,
+  reqPutEmployee,
 } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
@@ -58,7 +67,7 @@ class Employee extends Component {
     code: "",
     groups: [],
     curInfo: {},
-    include: false,
+    includingSubsidiaries: false,
     //员工详情
     showDetail: false,
   };
@@ -79,13 +88,14 @@ class Employee extends Component {
   /*
 获取列表数据
 */
-  getEmployees = async (currentPage, searchTxt, include) => {
+  getEmployees = async (currentPage, searchTxt, includingSubsidiaries) => {
+    console.log("Employee -> getEmployees -> includingSubsidiaries", includingSubsidiaries)
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
       searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-      include: this.state.include,
+      includingSubsidiaries: typeof(includingSubsidiaries)==='undefined'?this.state.includingSubsidiaries:includingSubsidiaries,
     };
     const result = await reqGetEmployees(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -105,25 +115,41 @@ class Employee extends Component {
     });
     this.getEmployees(page);
   };
-  setItem = async (operate,permission,data) => {
+  setItem = async (operate, permission, data) => {
+    console.log("Employee -> setItem -> operate", operate);
     const result = await reqPermit(permission);
     if (result) {
-      if (operate==='edit'){
+      this.getGroups();
+      if (operate === "edit") {
+        this.getEmployee(data, "visible");
         this.setState({
-          showDetail: true,
+          isNew: false,
         });
-        this.getEmployee();
-      }else{
-        //add
+      } else {
+        // add
         this.setState({
+          curInfo: {},
+          isNew: true,
           visible: true,
         });
       }
-      this.getGroups();
-        
     }
   };
-  hasPower = async (chooseItem) => {
+  //获取当前员工详情
+  getEmployee = async (id, name) => {
+    let curInfo = await reqGetEmployee(id);
+    console.log("Employee -> getEmployee -> curInfo", curInfo);
+    let cont = curInfo.data.content ? curInfo.data.content : [];
+    this.setState({
+      curInfo: cont,
+      [name]: true,
+    });
+  };
+  //显示详情
+  showDetailDrawer = (uid) => {
+    this.getEmployee(uid, "showDetail");
+  };
+  delConfirm = async (chooseItem) => {
     const result = await reqPermit("DELETE_EMPLOYEE");
     if (result) {
       let that = this;
@@ -166,15 +192,7 @@ class Employee extends Component {
   backIndex = () => {
     this.props.history.push("/admin/myOrgs");
   };
-  //获取当前员工详情
-  getEmployee = async (id) => {
-    let curInfo = await reqGetEmployee(id);
-    let cont = curInfo.data.content ? curInfo.data.content : [];
-    this.setState({
-      showDetail: true,
-      curInfo: cont,
-    });
-  };
+
   //获取员工所在组
   getGroups = async () => {
     let orgUid = storageUtils.getUser().orgUid;
@@ -196,13 +214,25 @@ class Employee extends Component {
       groupId: values.groupId,
       orgUid: storageUtils.getUser().orgUid,
     };
-    const result = await reqAddEmployees(params);
-    if (result.data.retcode === 0) {
-      notification.success({ message: "添加成功" });
-      this.setState({
-        visible: false,
-      });
-      this.getEmployees(1);
+    if (this.state.isNew) {
+      const result = await reqAddEmployees(params);
+      if (result.data.retcode === 0) {
+        notification.success({ message: "添加成功" });
+        this.setState({
+          visible: false,
+        });
+        this.getEmployees(1);
+      }
+    } else {
+      let uid = this.state.curInfo.uid;
+      const result = await reqPutEmployee(uid, params);
+      if (result.data.retcode === 0) {
+        notification.success({ message: "更新成功" });
+        this.setState({
+          visible: false,
+        });
+        this.getEmployees(1);
+      }
     }
   };
   handleCancel = () => {
@@ -226,14 +256,14 @@ class Employee extends Component {
       this.getEmployees(1);
     }
   };
-  renderEmpolyContent = () => {
+  //员工表单
+  renderEmpolyContent = (data) => {
     const {
       name,
       cellphone,
       admin,
       desc,
       groupId,
-      orgUid,
       code,
       groups,
     } = this.state.curInfo;
@@ -244,48 +274,66 @@ class Employee extends Component {
     //&&JSON.stringify(storageUtils.getOrg().parent) === "{}";
     //如果是admin 不需要选择员工所在组
     let isAdmin = this.state.admin;
-    return (
-      <Form
-        name="basic"
-        layout="vertical"
-        initialValues={{
-          name: this.state.isNew ? "" : name,
-          cellphone: this.state.isNew ? "" : cellphone,
-          admin: this.state.isNew ? "" : admin,
-          desc: this.state.isNew ? "" : desc,
-          groupId: this.state.isNew ? groupId : groups[0].name,
-          code: this.state.isNew ? "" : code,
-        }}
-        onFinish={this.onFinish}
-        validateMessages={defaultValidateMessages.defaultValidateMessages}
-      >
-        <Form.Item
-          label="员工姓名"
-          name="name"
-          rules={[{ required: true }, { max: 32 }]}
-        >
-          <Input disabled={this.state.isNew ? false : true} />
-        </Form.Item>
-        <Form.Item
-          label="手机号码"
-          name="cellphone"
-          rules={[{ required: true }, { max: 13 }]}
-        >
-          <Input disabled={this.state.isNew ? false : true} />
-        </Form.Item>
+    //let  {groups} = this.state;
+    console.log(
+      "Employee -> onGenderChange -> this.state.isNew",
+      this.state.isNew
+    );
 
-        <Form.Item label="员工编号" name="code" rules={[{ max: 20 }]}>
-          <Input disabled={this.state.isNew ? false : true} />
-        </Form.Item>
-        <Form.Item label="是否管理员" name="admin">
-          <Switch
-            disabled={ableSetAdmin ? false : true}
-            checked={this.state.admin}
-            onChange={this.onSwitchChange}
-          />
-        </Form.Item>
-        <Form.Item label="员工所在组" name="groupId">
-          {this.state.isNew ? (
+    console.log(
+      "Employee -> renderEmpolyContent -> this.state.curInfo",
+      this.state.curInfo
+    );
+    let { curInfo, isNew, visible } = this.state;
+    let groupOption = isNew ? "" : groups.length !== 0 ? groups[0].name : "";
+    return (
+      <Drawer
+        width={400}
+        title={isNew ? "添加员工" : "修改员工"}
+        visible={visible}
+        onClose={this.handleCancel}
+        footer={null}
+      >
+        <Form
+          name="basic"
+          layout="vertical"
+          initialValues={{
+            name: name,
+            cellphone: cellphone,
+            admin: admin,
+            desc: desc,
+            groupId: groupOption,
+            code: code,
+          }}
+          onFinish={this.onFinish}
+          validateMessages={defaultValidateMessages.defaultValidateMessages}
+        >
+          <Form.Item
+            label="员工姓名"
+            name="name"
+            rules={[{ required: true }, { max: 32 }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="手机号码"
+            name="cellphone"
+            rules={[{ required: true }, { max: 13 }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="员工编号" name="code" rules={[{ max: 20 }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="是否管理员" name="admin">
+            <Switch
+              disabled={ableSetAdmin ? false : true}
+              checked={this.state.admin}
+              onChange={this.onSwitchChange}
+            />
+          </Form.Item>
+          <Form.Item label="员工所在组" name="groupId">
             <Select
               placeholder="员工所在组"
               onChange={onGenderChange}
@@ -297,16 +345,12 @@ class Employee extends Component {
                 </Option>
               ))}
             </Select>
-          ) : (
-            <Input disabled={this.state.isNew ? false : true} />
-          )}
-        </Form.Item>
+          </Form.Item>
 
-        <Form.Item label="备注" name="desc">
-          <TextArea rows={4} />
-        </Form.Item>
+          <Form.Item label="备注" name="desc">
+            <TextArea rows={4} />
+          </Form.Item>
 
-        {this.state.isNew ? (
           <Form.Item>
             <Button type="default" onClick={this.handleCancel}>
               取消
@@ -315,18 +359,19 @@ class Employee extends Component {
               提交
             </Button>
           </Form.Item>
-        ) : null}
-      </Form>
+        </Form>
+      </Drawer>
     );
   };
-  /*radio 切换*/
-  onRadioChange = (e) => {
+  /*Checkbox 切换*/
+  onCheckboxChange = (e) => {
+    console.log("Employee -> onCheckboxChange -> e", e)
     this.setState({
       page: 0,
-      include: e.target.value,
+      includingSubsidiaries: e.target.checked,
       currentPage: 1,
     });
-    this.getEmployees(1, null, e.target.value);
+    this.getEmployees(1, null, e.target.checked);
   };
 
   //员工详情
@@ -342,12 +387,13 @@ class Employee extends Component {
       role,
       status,
     } = this.state.curInfo;
+    const { showDetail } = this.state;
     return (
       <div>
         <Drawer
           width={400}
           title="员工详情"
-          visible={this.state.showDetail}
+          visible={showDetail}
           onClose={this.handleCancel}
           footer={null}
         >
@@ -364,12 +410,14 @@ class Employee extends Component {
                   {admin ? "是" : "否"}
                 </Descriptions.Item>
                 <Descriptions.Item label="部门">
-                  {org.name}
+                  {org && org.name ? org.name : "-"}
                 </Descriptions.Item>
                 <Descriptions.Item label="分组">
-                  {groups.map((item, index) => (
-                    <span key={index}>{item["name"]}</span>
-                  ))}
+                  {groups && groups.length !== 0
+                    ? groups.map((item, index) => (
+                        <span key={index}>{item["name"]}</span>
+                      ))
+                    : null}
                 </Descriptions.Item>
                 <Descriptions.Item label="角色">
                   {roleTypes.map((item, index) => (
@@ -390,7 +438,16 @@ class Employee extends Component {
     );
   };
   renderContent = () => {
-    const { employees, size, currentPage, total, showDetail } = this.state;
+    const {
+      employees,
+      size,
+      currentPage,
+      total,
+      showDetail,
+      isNew,
+      curInfo,
+      visible,
+    } = this.state;
     const columns = [
       {
         title: "姓名",
@@ -472,7 +529,7 @@ class Employee extends Component {
       {
         title: "操作",
         key: "action",
-        width:180,
+        width: 125,
         render: (chooseItem) => (
           <div>
             {/* <b onClick={() => {}} className="ant-green-link cursor">
@@ -482,43 +539,42 @@ class Employee extends Component {
 
             <b
               onClick={() => {
-                this.getEmployee(chooseItem.uid);
+                this.showDetailDrawer(chooseItem.uid);
               }}
               className="ant-green-link cursor"
             >
-              查看
-            </b>
-            <Divider type="vertical" />
-            <b
-              onClick={() => {
-                this.setItem.bind(this,"edit", "UPDATE_EMPLOYEE", chooseItem.uid);
-              }}
-              className="ant-green-link cursor"
-            >
-              修改
+              <EyeOutlined title="查看" />
             </b>
             <Divider type="vertical" />
             {chooseItem.status === "NEW" ? (
               <b>
                 <b
-                  className="ant-green-link cursor"
+                  className="ant-orange-link cursor"
                   onClick={() => {
-                    this.hasActivatePower.bind(this,chooseItem);
+                    this.hasActivatePower(chooseItem);
                   }}
                 >
-                  激活
+                  <CheckCircleOutlined title="激活" />
                 </b>
                 <Divider type="vertical" />
               </b>
             ) : null}
-
             <b
               onClick={() => {
-                this.hasPower(chooseItem);
+                this.setItem("edit", "UPDATE_EMPLOYEE", chooseItem.uid);
+              }}
+              className="ant-blue-link cursor"
+            >
+              <EditOutlined title="修改" />
+            </b>
+            <Divider type="vertical" />
+            <b
+              onClick={() => {
+                this.delConfirm(chooseItem);
               }}
               className="ant-pink-link cursor"
             >
-              删除
+              <DeleteOutlined title="删除" />
             </b>
           </div>
         ),
@@ -533,7 +589,9 @@ class Employee extends Component {
             <PlusSquareFilled
               key="add"
               className="setIcon"
-              onClick={()=>{this.setItem('add','CREATE_EMPLOYEE')}}
+              onClick={() => {
+                this.setItem("add", "CREATE_EMPLOYEE");
+              }}
             />,
           ]}
           onBack={this.backIndex}
@@ -545,15 +603,19 @@ class Employee extends Component {
           name="advanced_search"
           className="ant-advanced-search-form"
           initialValues={{
+            //includingSubsidiaries: false,
             searchTxt: "",
           }}
         >
           <Row>
             <Col>
-              <Form.Item name="group" label="查询条件">
-                <Radio.Group onChange={this.onRadioChange}>
-                  <Radio value="include">包括下属机构员工</Radio>
-                </Radio.Group>
+              <Form.Item name="includingSubsidiaries" label="查询条件">
+                <Checkbox
+                  onChange={this.onCheckboxChange}
+                  checked={this.state.includingSubsidiaries}
+                >
+                  包括下属机构员工
+                </Checkbox>
               </Form.Item>
             </Col>
             <Col span={9}>
@@ -595,16 +657,7 @@ class Employee extends Component {
             showTotal={(total) => `总共 ${total} 条数据`}
           />
         </div>
-
-        <Drawer
-          width={400}
-          title="添加员工"
-          visible={this.state.visible}
-          onClose={this.handleCancel}
-          footer={null}
-        >
-          {this.renderEmpolyContent()}
-        </Drawer>
+        {visible ? this.renderEmpolyContent() : null}
 
         {showDetail ? this.renderDetail() : null}
       </div>

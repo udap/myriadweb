@@ -26,6 +26,7 @@ import {
   regPutCurOrg,
 } from "../../api";
 import OrgFormDialog from "./orgFormDialog";
+import { orgStatusesList } from "../../utils/constants";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 //注册机构ChinaRegions
 import { ChinaRegions } from "../../utils/china-regions";
@@ -34,34 +35,6 @@ import comEvents from "../../utils/comEvents";
 import "./index.less";
 import "../../css/common.less";
 const { Meta } = Card;
-const layout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-    lg: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-    lg: { span: 12 },
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-    lg: {
-      span: 12,
-      offset: 6,
-    },
-  },
-};
 
 @withRouter
 class MyOrgs extends Component {
@@ -89,7 +62,7 @@ class MyOrgs extends Component {
       });
     }
   }
- 
+
   //获取当前机构信息
   regGetCurOrg = async (newOrg) => {
     let uid = newOrg ? newOrg : storageUtils.getUser().orgUid;
@@ -174,23 +147,23 @@ class MyOrgs extends Component {
             >
               权限与分组
             </b>
-              <span>
-                <Divider type="vertical" />
-                <b
-                  onClick={() => {
-                    let self = this;
-                    comEvents.hasPower(
-                      self,
-                      reqPermit,
-                      "MANAGE_ORGANIZATION",
-                      "getAuthCode"
-                    );
-                  }}
-                  className="ant-green-link cursor"
-                >
-                  动态授权码
-                </b>
-              </span>
+            <span>
+              <Divider type="vertical" />
+              <b
+                onClick={() => {
+                  let self = this;
+                  comEvents.hasPower(
+                    self,
+                    reqPermit,
+                    "MANAGE_ORGANIZATION",
+                    "getAuthCode"
+                  );
+                }}
+                className="ant-green-link cursor"
+              >
+                动态授权码
+              </b>
+            </span>
           </Col>
         </Row>
         <Card
@@ -246,6 +219,7 @@ class MyOrgs extends Component {
       upCode,
       postalCode,
       parent,
+      status,
     } = this.state.organization;
     return (
       <div>
@@ -264,7 +238,9 @@ class MyOrgs extends Component {
                 <Descriptions.Item label="营业执照号码">
                   {licenseNo}
                 </Descriptions.Item>
-                <Descriptions.Item label="银联商户码">{upCode}</Descriptions.Item>
+                <Descriptions.Item label="银联商户码">
+                  {upCode}
+                </Descriptions.Item>
                 <Descriptions.Item label="联系电话">{phone}</Descriptions.Item>
                 <Descriptions.Item label="地址">{address}</Descriptions.Item>
                 <Descriptions.Item label="邮政编码">
@@ -275,6 +251,11 @@ class MyOrgs extends Component {
                     {parent.name}
                   </Descriptions.Item>
                 ) : null}
+                <Descriptions.Item label="机构状态">
+                  {orgStatusesList.map((item, index) => (
+                    <span key={index}>{item[status]}</span>
+                  ))}
+                </Descriptions.Item>
               </Descriptions>
             </Col>
           </Row>
@@ -339,7 +320,6 @@ class MyOrgs extends Component {
       <div className="OrgFormDialog">
         <Form
           layout="vertical"
-          //{...layout}
           name="basic"
           initialValues={{
             residence: [province, city, district],
@@ -492,7 +472,14 @@ class MyOrgs extends Component {
     this.onClose();
   };
   render() {
-    let { organization, hasOrg, showView, visible, showEdit } = this.state;
+    let {
+      organization,
+      hasOrg,
+      showView,
+      visible,
+      showEdit,
+      inited,
+    } = this.state;
     return (
       <div style={{ height: "100%" }}>
         <PageHeader
@@ -500,7 +487,7 @@ class MyOrgs extends Component {
           title={organization && hasOrg ? "我的机构" : "注册机构"}
         ></PageHeader>
         {organization && hasOrg ? (
-          this.renderOrgCard()
+          <div> {inited ? this.renderOrgCard() : <Loading />}</div>
         ) : (
           <OrgFormDialog
             organize={organization}

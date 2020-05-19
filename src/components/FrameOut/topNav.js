@@ -86,6 +86,10 @@ class TopNav extends Component {
                   </span>
                 }
               >
+                <Menu.Item key="/admin/myAccount">
+                  <AntdIcon name="UserOutlined" />
+                  我的账户
+                </Menu.Item>
                 <Menu.Item key="/admin/myOrgs">
                   <AntdIcon name="BankOutlined" />
                   我的机构

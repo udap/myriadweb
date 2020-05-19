@@ -13,7 +13,10 @@ import {
   Col,
   Radio,
 } from "antd";
-import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  PlusSquareFilled,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import storageUtils from "../../utils/storageUtils";
 import { settlementStatuses, settlementTypes } from "../../utils/constants";
 import {
@@ -157,12 +160,24 @@ class SettlementHome extends Component {
       {
         title: "操作",
         //fixed: "right",
-        width: 110,
+        width: 140,
         render: (chooseItem) => {
           //操作（状态为草稿是，可以删除和提交操作，其中“提交”按钮只显示在机构提交页；状态为提交时，对于机构审批页，只有“批准”操作按钮）
           const { id, status } = chooseItem;
           return (
             <span>
+              <b
+                onClick={() => {
+                  this.props.history.push({
+                    pathname: "/admin/settlement/" + id,
+                    state: { chooseItem },
+                  });
+                }}
+                className="ant-green-link cursor"
+              >
+                明细
+              </b>
+              <Divider type="vertical" />
               {status === "INITIATED" ? (
                 <span>
                   <b
@@ -195,19 +210,7 @@ class SettlementHome extends Component {
                     删除
                   </b>
                 </span>
-              ) : (
-                <b
-                  onClick={() => {
-                    this.props.history.push({
-                      pathname: "/admin/settlement/" + id,
-                      state: { chooseItem },
-                    });
-                  }}
-                  className="ant-green-link cursor"
-                >
-                  明细
-                </b>
-              )}
+              ) : null}
             </span>
           );
         },

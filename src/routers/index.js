@@ -19,6 +19,7 @@ import {
   MyOrgs,
   Merchant,
   Groups,
+  MyAccount
 } from "../views";
 
 //公共路由
@@ -115,6 +116,15 @@ const privateRoutes = [
     icon: "SettingOutlined",
     isTop: true, //顶级菜单
     children: [
+      {
+        pathname: "/admin/myAccount",
+        component: MyAccount,
+        title: "我的账户",
+        icon: "UserOutlined",
+        isTop: false, //顶级菜单
+        //exact: true,
+        isNav: true,
+      },
       {
         pathname: "/admin/myOrgs",
         component: MyOrgs,

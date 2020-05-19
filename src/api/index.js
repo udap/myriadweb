@@ -152,6 +152,10 @@ export const reqDelEmployee = (uid) => ajax.delete(BASE + "/employees/" + uid);
 export const reqActivateEmployee = (uid) =>
          ajax.put(BASE + "/employees/" + uid + "/activate");
 
+         //修改员工
+export const reqPutEmployee = (uid, params) =>
+         ajax.put(BASE + "/employees/" + uid, params);
+         ;
 //员工管理 END
 
 //三.商户管理 START
@@ -254,8 +258,20 @@ export const reqPostGroup = (params) =>
 //修改分组
 export const reqPutGroup = (id, params) =>
   ajax.put(BASE + "/groups/" + id, params);
-//删除某个分组 后台没有 假写
+//删除某个分组 后台没有
 export const reqDelGroup = (id) => ajax.delete(BASE + "/groups/" + id);
 //查询某个组的详情
 export const reqGetGroupItem = (id) => ajax.get(BASE + "/groups/" + id);
 //分组管理 END
+
+
+//我的账户 START
+
+//我的账户的详情  
+export const reqGetAccountProfile = () =>
+         ajax.get(BASE + "/accounts/me/profile");
+
+//修改我的账户
+export const reqPutAccount = (params) =>
+         ajax.put(BASE + "/accounts/me", params);
+//我的账户 END

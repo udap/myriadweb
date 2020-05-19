@@ -65,7 +65,12 @@ const redemptionStatuses = [
   { SUCCESS: "核销成功" },
   { FAILED: "核销失败" },
 ];
-
+const orgStatusesList = [
+  { NEW: "新建" },
+  { ACTIVE: "已启用" },
+  { SUSPENDED: "已暂停" },
+  { DELETED: "已删除" },
+];
 //请求权限
 var Operations = {
   MANAGE_ORGANIZATION: "管理机构",
@@ -174,4 +179,5 @@ export {
   redemptionStatuses, //核销列表
   employeeStatuses, //员工状态
   roleTypes, //员工角色
+  orgStatusesList,//机构状态列表
 };
