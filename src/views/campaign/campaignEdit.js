@@ -552,6 +552,9 @@ class CampaignEdit extends Component {
               <Col span={8}>
                 <Input />
               </Col>
+              <Col>
+                <span className="desc">最多允许10个字</span>
+              </Col>
             </Row>
           </Form.Item>
 
@@ -718,13 +721,21 @@ class CampaignEdit extends Component {
               <Form.Item label="券号" name="code" rules={[{ required: true }]}>
                 <Input />
               </Form.Item>
-              <Form.Item label="发行数量" name="totalSupply">
-                <InputNumber defaultValue={totalSupply} disabled />
+              <Form.Item
+                label="发行数量"
+                name="totalSupply"
+                rules={[{ required: true }, { min: 1 }]}
+              >
+                <InputNumber min={1} defaultValue={totalSupply} disabled />
               </Form.Item>
             </div>
           ) : (
             <div>
-              <Form.Item label="发行数量" name="totalSupply">
+              <Form.Item
+                label="发行数量"
+                name="totalSupply"
+                rules={[{ required: true }, { min: 1 }]}
+              >
                 <InputNumber
                   defaultValue={totalSupply}
                   min={1}
