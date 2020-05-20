@@ -5,32 +5,23 @@ import {
   Col,
   notification,
   Drawer,
-  Divider,
   Card,
   Descriptions,
   //注册账户
   Form,
   Input,
   Button,
-  Modal,
-  Cascader,
 } from "antd";
 import { Loading } from "../../components";
 import { withRouter } from "react-router-dom";
-import storageUtils from "../../utils/storageUtils";
-import { reqPermit, reqGetAccountProfile, reqPutAccount } from "../../api";
+//import storageUtils from "../../utils/storageUtils";
+import { reqGetAccountProfile, reqPutAccount } from "../../api";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
-import {
-  employeeStatuses,
-  orgStatusesList,
-  roleTypes,
-  Operations,
-} from "../../utils/constants";
+import { employeeStatuses, roleTypes } from "../../utils/constants";
 import "./index.less";
 import "../../css/common.less";
 const { Meta } = Card;
-//const [AOperations] = Operations;
 
 @withRouter
 class MyAccount extends Component {
@@ -155,16 +146,11 @@ class MyAccount extends Component {
                       ))
                     : null}
                 </Descriptions.Item>
-                {/* <Descriptions.Item label="角色">
+                <Descriptions.Item label="角色">
                   {roleTypes.map((item, index) => (
                     <span key={index}>{item[role]}</span>
                   ))}
-                </Descriptions.Item> */}
-                {/* <Descriptions.Item label="权限">
-                  {AOperations.map((item, index) => (
-                    <span key={index}>{item[operations]}</span>
-                  ))}
-                </Descriptions.Item> */}
+                </Descriptions.Item>
                 <Descriptions.Item label="状态">
                   {employeeStatuses.map((item, index) => (
                     <span key={index}>{item[status]}</span>
@@ -172,7 +158,6 @@ class MyAccount extends Component {
                 </Descriptions.Item>
                 <Descriptions.Item label="备注">{desc}</Descriptions.Item>
               </Descriptions>
-              
             </Col>
           </Row>
         </Drawer>
@@ -247,7 +232,6 @@ class MyAccount extends Component {
       realName: values.realName,
     };
     const result = await reqPutAccount(params);
-    console.log("MyAccount -> onFinish -> result", result);
     if (result.data.retcode === 0) {
       notification.success({
         message: "更新成功！",

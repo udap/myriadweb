@@ -40,12 +40,6 @@ import "../../css/common.less";
 
 const { confirm } = Modal;
 const { TextArea } = Input;
-const scrollstyle = {
-  display: 'block',
-  maxHeight:'500px',
-  overflow:'auto',
-  overflowX:'hidden',
-}
 class Groups extends Component {
   state = {
     inited: false,
@@ -471,15 +465,14 @@ class Groups extends Component {
             <Descriptions.Item label="描述">
               {desc ? desc : "-"}
             </Descriptions.Item>
-            <Descriptions.Item label="权限" > 
-            <div style={scrollstyle}> 
-            {operations && operations.length !== 0
-                ? operations.map((item, index) => (
-                    <div key={index}>{Operations[item]}</div>
-                  ))
-                : "-"}
-            </div>
-              
+            <Descriptions.Item label="权限">
+              <div className="scrollStyle">
+                {operations && operations.length !== 0
+                  ? operations.map((item, index) => (
+                      <div key={index}>{Operations[item]}</div>
+                    ))
+                  : "-"}
+              </div>
             </Descriptions.Item>
           </Descriptions>
         </Drawer>

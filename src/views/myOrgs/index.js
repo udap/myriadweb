@@ -12,7 +12,6 @@ import {
   Form,
   Input,
   Button,
-  Modal,
   Cascader,
 } from "antd";
 import { withRouter } from "react-router-dom";
@@ -22,7 +21,6 @@ import {
   reqPermit,
   regGetCurOrg,
   reqGetAuthCode,
-  regAddOrg,
   regPutCurOrg,
 } from "../../api";
 import OrgFormDialog from "./orgFormDialog";
