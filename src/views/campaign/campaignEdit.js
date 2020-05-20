@@ -15,6 +15,7 @@ import {
   Radio,
   InputNumber,
   List,
+  Drawer,
 } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
@@ -105,12 +106,14 @@ class CampaignEdit extends Component {
       valueOff: "",
       totalSupply: "",
       autoUpdate: false,
-      amountLimit: 1,
+      amountLimit: null,
       description: "",
       orgList: [],
       hasConfig: false,
       parties: [],
       disabledExpiry: false,
+      //活动主页预览
+      showUrl: false,
     };
   }
 
@@ -151,7 +154,7 @@ class CampaignEdit extends Component {
         : "",
       totalSupply: voucherConfig ? voucherConfig.totalSupply : "",
       autoUpdate: voucherConfig ? voucherConfig.autoUpdate : false,
-      amountLimit: 1, //cont.amountLimit,
+      amountLimit: cont.amountLimit,
       description: voucherConfig ? voucherConfig.description : "",
 
       current: voucherConfig ? 3 : 2,
@@ -216,29 +219,32 @@ class CampaignEdit extends Component {
   onRadioChange = (e) => {
     let value = e.target.value;
     let typeText;
-    // if (value === 1) {
-    //   typeText = "折扣类型【元】";
-    // } else if (value === 2) {
-    //   typeText = "折扣类型【%】";
-    // } else {
-    //   typeText = "折扣类型";
-    // }
+    if (value === "AMOUNT") {
+      typeText = "元";
+    } else if (value === "PERCENT") {
+      typeText = "%";
+    } else {
+      //typeText = "折扣类型";
+    }
     this.setState({
-      value: value,
+      select: value,
       typeText: typeText,
     });
   };
   onNumberChange = (name, value) => {
-    if (name === "valueOff") {
-      //前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
-      this.setState({
-        valueOff: value,
-      });
-    } else if (name === "totalSupply") {
-      this.setState({
-        totalSupply: value,
-      });
-    }
+    // if (name === "valueOff") {
+    //   //前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
+    //   this.setState({
+    //     valueOff: value,
+    //   });
+    // } else if (name === "totalSupply") {
+    //   this.setState({
+    //     totalSupply: value,
+    //   });
+    // }
+    this.setState({
+      [name]: value,
+    });
   };
   onTypeRadioChange = (e) => {
     this.setState({
@@ -259,22 +265,31 @@ class CampaignEdit extends Component {
     //   settingInfo: values,
     // });
     if (!this.state.valueOff) {
-      message.info("折扣数量不能为空！");
+      message.info("金额不能为空！");
       return false;
     }
 
     let params = {
+      name: values.name,
       multiple: true,
       coverImg: this.state.coverImg,
       totalSupply: this.state.totalSupply,
       autoUpdate: this.state.autoUpdate,
-      description: values.description,
-      discount: {
-        type: values.select,
-        valueOff: this.state.valueOff * 100,
-        amountLimit: 1,
-      },
+     // description: values.description,
+      discount:
+        values.select === "AMOUNT"
+          ? {
+              type: values.select,
+              valueOff: this.state.valueOff * 100,
+            }
+          : {
+              type: values.select,
+              valueOff: this.state.valueOff,
+              amountLimit: 1,
+            },
       type: "COUPON",
+      effective: this.state.validityEffective,
+      expiry: this.state.validityExpiry,
     };
     //     if (this.state.coverImg){
     //       var formData = new FormData();
@@ -299,6 +314,12 @@ class CampaignEdit extends Component {
     this.setState({
       effective: dataStr[0],
       expiry: dataStr[1],
+    });
+  };
+  changeValidityDate= (data, dataStr) => {
+    this.setState({
+      validityEffective: dataStr[0],
+      validityExpiry: dataStr[1],
     });
   };
   onSwitchChange = (value) => {
@@ -350,7 +371,11 @@ class CampaignEdit extends Component {
       </div>
     );
   };
-
+  showHomeDrawer = () => {
+    this.setState({
+      showUrl: true,
+    });
+  };
   renderStep2 = () => {
     //wait process finish error
     const { name, category, description, url } = this.state.basicInfo;
@@ -384,7 +409,7 @@ class CampaignEdit extends Component {
         <Form.Item label="类别" name="category">
           <Input />
         </Form.Item>
-        <Form.Item label="起止时间" name="time">
+        <Form.Item label="活动时间" name="time">
           <RangePicker
             defaultValue={[
               moment(effective, dateFormat),
@@ -399,7 +424,20 @@ class CampaignEdit extends Component {
           name="url"
           rules={[{ type: "url" }, { min: 0, max: 255 }]}
         >
-          <Input />
+          <Row>
+            <Col span={20}>
+              <Input />
+            </Col>
+            <Col>
+              <Button
+                style={{ display: "inline" }}
+                type="link"
+                onClick={this.showHomeDrawer}
+              >
+                预览
+              </Button>
+            </Col>
+          </Row>
         </Form.Item>
 
         <Form.Item {...tailLayout}>
@@ -434,16 +472,17 @@ class CampaignEdit extends Component {
       amountLimit,
       description,
       //code,
+      name,
     } = this.state;
     const formItemLayout = {
       labelCol: {
         span: 6,
       },
       wrapperCol: {
-        span: 14,
+        span: 16
       },
     };
-    const { fileList } = this.state;
+    const { fileList, effective, expiry } = this.state;
     const props = {
       onRemove: (file) => {
         this.setState((state) => {
@@ -463,6 +502,13 @@ class CampaignEdit extends Component {
       },
       fileList,
     };
+    //垂直的单选
+       const radioStyle = {
+         display: "block",
+         height: "30px",
+         lineHeight: "30px",
+         marginBottom:'15px'
+       };
     return (
       <div className="">
         <Form
@@ -470,6 +516,7 @@ class CampaignEdit extends Component {
           {...formItemLayout}
           onFinish={this.onFinish3}
           initialValues={{
+            name: name,
             multiple: multiple,
             totalSupply: totalSupply,
             autoUpdate: autoUpdate,
@@ -491,9 +538,20 @@ class CampaignEdit extends Component {
           折扣数量（前端输入20.00或者0.5，传回到后台前需要转换
           成2000或者50的整数）7/
           可用次数（默认为1）8/ 优惠券图片 9/ 备注 
-       
+
+
+       注意“折扣类型”选择“代金券”是，需要输入“折扣金额”（改为“金额”）；
+          如果选择“折扣券”，就需要输入“折扣比例”和“最高优惠金额”两个参数
           */}
-          <Form.Item name="multiple" label="优惠券类型" hasFeedback>
+          <Form.Item label="活动名称" name="name" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="multiple"
+            label="发行方式"
+            rules={[{ required: true }]}
+          >
             <Radio.Group
               onChange={this.onTypeRadioChange}
               value={this.state.multiple}
@@ -522,17 +580,15 @@ class CampaignEdit extends Component {
               </Form.Item>
             </div>
           )}
-          <Form.Item
-            name="autoUpdate"
-            label="是否自动增发"
-          >
-            <Switch checked={this.state.autoUpdate} onChange={this.onSwitchChange} />
+          <Form.Item name="autoUpdate" label="是否自动增发">
+            <Switch
+              checked={this.state.autoUpdate}
+              onChange={this.onSwitchChange}
+            />
           </Form.Item>
-
           <Form.Item
             name="select"
-            label="折扣类型"
-            hasFeedback
+            label="类型"
             rules={[
               {
                 required: false,
@@ -540,39 +596,121 @@ class CampaignEdit extends Component {
             ]}
           >
             <Radio.Group
-              //onChange={this.onRadioChange}
+              onChange={this.onRadioChange}
               value={this.state.select}
             >
               <Radio value={"AMOUNT"} checked>
                 代金券
               </Radio>
+              <Radio value={"PERCENT"}>折扣券</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item
-            label="折扣金额"
+
+          {this.state.select === "PERCENT" ? (
+            <Form.Item
+              label={"折扣比例"}
+              name="valueOff"
+              //rules={[{ required: true }]}
+            >
+              <Input.Group>
+                <Row>
+                  <Col span={10}>
+                    <InputNumber
+                      onChange={this.onNumberChange.bind(this, "valueOff")}
+                    />
+                    &nbsp;&nbsp;{this.state.typeText}
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label="最高优惠金额 "
+                      name="amountLimit"
+                      rules={[{ required: false }]}
+                    >
+                      <InputNumber
+                        min={1}
+                        //disabled
+                        onChange={this.onNumberChange.bind(this, "amountLimit")}
+                      />
+                      &nbsp;&nbsp;元
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Input.Group>
+            </Form.Item>
+          ) : (
+            <Form.Item
+              label={"金额"}
+              name="valueOff"
+              rules={[{ required: true }]}
+            >
+              <InputNumber
+                defaultValue={valueOff}
+                min={1}
+                onChange={this.onNumberChange.bind(this, "valueOff")}
+              />
+              &nbsp;&nbsp;<span>{this.state.typeText}</span>
+            </Form.Item>
+          )}
+          {/* <Form.Item
             name="valueOff"
-            rules={[{ required: false }]}
+            label={this.state.select === "PERCENT" ? "折扣比例" : "金额"}
+            rules={[{ required: true }]}
           >
-            <InputNumber
-              defaultValue={valueOff}
-              min={1}
-              onChange={this.onNumberChange.bind(this, "valueOff")}
-            />
-            &nbsp;&nbsp;<span>{this.state.typeText}</span>
-          </Form.Item>
+            <Row>
+              <Col span={8}>
+                <Form.Item
+                  //label={this.state.select === "PERCENT" ? "折扣比例" : "金额"}
+                  name="valueOff"
+                >
+                  <InputNumber
+                    defaultValue={valueOff}
+                    min={1}
+                    onChange={this.onNumberChange.bind(this, "valueOff")}
+                  />
+                  &nbsp;&nbsp;<span>{this.state.typeText}</span>
+                </Form.Item>
+              </Col>
 
-          <Form.Item label="可用次数 " name="amountLimit">
-            <InputNumber
-              min={1}
-              defaultValue={1}
-              disabled
-              //onChange={this.onNumberChange.bind(this, "amountLimit")}
-            />
-          </Form.Item>
+              
+              <Col span={16}></Col>
+            </Row>
+          </Form.Item> */}
 
-          <Form.Item label="备注 " name="description">
+          <Form.Item label="有效期" name="time">
+            <Radio.Group
+              className="timeRadio"
+              onChange={this.onChange}
+              value="time"
+            >
+              <Radio name="time" style={radioStyle} value="time">
+                <span style={{ marginRight: "8px" }}>固定有效时间</span>
+                <RangePicker
+                  defaultValue={[
+                    moment(effective, dateFormat),
+                    moment(expiry, dateFormat),
+                  ]}
+                  onChange={this.changeValidityDate}
+                />
+              </Radio>
+              <Radio style={radioStyle} name="time" value="day">
+                <span>相对有效时间</span>
+                <div className="inline-block">
+                  <span className="radioSpan">发放/领取后</span>
+                  <InputNumber
+                    min={1}
+                    onChange={this.onNumberChange.bind(this, "day")}
+                  />
+                  <span className="radioSpan">天有效</span>
+                </div>
+              </Radio>
+            </Radio.Group>
+          </Form.Item>
+          {/* <Form.Item label="发放领取后多少天有效" name="time">
+            
+          </Form.Item> */}
+          {/* <Form.Item label="备注 " name="description">
             <TextArea rows={4} />
-          </Form.Item>
+          </Form.Item> */}
           {/* <Form.Item
             label="优惠券图片"
             //name="coverImg"
@@ -626,6 +764,40 @@ class CampaignEdit extends Component {
       return this.renderStep1();
     }
   };
+  onClose=()=>{
+    this.setState({
+      showUrl: false,
+    });
+  }
+  renderHomeUrl = () => {
+    return (
+      <div>
+        <Drawer
+          width={520}
+          visible={this.state.showUrl}
+          onClose={this.onClose}
+          footer={null}
+        >
+          预览活动主页
+          {/* <Form
+            layout="vertical"
+            name="basic"
+            initialValues={{}}
+            onFinish={this.onFinish}
+            validateMessages={defaultValidateMessages.defaultValidateMessages}
+          >
+            <Form.Item
+              label="名称"
+              name="name"
+              rules={[{ required: true }, { max: 45 }]}
+            >
+              <Input />
+            </Form.Item>
+          </Form> */}
+        </Drawer>
+      </div>
+    );
+  };
   renderContent = () => {
     const { current } = this.state;
 
@@ -649,7 +821,7 @@ class CampaignEdit extends Component {
         <Steps
           type="navigation"
           current={this.state.current}
-          //onChange={this.onChange}
+          onChange={this.onChange}
           className="site-navigation-steps"
         >
           {stepList.map((item, index) => (
@@ -668,6 +840,7 @@ class CampaignEdit extends Component {
         </Steps>
         <div className="stepCont"></div>
         {this.showCont(current)}
+        {this.state.showUrl ? this.renderHomeUrl() : null}
       </div>
     );
   };
@@ -680,6 +853,7 @@ class CampaignEdit extends Component {
           onBack={this.backIndex}
         ></PageHeader>
         {this.state.inited ? this.renderContent() : <Loading />}
+        
       </div>
     );
   }
