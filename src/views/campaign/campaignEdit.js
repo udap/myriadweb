@@ -543,49 +543,18 @@ class CampaignEdit extends Component {
        注意“折扣类型”选择“代金券”是，需要输入“折扣金额”（改为“金额”）；
           如果选择“折扣券”，就需要输入“折扣比例”和“最高优惠金额”两个参数
           */}
-          <Form.Item label="活动名称" name="name" rules={[{ required: true }]}>
-            <Input />
+          <Form.Item
+            label="优惠券名称"
+            name="name"
+            rules={[{ required: true }, { max: 10 }]}
+          >
+            <Row>
+              <Col span={8}>
+                <Input />
+              </Col>
+            </Row>
           </Form.Item>
 
-          <Form.Item
-            name="multiple"
-            label="发行方式"
-            rules={[{ required: true }]}
-          >
-            <Radio.Group
-              onChange={this.onTypeRadioChange}
-              value={this.state.multiple}
-            >
-              <Radio value={true}>一码一券</Radio>
-              {/* <Radio value={true}>固定码优惠券</Radio> */}
-            </Radio.Group>
-          </Form.Item>
-          {!this.state.multiple ? (
-            <div>
-              <Form.Item label="券号" name="code" rules={[{ required: true }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item label="发行数量" name="totalSupply">
-                <InputNumber defaultValue={totalSupply} disabled />
-              </Form.Item>
-            </div>
-          ) : (
-            <div>
-              <Form.Item label="发行数量" name="totalSupply">
-                <InputNumber
-                  defaultValue={totalSupply}
-                  min={1}
-                  onChange={this.onNumberChange.bind(this, "totalSupply")}
-                />
-              </Form.Item>
-            </div>
-          )}
-          <Form.Item name="autoUpdate" label="是否自动增发">
-            <Switch
-              checked={this.state.autoUpdate}
-              onChange={this.onSwitchChange}
-            />
-          </Form.Item>
           <Form.Item
             name="select"
             label="类型"
@@ -731,6 +700,45 @@ class CampaignEdit extends Component {
               </Upload>
             </Form.Item>
           </Form.Item> */}
+          <Form.Item
+            name="multiple"
+            label="发行方式"
+            rules={[{ required: true }]}
+          >
+            <Radio.Group
+              onChange={this.onTypeRadioChange}
+              value={this.state.multiple}
+            >
+              <Radio value={true}>一码一券</Radio>
+              {/* <Radio value={true}>固定码优惠券</Radio> */}
+            </Radio.Group>
+          </Form.Item>
+          {!this.state.multiple ? (
+            <div>
+              <Form.Item label="券号" name="code" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item label="发行数量" name="totalSupply">
+                <InputNumber defaultValue={totalSupply} disabled />
+              </Form.Item>
+            </div>
+          ) : (
+            <div>
+              <Form.Item label="发行数量" name="totalSupply">
+                <InputNumber
+                  defaultValue={totalSupply}
+                  min={1}
+                  onChange={this.onNumberChange.bind(this, "totalSupply")}
+                />
+              </Form.Item>
+            </div>
+          )}
+          <Form.Item name="autoUpdate" label="是否自动增发">
+            <Switch
+              checked={this.state.autoUpdate}
+              onChange={this.onSwitchChange}
+            />
+          </Form.Item>
           <Form.Item
             wrapperCol={{
               span: 12,
