@@ -35,6 +35,11 @@ const getDateStr = (AddDayCount, date) => {
 
   return [year, month, day].map(formatNumber).join("-");
 };
+
+const formatCurrency = (value) => {
+  return value ? parseFloat(value) / 100 : "";
+};
+
 /*console.log("前天：" + GetDateStr(-2));
 console.log("昨天：" + GetDateStr(-1));
 console.log("今天：" + GetDateStr(0));
@@ -55,5 +60,6 @@ export default {
   getTitle,
   formatDate,
   getDateStr,
+  formatCurrency,
   hasPower,
 };
