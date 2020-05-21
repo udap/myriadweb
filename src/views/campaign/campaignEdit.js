@@ -66,56 +66,88 @@ const { Step } = Steps;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY-MM-DD";
-
+//垂直的单选
+const radioStyle = {
+  display: "block",
+  height: "30px",
+  lineHeight: "30px",
+  marginBottom: "15px",
+};
+//teps3样式
+const formItemLayout = {
+  labelCol: {
+    span: 6,
+  },
+  wrapperCol: {
+    span: 16,
+  },
+};
 @withRouter
 class CampaignEdit extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      inited: false,
-      isNew: true,
-      id: null,
-      typeText: "元",
-      currentDisplayName: "门店兑换",
-      current: 0,
-      choose: 0,
-      value: 0,
-      number: 1,
-      fileList: [],
-      listData: [
-        {
-          name: "优惠券活动",
-          icon: "DollarCircleOutlined",
-          type: "VOUCHER", //VOUCHER, PROMOTION
-          desc:
-            "电子优惠券是企业利用App、短信、社交媒体等多种渠道进行数字化营销的便利手段。每一张优惠券都有一个唯一的、随机产生的编码，可以有效防止欺诈。",
-        },
-      ],
-      basicInfo: {
-        name: "",
-        description: "",
-        category: "",
-        url: "",
+  state = {
+    inited: false,
+    isNew: true,
+    //导航step
+    current: 0,
+    choose: 0,
+    //活动类型
+    listData: [
+      {
+        name: "优惠券活动",
+        icon: "DollarCircleOutlined",
+        type: "VOUCHER", //VOUCHER, PROMOTION
+        desc:
+          "电子优惠券是企业利用App、短信、社交媒体等多种渠道进行数字化营销的便利手段。每一张优惠券都有一个唯一的、随机产生的编码，可以有效防止欺诈。",
       },
+    ],
+    campaignType: "VOUCHER",
+    //基本信息
+    basicInfo: {
+      name: "",
+      description: "",
+      category: "",
+      url: "",
       effective: comEvents.getDateStr(0),
       expiry: comEvents.getDateStr(1),
-      type: "VOUCHER",
+    },
+    //活动主页预览
+    showUrl: false,
+    url: "",
+    //新增活动的id
+    id: null,
+
+    currentDisplayName: "门店兑换",
+
+    value: 0,
+    number: 1,
+    fileList: [],
+    //配置信息
+    name: "",
+    select: "AMOUNT",
+    typeText: "元",
+    valueOff: "",
+    settings: {
       multiple: true,
       coverImg: "",
       select: "AMOUNT",
-      valueOff: "",
-      totalSupply: "",
+      valueOff: null,
+      totalSupply: 1,
       autoUpdate: false,
       amountLimit: null,
       description: "",
-      orgList: [],
-      hasConfig: false,
-      parties: [],
-      disabledExpiry: false,
-      //活动主页预览
-      showUrl: false,
-    };
-  }
+      //code:'',
+      timeType: "date",
+      effective: comEvents.getDateStr(0),
+      expiry: comEvents.getDateStr(1),
+      valueOffDis:null,
+    },
+    daysAfterDist: null,
+
+    orgList: [],
+    hasConfig: false,
+    parties: [],
+    disabledExpiry: false,
+  };
 
   componentDidMount() {
     let id = this.props.match.params.id;
@@ -124,6 +156,7 @@ class CampaignEdit extends Component {
       inited: true,
     });
     if (id !== "new") {
+      //获取当前ID的活动详情
       this.setState({
         id: id,
       });
@@ -143,185 +176,97 @@ class CampaignEdit extends Component {
         description: cont.description,
         category: cont.category,
         url: cont.url,
+        effective: cont.effective,
+        expiry: comEvents.getDateStr(-1, new Date(cont.expiry)),
       },
-      effective: cont.effective,
-      expiry: comEvents.getDateStr(-1, new Date(cont.expiry)),
-      multiple: true, //cont.multiple,
-      coverImg: voucherConfig ? voucherConfig.coverImg : "",
-      select: "AMOUNT",
-      valueOff: voucherConfig
-        ? parseFloat(voucherConfig.discount.valueOff) / 100
-        : "",
-      totalSupply: voucherConfig ? voucherConfig.totalSupply : "",
-      autoUpdate: voucherConfig ? voucherConfig.autoUpdate : false,
-      amountLimit: cont.amountLimit,
-      description: voucherConfig ? voucherConfig.description : "",
+      url: cont.url,
+      name:
+        voucherConfig && voucherConfig.name
+          ? voucherConfig.name
+          : cont.name.substr(0, 10),
+      timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
+      select:
+        voucherConfig && voucherConfig.discount
+          ? voucherConfig.discount.type
+          : "AMOUNT",
+      select:
+        voucherConfig && voucherConfig.discount
+          ? voucherConfig.discount.type
+          : "AMOUNT",
+      typeText:
+        voucherConfig &&
+        voucherConfig.discount &&
+        voucherConfig.discount.type === "AMOUNT"
+          ? "元"
+          : "%",
+      settings: {
+        multiple:
+          voucherConfig && voucherConfig.multiple
+            ? voucherConfig.multiple
+            : true,
+        //coverImg: voucherConfig.coverImg,
+        select:
+          voucherConfig && voucherConfig.discount
+            ? voucherConfig.discount.type
+            : "AMOUNT",
+        valueOff:
+          voucherConfig && voucherConfig.type && voucherConfig.discount
+            ? voucherConfig.type === "AMOUNT"
+              ? parseFloat(voucherConfig.discount.valueOff) / 100
+              : voucherConfig.discount.valueOff
+            : null,
+        totalSupply: voucherConfig ? voucherConfig.totalSupply : 1,
+        autoUpdate: voucherConfig ? voucherConfig.autoUpdate : false,
+        amountLimit:
+          voucherConfig &&
+          voucherConfig.discount &&
+          voucherConfig.discount.amountLimit
+            ? voucherConfig.discount.amountLimit
+            : null,
+        //description: voucherConfig ? voucherConfig.description : "",
+        //code:'',
+        effective:
+          voucherConfig && voucherConfig.effective
+            ? voucherConfig.effective
+            : cont.effective,
+        expiry:
+          voucherConfig && voucherConfig.expiry
+            ? voucherConfig.expiry
+            : comEvents.getDateStr(-1, new Date(cont.expiry)),
+        daysAfterDist:
+          voucherConfig && voucherConfig.daysAfterDist
+            ? voucherConfig.daysAfterDist
+            : null,
+        timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
+      },
+      // multiple: true, //cont.multiple,
+      // coverImg: voucherConfig ? voucherConfig.coverImg : "",
+      // select: "AMOUNT",
+      // valueOff: voucherConfig
+      //   ? parseFloat(voucherConfig.discount.valueOff) / 100
+      //   : "",
+      // totalSupply: voucherConfig ? voucherConfig.totalSupply : 1,
+      // autoUpdate: voucherConfig ? voucherConfig.autoUpdate : false,
+      // amountLimit: cont.amountLimit,
+      // description: voucherConfig ? voucherConfig.description : "",
 
       current: voucherConfig ? 3 : 2,
       hasConfig: cont.voucherConfig ? true : false,
       parties: cont.parties ? cont.parties : [],
     });
   };
-  onFinish2 = async (values) => {
-    let timeEffective = new Date(this.state.effective).getTime();
-    let timeExpiry = new Date(this.state.expiry).getTime();
 
-    // if (timeExpiry <= timeEffective) {
-    //   message.info("结束时间必须大于开始时间");
-    //   return false;
-    // }
-    let params = {
-      reqOrg: storageUtils.getUser().orgUid,
-      reqUser: storageUtils.getUser().uid,
-      name: values.name,
-      description: values.description,
-      type: this.state.type,
-      category: values.category,
-      effective: this.state.effective,
-      expiry: comEvents.getDateStr(1, new Date(this.state.expiry)),
-      url: values.url,
-      metadata: {},
-    };
-    this.setState({
-      basicInfo: params,
-    });
-    let result = await reqAddCampaign(params);
-    this.setState({
-      id: result.data.id,
-    });
-    this.nextStep();
-  };
   backIndex = () => {
     this.props.history.push("/admin/campaign");
   };
-  onFinishFailed2 = (errorInfo) => {};
 
-  onChange = (current) => {
-    this.setState({
-      choose: current,
-      current,
-    });
-  };
-  nextStep = () => {
-    if (this.state.choose <= this.state.current) {
-      this.setState({
-        current: this.state.current + 1,
-      });
-    } else {
-      this.setState({
-        current: this.state.current - 1,
-      });
-    }
-
-    //this.onChange(this.state.current);
-  };
-
-  onRadioChange = (e) => {
-    let value = e.target.value;
-    let typeText;
-    if (value === "AMOUNT") {
-      typeText = "元";
-    } else if (value === "PERCENT") {
-      typeText = "%";
-    } else {
-      //typeText = "折扣类型";
-    }
-    this.setState({
-      select: value,
-      typeText: typeText,
-    });
-  };
-  onNumberChange = (name, value) => {
-    // if (name === "valueOff") {
-    //   //前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
-    //   this.setState({
-    //     valueOff: value,
-    //   });
-    // } else if (name === "totalSupply") {
-    //   this.setState({
-    //     totalSupply: value,
-    //   });
-    // }
-    this.setState({
-      [name]: value,
-    });
-  };
   onTypeRadioChange = (e) => {
     this.setState({
       value: e.target.value,
       type: e.target.value,
     });
   };
-  chooseType = (item) => {
-    this.setState({
-      type: item.type,
-    });
-    this.nextStep();
-  };
 
-  onFinish3 = async (values) => {
-    //折扣数量乘以100  前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
-    // this.setState({
-    //   settingInfo: values,
-    // });
-    if (!this.state.valueOff) {
-      message.info("金额不能为空！");
-      return false;
-    }
-
-    let params = {
-      name: values.name,
-      multiple: true,
-      coverImg: this.state.coverImg,
-      totalSupply: this.state.totalSupply,
-      autoUpdate: this.state.autoUpdate,
-     // description: values.description,
-      discount:
-        values.select === "AMOUNT"
-          ? {
-              type: values.select,
-              valueOff: this.state.valueOff * 100,
-            }
-          : {
-              type: values.select,
-              valueOff: this.state.valueOff,
-              amountLimit: 1,
-            },
-      type: "COUPON",
-      effective: this.state.validityEffective,
-      expiry: this.state.validityExpiry,
-    };
-    //     if (this.state.coverImg){
-    //       var formData = new FormData();
-    //       let msg = params;
-    //       for (const key in msg) {
-
-    //         formData.append(key, msg[key]);
-    //       }
-    // let result = await reqPostConfigImg(this.state.id, formData);
-    // this.nextStep();
-    //     }else{
-    if (this.state.hasConfig) {
-      let result = await reqPutConfig(this.state.id, params);
-      this.nextStep();
-    } else {
-      let result = await reqPostConfig(this.state.id, params);
-      this.nextStep();
-    }
-    //  }
-  };
-  changeDate = (data, dataStr) => {
-    this.setState({
-      effective: dataStr[0],
-      expiry: dataStr[1],
-    });
-  };
-  changeValidityDate= (data, dataStr) => {
-    this.setState({
-      validityEffective: dataStr[0],
-      validityExpiry: dataStr[1],
-    });
-  };
   onSwitchChange = (value) => {
     this.setState({
       autoUpdate: value,
@@ -332,13 +277,14 @@ class CampaignEdit extends Component {
     //return current && current < moment().endOf("day");
     return current < moment().endOf("day");
   };
-
+  //第一步
   renderStep1 = () => {
+    const { listData } = this.state;
     return (
       <div className="site-card-wrapper">
         <Row>
           <List
-            dataSource={this.state.listData}
+            dataSource={listData}
             renderItem={(item) => (
               <Col xs={24} sm={24} md={24} lg={12} xl={8}>
                 <Card bordered={false}>
@@ -371,15 +317,38 @@ class CampaignEdit extends Component {
       </div>
     );
   };
-  showHomeDrawer = () => {
+  //选择活动类型
+  chooseType = (item) => {
     this.setState({
-      showUrl: true,
+      campaignType: item.type,
     });
+    //跳转到第二步
+    this.nextStep();
   };
+  //跳转到下一步
+  nextStep = () => {
+    let { choose, current } = this.state;
+    if (choose <= current) {
+      this.setState({
+        current: current + 1,
+      });
+    } else {
+      this.setState({
+        current: current - 1,
+      });
+    }
+    //this.jumpStep(this.state.current);
+  };
+  //第二步
   renderStep2 = () => {
-    //wait process finish error
-    const { name, category, description, url } = this.state.basicInfo;
-    const { expiry, effective } = this.state;
+    const {
+      name,
+      category,
+      description,
+      url,
+      effective,
+      expiry,
+    } = this.state.basicInfo;
     return (
       <Form
         {...layout}
@@ -387,13 +356,10 @@ class CampaignEdit extends Component {
         initialValues={{
           name: name,
           category: category,
-          effective: effective,
           description: description,
           url: url,
-          expiry: expiry,
         }}
         onFinish={this.onFinish2}
-        onFinishFailed={this.onFinishFailed2}
         validateMessages={defaultValidateMessages.defaultValidateMessages}
       >
         <Form.Item
@@ -409,7 +375,7 @@ class CampaignEdit extends Component {
         <Form.Item label="类别" name="category">
           <Input />
         </Form.Item>
-        <Form.Item label="活动时间" name="time">
+        <Form.Item label="活动时间">
           <RangePicker
             defaultValue={[
               moment(effective, dateFormat),
@@ -426,13 +392,13 @@ class CampaignEdit extends Component {
         >
           <Row>
             <Col span={20}>
-              <Input />
+              <Input value={this.state.url} onChange={this.handleInputChange} />
             </Col>
             <Col>
               <Button
                 style={{ display: "inline" }}
                 type="link"
-                onClick={this.showHomeDrawer}
+                onClick={this.showURLDrawer}
               >
                 预览
               </Button>
@@ -448,20 +414,94 @@ class CampaignEdit extends Component {
       </Form>
     );
   };
-  selectPic = (e) => {
-    let imgObj = e.file.originFileObj;
-    var that = this;
-    var reader = new FileReader();
-    reader.onloadend = function () {
-      console.log(reader.result);
-      that.setState({
-        coverImg: reader.result,
-      });
+  //第二步提交
+  onFinish2 = async (values) => {
+    let { campaignType, basicInfo } = this.state;
+    let params = {
+      reqOrg: storageUtils.getUser().orgUid,
+      reqUser: storageUtils.getUser().uid,
+      name: values.name,
+      description: values.description,
+      type: campaignType,
+      category: values.category,
+      effective: basicInfo.effective,
+      expiry: basicInfo.expiry, //comEvents.getDateStr(1, new Date(basicInfo.expiry)),
+      url: values.url,
+      metadata: {},
     };
-    if (imgObj) {
-      reader.readAsDataURL(imgObj);
-    }
+    this.setState({
+      basicInfo: params,
+      name: values.name.substr(0, 10),
+    });
+    let result = await reqAddCampaign(params);
+    //新增活动的id
+    this.setState({
+      id: result.data.id,
+    });
+    //跳转到第三步
+    this.nextStep();
   };
+  //保存URL显示预栏用
+  handleInputChange = (e) => {
+    this.setState({
+      url: e.target.value,
+    });
+  };
+  //日期切换
+  changeDate = (data, dataStr) => {
+    let { basicInfo } = this.state;
+    let newData = Object.assign(basicInfo, {
+      effective: dataStr[0],
+      expiry: dataStr[1],
+    });
+    this.setState({
+      basicInfo: newData,
+    });
+  };
+  //显示预览
+  showURLDrawer = () => {
+    this.setState({
+      showUrl: true,
+    });
+  };
+  //隐藏活动预览
+  closeURLDrawer = () => {
+    this.setState({
+      showUrl: false,
+    });
+  };
+  //显示活动预览
+  urlDrawerCont = () => {
+    const { showUrl, url } = this.state;
+    return (
+      <div>
+        <Drawer
+          width={520}
+          visible={showUrl}
+          onClose={this.closeURLDrawer}
+          footer={null}
+        >
+          <iframe src={url} height="100%" width="100%"></iframe>
+        </Drawer>
+      </div>
+    );
+  };
+  //选择图片上传
+  // selectPic = (e) => {
+  //   let imgObj = e.file.originFileObj;
+  //   var that = this;
+  //   var reader = new FileReader();
+  //   reader.onloadend = function () {
+  //     console.log(reader.result);
+  //     that.setState({
+  //       coverImg: reader.result,
+  //     });
+  //   };
+  //   if (imgObj) {
+  //     reader.readAsDataURL(imgObj);
+  //   }
+  // };
+  //第三步
   renderStep3 = () => {
     const {
       multiple,
@@ -472,45 +512,18 @@ class CampaignEdit extends Component {
       amountLimit,
       description,
       //code,
+      timeType,
+      select,
+      daysAfterDist,
+      valueOffDis,
+    } = this.state.settings;
+    const { effective, expiry } = this.state.basicInfo;
+    const {
       name,
+      // daysAfterDist
     } = this.state;
-    const formItemLayout = {
-      labelCol: {
-        span: 6,
-      },
-      wrapperCol: {
-        span: 16
-      },
-    };
-    const { fileList, effective, expiry } = this.state;
-    const props = {
-      onRemove: (file) => {
-        this.setState((state) => {
-          const index = state.fileList.indexOf(file);
-          const newFileList = state.fileList.slice();
-          newFileList.splice(index, 1);
-          return {
-            fileList: newFileList,
-          };
-        });
-      },
-      beforeUpload: (file) => {
-        this.setState((state) => ({
-          fileList: [...state.fileList, file],
-        }));
-        return false;
-      },
-      fileList,
-    };
-    //垂直的单选
-       const radioStyle = {
-         display: "block",
-         height: "30px",
-         lineHeight: "30px",
-         marginBottom:'15px'
-       };
     return (
-      <div className="">
+      <div>
         <Form
           name="validate_other"
           {...formItemLayout}
@@ -520,12 +533,15 @@ class CampaignEdit extends Component {
             multiple: multiple,
             totalSupply: totalSupply,
             autoUpdate: autoUpdate,
-            select: "AMOUNT",
+            select: select,
             valueOff: valueOff,
             amountLimit: amountLimit,
             coverImg: coverImg,
             description: description,
             //code: code,
+            timeType: timeType,
+            daysAfterDist: daysAfterDist,
+            valueOffDis: valueOffDis,
           }}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
@@ -550,7 +566,7 @@ class CampaignEdit extends Component {
           >
             <Row>
               <Col span={8}>
-                <Input />
+                <Input value={name} />
               </Col>
               <Col>
                 <span className="desc">最多允许10个字</span>
@@ -568,7 +584,7 @@ class CampaignEdit extends Component {
             ]}
           >
             <Radio.Group
-              onChange={this.onRadioChange}
+              onChange={this.onRadioTypeChange}
               value={this.state.select}
             >
               <Radio value={"AMOUNT"} checked>
@@ -579,101 +595,89 @@ class CampaignEdit extends Component {
           </Form.Item>
 
           {this.state.select === "PERCENT" ? (
-            <Form.Item
-              label={"折扣比例"}
-              name="valueOff"
-              //rules={[{ required: true }]}
-            >
-              <Input.Group>
-                <Row>
-                  <Col span={10}>
-                    <InputNumber
-                      onChange={this.onNumberChange.bind(this, "valueOff")}
-                    />
-                    &nbsp;&nbsp;{this.state.typeText}
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item
-                      label="最高优惠金额 "
-                      name="amountLimit"
-                      rules={[{ required: false }]}
-                    >
+            <div>
+              <Form.Item
+                label="折扣比例"
+                name="valueOffDis"
+                rules={[{ required: true }]}
+              >
+                <InputNumber
+                  defaultValue={valueOffDis}
+                  onChange={this.changeSetObject.bind(
+                    this,
+                    "valueOffDis",
+                    "settings"
+                  )}
+                />
+                &nbsp;&nbsp;{this.state.typeText}
+              </Form.Item>
+             
+                  
+                  <Form.Item label="最高优惠金额" name="amountLimit">
                       <InputNumber
-                        min={1}
-                        //disabled
-                        onChange={this.onNumberChange.bind(this, "amountLimit")}
+                        min={0}
+                        defaultValue={amountLimit}
+                        onChange={this.changeSetObject.bind(
+                          this,
+                          "amountLimit",
+                          "settings"
+                        )}
                       />
                       &nbsp;&nbsp;元
                     </Form.Item>
-                  </Col>
-                </Row>
-              </Input.Group>
-            </Form.Item>
+                
+            </div>
           ) : (
             <Form.Item
-              label={"金额"}
+              label="金额"
               name="valueOff"
               rules={[{ required: true }]}
             >
               <InputNumber
                 defaultValue={valueOff}
                 min={1}
-                onChange={this.onNumberChange.bind(this, "valueOff")}
+                onChange={this.changeSetObject.bind(
+                  this,
+                  "valueOff",
+                  "settings"
+                )}
               />
-              &nbsp;&nbsp;<span>{this.state.typeText}</span>
             </Form.Item>
           )}
-          {/* <Form.Item
-            name="valueOff"
-            label={this.state.select === "PERCENT" ? "折扣比例" : "金额"}
-            rules={[{ required: true }]}
-          >
-            <Row>
-              <Col span={8}>
-                <Form.Item
-                  //label={this.state.select === "PERCENT" ? "折扣比例" : "金额"}
-                  name="valueOff"
-                >
-                  <InputNumber
-                    defaultValue={valueOff}
-                    min={1}
-                    onChange={this.onNumberChange.bind(this, "valueOff")}
-                  />
-                  &nbsp;&nbsp;<span>{this.state.typeText}</span>
-                </Form.Item>
-              </Col>
 
-              
-              <Col span={16}></Col>
-            </Row>
-          </Form.Item> */}
-
-          <Form.Item label="有效期" name="time">
+          <Form.Item label="有效期" name="timeType">
             <Radio.Group
               className="timeRadio"
-              onChange={this.onChange}
-              value="time"
+              onChange={this.onRadioTimeChange}
+              value={this.state.timeType}
             >
-              <Radio name="time" style={radioStyle} value="time">
+              <Radio name="timeType" style={radioStyle} value="date">
                 <span style={{ marginRight: "8px" }}>固定有效时间</span>
                 <RangePicker
                   defaultValue={[
                     moment(effective, dateFormat),
                     moment(expiry, dateFormat),
                   ]}
-                  onChange={this.changeValidityDate}
+                  onChange={this.changeSetDate}
                 />
               </Radio>
-              <Radio style={radioStyle} name="time" value="day">
-                <span>相对有效时间</span>
-                <div className="inline-block">
-                  <span className="radioSpan">发放/领取后</span>
-                  <InputNumber
-                    min={1}
-                    onChange={this.onNumberChange.bind(this, "day")}
-                  />
-                  <span className="radioSpan">天有效</span>
-                </div>
+              <Radio style={radioStyle} name="timeType" value="day">
+                <Row style={{ display: "inline-flex" }}>
+                  <Col>
+                    <span>相对有效时间</span>
+                  </Col>
+                  <Col>
+                    <span className="radioSpan">发放/领取后</span>
+                  </Col>
+                  <Col>
+                    <Form.Item name="daysAfterDist">
+                      <InputNumber min={1} />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <span className="radioSpan">天有效</span>
+                  </Col>
+                </Row>
               </Radio>
             </Radio.Group>
           </Form.Item>
@@ -716,7 +720,7 @@ class CampaignEdit extends Component {
               {/* <Radio value={true}>固定码优惠券</Radio> */}
             </Radio.Group>
           </Form.Item>
-          {!this.state.multiple ? (
+          {/* {!this.state.multiple ? (
             <div>
               <Form.Item label="券号" name="code" rules={[{ required: true }]}>
                 <Input />
@@ -730,20 +734,25 @@ class CampaignEdit extends Component {
               </Form.Item>
             </div>
           ) : (
-            <div>
-              <Form.Item
-                label="发行数量"
-                name="totalSupply"
-                rules={[{ required: true }, { min: 1 }]}
-              >
-                <InputNumber
-                  defaultValue={totalSupply}
-                  min={1}
-                  onChange={this.onNumberChange.bind(this, "totalSupply")}
-                />
-              </Form.Item>
-            </div>
-          )}
+            <div> */}
+          <Form.Item
+            label="发行数量"
+            name="totalSupply"
+            rules={[{ required: true }]}
+          >
+            <InputNumber
+              defaultValue={totalSupply}
+              min={1}
+              onChange={this.changeSetObject.bind(
+                this,
+                "totalSupply",
+                "settings"
+              )}
+              //onChange={this.onNumberChange.bind(this, "totalSupply")}
+            />
+          </Form.Item>
+          {/* </div>
+          )} */}
           <Form.Item name="autoUpdate" label="是否自动增发">
             <Switch
               checked={this.state.autoUpdate}
@@ -764,7 +773,158 @@ class CampaignEdit extends Component {
       </div>
     );
   };
+  //数字变化函数
+  // onNumberChange(value, name) {
+  //   console.log("CampaignEdit -> onNumberChange -> value, name", value, name);
+  //   if (name === "valueOff") {
+  //     //前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
+  //     this.setState({
+  //       valueOff: value,
+  //     });
+  //   } else if (name === "totalSupply") {
+  //     this.setState({
+  //       totalSupply: value,
+  //     });
+  //   }
+  //   this.setState({
+  //     [name]: value,
+  //   });
+  // }
+  //数字变化函数
+  changeSetObject = (value, name, stateName) => {
+    //amountLimit settings 12
 
+    let newData = Object.assign(stateName, {
+      value: name,
+    });
+
+    this.setState({
+      [stateName]: newData,
+    });
+    console.log(
+      "CampaignEdit -> changeSetObject -> stateName",
+      this.state.settings,
+      newData
+    );
+  };
+  //类型切换
+  onRadioTypeChange = (e) => {
+    let value = e.target.value;
+    console.log("CampaignEdit -> onRadioTypeChange -> value", value);
+    let typeText;
+    if (value === "AMOUNT") {
+      typeText = "元";
+    } else if (value === "PERCENT") {
+      typeText = "%";
+    } else {
+      //typeText = "折扣类型";
+    }
+    this.setState({
+      valueOff: null,
+      select: value,
+      typeText: typeText,
+    });
+  };
+  //有效期切换
+  onRadioTimeChange = (e) => {
+    this.setState({
+      timeType: e.target.value,
+    });
+  };
+  //切换固定有效时间日期
+  changeSetDate = (data, dataStr) => {
+    let { settings } = this.state;
+    let newData = Object.assign(settings, {
+      effective: dataStr[0],
+      expiry: dataStr[1],
+    });
+    this.setState({
+      settings: newData,
+    });
+  };
+
+  //提交数据
+  onFinish3 = async (values) => {
+    console.log("CampaignEdit -> values", values);
+    //折扣数量乘以100  前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
+    // this.setState({
+    //   settingInfo: values,
+    // });
+    // if (!this.state.valueOff) {
+    //   message.info("金额不能为空！");
+    //   return false;
+    // }
+
+    let { coverImg, settings, timeType } = this.state;
+    console.log("CampaignEdit -> timeType", timeType);
+    let params =
+      values.timeType === "date"
+        ? {
+            name: values.name,
+            multiple: true,
+            //coverImg: this.state.coverImg,
+            totalSupply: values.totalSupply,
+            autoUpdate: values.autoUpdate,
+            // description: values.description,
+            discount:
+              values.select === "AMOUNT"
+                ? {
+                    type: values.select,
+                    valueOff: values.valueOff * 100,
+                  }
+                : {
+                    type: values.select,
+                    valueOff: values.valueOffDis,
+                    amountLimit: values.amountLimit,
+                  },
+            type: "COUPON", //一券一码
+            effective: settings.effective,
+            expiry: settings.expiry,
+          }
+        : {
+            name: values.name,
+            multiple: true,
+            //coverImg: this.state.coverImg,
+            totalSupply: values.totalSupply,
+            autoUpdate: values.autoUpdate,
+            // description: values.description,
+            discount:
+              values.select === "AMOUNT"
+                ? {
+                    type: values.select,
+                    valueOff: values.valueOff * 100,
+                  }
+                : {
+                    type: values.select,
+                    valueOff: values.valueOffDis,
+                    amountLimit: values.amountLimit,
+                  },
+            type: "COUPON",
+            daysAfterDist: values.daysAfterDist,
+          };
+    console.log("CampaignEdit -> params", params);
+    // return false;
+
+    //     if (this.state.coverImg){
+    //       var formData = new FormData();
+    //       let msg = params;
+    //       for (const key in msg) {
+
+    //         formData.append(key, msg[key]);
+    //       }
+    // let result = await reqPostConfigImg(this.state.id, formData);
+    // this.nextStep();
+    //     }else{
+    if (this.state.hasConfig) {
+      let result = await reqPutConfig(this.state.id, params);
+      this.nextStep();
+    } else {
+      let result = await reqPostConfig(this.state.id, params);
+      this.nextStep();
+    }
+    //  }
+  };
+  //第四步
   renderStep4 = () => {
     return (
       <div className="site-card-wrapper">
@@ -772,107 +932,81 @@ class CampaignEdit extends Component {
       </div>
     );
   };
+
+  //点击切换steps
+  jumpStep = (current) => {
+    this.setState({
+      choose: current,
+      current,
+    });
+  };
+  //显示对应的renderStep
   showCont = (current) => {
     if (current === 1) {
+      //基本信息
       return this.renderStep2();
     } else if (current === 2) {
+      //详细配置
       return this.renderStep3();
     } else if (current === 3) {
+      //参与商户
       return this.renderStep4();
     } else {
+      //活动类型
       return this.renderStep1();
     }
   };
-  onClose=()=>{
-    this.setState({
-      showUrl: false,
-    });
-  }
-  renderHomeUrl = () => {
-    return (
-      <div>
-        <Drawer
-          width={520}
-          visible={this.state.showUrl}
-          onClose={this.onClose}
-          footer={null}
-        >
-          预览活动主页
-          {/* <Form
-            layout="vertical"
-            name="basic"
-            initialValues={{}}
-            onFinish={this.onFinish}
-            validateMessages={defaultValidateMessages.defaultValidateMessages}
-          >
-            <Form.Item
-              label="名称"
-              name="name"
-              rules={[{ required: true }, { max: 45 }]}
-            >
-              <Input />
-            </Form.Item>
-          </Form> */}
-        </Drawer>
-      </div>
-    );
+
+  //根据step不同状态显示不同的样式
+  showStatus = (current, index) => {
+    if (current === index) {
+      return "process";
+    } else if (current > index) {
+      return "finish";
+    } else {
+      return "wait";
+    }
   };
+  //显示创建活动内容
   renderContent = () => {
-    const { current } = this.state;
-
-    const stepList = [
-      {
-        title: "活动类型",
-      },
-      {
-        title: "基本信息",
-      },
-      {
-        title: "详细配置",
-      },
-      {
-        title: "参与商户",
-      },
-    ];
-
+    //当前所在step 默认0
+    const { current, showUrl } = this.state;
+    //steps标题
+    const stepLists = ["活动类型", "基本信息", "详细配置", "参与商户"];
     return (
       <div>
         <Steps
           type="navigation"
-          current={this.state.current}
-          onChange={this.onChange}
-          className="site-navigation-steps"
+          current={current}
+          onChange={this.jumpStep}
+          className="site-navigation-steps marginBottom"
         >
-          {stepList.map((item, index) => (
+          {stepLists.map((item, index) => (
             <Step
               key={index}
-              status={
-                current === index
-                  ? "process"
-                  : current > index
-                  ? "finish"
-                  : "wait"
-              }
-              title={item.title}
+              status={this.showStatus(current, index)}
+              title={item}
             />
           ))}
         </Steps>
-        <div className="stepCont"></div>
+        {/*显示对应的step*/}
         {this.showCont(current)}
-        {this.state.showUrl ? this.renderHomeUrl() : null}
+        {/*显示活动主页预览step*/}
+        {showUrl ? this.urlDrawerCont() : null}
       </div>
     );
   };
+  //页头
   render() {
+    const { isNew, inited } = this.state;
     return (
-      <div className="MarketFormDialog">
+      <div>
         <PageHeader
           className="site-page-header-responsive"
-          title={this.state.isNew ? "创建活动" : "活动详情"}
+          title={isNew ? "创建活动" : "活动详情"}
           onBack={this.backIndex}
         ></PageHeader>
-        {this.state.inited ? this.renderContent() : <Loading />}
-        
+        {inited ? this.renderContent() : <Loading />}
       </div>
     );
   }

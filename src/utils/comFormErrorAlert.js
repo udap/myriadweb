@@ -1,5 +1,5 @@
 //comFormErrorAlert 公共表单错误信息提示
-const typeTemplate = "${label}不能为空类型 ${type}";
+const typeTemplate = "${label}不是一个合法的 ${type}";
 
 const defaultValidateMessages = {
   default: "${label}'验证错误",
