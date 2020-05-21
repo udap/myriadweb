@@ -51,9 +51,9 @@ export const reqDelCampaign = (id) =>
 export const reqPublishCampaign = (id) =>
   ajax.put(BASE + "/myriad/campaigns/" + id + "/activate");
 //获取分配数量'/myriad/vouchers/count?campaignId=' + couponuid + '&owner=' + wx.getStorageSync('userId')
-export const reqGetNumber = (campaignId, owner) =>
+export const reqGetNumber = (campaignId, owner, action) =>
   ajax.get(
-    BASE + "/myriad/vouchers/count?campaignId=" + campaignId + "&owner=" + owner
+    BASE + "/myriad/vouchers/count?campaignId=" + campaignId + "&owner=" + owner + "&action=" + action.toUpperCase()
   );
 
 //批量分配reqTransfer

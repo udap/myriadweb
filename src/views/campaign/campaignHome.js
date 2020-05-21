@@ -212,7 +212,7 @@ class CampaignHome extends Component {
                   <Divider type="vertical" />
                   <b
                     onClick={() => {
-                      this.showCSV("distributions", chooseItem);
+                      this.showCSV("distribution", chooseItem);
                     }}
                     className="ant-blue-link cursor"
                   >
@@ -311,16 +311,16 @@ class CampaignHome extends Component {
     });
   };
   showCSV = (type, chooseItem) => {
-    this.getNumber(chooseItem.id);
+    this.getNumber(chooseItem.id,type);
     this.setState({
       typeStr: type,
       showCSV: true,
       chooseItem: chooseItem,
     });
   };
-  getNumber = async (campaignId) => {
+  getNumber = async (campaignId,type) => {
     const owner = storageUtils.getUser().id;
-    const result = await reqGetNumber(campaignId, owner);
+    const result = await reqGetNumber(campaignId, owner, type);
     this.setState({
       number: result.data,
     });
