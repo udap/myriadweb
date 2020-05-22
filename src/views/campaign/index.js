@@ -47,7 +47,8 @@ class Campaign extends Component {
     campaigns: [],
     addNew: false,
     showCSV: false,
-    typeStr: null,
+    //分配与发放
+    action: null,
     customerOnly: true,
     chooseItem: {
       name: "活动",
@@ -59,17 +60,19 @@ class Campaign extends Component {
     searchTxt: "",
     loading: false,
     number: 0,
-    value: "merchant",
+    //我参与的与机构参与的
+    value: "participant",
     showDetail: false,
     //当前列表操作的活动
     listItem: null,
   };
   componentDidMount() {
-    this.initColumns();
-    this.getMarkets(null, 1);
+    this.initColumns("participant");
+    this.getCampaigns(null, 1);
   }
 
-  initColumns() {
+  initColumns(value) {
+   let btnWidth = value === "participant" ? 200 : 80;
     this.columns = [
       {
         title: "名称",
@@ -133,10 +136,11 @@ class Campaign extends Component {
       {
         title: "操作",
         //fixed: "right",
-        width: 150,
+        width: btnWidth,
         render: (chooseItem) => {
           const { id, status, name } = chooseItem;
           //INITIATED的时候前端可以查看/修改/发布；ACTIVATED的时候前端可以查看/分配票券
+          //value==='participant' 才有按钮
           return (
             <span>
               <b
@@ -145,10 +149,22 @@ class Campaign extends Component {
               >
                 查看
               </b>
-              <Divider type="vertical" />
-              {status === "INITIATED" ? (
-                <span>
-                  {/* <b
+              {value === "participant" ? this.showBtns(chooseItem) : null}
+            </span>
+          );
+        },
+      },
+    ];
+  }
+  //展示按钮
+  showBtns = (chooseItem) => {
+    const { id, status, name } = chooseItem;
+    return (
+      <div style={{display:"inline"}}>
+        <Divider type="vertical" />
+        {status === "INITIATED" ? (
+          <span>
+            {/* <b
                     onClick={() => {
                       this.props.history.push("/admin/campaign/edit/" + id);
                     }}
@@ -157,16 +173,16 @@ class Campaign extends Component {
                     查看
                   </b>
                   <Divider type="vertical" /> */}
-                  <Popconfirm
-                    title="确认发布吗?"
-                    onConfirm={this.publishItem.bind(this, id)}
-                    okText="确认"
-                    cancelText="取消"
-                  >
-                    <b className="ant-green-link cursor">发布</b>
-                  </Popconfirm>
+            <Popconfirm
+              title="确认发布吗?"
+              onConfirm={this.publishItem.bind(this, id)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <b className="ant-green-link cursor">发布</b>
+            </Popconfirm>
 
-                  {/*<Divider type="vertical" />
+            {/*<Divider type="vertical" />
                    <b
                     onClick={() => {
                       this.props.history.push("/admin/campaign/edit/" + id);
@@ -176,57 +192,55 @@ class Campaign extends Component {
                     修改
                   </b> */}
 
-                  <Divider type="vertical" />
-                  <b
-                    onClick={() => {
-                      let that = this;
-                      confirm({
-                        title: "确认删除【" + name + "】?",
-                        icon: <ExclamationCircleOutlined />,
-                        okText: "确认",
-                        okType: "danger",
-                        cancelText: "取消",
-                        onOk() {
-                          that.delItem(id);
-                        },
-                      });
-                    }}
-                    className="ant-pink-link cursor"
-                  >
-                    删除
-                  </b>
-                </span>
-              ) : status === "ACTIVATED" ? (
-                <span>
-                  <b
-                    onClick={() => {
-                      this.showCSV("transfer", chooseItem);
-                    }}
-                    className="ant-blue-link cursor"
-                  >
-                    分配票券
-                  </b>
-                  <Divider type="vertical" />
-                  <b
-                    onClick={() => {
-                      this.showCSV("distribution", chooseItem);
-                    }}
-                    className="ant-blue-link cursor"
-                  >
-                    发放票券
-                  </b>
-                </span>
-              ) : (
-                "-"
-              )}
-            </span>
-          );
-        },
-      },
-    ];
+            <Divider type="vertical" />
+            <b
+              onClick={() => {
+                let that = this;
+                confirm({
+                  title: "确认删除【" + name + "】?",
+                  icon: <ExclamationCircleOutlined />,
+                  okText: "确认",
+                  okType: "danger",
+                  cancelText: "取消",
+                  onOk() {
+                    that.delItem(id);
+                  },
+                });
+              }}
+              className="ant-pink-link cursor"
+            >
+              删除
+            </b>
+          </span>
+        ) : status === "ACTIVATED" ? (
+          <span>
+            <b
+              onClick={() => {
+                this.showCSV("transfer", chooseItem);
+              }}
+              className="ant-blue-link cursor"
+            >
+              分配票券
+            </b>
+            <Divider type="vertical" />
+            <b
+              onClick={() => {
+                this.showCSV("distribution", chooseItem);
+              }}
+              className="ant-blue-link cursor"
+            >
+              发放票券
+            </b>
+          </span>
+        ) : (
+          null
+          )}
+          </div>
+    )
+          
   }
-   //展示活动详情
- showDetail = (item) => {
+  //展示活动详情
+  showDetail = (item) => {
     this.reqGetCampaignById(item.id);
   };
   //获取活动详情
@@ -239,7 +253,7 @@ class Campaign extends Component {
       listItem: cont,
     });
   };
-   //关闭活动详情
+  //关闭活动详情
   closeDetail = () => {
     this.setState({
       showDetail: false,
@@ -248,14 +262,15 @@ class Campaign extends Component {
   };
   /*radio 切换*/
   onChange = (e) => {
-    //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
+    //提交机构（participant，只显示在机构审批类)，审批机构（party，只显示在机构提交)
     this.setState({
       page: 0,
       value: e.target.value,
-      title: e.target.value === "merchant" ? "提交机构" : "审批机构",
+      title: e.target.value === "participant" ? "提交机构" : "审批机构",
       currentPage: 1,
     });
-    this.getMarkets(null, 1, e.target.value);
+    this.initColumns(e.target.value);
+    this.getCampaigns(null, 1, e.target.value);
   };
   searchValue = (value) => {
     this.setState({
@@ -263,7 +278,7 @@ class Campaign extends Component {
       value: value.group,
       currentPage: 1,
     });
-    this.getMarkets(value.searchTxt, 1, this.state.value);
+    this.getCampaigns(value.searchTxt, 1, this.state.value);
   };
   enterLoading = () => {
     this.setState({
@@ -276,24 +291,24 @@ class Campaign extends Component {
 
   delItem = async (id) => {
     const result = await reqDelCampaign(id);
-    this.getMarkets(null, 1);
+    this.getCampaigns(null, 1);
   };
   publishItem = async (id) => {
     const result = await reqPublishCampaign(id);
     this.setState({
       currentPage: 1,
     });
-    this.getMarkets("", 1, "merchant");
+    this.getCampaigns("", 1, "participant");
   };
   /*
 获取列表数据
 */
-  getMarkets = async (value, currentPage, type) => {
+  getCampaigns = async (value, currentPage, type) => {
     let typeStr = type ? type : this.state.value;
     //一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
     //都需要传status=NON_EXPIRED
     const parmas =
-      typeStr === "merchant"
+      typeStr === "participant"
         ? {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
@@ -325,7 +340,7 @@ class Campaign extends Component {
   showCSV = (type, chooseItem) => {
     this.getNumber(chooseItem.id, type);
     this.setState({
-      typeStr: type,
+      action: type,
       showCSV: true,
       chooseItem: chooseItem,
     });
@@ -355,7 +370,7 @@ class Campaign extends Component {
     formData.append("csvFile", files[0]);
     formData.append("campaignId", this.state.chooseItem.id);
     let result;
-    if (this.state.typeStr === "transfer") {
+    if (this.state.action === "transfer") {
       //transfer 批量分配
       result = await reqBatchTransfer(formData);
       if (result && result.data && result.data.status === "IN_PROGRESS") {
@@ -395,13 +410,13 @@ class Campaign extends Component {
     this.setState({
       currentPage: page,
     });
-    this.getMarkets(null, page);
+    this.getCampaigns(null, page);
   };
   //分配发放票券
-  showCSV = () => {
-    const { typeStr } = this.state;
-    const typeName = typeStr === "transfer" ? "票券分配文件" : "票券发放文件";
-    const typeTitle = typeStr === "transfer" ? "分配票券" : "发放票券";
+  showCSVModal = () => {
+    const { action } = this.state;
+    const typeName = action === "transfer" ? "票券分配文件" : "票券发放文件";
+    const typeTitle = action === "transfer" ? "分配票券" : "发放票券";
     return (
       <Modal
         title={typeTitle}
@@ -421,18 +436,18 @@ class Campaign extends Component {
           <Descriptions title={"请上传" + `${typeName}`} column={2}>
             <Descriptions.Item label="格式">csv</Descriptions.Item>
             <Descriptions.Item label="表头">
-              {typeStr === "transfer" ? "员工号,数量" : "客户手机号 "}
+              {action === "transfer" ? "员工号,数量" : "客户手机号 "}
             </Descriptions.Item>
-            {typeStr === "transfer" ? (
+            {action === "transfer" ? (
               <Descriptions.Item label="最大许可">100个 员工</Descriptions.Item>
             ) : (
               <Descriptions.Item label=""></Descriptions.Item>
             )}
 
             <Descriptions.Item label="数据示例">
-              {typeStr === "transfer" ? "001,300" : "18512342534"}
+              {action === "transfer" ? "001,300" : "18512342534"}
             </Descriptions.Item>
-            {/* {typeStr === "distributions" ? (
+            {/* {action === "distributions" ? (
                 <Descriptions.Item label="是否只发自己的客户">
                   <Switch defaultChecked onChange={this.onSwitchChange} />
                 </Descriptions.Item>
@@ -512,15 +527,15 @@ class Campaign extends Component {
           className="ant-advanced-search-form"
           initialValues={{
             searchTxt: "",
-            group: "merchant",
+            group: "participant",
           }}
         >
           <Row>
             <Col>
               <Form.Item name="group" label="查询条件">
                 <Radio.Group onChange={this.onChange}>
-                  <Radio value="merchant">我参与的</Radio>
-                  <Radio value="marketer">机构参与的</Radio>
+                  <Radio value="participant">我参与的</Radio>
+                  <Radio value="party">机构参与的</Radio>
                 </Radio.Group>
               </Form.Item>
             </Col>
@@ -564,7 +579,7 @@ class Campaign extends Component {
             showSizeChanger={false}
           />
         </div>
-        {showCSV ? this.showCSV : null}
+        {showCSV ? this.showCSVModal() : null}
         {showDetail ? (
           <CampaignDetail
             listItem={listItem}
