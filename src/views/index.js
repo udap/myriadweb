@@ -84,8 +84,8 @@ const Groups = Loadable({
   loader: () => import("./group"),
   loading: Loading,
 });
-const MyAccount = Loadable({
-  loader: () => import("./myAccount"),
+const Profile = Loadable({
+  loader: () => import("./profile"),
   loading: Loading,
 });
 
@@ -109,5 +109,5 @@ export {
   SettlementDetail,
   Merchant,
   Groups,
-  MyAccount,
+  Profile,
 };

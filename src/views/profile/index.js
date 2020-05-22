@@ -15,7 +15,7 @@ import {
 import { Loading } from "../../components";
 import { withRouter } from "react-router-dom";
 //import storageUtils from "../../utils/storageUtils";
-import { reqGetAccountProfile, reqPutAccount } from "../../api";
+import { reqGetAccountProfile, reqPutAccountProfile } from "../../api";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
@@ -24,7 +24,7 @@ import "../../css/common.less";
 const { Meta } = Card;
 
 @withRouter
-class MyAccount extends Component {
+class Profile extends Component {
   state = {
     inited: false,
     account: {},
@@ -96,15 +96,8 @@ class MyAccount extends Component {
     );
   };
   //账户详情
-  renderOrgDetailDrawer = () => {
-    const DescriptionItem = ({ title, content }) => (
-      <div className="site-description-item-profile-wrapper">
-        <p className="site-description-item-profile-p-label">{title}:</p>
-        {content ? content : "-"}
-      </div>
-    );
+  renderProfileDetailDrawer = () => {
     const {
-      orgName,
       name,
       admin,
       cellphone,
@@ -114,13 +107,12 @@ class MyAccount extends Component {
       role,
       status,
       desc,
-      operations,
     } = this.state.account;
 
     return (
       <div>
         <Drawer
-          width={640}
+          width={400}
           title="账户详情"
           onClose={this.onClose}
           visible={this.state.showView}
@@ -231,7 +223,7 @@ class MyAccount extends Component {
     let params = {
       realName: values.realName,
     };
-    const result = await reqPutAccount(params);
+    const result = await reqPutAccountProfile(params);
     if (result.data.retcode === 0) {
       notification.success({
         message: "更新成功！",
@@ -251,9 +243,9 @@ class MyAccount extends Component {
         ></PageHeader>
         {inited ? this.renderAccountCard() : <Loading />}
         {showEdit ? this.renderAccountEditDrawer() : null}
-        {showView ? this.renderOrgDetailDrawer() : null}
+        {showView ? this.renderProfileDetailDrawer() : null}
       </div>
     );
   }
 }
-export default MyAccount;
+export default Profile;

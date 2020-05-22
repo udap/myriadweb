@@ -17,7 +17,7 @@ import {
   MyOrgs,
   Merchant,
   Groups,
-  MyAccount
+  Profile,
 } from "../views";
 
 //公共路由
@@ -115,8 +115,8 @@ const privateRoutes = [
     isTop: true, //顶级菜单
     children: [
       {
-        pathname: "/admin/myAccount",
-        component: MyAccount,
+        pathname: "/admin/profile",
+        component: Profile,
         title: "我的账户",
         icon: "UserOutlined",
         isTop: false, //顶级菜单

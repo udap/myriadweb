@@ -272,6 +272,6 @@ export const reqGetAccountProfile = () =>
          ajax.get(BASE + "/accounts/me/profile");
 
 //修改我的账户
-export const reqPutAccount = (params) =>
+export const reqPutAccountProfile = (params) =>
          ajax.put(BASE + "/accounts/me", params);
 //我的账户 END
