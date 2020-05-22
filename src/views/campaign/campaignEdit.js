@@ -125,8 +125,9 @@ class CampaignEdit extends Component {
     name: "",
     select: "AMOUNT",
     typeText: "元",
-    valueOff: "",
+    //valueOff: "",
     settings: {
+      name: null,
       multiple: true,
       coverImg: "",
       select: "AMOUNT",
@@ -139,7 +140,6 @@ class CampaignEdit extends Component {
       timeType: "date",
       effective: comEvents.getDateStr(0),
       expiry: comEvents.getDateStr(1),
-      valueOffDis:null,
     },
     daysAfterDist: null,
 
@@ -180,15 +180,8 @@ class CampaignEdit extends Component {
         expiry: comEvents.getDateStr(-1, new Date(cont.expiry)),
       },
       url: cont.url,
-      name:
-        voucherConfig && voucherConfig.name
-          ? voucherConfig.name
-          : cont.name.substr(0, 10),
+      name: cont.name,
       timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
-      select:
-        voucherConfig && voucherConfig.discount
-          ? voucherConfig.discount.type
-          : "AMOUNT",
       select:
         voucherConfig && voucherConfig.discount
           ? voucherConfig.discount.type
@@ -200,6 +193,10 @@ class CampaignEdit extends Component {
           ? "元"
           : "%",
       settings: {
+        name:
+          voucherConfig && voucherConfig.name
+            ? voucherConfig.name
+            : cont.name.substr(0, 10),
         multiple:
           voucherConfig && voucherConfig.multiple
             ? voucherConfig.multiple
@@ -239,17 +236,6 @@ class CampaignEdit extends Component {
             : null,
         timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
       },
-      // multiple: true, //cont.multiple,
-      // coverImg: voucherConfig ? voucherConfig.coverImg : "",
-      // select: "AMOUNT",
-      // valueOff: voucherConfig
-      //   ? parseFloat(voucherConfig.discount.valueOff) / 100
-      //   : "",
-      // totalSupply: voucherConfig ? voucherConfig.totalSupply : 1,
-      // autoUpdate: voucherConfig ? voucherConfig.autoUpdate : false,
-      // amountLimit: cont.amountLimit,
-      // description: voucherConfig ? voucherConfig.description : "",
-
       current: voucherConfig ? 3 : 2,
       hasConfig: cont.voucherConfig ? true : false,
       parties: cont.parties ? cont.parties : [],
@@ -515,13 +501,10 @@ class CampaignEdit extends Component {
       timeType,
       select,
       daysAfterDist,
-      valueOffDis,
+      name,
     } = this.state.settings;
     const { effective, expiry } = this.state.basicInfo;
-    const {
-      name,
-      // daysAfterDist
-    } = this.state;
+
     return (
       <div>
         <Form
@@ -529,19 +512,21 @@ class CampaignEdit extends Component {
           {...formItemLayout}
           onFinish={this.onFinish3}
           initialValues={{
-            name: name,
+            name: name ? name : this.state.name,
             multiple: multiple,
             totalSupply: totalSupply,
             autoUpdate: autoUpdate,
             select: select,
-            valueOff: valueOff,
-            amountLimit: amountLimit,
+            valueOff: valueOff / 100,
             coverImg: coverImg,
             description: description,
             //code: code,
             timeType: timeType,
             daysAfterDist: daysAfterDist,
-            valueOffDis: valueOffDis,
+            discount: {
+              valueOff: valueOff,
+              amountLimit: amountLimit,
+            },
           }}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
@@ -564,14 +549,7 @@ class CampaignEdit extends Component {
             name="name"
             rules={[{ required: true }, { max: 10 }]}
           >
-            <Row>
-              <Col span={8}>
-                <Input value={name} />
-              </Col>
-              <Col>
-                <span className="desc">最多允许10个字</span>
-              </Col>
-            </Row>
+            <Input style={{ width: 200 }} />
           </Form.Item>
 
           <Form.Item
@@ -596,52 +574,56 @@ class CampaignEdit extends Component {
 
           {this.state.select === "PERCENT" ? (
             <div>
+              <Form.Item label="折扣比例">
+                <Input.Group compact>
+                  <Form.Item
+                    // label="折扣比例"
+                    name={["discount", "valueOff"]}
+                    style={{
+                      margin: "0 15px",
+                    }}
+                    rules={[{ required: true, message: "折扣比例是必填项" }]}
+                  >
+                    <InputNumber />
+                  </Form.Item>
+                  <span>%</span>
+                  <Form.Item
+                    label="最高优惠金额"
+                    name={["discount", "amountLimit"]}
+                    style={{
+                      margin: "0 15px",
+                    }}
+                    rules={[
+                      { required: true, message: "最高优惠金额是必填项" },
+                    ]}
+                  >
+                    <InputNumber />
+                  </Form.Item>
+                  <span>元</span>
+                </Input.Group>
+              </Form.Item>
+            </div>
+          ) : (
+            <Form.Item label="金额" name="valueOff">
               <Form.Item
-                label="折扣比例"
-                name="valueOffDis"
-                rules={[{ required: true }]}
+                name="valueOff"
+                rules={[{ required: true, message: "金额是必填项" }]}
+                style={{
+                  display:"inline-block",
+                  margin: "0 15px",
+                }}
               >
                 <InputNumber
-                  defaultValue={valueOffDis}
+                  defaultValue={valueOff}
+                  min={1}
                   onChange={this.changeSetObject.bind(
                     this,
-                    "valueOffDis",
+                    "valueOff",
                     "settings"
                   )}
                 />
-                &nbsp;&nbsp;{this.state.typeText}
               </Form.Item>
-             
-                  
-                  <Form.Item label="最高优惠金额" name="amountLimit">
-                      <InputNumber
-                        min={0}
-                        defaultValue={amountLimit}
-                        onChange={this.changeSetObject.bind(
-                          this,
-                          "amountLimit",
-                          "settings"
-                        )}
-                      />
-                      &nbsp;&nbsp;元
-                    </Form.Item>
-                
-            </div>
-          ) : (
-            <Form.Item
-              label="金额"
-              name="valueOff"
-              rules={[{ required: true }]}
-            >
-              <InputNumber
-                defaultValue={valueOff}
-                min={1}
-                onChange={this.changeSetObject.bind(
-                  this,
-                  "valueOff",
-                  "settings"
-                )}
-              />
+              <span>元</span>
             </Form.Item>
           )}
 
@@ -773,44 +755,19 @@ class CampaignEdit extends Component {
       </div>
     );
   };
-  //数字变化函数
-  // onNumberChange(value, name) {
-  //   console.log("CampaignEdit -> onNumberChange -> value, name", value, name);
-  //   if (name === "valueOff") {
-  //     //前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
-  //     this.setState({
-  //       valueOff: value,
-  //     });
-  //   } else if (name === "totalSupply") {
-  //     this.setState({
-  //       totalSupply: value,
-  //     });
-  //   }
-  //   this.setState({
-  //     [name]: value,
-  //   });
-  // }
+
   //数字变化函数
   changeSetObject = (value, name, stateName) => {
-    //amountLimit settings 12
-
     let newData = Object.assign(stateName, {
       value: name,
     });
-
     this.setState({
       [stateName]: newData,
     });
-    console.log(
-      "CampaignEdit -> changeSetObject -> stateName",
-      this.state.settings,
-      newData
-    );
   };
   //类型切换
   onRadioTypeChange = (e) => {
     let value = e.target.value;
-    console.log("CampaignEdit -> onRadioTypeChange -> value", value);
     let typeText;
     if (value === "AMOUNT") {
       typeText = "元";
@@ -845,18 +802,8 @@ class CampaignEdit extends Component {
 
   //提交数据
   onFinish3 = async (values) => {
-    console.log("CampaignEdit -> values", values);
     //折扣数量乘以100  前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
-    // this.setState({
-    //   settingInfo: values,
-    // });
-    // if (!this.state.valueOff) {
-    //   message.info("金额不能为空！");
-    //   return false;
-    // }
-
-    let { coverImg, settings, timeType } = this.state;
-    console.log("CampaignEdit -> timeType", timeType);
+    let { settings } = this.state;
     let params =
       values.timeType === "date"
         ? {
@@ -874,8 +821,8 @@ class CampaignEdit extends Component {
                   }
                 : {
                     type: values.select,
-                    valueOff: values.valueOffDis,
-                    amountLimit: values.amountLimit,
+                    valueOff: values.discount.valueOff,
+                    amountLimit: values.discount.amountLimit,
                   },
             type: "COUPON", //一券一码
             effective: settings.effective,
@@ -896,15 +843,13 @@ class CampaignEdit extends Component {
                   }
                 : {
                     type: values.select,
-                    valueOff: values.valueOffDis,
-                    amountLimit: values.amountLimit,
+                    valueOff: values.discount.valueOff,
+                    amountLimit: values.discount.amountLimit,
                   },
             type: "COUPON",
             daysAfterDist: values.daysAfterDist,
           };
-    console.log("CampaignEdit -> params", params);
-    // return false;
-
+    //图标的处理
     //     if (this.state.coverImg){
     //       var formData = new FormData();
     //       let msg = params;
@@ -979,7 +924,8 @@ class CampaignEdit extends Component {
           type="navigation"
           current={current}
           onChange={this.jumpStep}
-          className="site-navigation-steps marginBottom"
+          className="site-navigation-steps"
+          style={{ marginBottom: "30px" }}
         >
           {stepLists.map((item, index) => (
             <Step

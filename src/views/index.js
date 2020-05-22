@@ -30,10 +30,6 @@ const Campaign = Loadable({
   loader: () => import("./campaign"),
   loading: Loading,
 });
-const CampaignHome = Loadable({
-  loader: () => import("./campaign/campaignHome"),
-  loading: Loading,
-});
 const CampaignEdit = Loadable({
   loader: () => import("./campaign/campaignEdit"),
   loading: Loading,
@@ -102,7 +98,6 @@ export {
   NotFound,
   Empty,
   Campaign,
-  CampaignHome,
   CampaignEdit,
   CampaignDetail,
   Coupon,
