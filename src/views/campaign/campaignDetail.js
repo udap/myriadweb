@@ -171,6 +171,12 @@ class CampaignDetail extends Component {
   renderContent = () => {
     const { curInfo, visible, listSize } = this.state;
     const { voucherConfig } = this.state.curInfo;
+    var parties = curInfo.parties ? curInfo.parties : [];
+    var merchants = [];
+    parties.forEach(p => {
+      if (p.type === "MERCHANT")
+        merchants.push(p);
+    });
     return (
       <Drawer
         className="camDetail"
@@ -221,13 +227,10 @@ class CampaignDetail extends Component {
               size="small"
               className="tableFont"
               columns={this.columns}
-              dataSource={curInfo.parties}
+              dataSource={merchants}
               pagination={{
                 pageSize: listSize,
-                total:
-                  curInfo && curInfo.parties && curInfo.parties.length !== 0
-                    ? curInfo.parties.length
-                    : 0,
+                total: merchants.length,
               }}
             />
           </Panel>
