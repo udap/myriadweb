@@ -602,9 +602,6 @@ class CampaignEdit extends Component {
                     style={{
                       margin: "0 15px",
                     }}
-                    rules={[
-                      { required: true, message: "最高优惠金额是必填项" },
-                    ]}
                   >
                     <InputNumber />
                   </Form.Item>
