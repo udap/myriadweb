@@ -33,19 +33,14 @@ import {
   reqBatchTransfer,
   reqBatchDistribution,
   reqGetNumber,
+  reqGetCampaignById,
 } from "../../api";
 import ReactFileReader from "react-file-reader";
 import { Loading } from "../../components";
 import "./index.less";
 import "../../css/common.less";
+import CampaignDetail from "./campaignDetail";
 const { confirm } = Modal;
-// const renderContent = (value, row, index) => {
-//   const obj = {
-//     children: value,
-//     props: {},
-//   };
-//   return obj;
-// };
 class Campaign extends Component {
   state = {
     inited: false,
@@ -65,6 +60,9 @@ class Campaign extends Component {
     loading: false,
     number: 0,
     value: "merchant",
+    showDetail: false,
+    //当前列表操作的活动
+    listItem: null,
   };
   componentDidMount() {
     this.initColumns();
@@ -141,6 +139,13 @@ class Campaign extends Component {
           //INITIATED的时候前端可以查看/修改/发布；ACTIVATED的时候前端可以查看/分配票券
           return (
             <span>
+              <b
+                onClick={() => this.showDetail(chooseItem)}
+                className="ant-green-link cursor"
+              >
+                查看
+              </b>
+              <Divider type="vertical" />
               {status === "INITIATED" ? (
                 <span>
                   {/* <b
@@ -193,14 +198,6 @@ class Campaign extends Component {
                 </span>
               ) : status === "ACTIVATED" ? (
                 <span>
-                  {/* <b
-                    onClick={() => {
-                      this.props.history.push("/admin/campaign/detail/" + id);
-                    }}
-                    className="ant-green-link cursor"
-                  >
-                    查看
-                  </b><Divider type="vertical" /> */}
                   <b
                     onClick={() => {
                       this.showCSV("transfer", chooseItem);
@@ -228,6 +225,27 @@ class Campaign extends Component {
       },
     ];
   }
+   //展示活动详情
+ showDetail = (item) => {
+    this.reqGetCampaignById(item.id);
+  };
+  //获取活动详情
+  reqGetCampaignById = async (id) => {
+    let curInfo = await reqGetCampaignById(id);
+    let cont = curInfo && curInfo.data ? curInfo.data : [];
+    console.log("FormDialog -> getEmployee -> cont", cont);
+    this.setState({
+      showDetail: true,
+      listItem: cont,
+    });
+  };
+   //关闭活动详情
+  closeDetail = () => {
+    this.setState({
+      showDetail: false,
+      listItem: null,
+    });
+  };
   /*radio 切换*/
   onChange = (e) => {
     //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
@@ -379,17 +397,92 @@ class Campaign extends Component {
     });
     this.getMarkets(null, page);
   };
+  //分配发放票券
+  showCSV = () => {
+    const { typeStr } = this.state;
+    const typeName = typeStr === "transfer" ? "票券分配文件" : "票券发放文件";
+    const typeTitle = typeStr === "transfer" ? "分配票券" : "发放票券";
+    return (
+      <Modal
+        title={typeTitle}
+        visible={this.state.showCSV}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+        footer={[]}
+      >
+        <div>
+          <div class="market-number">
+            {typeTitle === "分配票券" ? (
+              <span>当前可分配数量：{this.state.number}</span>
+            ) : (
+              <span>当前可发放数量：{this.state.number}</span>
+            )}
+          </div>
+          <Descriptions title={"请上传" + `${typeName}`} column={2}>
+            <Descriptions.Item label="格式">csv</Descriptions.Item>
+            <Descriptions.Item label="表头">
+              {typeStr === "transfer" ? "员工号,数量" : "客户手机号 "}
+            </Descriptions.Item>
+            {typeStr === "transfer" ? (
+              <Descriptions.Item label="最大许可">100个 员工</Descriptions.Item>
+            ) : (
+              <Descriptions.Item label=""></Descriptions.Item>
+            )}
+
+            <Descriptions.Item label="数据示例">
+              {typeStr === "transfer" ? "001,300" : "18512342534"}
+            </Descriptions.Item>
+            {/* {typeStr === "distributions" ? (
+                <Descriptions.Item label="是否只发自己的客户">
+                  <Switch defaultChecked onChange={this.onSwitchChange} />
+                </Descriptions.Item>
+              ) : (
+                ""
+              )} */}
+          </Descriptions>
+          <Row>
+            <Col>
+              <ReactFileReader
+                handleFiles={this.handleFiles}
+                fileTypes={".csv"}
+              >
+                <Button
+                  type="primary"
+                  disabled={this.state.number === 0 ? true : false}
+                >
+                  <UploadOutlined />
+                  选择文件并上传
+                </Button>
+              </ReactFileReader>
+            </Col>
+            <Col>
+              {this.state.number === 0 ? (
+                <Button
+                  type="primary"
+                  style={{
+                    marginLeft: "10px",
+                  }}
+                  onClick={this.handleCancel}
+                >
+                  关闭
+                </Button>
+              ) : null}
+            </Col>
+          </Row>
+        </div>
+      </Modal>
+    );
+  };
   renderContent = () => {
     const {
       campaigns,
       size,
-      typeStr,
-      total,
       currentPage,
-      searchTxt,
+      showCSV,
+      //活动详情
+      showDetail,
+      listItem,
     } = this.state;
-    const typeName = typeStr === "transfer" ? "票券分配文件" : "票券发放文件";
-    const typeTitle = typeStr === "transfer" ? "分配票券" : "发放票券";
     return (
       <div>
         <PageHeader
@@ -471,76 +564,14 @@ class Campaign extends Component {
             showSizeChanger={false}
           />
         </div>
-        <Modal
-          title={typeTitle}
-          visible={this.state.showCSV}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          footer={[]}
-        >
-          <div>
-            <div class="market-number">
-              {typeTitle === "分配票券" ? (
-                <span>当前可分配数量：{this.state.number}</span>
-              ) : (
-                <span>当前可发放数量：{this.state.number}</span>
-              )}
-            </div>
-            <Descriptions title={"请上传" + `${typeName}`} column={2}>
-              <Descriptions.Item label="格式">csv</Descriptions.Item>
-              <Descriptions.Item label="表头">
-                {typeStr === "transfer" ? "员工号,数量" : "客户手机号 "}
-              </Descriptions.Item>
-              {typeStr === "transfer" ? (
-                <Descriptions.Item label="最大许可">
-                  100个 员工
-                </Descriptions.Item>
-              ) : (
-                <Descriptions.Item label=""></Descriptions.Item>
-              )}
-
-              <Descriptions.Item label="数据示例">
-                {typeStr === "transfer" ? "001,300" : "18512342534"}
-              </Descriptions.Item>
-              {/* {typeStr === "distributions" ? (
-                <Descriptions.Item label="是否只发自己的客户">
-                  <Switch defaultChecked onChange={this.onSwitchChange} />
-                </Descriptions.Item>
-              ) : (
-                ""
-              )} */}
-            </Descriptions>
-            <Row>
-              <Col>
-                <ReactFileReader
-                  handleFiles={this.handleFiles}
-                  fileTypes={".csv"}
-                >
-                  <Button
-                    type="primary"
-                    disabled={this.state.number === 0 ? true : false}
-                  >
-                    <UploadOutlined />
-                    选择文件并上传
-                  </Button>
-                </ReactFileReader>
-              </Col>
-              <Col>
-                {this.state.number === 0 ? (
-                  <Button
-                    type="primary"
-                    style={{
-                      marginLeft: "10px",
-                    }}
-                    onClick={this.handleCancel}
-                  >
-                    关闭
-                  </Button>
-                ) : null}
-              </Col>
-            </Row>
-          </div>
-        </Modal>
+        {showCSV ? this.showCSV : null}
+        {showDetail ? (
+          <CampaignDetail
+            listItem={listItem}
+            closeDetail={this.closeDetail}
+            visible={showDetail}
+          />
+        ) : null}
       </div>
     );
   };

@@ -6,6 +6,7 @@ import EmptyPage from "./Empty";
 import ReactDocumentTitle from './SetTitle'
 import ModalTable from "./ModalTable";
 import TransferComponent from "./Transfer";
+import EditableTagGroup from "./Tags";
 export {
   FrameOut,
   Loading,
@@ -15,4 +16,5 @@ export {
   ReactDocumentTitle,
   ModalTable,
   TransferComponent,
+  EditableTagGroup,
 };

@@ -27,7 +27,7 @@ import {
 } from "../../api";
 import storageUtils from "../../utils/storageUtils";
 import comEvents from "../../utils/comEvents";
-import { Loading, AntdIcon, LinkBtn } from "../../components";
+import { Loading, AntdIcon, LinkBtn, EditableTagGroup } from "../../components";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
 import "moment/locale/zh-cn";
@@ -102,6 +102,7 @@ class CampaignEdit extends Component {
     ],
     campaignType: "VOUCHER",
     //基本信息
+    tags:[],
     basicInfo: {
       name: "",
       description: "",
@@ -174,7 +175,7 @@ class CampaignEdit extends Component {
       basicInfo: {
         name: cont.name,
         description: cont.description,
-        category: cont.category,
+        category:(cont.category).split(","),
         url: cont.url,
         effective: cont.effective,
         expiry: comEvents.getDateStr(-1, new Date(cont.expiry)),
@@ -351,15 +352,16 @@ class CampaignEdit extends Component {
         <Form.Item
           label="活动名称"
           name="name"
-          rules={[{ required: true }, { max: 32 }]}
+          rules={[{ required: true }, { max: 20 }]}
         >
           <Input />
         </Form.Item>
         <Form.Item label="活动描述" name="description" rules={[{ max: 255 }]}>
           <TextArea rows={4} />
         </Form.Item>
-        <Form.Item label="类别" name="category">
-          <Input />
+        <Form.Item label="标签" name="category">
+          {/* <Input /> */}
+          <EditableTagGroup tags={category}  newTags={this.newTags} />
         </Form.Item>
         <Form.Item label="活动时间">
           <RangePicker
@@ -400,21 +402,28 @@ class CampaignEdit extends Component {
       </Form>
     );
   };
+  newTags=(newTags)=>{
+    this.setState({
+      tags:newTags,
+    });
+  };
   //第二步提交
   onFinish2 = async (values) => {
-    let { campaignType, basicInfo } = this.state;
+  
+    let { campaignType, basicInfo, tags } = this.state;
     let params = {
       reqOrg: storageUtils.getUser().orgUid,
       reqUser: storageUtils.getUser().uid,
       name: values.name,
       description: values.description,
       type: campaignType,
-      category: values.category,
+      category: tags.toString(),
       effective: basicInfo.effective,
       expiry: basicInfo.expiry, //comEvents.getDateStr(1, new Date(basicInfo.expiry)),
       url: values.url,
       metadata: {},
     };
+    console.log("CampaignEdit -> values", params);
     this.setState({
       basicInfo: params,
       name: values.name.substr(0, 10),
@@ -609,7 +618,7 @@ class CampaignEdit extends Component {
                 name="valueOff"
                 rules={[{ required: true, message: "金额是必填项" }]}
                 style={{
-                  display:"inline-block",
+                  display: "inline-block",
                   margin: "0 15px",
                 }}
               >

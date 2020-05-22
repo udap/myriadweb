@@ -1,177 +1,232 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Table,
-  PageHeader,
-  Card,
-  Descriptions,
-  Divider,
-  Input,
-  Row,
-  Col,
-} from "antd";
-import { RollbackOutlined } from "@ant-design/icons";
-
-import storageUtils from "../../utils/storageUtils";
-import { reqGetCampaignById } from "../../api";
-import { Loading } from "../../components";
+import { Card, Descriptions, Input, Drawer, Table, Collapse } from "antd";
 import CampaignMerchant from "./campaignMerchant";
 import "./index.less";
 
-const { Meta } = Card;
 const { TextArea } = Input;
-const style = {
-  fontSize: "26px",
-  color: "#1890ff",
-  marginLeft: "10px",
-};
-const columns = [
-  {
-    title: "商户名称",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "商户电话",
-    dataIndex: "phone",
-    key: "phone",
-  },
-  {
-    title: "商户地址",
-    dataIndex: "address",
-    key: "address",
-  },
-];
+const { Panel } = Collapse;
 
 class CampaignDetail extends Component {
   state = {
-    inited: false,
+    listSize: 20,
     curInfo: {},
+    visible: false,
   };
   componentDidMount() {
-    console.log("this.props", this.props);
-    let id = this.props.match.params.id;
+    let { listItem, visible } = this.props;
     this.setState({
-      inited: true,
-      current: 2,
-      //curInfo: Product[id],
+      curInfo: listItem,
+      visible: visible,
     });
-    this.reqGetCampaignById(id);
+    this.initColumns();
   }
-  //获取活动详情
-  reqGetCampaignById = async (id) => {
-    let curInfo = await reqGetCampaignById(id);
-    let cont = curInfo && curInfo.data ? curInfo.data : [];
-    console.log("FormDialog -> getEmployee -> cont", cont);
+  initColumns() {
+    this.columns = [
+      {
+        title: "商户名称",
+        dataIndex: "partyName",
+        key: "partyName",
+      },
+      {
+        title: "银联商户码",
+        dataIndex: "partyUpCode",
+        key: "partyUpCode",
+      },
+      {
+        title: "商户地址",
+        dataIndex: "partyAddress",
+        key: "partyAddress",
+      },
+    ];
+  }
+  onClose = () => {
     this.setState({
-      inited: true,
-      curInfo: cont,
+      visible: false,
     });
+    this.props.closeDetail();
   };
-  backIndex = () => {
-    this.props.history.push("/admin/campaign");
-  };
-  renderContent = () => {
-    const { curInfo } = this.state;
-    //const { curInfo, basicInfo } = this.state.curInfo;
-    console.log("MarketDetail -> renderContent -> curInfo", curInfo);
+  
+  descriptionItem = () => {
+    const setTitle = [
+      {
+        title: "优惠券名称",
+        value: "name",
+      },
+      {
+        title: "类型",
+        value: "discount",
+        type: "objMap",
+        objValue: "type",
+        objMap: ["代金券", "折扣券"],
+      },
+      {
+        title: "金额",
+        value: "discount",
+        type: "objNum",
+        objValue: "valueOff",
+      },
+      {
+        title: "有效期",
+        value: ["effective", "expiry"],
+        type: "map",
+      },
+      {
+        title: "发行方式",
+        value: "multiple", //true 一码一券
+        type: "boolean",
+        bolValue: ["一码一券", "-"],
+      },
+      {
+        title: "发行数量",
+        value: "totalSupply",
+      },
+      {
+        title: "是否自动增发",
+        value: "autoUpdate",
+        type: "boolean",
+        bolValue: ["是", "否"],
+      },
+    ];
+    const { voucherConfig } = this.state.curInfo;
     return (
       <div>
-        <PageHeader
-          className="site-page-header-responsive"
-          title="活动详情"
-          onBack={this.backIndex}
-        ></PageHeader>
+        <Descriptions
+          size={"small"}
+          title="详情配置"
+          column={1}
+          bordered
+          style={{ marginBottom: 16 }}
+        >
+          {setTitle.map((item, index) => (
+            <Descriptions.Item key={index} label={`${item.title}`}>
+              {this.handleList(item, voucherConfig)}
+            </Descriptions.Item>
+          ))}
+        </Descriptions>
+      </div>
+    );
+  };
+  renderContent = () => {
+    const { curInfo, visible, listSize } = this.state;
+    const { voucherConfig } = this.state.curInfo;
+    return (
+      <Drawer
+        className="camDetail"
+        width={650}
+        title="活动详情"
+        onClose={this.onClose}
+        visible={visible}
+      >
         <Card bordered={false} className="detail">
           <Descriptions
-            title="活动类型"
-            style={{ marginBottom: 32 }}
-            layout="vertical"
+            size="small"
             bordered
+            column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
           >
             <Descriptions.Item label="活动类型">优惠券活动</Descriptions.Item>
-          </Descriptions>
-          <Descriptions
-            title="基本信息"
-            layout="vertical"
-            bordered
-            column={2}
-            style={{ marginBottom: 32 }}
-          >
             <Descriptions.Item label="活动名称">
               {curInfo.name}
             </Descriptions.Item>
-            <Descriptions.Item label="活动类别">
-              {curInfo.category}
+            <Descriptions.Item label="标签">
+              {curInfo.category
+                ? curInfo.category
+                    .split(",")
+                    .map((item, index) => <span key={index}>{item}</span>)
+                : "-"}
             </Descriptions.Item>
-
-            <Descriptions.Item label="活动开始时间">
-              {curInfo.effective}
+            <Descriptions.Item label="活动时间">
+              {curInfo.effective}至{curInfo.expiry}
             </Descriptions.Item>
-            <Descriptions.Item label="活动结束时间">
-              {curInfo.expiry}
-            </Descriptions.Item>
-            <Descriptions.Item label="活动主页" span={2}>
+            <Descriptions.Item label="活动主页">
               {curInfo.url ? curInfo.url : "-"}
             </Descriptions.Item>
             <Descriptions.Item label="活动描述">
-              <TextArea placeholder={curInfo.description} rows={4} disabled />
+              {/* <TextArea placeholder={curInfo.description} rows={4} disabled /> */}
+              {curInfo.description}
             </Descriptions.Item>
           </Descriptions>
-          <Divider style={{ marginBottom: 32 }} />
-          <Descriptions title="详情配置"></Descriptions>
-          <Row gutter={16}>
-            <Col span={16}>
-              <Descriptions
-                bordered
-                layout="vertical"
-                // column={{ xs: 1, sm: 1, md: 1, lg: 1 }}
-              >
-                <Descriptions.Item label="优惠券名称">
-                  {curInfo.name}
-                </Descriptions.Item>
-
-                <Descriptions.Item label="折扣类型">
-                  {curInfo.type}
-                </Descriptions.Item>
-                <Descriptions.Item label="折扣数量">
-                  {curInfo.issuedAmount}
-                </Descriptions.Item>
-                <Descriptions.Item label="发行数量">
-                  {curInfo.amount}
-                </Descriptions.Item>
-                <Descriptions.Item label="是否允许增发">
-                  {curInfo.restricted ? "是" : "否"}
-                </Descriptions.Item>
-                <Descriptions.Item label="允许兑换次数">
-                  {curInfo.amount}
-                </Descriptions.Item>
-                <Descriptions.Item label="备注">
-                  <TextArea placeholder={curInfo.desc} rows={4} disabled />
-                </Descriptions.Item>
-              </Descriptions>
-            </Col>
-            <Col span={7}>
-              <Card bordered={true} className="cardImg">
-                <img alt="example" src={curInfo.coverImg} />
-              </Card>
-            </Col>
-          </Row>
-          <Divider style={{ marginBottom: 32 }} />
-          <Descriptions title="参与机构"></Descriptions>
-          <div className="site-card-wrapper">
-            <CampaignMerchant uid={curInfo.uid} />
-          </div>
         </Card>
-      </div>
+        {/* 优惠券名称 类型 代金券 折扣券 折扣比例 % 最高优惠金额 元 有效期
+        固定有效时间 2020-05-22 → 2020-05-23 相对有效时间 发放/领取后 天有效
+        发行方式 一码一券 发行数量 1 是否自动增发 */}
+        {curInfo.voucherConfig ? (
+          <Card bordered={false} className="detail">
+            <Descriptions size="small" bordered column={1}>
+              <Descriptions.Item label="优惠券名称">
+                {voucherConfig.name ? voucherConfig.name : "-"}
+              </Descriptions.Item>
+              <Descriptions.Item label="类型">
+                {voucherConfig.discount.type === "AMOUNT" ? "代金券" : "折扣券"}
+              </Descriptions.Item>
+              {voucherConfig.discount.type === "PERCENT" ? (
+                <Descriptions.Item label="折扣比例">
+                  {voucherConfig.discount && voucherConfig.discount.valueOff
+                    ? voucherConfig.discount.valueOff
+                    : "-"}
+                </Descriptions.Item>
+              ) : (
+                <Descriptions.Item label="金额">
+                  {voucherConfig.discount && voucherConfig.discount.valueOff
+                    ? parseFloat(voucherConfig.discount.valueOff) / 100
+                    : "-"}
+                </Descriptions.Item>
+              )}
+              {voucherConfig.discount.type === "PERCENT" ? (
+                <Descriptions.Item label="最高优惠金额">
+                  {voucherConfig.discount && voucherConfig.discount.amountLimit
+                    ? voucherConfig.discount.amountLimit
+                    : "-"}
+                </Descriptions.Item>
+              ) : null}
+              {voucherConfig.daysAfterDist ? (
+                <Descriptions.Item label="相对有效时间">
+                  {voucherConfig.daysAfterDist}天
+                </Descriptions.Item>
+              ) : (
+                <Descriptions.Item label="固定有效时间">
+                  {voucherConfig.effective}至{voucherConfig.expiry}
+                </Descriptions.Item>
+              )}
+
+              <Descriptions.Item label="发行方式">
+                {voucherConfig.multiple ? "一码一券" : "-"}
+              </Descriptions.Item>
+              <Descriptions.Item label="发行数量">
+                {voucherConfig.totalSupply ? voucherConfig.totalSupply : "-"}
+              </Descriptions.Item>
+              <Descriptions.Item label="发行方式">
+                {voucherConfig.autoUpdate ? "是" : "否"}
+              </Descriptions.Item>
+            </Descriptions>
+          </Card>
+        ) : null}
+        <Card bordered={false} className="detail">
+          <Collapse accordion>
+            <Panel header="参与商户" key="1">
+              <Table
+                bordered
+                size="small"
+                className="tableFont"
+                columns={this.columns}
+                dataSource={curInfo.parties}
+                pagination={{
+                  pageSize: listSize,
+                  total:
+                    curInfo && curInfo.parties && curInfo.parties.length !== 0
+                      ? curInfo.parties.length
+                      : 0,
+                }}
+              />
+            </Panel>
+          </Collapse>
+        </Card>
+      </Drawer>
     );
   };
   render() {
     return (
       <div>
-        <div style={{ height: "100%" }}>
-          {this.state.inited ? this.renderContent() : <Loading />}
-        </div>
+        <div style={{ height: "100%" }}>{this.renderContent()}</div>
       </div>
     );
   }
