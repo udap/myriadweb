@@ -26,8 +26,15 @@ const formatDate = (date) => {
 
   return [year, month, day].map(formatNumber).join("-");
 };
+
+const formatExpiry = (expiry) => {
+  return expiry ? getDateStr(-1, expiry) : "";
+}
+
 const getDateStr = (AddDayCount, date) => {
   var dd = date ? date : new Date();
+  if (date && typeof date === 'string')
+    dd = new Date(date);
   dd.setDate(dd.getDate() + AddDayCount);
   const year = dd.getFullYear();
   const month = dd.getMonth() + 1;
@@ -59,6 +66,7 @@ const hasPower = async (self, reqPermit, str, handleName, id, type) => {
 export default {
   getTitle,
   formatDate,
+  formatExpiry,
   getDateStr,
   formatCurrency,
   hasPower,
