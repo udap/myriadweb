@@ -28,11 +28,6 @@ class CampaignDetail extends Component {
         key: "partyName",
       },
       {
-        title: "银联商户码",
-        dataIndex: "partyUpCode",
-        key: "partyUpCode",
-      },
-      {
         title: "商户地址",
         dataIndex: "partyAddress",
         key: "partyAddress",
