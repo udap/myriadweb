@@ -102,7 +102,7 @@ class CampaignEdit extends Component {
     ],
     campaignType: "VOUCHER",
     //基本信息
-    tags:[],
+    tags: [],
     basicInfo: {
       name: "",
       description: "",
@@ -175,7 +175,7 @@ class CampaignEdit extends Component {
       basicInfo: {
         name: cont.name,
         description: cont.description,
-        category:(cont.category).split(","),
+        category: cont.category.split(","),
         url: cont.url,
         effective: cont.effective,
         expiry: comEvents.getDateStr(-1, new Date(cont.expiry)),
@@ -361,7 +361,7 @@ class CampaignEdit extends Component {
         </Form.Item>
         <Form.Item label="标签" name="category">
           {/* <Input /> */}
-          <EditableTagGroup tags={category}  newTags={this.newTags} />
+          <EditableTagGroup tags={category} newTags={this.newTags} />
         </Form.Item>
         <Form.Item label="活动时间">
           <RangePicker
@@ -402,14 +402,13 @@ class CampaignEdit extends Component {
       </Form>
     );
   };
-  newTags=(newTags)=>{
+  newTags = (newTags) => {
     this.setState({
-      tags:newTags,
+      tags: newTags,
     });
   };
   //第二步提交
   onFinish2 = async (values) => {
-  
     let { campaignType, basicInfo, tags } = this.state;
     let params = {
       reqOrg: storageUtils.getUser().orgUid,
@@ -549,7 +548,6 @@ class CampaignEdit extends Component {
           成2000或者50的整数）7/
           可用次数（默认为1）8/ 优惠券图片 9/ 备注 
 
-
        注意“折扣类型”选择“代金券”是，需要输入“折扣金额”（改为“金额”）；
           如果选择“折扣券”，就需要输入“折扣比例”和“最高优惠金额”两个参数
           */}
@@ -583,56 +581,29 @@ class CampaignEdit extends Component {
 
           {this.state.select === "PERCENT" ? (
             <div>
-              <Form.Item label="折扣比例">
-                <Input.Group compact>
-                  <Form.Item
-                    // label="折扣比例"
-                    name={["discount", "valueOff"]}
-                    style={{
-                      margin: "0 15px",
-                    }}
-                    rules={[{ required: true, message: "折扣比例是必填项" }]}
-                  >
-                    <InputNumber />
-                  </Form.Item>
-                  <span>%</span>
-                  <Form.Item
-                    label="最高优惠金额"
-                    name={["discount", "amountLimit"]}
-                    style={{
-                      margin: "0 15px",
-                    }}
-                  >
-                    <InputNumber />
-                  </Form.Item>
-                  <span>元</span>
-                </Input.Group>
+              <Form.Item
+                label="折扣比例(%)"
+                name={["discount", "valueOff"]}
+                rules={[{ required: true, message: "折扣比例是必填项" }]}
+              >
+                <InputNumber />
+              </Form.Item>
+              <Form.Item
+                label="最高优惠金额(元)"
+                name={["discount", "amountLimit"]}
+              >
+                <InputNumber />
               </Form.Item>
             </div>
           ) : (
-            <Form.Item label="金额" name="valueOff">
-              <Form.Item
-                name="valueOff"
-                rules={[{ required: true, message: "金额是必填项" }]}
-                style={{
-                  display: "inline-block",
-                  margin: "0 15px",
-                }}
-              >
-                <InputNumber
-                  defaultValue={valueOff}
-                  min={1}
-                  onChange={this.changeSetObject.bind(
-                    this,
-                    "valueOff",
-                    "settings"
-                  )}
-                />
-              </Form.Item>
-              <span>元</span>
+            <Form.Item
+              label="金额(元)"
+              name={["discount", "valueOff"]}
+              rules={[{ required: true, message: "金额是必填项" }]}
+            >
+              <InputNumber defaultValue={valueOff} min={1} />
             </Form.Item>
           )}
-
           <Form.Item label="有效期" name="timeType">
             <Radio.Group
               className="timeRadio"
@@ -640,7 +611,7 @@ class CampaignEdit extends Component {
               value={this.state.timeType}
             >
               <Radio name="timeType" style={radioStyle} value="date">
-                <span style={{ marginRight: "8px" }}>固定有效时间</span>
+                <span style={{ marginRight: "8px" }}>固定时间</span>
                 <RangePicker
                   defaultValue={[
                     moment(effective, dateFormat),
@@ -652,7 +623,7 @@ class CampaignEdit extends Component {
               <Radio style={radioStyle} name="timeType" value="day">
                 <Row style={{ display: "inline-flex" }}>
                   <Col>
-                    <span>相对有效时间</span>
+                    <span>相对时间</span>
                   </Col>
                   <Col>
                     <span className="radioSpan">发放/领取后</span>
@@ -728,20 +699,11 @@ class CampaignEdit extends Component {
             name="totalSupply"
             rules={[{ required: true }]}
           >
-            <InputNumber
-              defaultValue={totalSupply}
-              min={1}
-              onChange={this.changeSetObject.bind(
-                this,
-                "totalSupply",
-                "settings"
-              )}
-              //onChange={this.onNumberChange.bind(this, "totalSupply")}
-            />
+            <InputNumber defaultValue={totalSupply} min={1} />
           </Form.Item>
           {/* </div>
           )} */}
-          <Form.Item name="autoUpdate" label="是否自动增发">
+          <Form.Item name="autoUpdate" label="是否允许增发">
             <Switch
               checked={this.state.autoUpdate}
               onChange={this.onSwitchChange}
@@ -762,15 +724,6 @@ class CampaignEdit extends Component {
     );
   };
 
-  //数字变化函数
-  changeSetObject = (value, name, stateName) => {
-    let newData = Object.assign(stateName, {
-      value: name,
-    });
-    this.setState({
-      [stateName]: newData,
-    });
-  };
   //类型切换
   onRadioTypeChange = (e) => {
     let value = e.target.value;
@@ -823,7 +776,7 @@ class CampaignEdit extends Component {
               values.select === "AMOUNT"
                 ? {
                     type: values.select,
-                    valueOff: values.valueOff * 100,
+                    valueOff: values.discount.valueOff * 100,
                   }
                 : {
                     type: values.select,
@@ -845,7 +798,7 @@ class CampaignEdit extends Component {
               values.select === "AMOUNT"
                 ? {
                     type: values.select,
-                    valueOff: values.valueOff * 100,
+                    valueOff: values.discount.valueOff * 100,
                   }
                 : {
                     type: values.select,
@@ -866,6 +819,7 @@ class CampaignEdit extends Component {
     // let result = await reqPostConfigImg(this.state.id, formData);
     // this.nextStep();
     //     }else{
+    console.log("parmams", params);
     if (this.state.hasConfig) {
       let result = await reqPutConfig(this.state.id, params);
       this.nextStep();
