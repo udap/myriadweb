@@ -40,6 +40,7 @@ import { Loading } from "../../components";
 import "./index.less";
 import "../../css/common.less";
 import CampaignDetail from "./campaignDetail";
+import QueryForm from "./queryForm";
 const { confirm } = Modal;
 class Campaign extends Component {
   state = {
@@ -220,7 +221,7 @@ class Campaign extends Component {
               }}
               className="ant-blue-link cursor"
             >
-              分配票券
+              配券
             </b>
             <Divider type="vertical" />
             <b
@@ -229,7 +230,7 @@ class Campaign extends Component {
               }}
               className="ant-blue-link cursor"
             >
-              发放票券
+              发放
             </b>
           </span>
         ) : (
@@ -337,17 +338,17 @@ class Campaign extends Component {
       loading: false,
     });
   };
-  showCSV = (type, chooseItem) => {
-    this.getNumber(chooseItem.id, type);
+  showCSV = (action, chooseItem) => {
+    this.getNumber(chooseItem.id, action);
     this.setState({
-      action: type,
+      action: action,
       showCSV: true,
       chooseItem: chooseItem,
     });
   };
-  getNumber = async (campaignId, type) => {
+  getNumber = async (campaignId, action) => {
     const owner = storageUtils.getUser().id;
-    const result = await reqGetNumber(campaignId, owner, type);
+    const result = await reqGetNumber(campaignId, owner, action);
     this.setState({
       number: result.data,
     });
@@ -488,6 +489,51 @@ class Campaign extends Component {
       </Modal>
     );
   };
+
+  _renderQueryForm = () => {
+    return (
+      <Form
+      onFinish={this.searchValue}
+      layout="horizontal"
+      name="advanced_search"
+      className="ant-advanced-search-form"
+      initialValues={{
+        searchTxt: "",
+        group: "participant",
+      }}
+      >
+      <Row>
+        <Col>
+          <Form.Item name="group" label="查询条件">
+            <Radio.Group onChange={this.onChange}>
+              <Radio value="participant">我参与的</Radio>
+              <Radio value="party">机构参与的</Radio>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+        <Col span={6}>
+          <Form.Item name="searchTxt">
+            <Input placeholder="请输入名称进行搜索" allowClear />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item>
+            <Button
+              type="primary"
+              className="cursor searchBtn"
+              htmlType="submit"
+              loading={this.state.loading}
+              onClick={this.enterLoading}
+            >
+              搜索
+            </Button>
+          </Form.Item>
+        </Col>
+      </Row>
+      </Form>
+    );
+  }
+
   renderContent = () => {
     const {
       campaigns,
@@ -520,46 +566,12 @@ class Campaign extends Component {
           ]}
         ></PageHeader>
         {/* --搜索栏-- */}
-        <Form
+        <QueryForm 
+          loading={this.state.loading}
+          onChangeType={this.onChange} 
+          enableLoading={this.enterLoading}
           onFinish={this.searchValue}
-          layout="horizontal"
-          name="advanced_search"
-          className="ant-advanced-search-form"
-          initialValues={{
-            searchTxt: "",
-            group: "participant",
-          }}
-        >
-          <Row>
-            <Col>
-              <Form.Item name="group" label="查询条件">
-                <Radio.Group onChange={this.onChange}>
-                  <Radio value="participant">我参与的</Radio>
-                  <Radio value="party">机构参与的</Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-            <Col span={9}>
-              <Form.Item name="searchTxt">
-                <Input placeholder="请输入名称进行搜索" allowClear />
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  className="cursor searchBtn"
-                  htmlType="submit"
-                  loading={this.state.loading}
-                  onClick={this.enterLoading}
-                >
-                  搜索
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-        {/* --搜索栏-- */}
+        />
         <Table
           rowKey="uid"
           size="small"
