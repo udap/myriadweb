@@ -3,22 +3,18 @@ import {
   //表头
   PageHeader,
   Tag,
-  //搜索栏
-  // Form,
-  // Input,
-  // Row,
-  // Col,
-  // Button,
+  Button,
   //表格
   Table,
   Pagination,
   Descriptions,
+  notification,
 } from "antd";
 //import storageUtils from "../../utils/storageUtils";
 import Loading from "../../components/Loading";
-import { reqGetSettlementDetail } from "../../api";
+import { reqGetSettlementDetail, reqDownloadSettlement } from "../../api";
 import { DownloadOutlined } from "@ant-design/icons";
-
+import FileSaver from 'file-saver';
 import {
   settlementStatuses,
   settlementTypes,
@@ -38,7 +34,7 @@ class SettlementDetail extends Component {
     currentPage: 1,
     //搜索
     // searchTxt: "",
-    // loading: false,
+    downloading: false,
     //上页信息
     item: {},
   };
@@ -258,6 +254,32 @@ class SettlementDetail extends Component {
       </div>
     );
   };
+
+  handleDownload = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({
+      downloading: true
+    });
+    let id = this.props.match.params.id;
+    const filename = 'settlement.xlsx';
+    reqDownloadSettlement(id).then(
+      response => {
+        FileSaver.saveAs(response.data, filename);
+        this.setState({
+          downloading: false
+        });
+      }
+    ).catch((e)=>{
+      this.setState({
+        downloading: false
+      });
+      notification.warning({
+        message: "下载失败，请稍后再试",
+      });
+    });
+  }
+
   //明细
   renderDetail = () => {
     const {
@@ -279,11 +301,19 @@ class SettlementDetail extends Component {
           title="结算详情"
           onBack={this.backIndex}
           extra={[
-            <DownloadOutlined
-              key="add"
-              className="setIcon"
-              //onClick={}
+            <Button type="primary" 
+              loading={this.state.downloading}
+              icon={<DownloadOutlined />} 
+              size="large"
+              onClick = {
+                (e) => this.handleDownload(e)
+              } 
             />,
+            // <DownloadOutlined
+            //   key="add"
+            //   className="setIcon"
+            //   onClick={(e)=>this.handleDownload(e)}
+            // />,
           ]}
         ></PageHeader>
         <Descriptions

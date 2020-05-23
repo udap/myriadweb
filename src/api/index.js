@@ -226,10 +226,7 @@ export const reqGetSettlementDetail = (id, params) =>
            params: params,
          });
 
-
-
-
-//结算管理 END
+         //结算管理 END
 //核销记录 reqGetExchangeLists;
 export const reqGetRedemptions = (params) =>
   ajax.get(BASE + "/myriad/redemptions", {
@@ -275,3 +272,8 @@ export const reqGetAccountProfile = () =>
 export const reqPutAccountProfile = (params) =>
          ajax.put(BASE + "/accounts/me", params);
 //我的账户 END
+
+export const reqDownloadSettlement = (id) =>
+  ajax.get(BASE + "/myriad/settlements/" + id + "/export",{
+    responseType: "blob"
+  });
