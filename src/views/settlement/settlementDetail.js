@@ -195,42 +195,6 @@ class SettlementDetail extends Component {
     } = this.state;
     return (
       <div>
-        {/* --搜索栏-- */}
-        {/* <Form
-          onFinish={this.searchValue}
-          layout="horizontal"
-          name="advanced_search"
-          className="ant-advanced-search-form"
-          initialValues={{
-            searchTxt: "",
-          }}
-        >
-          <Row>
-            <Col span={9} label="查询条件">
-              <Form.Item name="searchTxt">
-                <Input
-                  placeholder="请输入券号、活动名、活动标签、订单号进行搜索"
-                  allowClear
-                />
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  className="cursor searchBtn"
-                  htmlType="submit"
-                  loading={this.state.loading}
-                  onClick={this.enterLoading}
-                >
-                  搜索
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form> */}
-        {/* --搜索栏-- */}
-        {/* 列表内容 */}
         <Table
           rowKey="uid"
           size="small"
@@ -302,9 +266,9 @@ class SettlementDetail extends Component {
           onBack={this.backIndex}
           extra={[
             <Button type="primary" 
+              shape="circle"
               loading={this.state.downloading}
               icon={<DownloadOutlined />} 
-              size="large"
               onClick = {
                 (e) => this.handleDownload(e)
               } 
