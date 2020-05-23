@@ -109,7 +109,7 @@ class CampaignEdit extends Component {
       category: "",
       url: "",
       effective: comEvents.getDateStr(0),
-      expiry: comEvents.getDateStr(1),
+      end: comEvents.getDateStr(0),
     },
     //活动主页预览
     showUrl: false,
@@ -140,7 +140,7 @@ class CampaignEdit extends Component {
       //code:'',
       timeType: "date",
       effective: comEvents.getDateStr(0),
-      expiry: comEvents.getDateStr(1),
+      end: comEvents.getDateStr(0),
     },
     daysAfterDist: null,
 
@@ -161,11 +161,11 @@ class CampaignEdit extends Component {
       this.setState({
         id: id,
       });
-      this.getMarket(id);
+      this.getCampaigns(id);
     }
   }
   //获取当前活动详情
-  getMarket = async (id) => {
+  getCampaigns = async (id) => {
     let curInfo = await reqGetCampaignById(id);
     let cont = curInfo.data ? curInfo.data : [];
     let voucherConfig = cont.voucherConfig;
@@ -178,7 +178,7 @@ class CampaignEdit extends Component {
         category: cont.category.split(","),
         url: cont.url,
         effective: cont.effective,
-        expiry: comEvents.getDateStr(-1, new Date(cont.expiry)),
+        end: comEvents.formatExpiry(new Date(cont.expiry)),
       },
       url: cont.url,
       name: cont.name,
@@ -227,10 +227,9 @@ class CampaignEdit extends Component {
           voucherConfig && voucherConfig.effective
             ? voucherConfig.effective
             : cont.effective,
-        expiry:
+        end:
           voucherConfig && voucherConfig.expiry
-            ? voucherConfig.expiry
-            : comEvents.getDateStr(-1, new Date(cont.expiry)),
+            ? comEvents.formatExpiry(voucherConfig.expiry) : cont.end,
         daysAfterDist:
           voucherConfig && voucherConfig.daysAfterDist
             ? voucherConfig.daysAfterDist
@@ -334,7 +333,7 @@ class CampaignEdit extends Component {
       description,
       url,
       effective,
-      expiry,
+      end,
     } = this.state.basicInfo;
     return (
       <Form
@@ -367,7 +366,7 @@ class CampaignEdit extends Component {
           <RangePicker
             defaultValue={[
               moment(effective, dateFormat),
-              moment(expiry, dateFormat),
+              moment(end, dateFormat),
             ]}
             onChange={this.changeDate}
           />
@@ -418,20 +417,25 @@ class CampaignEdit extends Component {
       type: campaignType,
       category: tags.toString(),
       effective: basicInfo.effective,
-      expiry: basicInfo.expiry, //comEvents.getDateStr(1, new Date(basicInfo.expiry)),
+      expiry: comEvents.getDateStr(1, new Date(basicInfo.end)),
       url: values.url,
       metadata: {},
     };
-    console.log("CampaignEdit -> values", params);
-    this.setState({
-      basicInfo: params,
-      name: values.name.substr(0, 10),
-    });
+    console.log("CampaignEdit -> addCampaign", params);
     let result = await reqAddCampaign(params);
     //新增活动的id
     this.setState({
       id: result.data.id,
+      basicInfo: {
+        name: values.name,
+        description: values.description,
+        category: tags.toString(),
+        effective: basicInfo.effective,
+        end: basicInfo.end,
+        url: values.url,
+      }
     });
+    console.log("onFinish2 -> basicInfo", this.state.basicInfo);
     //跳转到第三步
     this.nextStep();
   };
@@ -446,7 +450,7 @@ class CampaignEdit extends Component {
     let { basicInfo } = this.state;
     let newData = Object.assign(basicInfo, {
       effective: dataStr[0],
-      expiry: dataStr[1],
+      end: dataStr[1],
     });
     this.setState({
       basicInfo: newData,
@@ -511,8 +515,7 @@ class CampaignEdit extends Component {
       daysAfterDist,
       name,
     } = this.state.settings;
-    const { effective, expiry } = this.state.basicInfo;
-
+    const { effective, end } = this.state.basicInfo;
     return (
       <div>
         <Form
@@ -520,7 +523,7 @@ class CampaignEdit extends Component {
           {...formItemLayout}
           onFinish={this.onFinish3}
           initialValues={{
-            name: name ? name : this.state.name,
+            name: name ? name : this.state.basicInfo.name.substr(0,10),
             multiple: multiple,
             totalSupply: totalSupply,
             autoUpdate: autoUpdate,
@@ -615,7 +618,7 @@ class CampaignEdit extends Component {
                 <RangePicker
                   defaultValue={[
                     moment(effective, dateFormat),
-                    moment(expiry, dateFormat),
+                    moment(end, dateFormat),
                   ]}
                   onChange={this.changeSetDate}
                 />
@@ -634,7 +637,7 @@ class CampaignEdit extends Component {
                     </Form.Item>
                   </Col>
                   <Col>
-                    <span className="radioSpan">天有效</span>
+                    <span className="radioSpan">天内有效</span>
                   </Col>
                 </Row>
               </Radio>
@@ -676,20 +679,13 @@ class CampaignEdit extends Component {
               value={this.state.multiple}
             >
               <Radio value={true}>一码一券</Radio>
-              {/* <Radio value={true}>固定码优惠券</Radio> */}
+              {/*<Radio value={false}>通用码券</Radio>*/}
             </Radio.Group>
           </Form.Item>
           {/* {!this.state.multiple ? (
             <div>
               <Form.Item label="券号" name="code" rules={[{ required: true }]}>
                 <Input />
-              </Form.Item>
-              <Form.Item
-                label="发行数量"
-                name="totalSupply"
-                rules={[{ required: true }, { min: 1 }]}
-              >
-                <InputNumber min={1} defaultValue={totalSupply} disabled />
               </Form.Item>
             </div>
           ) : (
@@ -752,7 +748,7 @@ class CampaignEdit extends Component {
     let { settings } = this.state;
     let newData = Object.assign(settings, {
       effective: dataStr[0],
-      expiry: dataStr[1],
+      end: dataStr[1],
     });
     this.setState({
       settings: newData,
@@ -767,7 +763,7 @@ class CampaignEdit extends Component {
       values.timeType === "date"
         ? {
             name: values.name,
-            multiple: true,
+            multiple: values.multiple,
             //coverImg: this.state.coverImg,
             totalSupply: values.totalSupply,
             autoUpdate: values.autoUpdate,
@@ -781,15 +777,15 @@ class CampaignEdit extends Component {
                 : {
                     type: values.select,
                     valueOff: values.discount.valueOff,
-                    amountLimit: values.discount.amountLimit,
+                    amountLimit: values.discount.amountLimit?values.discount.amountLimit*100:null,
                   },
-            type: "COUPON", //一券一码
+            type: "COUPON",
             effective: settings.effective,
-            expiry: settings.expiry,
+            expiry: comEvents.getDateStr(1, new Date(settings.end)),
           }
         : {
             name: values.name,
-            multiple: true,
+            multiple: values.multiple,
             //coverImg: this.state.coverImg,
             totalSupply: values.totalSupply,
             autoUpdate: values.autoUpdate,
@@ -803,7 +799,7 @@ class CampaignEdit extends Component {
                 : {
                     type: values.select,
                     valueOff: values.discount.valueOff,
-                    amountLimit: values.discount.amountLimit,
+                    amountLimit: values.discount.amountLimit?values.discount.amountLimit*100:null,
                   },
             type: "COUPON",
             daysAfterDist: values.daysAfterDist,

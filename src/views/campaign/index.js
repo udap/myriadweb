@@ -150,7 +150,7 @@ class Campaign extends Component {
               >
                 查看
               </b>
-              {value === "participant" ? this.showBtns(chooseItem) : null}
+              {value === "participant" ? this.showExtraBtns(chooseItem) : null}
             </span>
           );
         },
@@ -158,22 +158,13 @@ class Campaign extends Component {
     ];
   }
   //展示按钮
-  showBtns = (chooseItem) => {
+  showExtraBtns = (chooseItem) => {
     const { id, status, name } = chooseItem;
     return (
       <div style={{display:"inline"}}>
         <Divider type="vertical" />
         {status === "INITIATED" ? (
           <span>
-            {/* <b
-                    onClick={() => {
-                      this.props.history.push("/admin/campaign/edit/" + id);
-                    }}
-                    className="ant-green-link cursor"
-                  >
-                    查看
-                  </b>
-                  <Divider type="vertical" /> */}
             <Popconfirm
               title="确认发布吗?"
               onConfirm={this.publishItem.bind(this, id)}
@@ -489,50 +480,6 @@ class Campaign extends Component {
       </Modal>
     );
   };
-
-  _renderQueryForm = () => {
-    return (
-      <Form
-      onFinish={this.searchValue}
-      layout="horizontal"
-      name="advanced_search"
-      className="ant-advanced-search-form"
-      initialValues={{
-        searchTxt: "",
-        group: "participant",
-      }}
-      >
-      <Row>
-        <Col>
-          <Form.Item name="group" label="查询条件">
-            <Radio.Group onChange={this.onChange}>
-              <Radio value="participant">我参与的</Radio>
-              <Radio value="party">机构参与的</Radio>
-            </Radio.Group>
-          </Form.Item>
-        </Col>
-        <Col span={6}>
-          <Form.Item name="searchTxt">
-            <Input placeholder="请输入名称进行搜索" allowClear />
-          </Form.Item>
-        </Col>
-        <Col>
-          <Form.Item>
-            <Button
-              type="primary"
-              className="cursor searchBtn"
-              htmlType="submit"
-              loading={this.state.loading}
-              onClick={this.enterLoading}
-            >
-              搜索
-            </Button>
-          </Form.Item>
-        </Col>
-      </Row>
-      </Form>
-    );
-  }
 
   renderContent = () => {
     const {

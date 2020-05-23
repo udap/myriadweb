@@ -53,7 +53,7 @@ class CouponHome extends Component {
   };
   componentDidMount() {
     this.initColumns();
-    this.getMarkets(null, 1);
+    this.getVouchers(null, 1);
   }
   publishItem = async (clientId) => {
     const parmas = {
@@ -63,7 +63,7 @@ class CouponHome extends Component {
     //customerId-客户弹窗选择
     const result = await reqPublishDis(parmas);
     //status;票券发券
-    this.getMarkets(null, this.state.currentPage);
+    this.getVouchers(null, this.state.currentPage);
     this.setState({
       visible: false,
     });
@@ -94,17 +94,15 @@ class CouponHome extends Component {
       },
       {
         title: "标签",
-        dataIndex: "type",
-        key: "type",
-        render: (text) => {
-          return <div>{text ? text : "-"}</div>;
+        dataIndex: "tags",
+        render: (tags) => {
+          return <div>{tags ? tags.split(",").map((t,index)=><Tag color="cyan">{t}</Tag>) : ""}</div>
         },
       },
       {
         title: "有效期",
         colSpan: 2,
         dataIndex: "effective",
-        key: "effective",
         width: 110,
       },
       {
@@ -121,15 +119,13 @@ class CouponHome extends Component {
       {
         title: "折扣",
         dataIndex: "valueOff",
-        key: "valueOff",
         render: (text) => {
-          return <div>¥{text}</div>;
+          return <div>{text}</div>;
         },
       },
       {
         title: "状态",
         dataIndex: "status",
-        key: "status",
         render: (text) => {
           return (
             <Tag color="green" key={text}>
@@ -199,7 +195,7 @@ class CouponHome extends Component {
   /*
 获取列表数据
 */
-  getMarkets = async (values, currentPage, size, chooseRadio) => {
+  getVouchers = async (values, currentPage, size, chooseRadio) => {
     let typeStr = chooseRadio ? chooseRadio : this.state.chooseRadio;
     //owner 我的
     let parmas =
@@ -234,14 +230,20 @@ class CouponHome extends Component {
     let data = [];
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
+        let discountType = cont[i].config.discount.type;
+        let valueOff = cont[i].config.discount.valueOff;
+        if (discountType === "AMOUNT")
+          valueOff = "¥"+comEvents.formatCurrency(valueOff);
+        else if (discountType === "PERCENT")
+          valueOff = valueOff + "%";
         data.push({
           key: i,
           id: cont[i].id,
           owner: cont[i].owner,
           code: cont[i].code,
-          type: cont[i].category,
+          tags: cont[i].category,
           name: cont[i].campaign.name,
-          valueOff: (cont[i].config.discount.valueOff / 100).toFixed(2),
+          valueOff: valueOff,
           effective: cont[i].effective,
           expiry: cont[i].expiry,
           status: cont[i].status,
@@ -264,7 +266,7 @@ class CouponHome extends Component {
   //       chooseValue: values,
   //       merchantCode: values.merchantCode,
   //     });
-  //     //this.getMarkets(values, 0);
+  //     //this.getVouchers(values, 0);
   //   }
   // };
   handleChange = (value) => {
@@ -283,13 +285,13 @@ class CouponHome extends Component {
       currentPage: 1,
       searchCouponTxt: values.searchCouponTxt,
     });
-    this.getMarkets(values, 1);
+    this.getVouchers(values, 1);
   };
   handleTableChange = (page) => {
     this.setState({
       currentPage: page,
     });
-    this.getMarkets(null, page);
+    this.getVouchers(null, page);
   };
 
   handleListTableChange = (page) => {
@@ -306,7 +308,7 @@ class CouponHome extends Component {
       chooseRadio: e.target.value,
       currentPage: 1,
     });
-    this.getMarkets(null, 1, null, e.target.value);
+    this.getVouchers(null, 1, null, e.target.value);
   };
   showList = (partyId) => {
     this.setState({

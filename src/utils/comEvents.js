@@ -44,7 +44,11 @@ const getDateStr = (AddDayCount, date) => {
 };
 
 const formatCurrency = (value) => {
-  return value ? parseFloat(value) / 100 : "";
+  if (value && typeof value === 'number')
+    return (value/100).toFixed(2);
+  if (value && typeof value === 'string')  
+    return (parseInt(value) / 100).toFixed(2);
+  return "";
 };
 
 /*console.log("前天：" + GetDateStr(-2));

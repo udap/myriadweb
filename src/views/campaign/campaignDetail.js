@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Card, Descriptions, Input, Drawer, Table, Collapse } from "antd";
+import { Tag, Descriptions, Input, Drawer, Table, Collapse } from "antd";
 import comEvents from "../../utils/comEvents";
 import "./index.less";
 
@@ -117,7 +117,7 @@ class CampaignDetail extends Component {
           {campaign.category
             ? campaign.category
                 .split(",")
-                .map((item, index) => <span key={index}>{item}</span>)
+                .map((item, index) => <Tag color="cyan">{item}</Tag>)
             : ""}
         </Descriptions.Item>
         <Descriptions.Item label="活动时间">
@@ -144,7 +144,7 @@ class CampaignDetail extends Component {
           {voucherConfig.discount.valueOff}% 
         </Descriptions.Item>                
         <Descriptions.Item label="最高优惠">
-          {voucherConfig.discount.amountLimit ? voucherConfig.discount.amountLimit + "元" : "无限制"}
+          {voucherConfig.discount.amountLimit ? comEvents.formatCurrency(voucherConfig.discount.amountLimit) + "元" : "无限制"}
         </Descriptions.Item>
         </Fragment>
       )
