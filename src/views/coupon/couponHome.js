@@ -17,7 +17,7 @@ import {
 import storageUtils from "../../utils/storageUtils";
 import { reqGetCoupons, reqPublishDis, reqGetClients } from "../../api";
 import { Loading } from "../../components";
-import { couponStatuses } from "../../utils/constants";
+import { couponStatuses, voucherTypes } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
 import "../../css/common.less";
 import "./index.less";
@@ -88,9 +88,23 @@ class CouponHome extends Component {
         key: "code",
       },
       {
-        title: "营销活动",
+        title: "券名",
         dataIndex: "name",
         key: "name",
+      },
+      {
+        title: "类型",
+        dataIndex: "type",
+        key: "type",
+        render: (text) => {
+          return (
+            <Tag color="green" key={text}>
+              {voucherTypes.map((item, index) => (
+                <span key={index}>{item[text]}</span>
+              ))}
+            </Tag>
+          );
+        },
       },
       {
         title: "标签",
@@ -106,13 +120,13 @@ class CouponHome extends Component {
         width: 110,
       },
       {
-        title: "expiry",
+        title: "end",
         colSpan: 0,
-        dataIndex: "expiry",
+        dataIndex: "end",
         width: 110,
         render: (text) => {
           return (
-            <div>{text ? comEvents.getDateStr(-1, new Date(text)) : "-"}</div>
+            <div>{text}</div>
           );
         },
       },
@@ -230,22 +244,24 @@ class CouponHome extends Component {
     let data = [];
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
-        let discountType = cont[i].config.discount.type;
-        let valueOff = cont[i].config.discount.valueOff;
-        if (discountType === "AMOUNT")
+        let subType = cont[i].config.discount ? cont[i].config.discount.type : cont[i].config.type;
+        let valueOff = cont[i].config.discount ? cont[i].config.discount.valueOff : "";
+        if (subType === "AMOUNT") {
           valueOff = "¥"+comEvents.formatCurrency(valueOff);
-        else if (discountType === "PERCENT")
+        }
+        else if (subType === "PERCENT")
           valueOff = valueOff + "%";
         data.push({
           key: i,
           id: cont[i].id,
           owner: cont[i].owner,
           code: cont[i].code,
+          type: subType,
           tags: cont[i].category,
-          name: cont[i].campaign.name,
+          name: cont[i].config.name,
           valueOff: valueOff,
           effective: cont[i].effective,
-          expiry: cont[i].expiry,
+          end: comEvents.formatExpiry(cont[i].expiry),
           status: cont[i].status,
         });
       }

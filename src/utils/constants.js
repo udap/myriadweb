@@ -15,6 +15,25 @@ const couponStatuses = [
   { EXPIRED: "已过期" }, // 已过期
 ];
 
+const campaignTypes = [
+  { VOUCHER: "票券活动" },
+  { COUPON: "优惠券活动" },
+  { GIFT: "礼品卡活动" },
+  { PREPAID_CARD: "储值卡活动" },
+  { MEMBERSHIP_CARD: "会员卡活动" },
+  { PROMOTION: "促销活动" },
+];
+
+const voucherTypes = [
+  { COUPON: "优惠券" },
+  { AMOUNT: "代金券" },
+  { PERCENT: "折扣券" },
+  { UNIT: "产品券" },
+  { GIFT: "礼品卡" },
+  { PREPAID_CARD: "储值卡" },
+  { MEMBERSHIP_CARD: "会员卡" },
+];
+
 const settlementStatuses = [
   { INITIATED: "预结算" },
   { SUBMITTED: "结算中" },
@@ -170,6 +189,8 @@ var Operations = {
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
+  campaignTypes,
+  voucherTypes,
   campaignStatuses, //营销活动
   couponStatuses, //票券管理
   settlementStatuses, //结算中心
