@@ -229,7 +229,7 @@ class MyOrgs extends Component {
         >
           <Row>
             <Col span={24}>
-              <Descriptions bordered column={1}>
+              <Descriptions bordered column={1} size="small">
                 <Descriptions.Item label="名称">{fullName}</Descriptions.Item>
                 <Descriptions.Item label="简称">{name}</Descriptions.Item>
                 <Descriptions.Item label="机构编码">{code}</Descriptions.Item>
@@ -271,13 +271,15 @@ class MyOrgs extends Component {
         visible={this.state.visible}
       >
         <div className="authCode">
+          <small className="description">
+            如果某个营销机构希望邀请您的机构作为核销机构参与该营销机构发起的营销活动，您需要生成并提供一个限时有效的动态授权码给该营销机构。
+          </small>
+        </div>
+        <div className="authCode">
           <p>
             当前授权码是<span>{this.state.authCode}</span>
             ,请尽快和相关机构分享授权码。该授权码在 30 分钟后失效。
           </p>
-          <small className="description">
-            如果某个营销机构希望邀请您的机构作为核销机构参与该营销机构发起的营销活动，您需要生成并提供一个限时有效的动态授权码给该营销机构。
-          </small>
         </div>
       </Drawer>
     );

@@ -119,7 +119,7 @@ class Profile extends Component {
         >
           <Row>
             <Col span={24}>
-              <Descriptions bordered column={1}>
+              <Descriptions bordered column={1} size="small">
                 <Descriptions.Item label="姓名">{name}</Descriptions.Item>
                 <Descriptions.Item label="手机号">
                   {cellphone}

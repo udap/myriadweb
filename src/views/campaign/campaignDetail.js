@@ -207,7 +207,7 @@ class CampaignDetail extends Component {
     return (
       <Drawer
         className="camDetail"
-        width={500}
+        width={480}
         title="活动详情"
         onClose={this.onClose}
         visible={visible}
