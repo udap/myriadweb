@@ -431,10 +431,7 @@ class Employee extends Component {
           </Form.Item>
 
           <Form.Item>
-            <Button type="default" onClick={this.handleCancel}>
-              取消
-            </Button>
-            <Button className="margin-left" type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit">
               提交
             </Button>
           </Form.Item>
