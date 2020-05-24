@@ -32,7 +32,7 @@ const QueryForm = (props) => {
       </Col>
       <Col span={6}>
         <Form.Item name="searchTxt">
-          <Input placeholder="请输入名称进行搜索" allowClear />
+          <Input placeholder="请输入名称或标签进行搜索" allowClear />
         </Form.Item>
       </Col>
       <Col>
