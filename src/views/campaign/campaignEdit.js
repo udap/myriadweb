@@ -353,7 +353,7 @@ class CampaignEdit extends Component {
           name="name"
           rules={[{ required: true }, { max: 20 }]}
         >
-          <Input />
+          <Input placeholder="请输入最多20个字的活动名称" maxLength="20" />
         </Form.Item>
         <Form.Item label="活动描述" name="description" rules={[{ max: 255 }]}>
           <TextArea rows={4} />
