@@ -19,6 +19,7 @@ import { reqGetCoupons, reqPublishDis, reqGetClients } from "../../api";
 import { Loading } from "../../components";
 import { couponStatuses, voucherTypes } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
+import VoucherQueryForm from "./queryForm";
 import "../../css/common.less";
 import "./index.less";
 
@@ -48,8 +49,8 @@ class CouponHome extends Component {
     /*搜索框 */
     searchClientTxt: "",
     loading: false,
-    chooseRadio: "owner",
-    searchCouponTxt: "",
+    typeSelection: "owner",
+    searchTxt: "",
   };
   componentDidMount() {
     this.initColumns();
@@ -209,8 +210,8 @@ class CouponHome extends Component {
   /*
 获取列表数据
 */
-  getVouchers = async (values, currentPage, size, chooseRadio) => {
-    let typeStr = chooseRadio ? chooseRadio : this.state.chooseRadio;
+  getVouchers = async (values, currentPage, size, typeSelection) => {
+    let typeStr = typeSelection ? typeSelection : this.state.typeSelection;
     //owner 我的
     let parmas =
       typeStr === "owner"
@@ -220,11 +221,11 @@ class CouponHome extends Component {
             orgUid: storageUtils.getUser().orgUid,
             ownerId: this.state.ownerId,
             issuerId: "",
-            merchantCode: values ? values.merchantCode : "",
+//            merchantCode: values ? values.merchantCode : "",
             codeType: this.state.codeType,
             searchTxt: values
-              ? values.searchCouponTxt
-              : this.state.searchCouponTxt,
+              ? values.searchTxt
+              : this.state.searchTxt,
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
@@ -232,11 +233,11 @@ class CouponHome extends Component {
             orgUid: storageUtils.getUser().orgUid,
             ownerId: "",
             issuerId: this.state.publisherId,
-            merchantCode: values ? values.merchantCode : "",
+//            merchantCode: values ? values.merchantCode : "",
             codeType: this.state.codeType,
             searchTxt: values
-              ? values.searchCouponTxt
-              : this.state.searchCouponTxt,
+              ? values.searchTxt
+              : this.state.searchTxt,
           };
 
     const result = await reqGetCoupons(parmas);
@@ -299,7 +300,7 @@ class CouponHome extends Component {
   onFinish = (values) => {
     this.setState({
       currentPage: 1,
-      searchCouponTxt: values.searchCouponTxt,
+      searchTxt: values.searchTxt,
     });
     this.getVouchers(values, 1);
   };
@@ -321,7 +322,7 @@ class CouponHome extends Component {
     //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
     this.setState({
       page: 0,
-      chooseRadio: e.target.value,
+      typeSelection: e.target.value,
       currentPage: 1,
     });
     this.getVouchers(null, 1, null, e.target.value);
@@ -404,64 +405,12 @@ class CouponHome extends Component {
           className="site-page-header-responsive cont"
           title="票券管理"
         ></PageHeader>
-
-        <Form
+        <VoucherQueryForm 
+          loading={this.state.loading}
+          onChangeType={this.onRadioChange} 
+          enableLoading={this.enterLoading}
           onFinish={this.onFinish}
-          layout="horizontal"
-          name="advanced_search"
-          className="ant-advanced-search-form"
-          initialValues={{
-            merchantCode: "",
-            searchCouponTxt: "",
-            group: "owner",
-          }}
-        >
-          <Row>
-            <Col>
-              <Form.Item name="group" label="查询条件">
-                <Radio.Group onChange={this.onRadioChange}>
-                  <Radio value="owner">我的</Radio>
-                  <Radio value="publisherId">机构发行的</Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={6}>
-              <Form.Item name="searchCouponTxt">
-                <Input
-                  placeholder="输入券号、活动名或活动标签查询"
-                  allowClear
-                />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="merchantCode">
-                <Input placeholder="请输入商户编码" allowClear />
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item className="mid">
-                <Select defaultValue="UPCODE" onChange={this.handleChange}>
-                  <Option value="UPCODE">银联码</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  className="cursor searchBtn"
-                  htmlType="submit"
-                  loading={this.state.loading}
-                  onClick={this.enterLoading}
-                >
-                  搜索
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+        />
         <Table
           rowKey="key"
           size="small"
