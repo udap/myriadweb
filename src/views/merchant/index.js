@@ -163,8 +163,9 @@ class Merchant extends Component {
         onFinishFailed={this.onFinishFailed}
         validateMessages={defaultValidateMessages.defaultValidateMessages}
       >
+        <p class="description">添加入驻商户需要获得相关商户授权。请向相关商户索取授权码及银联商户码。</p>
         <Form.Item label="授权码" name="authCode" rules={[{ required: true }]}>
-          <Input disabled={this.state.isNew ? false : true} />
+           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
         <Form.Item
           label="银联商户码"
@@ -183,18 +184,13 @@ class Merchant extends Component {
 
         {this.state.isNew ? (
           <Form.Item>
-            <Button type="default" onClick={this.handleCancel}>
-              取消
-            </Button>
             <Button
-              className="margin-left"
               type="primary"
               htmlType="submit"
               loading={this.state.loading}
             >
               提交
             </Button>
-            <p class="description">请向入驻商户索取动态授权码及银联商户码</p>
           </Form.Item>
         ) : null}
       </Form>
@@ -309,10 +305,10 @@ class Merchant extends Component {
           }}
         >
           <Row>
-            <Col span={9}>
+            <Col span={7}>
               <Form.Item name="searchTxt" label="查询条件">
                 <Input
-                  placeholder="请输入名字、商户号、电话或地址进行搜索"
+                  placeholder="输入名字/商户号/电话/地址搜索"
                   allowClear
                 />
               </Form.Item>
@@ -352,7 +348,7 @@ class Merchant extends Component {
           />
         </div>
         <Drawer
-          width={320}
+          width={400}
           title="添加入驻商户"
           visible={this.state.visible}
           onClose={this.handleCancel}

@@ -316,7 +316,7 @@ class Groups extends Component {
       {
         title: "类别",
         dataIndex: "template",
-      render: (value) => <span>{value?<Tag color="blue">模版组</Tag>:""}</span>
+      render: (value) => <span>{value?<Tag color="blue">模版</Tag>:""}</span>
       },
       {
         title: "操作",

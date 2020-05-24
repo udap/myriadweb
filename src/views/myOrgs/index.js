@@ -222,7 +222,7 @@ class MyOrgs extends Component {
     return (
       <div>
         <Drawer
-          width={640}
+          width={480}
           title="机构详情"
           onClose={this.onClose}
           visible={this.state.showView}
@@ -265,7 +265,7 @@ class MyOrgs extends Component {
   renderAuthCodeDrawer = () => {
     return (
       <Drawer
-        width={410}
+        width={400}
         title="动态授权码"
         onClose={this.onClose}
         visible={this.state.visible}
@@ -286,7 +286,7 @@ class MyOrgs extends Component {
   renderOrgEditDrawer = () => {
     return (
       <Drawer
-        width={720}
+        width={480}
         title="编辑机构"
         onClose={this.onClose}
         visible={this.state.showEdit}
@@ -356,6 +356,8 @@ class MyOrgs extends Component {
                 <Input />
               </Form.Item>
             </Col>
+          </Row>
+          <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 label="联系电话"
@@ -365,19 +367,19 @@ class MyOrgs extends Component {
                 <Input />
               </Form.Item>
             </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={8}>
+            <Col span={12}>
               <Form.Item label="机构编码" name="code">
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={8}>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
               <Form.Item label="营业执照号码" name="licenseNo">
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={12}>
               <Form.Item label="银联商户码" name="upCode">
                 <Input />
               </Form.Item>
@@ -415,18 +417,14 @@ class MyOrgs extends Component {
                 name="street"
                 rules={[{ required: true }, { max: 45 }]}
               >
-                <Input />
+                <Input.TextArea allowClear/>
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item>
-                <Button type="default" onClick={this.onClose}>
-                  取消
-                </Button>
                 <Button
-                  className="margin-left"
                   type="primary"
                   htmlType="submit"
                 >

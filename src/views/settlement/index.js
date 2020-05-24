@@ -514,11 +514,11 @@ class SettlementHome extends Component {
                 </Radio.Group>
               </Form.Item>
             </Col>
-            <Col span={9}>
+            <Col span={6}>
               <Form.Item name="searchTxt">
                 <Input
                   value={searchTxt}
-                  placeholder="请输入活动名称或标签进行搜索"
+                  placeholder="请输入活动名或标签查询"
                   allowClear
                 />
               </Form.Item>

@@ -355,7 +355,7 @@ class Employee extends Component {
     const { operationsData, targetKeys } = this.state;
     return (
       <Drawer
-        width={600}
+        width={480}
         title={isNew ? "添加员工" : "修改员工"}
         visible={visible}
         onClose={this.handleCancel}

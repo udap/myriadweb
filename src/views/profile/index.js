@@ -161,7 +161,7 @@ class Profile extends Component {
   renderAccountEditDrawer = () => {
     return (
       <Drawer
-        width={720}
+        width={400}
         title="编辑账户"
         onClose={this.onClose}
         visible={this.state.showEdit}
