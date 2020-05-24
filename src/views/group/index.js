@@ -11,8 +11,8 @@ import {
   Form,
   Row,
   Col,
+  Tag,
   notification,
-  Select,
   Descriptions,
 } from "antd";
 import {
@@ -246,7 +246,7 @@ class Groups extends Component {
     return (
       <Drawer
         title={isNew ? "新增权限与分组" : "编辑权限与分组"}
-        width={620}
+        width={480}
         visible={this.state.visible}
         onClose={this.onClose}
         footer={null}
@@ -265,9 +265,9 @@ class Groups extends Component {
           <Form.Item
             label="名称"
             name="name"
-            rules={[{ required: true }, { max: 45 }]}
+            rules={[{ required: true }, { max: 20 }]}
           >
-            <Input />
+            <Input placeholder="分组名称不超过20个字" maxLength="20"/>
           </Form.Item>
           <Form.Item label="描述" name="description" rules={[{ max: 255 }]}>
             <TextArea rows={4} />
@@ -312,6 +312,11 @@ class Groups extends Component {
         title: "描述",
         dataIndex: "desc",
         key: "desc",
+      },
+      {
+        title: "类别",
+        dataIndex: "template",
+      render: (value) => <span>{value?<Tag color="blue">模版组</Tag>:""}</span>
       },
       {
         title: "操作",
@@ -400,7 +405,7 @@ class Groups extends Component {
           }}
         >
           <Row>
-            <Col span={9}>
+            <Col span={6}>
               <Form.Item name="searchTxt" label="查询条件">
                 <Input placeholder="请输入名称进行搜索" allowClear />
               </Form.Item>
@@ -451,7 +456,7 @@ class Groups extends Component {
       <div>
         <Drawer
           title="权限与分组"
-          width={520}
+          width={400}
           visible={this.state.showDetail}
           onClose={this.onClose}
           footer={null}
