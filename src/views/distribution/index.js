@@ -201,10 +201,10 @@ class Distribution extends Component {
                   </Radio.Group>
                 </Form.Item>
               </Col>
-              <Col span={9}>
+              <Col span={6}>
                 <Form.Item name="searchTxt">
                   <Input
-                    placeholder="请输入活动名、标签、票券号进行搜索"
+                    placeholder="请输入活动名、标签、券号进行搜索"
                     allowClear
                   />
                 </Form.Item>

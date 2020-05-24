@@ -559,17 +559,16 @@ class Employee extends Component {
         render: (text) => <span>{text ? text : "-"}</span>,
       },
       {
-        title: "部门",
+        title: "机构/部门",
         dataIndex: "org",
         key: "org",
-        width: 250,
         render: (text) => <span>{text ? text.name : "-"}</span>,
       },
       {
         title: "分组",
         dataIndex: "groups",
         key: "groups",
-        ellipsis:true, 
+        width: 150,
         render: (groups) => (
           <div>
             {groups.length !== 0
@@ -731,9 +730,9 @@ class Employee extends Component {
                 </Checkbox>
               </Form.Item>
             </Col>
-            <Col span={9}>
+            <Col span={6}>
               <Form.Item name="searchTxt">
-                <Input placeholder="请输入名称或手机号进行搜索" allowClear />
+                <Input placeholder="请输入员工姓名或手机号进行搜索" allowClear />
               </Form.Item>
             </Col>
             <Col>
