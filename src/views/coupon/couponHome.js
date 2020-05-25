@@ -5,21 +5,21 @@ import {
   PageHeader,
   Input,
   Tag,
+  Divider,
   Modal,
   notification,
-  Radio,
-  Form,
   Row,
   Col,
   Select,
   Pagination,
 } from "antd";
 import storageUtils from "../../utils/storageUtils";
-import { reqGetCoupons, reqPublishDis, reqGetClients } from "../../api";
+import { reqGetCoupons, reqGetVoucherById, reqPublishDis, reqGetClients } from "../../api";
 import { Loading } from "../../components";
 import { couponStatuses, voucherTypes } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
 import VoucherQueryForm from "./queryForm";
+import CouponDetails from "./couponDetails";
 import "../../css/common.less";
 import "./index.less";
 
@@ -51,6 +51,9 @@ class CouponHome extends Component {
     loading: false,
     typeSelection: "owner",
     searchTxt: "",
+    // voucher details panel
+    showVoucherPanel: false,
+    voucher: null,
   };
   componentDidMount() {
     this.initColumns();
@@ -157,6 +160,15 @@ class CouponHome extends Component {
         render: (chooseItem) => {
           return (
             <div>
+              <b
+                onClick={() => {
+                  this.showVoucherPanel(chooseItem.id);
+                }}
+                className="ant-green-link cursor"
+              >
+                查看
+              </b>
+              <Divider type="vertical" />
               {chooseItem.status === "NEW" ? (
                 <b
                   onClick={() => {
@@ -383,6 +395,31 @@ class CouponHome extends Component {
     });
   };
 
+  getVoucherById = async (id) => {
+    let res = await reqGetVoucherById(id);
+    let voucher = res && res.data ? res.data.content : {};
+    console.log("getVoucherById -> ", voucher);
+    this.setState({
+      voucher: voucher,
+    });
+    console.log("state in getVoucherById",this.state);
+  };
+
+  showVoucherPanel = (id) => {
+    this.setState({
+      showVoucherPanel: true
+    });
+    this.getVoucherById(id);
+    console.log("state", this.state);
+  };
+
+  closeVoucherPanel = () => {
+    this.setState({
+      showVoucherPanel: false,
+      voucher: null,
+    });
+  };
+
   renderContent = () => {
     const {
       vouchers,
@@ -395,8 +432,8 @@ class CouponHome extends Component {
       listTotal,
       listData,
       searchClientTxt,
-      merchantCode,
-      searchCouponTxt,
+      showVoucherPanel,
+      voucher,
     } = this.state;
 
     return (
@@ -430,6 +467,14 @@ class CouponHome extends Component {
             showTotal={(total) => `总共 ${total} 条数据`}
           />
         </div>
+        {
+          showVoucherPanel ? (
+          <CouponDetails
+            voucher={voucher}
+            onClose={this.closeVoucherPanel}
+            visible={showVoucherPanel}
+          />) : null
+          }
         <Modal
           title="票券发放"
           visible={this.state.visible}

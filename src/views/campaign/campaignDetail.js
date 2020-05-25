@@ -40,68 +40,7 @@ class CampaignDetail extends Component {
     });
     this.props.closeDetail();
   };
-  
-  descriptionItem = () => {
-    const setTitle = [
-      {
-        title: "名称",
-        value: "name",
-      },
-      {
-        title: "类型",
-        value: "discount",
-        type: "objMap",
-        objValue: "type",
-        objMap: ["代金券", "折扣券"],
-      },
-      {
-        title: "金额",
-        value: "discount",
-        type: "objNum",
-        objValue: "valueOff",
-      },
-      {
-        title: "有效期",
-        value: ["effective", "expiry"],
-        type: "map",
-      },
-      {
-        title: "发行方式",
-        value: "multiple", //true 一码一券
-        type: "boolean",
-        bolValue: ["一码一券", "通用码"],
-      },
-      {
-        title: "发行数量",
-        value: "totalSupply",
-      },
-      {
-        title: "是否允许增发",
-        value: "autoUpdate",
-        type: "boolean",
-        bolValue: ["是", "否"],
-      },
-    ];
-    const { voucherConfig } = this.state.curInfo;
-    return (
-      <div>
-        <Descriptions
-          size={"small"}
-          title="详情配置"
-          column={1}
-          bordered
-          style={{ marginBottom: 16 }}
-        >
-          {setTitle.map((item, index) => (
-            <Descriptions.Item key={index} label={`${item.title}`}>
-              {this.handleList(item, voucherConfig)}
-            </Descriptions.Item>
-          ))}
-        </Descriptions>
-      </div>
-    );
-  };
-  
+    
   _renderInfoPanel = (campaign) => {
     return (
       <Descriptions

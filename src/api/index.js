@@ -181,6 +181,10 @@ export const reqGetAuthCode = (params) =>
 //获取票券管理列表
 export const reqGetCoupons = (params) =>
   ajax.get(BASE + "/myriad/vouchers", { params: params });
+
+export const reqGetVoucherById = (id) =>
+  ajax.get(BASE + "/myriad/vouchers/" + id);
+
 export const reqGetClients = (params) =>
   ajax.get(BASE + "/customers", { params: params });
 // 单个发券：
