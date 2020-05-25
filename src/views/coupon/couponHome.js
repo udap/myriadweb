@@ -95,11 +95,15 @@ class CouponHome extends Component {
         title: "券名",
         dataIndex: "name",
         key: "name",
+        responsive: ['lg'],
+        ellipsis: true,
       },
       {
         title: "类型",
         dataIndex: "type",
         key: "type",
+        width: 80,
+        responsive: ['lg'],
         render: (text) => {
           return (
             <Tag color="green" key={text}>
@@ -113,6 +117,7 @@ class CouponHome extends Component {
       {
         title: "标签",
         dataIndex: "tags",
+        responsive: ['lg'],
         render: (tags) => {
           return <div>{tags ? tags.split(",").map((t,index)=><Tag color="cyan">{t}</Tag>) : ""}</div>
         },
@@ -122,12 +127,14 @@ class CouponHome extends Component {
         colSpan: 2,
         dataIndex: "effective",
         width: 110,
+        responsive: ['md'],
       },
       {
         title: "end",
         colSpan: 0,
         dataIndex: "end",
         width: 110,
+        responsive: ['md'],
         render: (text) => {
           return (
             <div>{text}</div>
@@ -137,6 +144,7 @@ class CouponHome extends Component {
       {
         title: "折扣",
         dataIndex: "valueOff",
+        width: 80,
         render: (text) => {
           return <div>{text}</div>;
         },
@@ -144,6 +152,7 @@ class CouponHome extends Component {
       {
         title: "状态",
         dataIndex: "status",
+        width: 60,
         render: (text) => {
           return (
             <Tag color="green" key={text}>
@@ -156,6 +165,7 @@ class CouponHome extends Component {
       },
       {
         title: "操作",
+        width: 100,
         //fixed: "right",
         render: (chooseItem) => {
           return (

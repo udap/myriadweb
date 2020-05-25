@@ -58,6 +58,7 @@ class Distribution extends Component {
         title: "营销活动",
         dataIndex: "campaignName",
         key: "campaignName",
+        responsive: ['lg'],
       },
       {
         title: "客户",
@@ -68,11 +69,13 @@ class Distribution extends Component {
         title: "发放时间",
         dataIndex: "updatedAt",
         key: "updatedAt",
+        responsive: ['md'],
       },
       {
         title: "发放状态",
         dataIndex: "status",
         key: "status",
+        width: 100,
         render: (text) => {
           return (
             <Tag color="green" key={text}>

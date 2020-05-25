@@ -86,6 +86,7 @@ class SettlementHome extends Component {
         title: "审批机构",
         dataIndex: "marketerName",
         key: "marketerName",
+        width: 240,
         //ellipsis: true,
       },
       {
@@ -93,6 +94,7 @@ class SettlementHome extends Component {
         dataIndex: "type",
         key: "type",
         width: 110,
+        responsive: ["md"],
         render: (text) => {
           return (
             <div>
@@ -111,14 +113,16 @@ class SettlementHome extends Component {
         title: "活动名称",
         dataIndex: "campaign",
         key: "campaign",
+        responsive: ["lg"],
         render: renderCampaign,
       },
       {
-        title: "交易周期",
+        title: "核销时间",
         dataIndex: "beginDate",
         key: "beginDate",
         colSpan: 2,
         width: 110,
+        responsive: ["lg"],
         render: renderContent,
       },
       {
@@ -127,6 +131,7 @@ class SettlementHome extends Component {
         colSpan: 0,
         key: "endDate",
         width: 110,
+        responsive: ["lg"],
       },
       {
         title: "票券数量",
@@ -139,6 +144,7 @@ class SettlementHome extends Component {
         dataIndex: "settlementDate",
         key: "settlementDate",
         width: 110,
+        responsive: ["md"],
       },
       {
         title: "状态",
@@ -222,6 +228,7 @@ class SettlementHome extends Component {
         title: "核销机构",
         dataIndex: "merchantName",
         key: "merchantName",
+        width: 240,
       },
 
       {
@@ -229,6 +236,7 @@ class SettlementHome extends Component {
         dataIndex: "type",
         key: "type",
         width: 110,
+        responsive: ["md"],
         render: (text) => {
           return (
             <div>
@@ -247,14 +255,16 @@ class SettlementHome extends Component {
         title: "活动名称",
         dataIndex: "campaign",
         key: "campaign",
+        responsive: ["lg"],
         render: renderCampaign,
       },
       {
-        title: "交易周期",
+        title: "核销时间",
         dataIndex: "beginDate",
         key: "beginDate",
         colSpan: 2,
         width: 110,
+        responsive: ["lg"],
         render: renderContent,
       },
       {
@@ -262,6 +272,7 @@ class SettlementHome extends Component {
         dataIndex: "endDate",
         colSpan: 0,
         key: "endDate",
+        responsive: ["lg"],
         width: 110,
       },
       {
@@ -275,6 +286,7 @@ class SettlementHome extends Component {
         dataIndex: "settlementDate",
         key: "settlementDate",
         width: 110,
+        responsive: ["md"],
       },
       {
         title: "状态",

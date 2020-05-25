@@ -59,16 +59,19 @@ class Redemption extends Component {
         title: "营销活动",
         dataIndex: "campaignName",
         key: "campaignName",
+        responsive: ['lg'],
       },
       {
         title: "订单号",
         dataIndex: "orderId",
         key: "orderId",
+        responsive: ['lg'],
       },
       {
         title: "核销机构",
         dataIndex: "merchantName",
         key: "merchantName",
+        responsive: ['md'],
       },
       {
         title: "核销时间",
@@ -110,16 +113,19 @@ class Redemption extends Component {
         title: "营销活动",
         dataIndex: "campaignName",
         key: "campaignName",
+        responsive: ['lg'],
       },
       {
         title: "订单号",
         dataIndex: "orderId",
         key: "orderId",
+        responsive: ['lg'],
       },
       {
         title: "发行机构",
         dataIndex: "issuerName",
         key: "issuerName",
+        responsive: ['md'],
       },
       {
         title: "核销时间",

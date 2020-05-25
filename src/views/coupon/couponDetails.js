@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from 'prop-types';
 import { Tag, Descriptions, Drawer } from "antd";
 import comEvents from "../../utils/comEvents";
@@ -59,7 +59,7 @@ const CouponDetails = (props) => {
 const _renderType = (config) => {
   let subType = config.discount ? config.discount.type : config.type;
   return (
-    <Fragment>
+    <>
       <Descriptions.Item label="类型">
         <Tag color="green" key={subType}>
           {voucherTypes.map((item, index) => (
@@ -67,7 +67,7 @@ const _renderType = (config) => {
           ))}
         </Tag>
       </Descriptions.Item>
-    </Fragment>
+    </>
   );
 };
 

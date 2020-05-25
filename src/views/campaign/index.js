@@ -70,12 +70,13 @@ class Campaign extends Component {
   }
 
   initColumns(value) {
-   let btnWidth = value === "participant" ? 200 : 80;
+   let btnWidth = value === "participant" ? 160 : 50;
     this.columns = [
       {
         title: "名称",
         dataIndex: "name",
         key: "name",
+        //fixed: "left",
         //ellipsis: true,
       },
       {
@@ -86,12 +87,14 @@ class Campaign extends Component {
           return <div>优惠券活动</div>;
         },
         width: 110,
+        responsive: ['lg'],
       },
       {
         title: "主办单位",
         dataIndex: "ownerName",
         key: "ownerName",
         ellipsis: true,
+        responsive: ['lg'],
       },
       {
         title: "有效期",
@@ -99,14 +102,14 @@ class Campaign extends Component {
         key: "effective",
         colSpan: 2,
         width: 110,
-        //render: renderContent,
+        responsive: ['md'],
       },
       {
         title: "终止时间",
         dataIndex: "expiry",
         colSpan: 0,
         key: "expiry",
-        //render: renderContent,
+        responsive: ['md'],
         width: 110,
         render: (text) => {
           return (

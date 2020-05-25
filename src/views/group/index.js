@@ -307,21 +307,24 @@ class Groups extends Component {
         title: "名称",
         dataIndex: "name",
         key: "name",
+        width: 240,
       },
       {
         title: "描述",
         dataIndex: "desc",
         key: "desc",
+        responsive: ['lg'],
       },
       {
         title: "类别",
         dataIndex: "template",
-      render: (value) => <span>{value?<Tag color="blue">模版</Tag>:""}</span>
+        width: 120,
+        render: (value) => <span>{value?<Tag color="blue">模版</Tag>:""}</span>
       },
       {
         title: "操作",
         key: "action",
-        width:120,
+        width: 120,
         render: (chooseItem) => {
           const { id } = chooseItem;
           return (

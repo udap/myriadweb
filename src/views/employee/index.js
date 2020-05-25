@@ -532,7 +532,7 @@ class Employee extends Component {
         title: "姓名",
         dataIndex: "name",
         key: "name",
-        ellipsis: true,
+        width: 120,
         render: (text, record) => (
           <b
             onClick={() => {
@@ -547,25 +547,30 @@ class Employee extends Component {
       {
         title: "手机号",
         dataIndex: "cellphone",
+        width: 120,
         key: "cellphone",
       },
       {
         title: "员工编码",
         dataIndex: "code",
         key: "code",
+        width: 120,
+        responsive: ['md'],
         render: (text) => <span>{text ? text : "-"}</span>,
       },
       {
         title: "机构/部门",
         dataIndex: "org",
         key: "org",
+        responsive: ['lg'],
         render: (text) => <span>{text ? text.name : "-"}</span>,
       },
       {
         title: "分组",
         dataIndex: "groups",
         key: "groups",
-        width: 150,
+        width: 180,
+        responsive: ['lg'],
         render: (groups) => (
           <div>
             {groups.length !== 0
@@ -583,6 +588,7 @@ class Employee extends Component {
         dataIndex: "role",
         key: "role",
         width: 80,
+        responsive: ['md'],
         render: (text) => (
           <span>
             <Tag color="green" key={text}>

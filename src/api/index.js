@@ -2,6 +2,7 @@
 定义接口请求
 */
 import ajax from "./serverAjax";
+import qs from "qs";
 import { host } from "../utils/config";
 import { notification } from "antd";
 
@@ -276,6 +277,18 @@ export const reqGetAccountProfile = () =>
 export const reqPutAccountProfile = (params) =>
          ajax.put(BASE + "/accounts/me", params);
 //我的账户 END
+
+
+export const reqGetStats = (keys, since) =>
+  ajax.get(BASE + "/myriad/stats", {
+    params: {
+      key: keys,
+      since: since
+    },
+    paramsSerializer: params => {
+      return qs.stringify(params, { indices: false })
+    }
+  });
 
 export const reqDownloadSettlement = (id) =>
   ajax.get(BASE + "/myriad/settlements/" + id + "/export",{
