@@ -62,6 +62,12 @@ class CampaignDetail extends Component {
         <Descriptions.Item label="活动时间">
           {campaign.effective}至{comEvents.formatExpiry(campaign.expiry)}
         </Descriptions.Item>
+        <Descriptions.Item label="发行数量">
+            {campaign.totalSupply ? campaign.totalSupply : "-"}
+          </Descriptions.Item>
+          <Descriptions.Item label="允许增发?">
+            {campaign.autoUpdate ? "是" : "否"}
+        </Descriptions.Item>
         <Descriptions.Item label="活动主页">
           {campaign.url ? campaign.url : ""}
         </Descriptions.Item>
@@ -120,12 +126,6 @@ class CampaignDetail extends Component {
           )}
           <Descriptions.Item label="发行方式">
             {voucherConfig.multiple ? "一码一券" : "通用码"}
-          </Descriptions.Item>
-          <Descriptions.Item label="发行数量">
-            {voucherConfig.totalSupply ? voucherConfig.totalSupply : "-"}
-          </Descriptions.Item>
-          <Descriptions.Item label="允许增发?">
-            {voucherConfig.autoUpdate ? "是" : "否"}
           </Descriptions.Item>
         </Descriptions>
       )

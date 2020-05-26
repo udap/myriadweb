@@ -110,6 +110,8 @@ class CampaignEdit extends Component {
       url: "",
       effective: comEvents.getDateStr(0),
       end: comEvents.getDateStr(0),
+      totalSupply: 1,
+      autoUpdate: false,
     },
     //活动主页预览
     showUrl: false,
@@ -133,8 +135,6 @@ class CampaignEdit extends Component {
       coverImg: "",
       select: "AMOUNT",
       valueOff: null,
-      totalSupply: 1,
-      autoUpdate: false,
       amountLimit: null,
       description: "",
       //code:'',
@@ -179,6 +179,8 @@ class CampaignEdit extends Component {
         url: cont.url,
         effective: cont.effective,
         end: comEvents.formatExpiry(new Date(cont.expiry)),
+        totalSupply: cont.totalSupply,
+        autoUpdate: cont.autoUpdate,  
       },
       url: cont.url,
       name: cont.name,
@@ -213,8 +215,6 @@ class CampaignEdit extends Component {
               ? parseFloat(voucherConfig.discount.valueOff) / 100
               : voucherConfig.discount.valueOff
             : null,
-        totalSupply: voucherConfig ? voucherConfig.totalSupply : 1,
-        autoUpdate: voucherConfig ? voucherConfig.autoUpdate : false,
         amountLimit:
           voucherConfig &&
           voucherConfig.discount &&
@@ -334,6 +334,8 @@ class CampaignEdit extends Component {
       url,
       effective,
       end,
+      totalSupply,
+      autoUpdate,
     } = this.state.basicInfo;
     return (
       <Form
@@ -342,6 +344,8 @@ class CampaignEdit extends Component {
         initialValues={{
           name: name,
           category: category,
+          totalSupply: totalSupply,
+          autoUpdate: autoUpdate,
           description: description,
           url: url,
         }}
@@ -371,7 +375,15 @@ class CampaignEdit extends Component {
             onChange={this.changeDate}
           />
         </Form.Item>
-
+        <Form.Item label="发行数量" name="totalSupply" rules={[{ required: true }]}>
+          <InputNumber defaultValue={totalSupply} min={1} />
+        </Form.Item>
+        <Form.Item name="autoUpdate" label="是否允许增发">
+          <Switch
+            checked={this.state.autoUpdate}
+            onChange={this.onSwitchChange}
+          />
+        </Form.Item>
         <Form.Item
           label="活动主页"
           name="url"
@@ -418,6 +430,8 @@ class CampaignEdit extends Component {
       category: tags.toString(),
       effective: basicInfo.effective,
       expiry: comEvents.getDateStr(1, new Date(basicInfo.end)),
+      totalSupply: values.totalSupply,
+      autoUpdate: values.autoUpdate,
       url: values.url,
       metadata: {},
     };
@@ -432,6 +446,8 @@ class CampaignEdit extends Component {
         category: tags.toString(),
         effective: basicInfo.effective,
         end: basicInfo.end,
+        totalSupply: values.totalSupply,
+        autoUpdate: values.autoUpdate,
         url: values.url,
       }
     });
@@ -505,8 +521,6 @@ class CampaignEdit extends Component {
       multiple,
       coverImg,
       valueOff,
-      totalSupply,
-      autoUpdate,
       amountLimit,
       description,
       //code,
@@ -525,8 +539,6 @@ class CampaignEdit extends Component {
           initialValues={{
             name: name ? name : this.state.basicInfo.name.substr(0,10),
             multiple: multiple,
-            totalSupply: totalSupply,
-            autoUpdate: autoUpdate,
             select: select,
             valueOff: valueOff / 100,
             coverImg: coverImg,
@@ -691,21 +703,6 @@ class CampaignEdit extends Component {
           ) : (
             <div> */}
           <Form.Item
-            label="发行数量"
-            name="totalSupply"
-            rules={[{ required: true }]}
-          >
-            <InputNumber defaultValue={totalSupply} min={1} />
-          </Form.Item>
-          {/* </div>
-          )} */}
-          <Form.Item name="autoUpdate" label="是否允许增发">
-            <Switch
-              checked={this.state.autoUpdate}
-              onChange={this.onSwitchChange}
-            />
-          </Form.Item>
-          <Form.Item
             wrapperCol={{
               span: 12,
               offset: 6,
@@ -764,9 +761,6 @@ class CampaignEdit extends Component {
         ? {
             name: values.name,
             multiple: values.multiple,
-            //coverImg: this.state.coverImg,
-            totalSupply: values.totalSupply,
-            autoUpdate: values.autoUpdate,
             // description: values.description,
             discount:
               values.select === "AMOUNT"
@@ -787,8 +781,6 @@ class CampaignEdit extends Component {
             name: values.name,
             multiple: values.multiple,
             //coverImg: this.state.coverImg,
-            totalSupply: values.totalSupply,
-            autoUpdate: values.autoUpdate,
             // description: values.description,
             discount:
               values.select === "AMOUNT"

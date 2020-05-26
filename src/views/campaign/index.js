@@ -118,6 +118,12 @@ class Campaign extends Component {
         },
       },
       {
+        title: "发行数量",
+        dataIndex: "totalSupply",
+        key: "totalSupply",
+        ellipsis: true,
+      },
+      {
         title: "状态",
         dataIndex: "status",
         key: "status",
