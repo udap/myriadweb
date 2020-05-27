@@ -18,7 +18,7 @@ import {
   UploadOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-
+import NumberFormat from 'react-number-format';
 import storageUtils from "../../utils/storageUtils";
 import { campaignStatuses } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
@@ -122,6 +122,13 @@ class Campaign extends Component {
         dataIndex: "totalSupply",
         key: "totalSupply",
         width: 110,
+        render: (value) => {
+          return (
+            <div style={{textAlign: "right"}}>
+            <NumberFormat value={value} displayType={'text'} thousandSeparator={true} />
+            </div>
+          );
+        },
       },
       {
         title: "状态",

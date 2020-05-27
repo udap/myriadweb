@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { Tag, Descriptions, Input, Drawer, Table, Collapse } from "antd";
+import NumberFormat from 'react-number-format';
 import comEvents from "../../utils/comEvents";
 import "./index.less";
 
@@ -63,9 +64,9 @@ class CampaignDetail extends Component {
           {campaign.effective}至{comEvents.formatExpiry(campaign.expiry)}
         </Descriptions.Item>
         <Descriptions.Item label="发行数量">
-            {campaign.totalSupply ? campaign.totalSupply : "-"}
-          </Descriptions.Item>
-          <Descriptions.Item label="允许增发?">
+          <NumberFormat value={campaign.totalSupply} displayType={'text'} thousandSeparator={true}/>
+        </Descriptions.Item>
+        <Descriptions.Item label="允许增发?">
             {campaign.autoUpdate ? "是" : "否"}
         </Descriptions.Item>
         <Descriptions.Item label="活动主页">
@@ -86,10 +87,13 @@ class CampaignDetail extends Component {
         <Fragment>
         <Descriptions.Item label="类型">折扣券</Descriptions.Item>
         <Descriptions.Item label="折扣">
-          {voucherConfig.discount.valueOff}% 
+          <NumberFormat value={voucherConfig.discount.valueOff} displayType={'text'} suffix={'%'}/>
         </Descriptions.Item>                
         <Descriptions.Item label="最高优惠">
-          {voucherConfig.discount.amountLimit ? comEvents.formatCurrency(voucherConfig.discount.amountLimit) + "元" : "无限制"}
+          {voucherConfig.discount.amountLimit ? 
+            <NumberFormat value={voucherConfig.discount.amountLimit/100} displayType={'text'} thousandSeparator={true} prefix={'¥'}/>
+             : "无限制"
+          }
         </Descriptions.Item>
         </Fragment>
       )
@@ -102,7 +106,7 @@ class CampaignDetail extends Component {
         代金券
         </Descriptions.Item>
         <Descriptions.Item label="金额">
-            {voucherConfig.discount.valueOff / 100}元 
+          <NumberFormat value={voucherConfig.discount.valueOff/100} displayType={'text'} thousandSeparator={true} prefix={'¥'}/>
         </Descriptions.Item> 
         </Fragment>
       )

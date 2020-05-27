@@ -1,9 +1,25 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { Tag, Descriptions, Drawer } from "antd";
+import { Tag, Descriptions, Drawer, Table, Space, Card } from "antd";
+import NumberFormat from 'react-number-format';
 import comEvents from "../../utils/comEvents";
 import { couponStatuses, voucherTypes } from "../../utils/constants";
 import "./index.less";
+
+const merchantColumns = [
+  {
+    title: "商户名称",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "商户地址",
+    dataIndex: "address",
+    key: "address",
+  },
+];
+
+const pageSize = 20;
 
 const CouponDetails = (props) => {
   const {voucher, visible, onClose} = props;
@@ -14,6 +30,7 @@ const CouponDetails = (props) => {
       onClose={onClose}
       visible={visible}
     >
+      <Space direction="vertical">
       <Descriptions size="small" bordered column={1}>
         <Descriptions.Item label="券号">
           {voucher.code}
@@ -62,6 +79,21 @@ const CouponDetails = (props) => {
           </Tag>
         </Descriptions.Item>
       </Descriptions>
+      <div>
+      <h4>参与商户</h4>
+      <Table
+        bordered
+        size="small"
+        className="tableFont"
+        columns={merchantColumns}
+        dataSource={voucher.merchants}
+        pagination={{
+          pageSize: pageSize,
+          total: voucher.merchants.length,
+        }}
+      />
+      </div>
+      </Space>
     </Drawer>
   ) : null;
 };
@@ -84,20 +116,20 @@ const _renderType = (config) => {
 const _renderValueOff = (config) => {
   let subType = config.discount ? config.discount.type : config.type;
   let valueOff = config.discount ? config.discount.valueOff : "";
-  if (subType === "AMOUNT") {
-    valueOff = "¥"+comEvents.formatCurrency(valueOff);
-  }
-  else if (subType === "PERCENT")
-    valueOff = valueOff + "%";
   return (
     <>
       <Descriptions.Item label="折扣">
-        {valueOff}
+        {subType === "AMOUNT" ? 
+          <NumberFormat value={valueOff/100} displayType={"text"} thousandSeparator={true} prefix={'¥'}/> 
+          : <NumberFormat value={valueOff} displayType={"text"} suffix={'%'} />
+        }
       </Descriptions.Item>   
       {
         subType === "PERCENT" ? (
         <Descriptions.Item label="最高优惠">
-          {config.discount.amountLimit ? comEvents.formatCurrency(config.discount.amountLimit) + "元" : "无限制"}
+          {config.discount.amountLimit ? 
+            <NumberFormat value={config.discount.amountLimit/100} displayType={"text"} thousandSeparator={true} prefix={'¥'}/>
+            : "无限制"}
         </Descriptions.Item>
         ) : null  
       } 
