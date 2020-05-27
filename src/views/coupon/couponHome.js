@@ -178,8 +178,9 @@ class CouponHome extends Component {
               >
                 查看
               </b>
-              <Divider type="vertical" />
-              {chooseItem.status === "NEW" ? (
+              {this.state.typeSelection === "owner" && chooseItem.status === "NEW" ? (
+                <>
+                <Divider type="vertical" />
                 <b
                   onClick={() => {
                     this.showList(chooseItem.id);
@@ -188,8 +189,9 @@ class CouponHome extends Component {
                 >
                   发放
                 </b>
+                </>
               ) : (
-                "-"
+                null
               )}
             </div>
           );
