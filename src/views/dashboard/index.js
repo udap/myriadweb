@@ -1,147 +1,150 @@
 import React, { Component } from "react";
 import storageUtils from "../../utils/storageUtils";
-import { reqGetAccounts, regGetCurOrg } from "../../api";
-import { message, Modal, Result } from "antd";
-import { ExclamationCircleOutlined, SmileOutlined } from "@ant-design/icons";
+import { reqGetStats } from "../../api";
+import { PageHeader, Statistic, Card, Row, Col, Modal, Space } from "antd";
+import { ExclamationCircleOutlined, SmileOutlined, ReloadOutlined } from "@ant-design/icons";
 import { LinkBtn } from "../../components";
 import { Loading } from "../../components";
+import "./index.less";
 const { confirm } = Modal;
+
+const gridStyle = {
+  width: '25%',
+  textAlign: 'center',
+};
 
 class Dashboard extends Component {
   state = {
-    account: {},
-    showContent: true,
+    showLatest: false,
+    latestStats: null,
+    showSince: false,
+    statsSince: null,
     inited: false,
   };
-  componentDidMount() {
-   this.getList();
-  }
-  /*
-获取当前机构
-*/
-  regGetCurOrg = async (newOrg) => {
-    let that = this;
-    let uid = newOrg ? newOrg : storageUtils.getUser().orgUid;
-    const result = await regGetCurOrg(uid);
 
-    if (
-      result &&
-      result.data &&
-      result.data.content &&
-      result.data.content.status === "NEW"
-    ) {
-      Modal.success({
-        content: <div className="authCode">您已提交机构注册，请耐心等待！</div>,
-        okText: "退出",
-        onOk() {
-          //清空缓存localStorage
-          storageUtils.removeUser();
-          storageUtils.removeOrg();
-          storageUtils.removeToken();
-          //user = {};
-          //返回登陆页
-          that.props.history.replace("/login");
-        },
-      });
-      this.setState({
-        inited: false,
-      });
-    } else {
-      //存储机构信息
-      storageUtils.saveOrg(result.data.content); //保存到localStorage中
-      this.setState({
-        inited: true,
-        showContent: true,
-      });
-    }
-  };
-  /*获取用户信息*/
-  getList = async () => {
-    const result = await reqGetAccounts();
-    //请求成功
-    if (result && result.data.retcode === 0) {
-      const data = result.data.content;
-      storageUtils.saveUser(data); //保存到localStorage中
-      this.setState({
-        account: data,
-        //inited: true,
-      });
-      //user
-      let hasOrg = data && data.orgUid;
-      if (hasOrg) {
-          this.regGetCurOrg();
-      } else {
-        this.setState({
-          inited: true,
-          showContent: false,
-        });
-      }
-    }
-  };
-  //退出登录
-  logout = () => {
-    confirm({
-      title: "确认退出登录吗？",
-      icon: <ExclamationCircleOutlined />,
-      onOk: () => {
-        //清空缓存localStorage
-        storageUtils.removeUser();
-        storageUtils.removeOrg();
-        storageUtils.removeToken();
-        //user = {};
-        //返回登陆页
-        this.props.history.replace("/login");
-      },
+  componentDidMount() {
+    this.initLatestStats();
+    this.initStatsSince("2020-05-01");
+    this.setState({
+      inited: true,
     });
   };
-  address = (route) => {
-    if (route === "exit") {
-      this.logout();
-    } else {
-      this.props.history.replace("/admin/myOrgs");
-    }
+
+  initLatestStats = async () => {
+    const res = await reqGetStats([
+      "EMP_CUSTOMERS",
+      "ORG_CUSTOMERS",
+      "CAMPAIGNS",
+      "ORG_CAMPAIGNS",
+      "TRANSFERABLE_COUPONS",
+      "ORG_TRANSFERABLE_COUPONS",
+      "DISTRIBUTABLE_COUPONS",
+      "ORG_DISTRIBUTABLE_COUPONS",
+    ]);
+    const stats = res && res.data ? res.data.content : {};
+    this.setState({
+      showLatest: true,
+      latestStats: stats,
+    });
   };
-  _renderRegOrg = () => {
-    return (
-      <Result
-        status="warning"
-        title="您尚未加入任何机构。请联系您的机构管理员或注册您的机构。"
-        extra={
-          <div>
-            <LinkBtn color="#1890ff" onClick={this.address.bind(this, "exit")}>
-              退出
-            </LinkBtn>
-            <LinkBtn color="#1890ff" onClick={this.address.bind(this, "reg")}>
-              注册机构
-            </LinkBtn>
-          </div>
-        }
-      />
-    );
-  };
-  _renderTable = () => {
-    const { accout } = this.state;
-    return (
-      <div>
-        <Result icon={<SmileOutlined />} title="欢迎访问江渝礼享！" />
-      </div>
-    );
-  };
-  renderContent = () => {
-    return (
-      <div>
-        {this.state.showContent ? this._renderTable() : this._renderRegOrg()}
-      </div>
-    );
+
+  initStatsSince = async (since) => {
+    const res = await reqGetStats([
+      "DISTRIBUTIONS",
+      "ORG_DISTRIBUTIONS",
+      "ORG_REDEEMED",
+      "ORG_REDEMPTIONS",
+    ], since);
+    const stats = res && res.data ? res.data.content : {};
+    this.setState({
+      showSince: true,
+      statsSince: stats,
+    });
   };
 
   render() {
     return (
       <div style={{ height: "100%" }}>
-        {this.state.inited ? this.renderContent() : <Loading />}
+        <PageHeader
+          className="site-page-header-responsive cont"
+          title="仪表仓"
+          extra={[
+            <ReloadOutlined
+              key="add"
+              className="setIcon"
+              onClick={() => this.initStatsSince("2020-05-01")}
+            />,
+          ]}
+        >
+        </PageHeader>
+        <StatsPanel1 stats={this.state.latestStats} />
+        <StatsPanel2 stats={this.state.statsSince} />
       </div>
     );
   }
 }
 
+const StatsPanel1 = (props) => {
+  const stats = props.stats;
+  return stats ? (
+    <div>
+    <Row gutter="16">
+      <Col span="24">
+        <Card>
+          <Card.Grid style={gridStyle}>
+            <Statistic title="客户"
+              value={stats['EMP_CUSTOMERS']} 
+              suffix={"/" + stats['ORG_CUSTOMERS']} />
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            <Statistic title="参与活动"
+              value={stats.CAMPAIGNS}
+              suffix={"/" + stats.ORG_CAMPAIGNS}/>
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            <Statistic title="可配券"
+              value={stats.TRANSFERABLE_COUPONS}
+              suffix={"/" + stats.ORG_TRANSFERABLE_COUPONS}/>
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            <Statistic title="可发券"
+              value={stats.DISTRIBUTABLE_COUPONS}
+              suffix={"/" + stats.ORG_DISTRIBUTABLE_COUPONS} />
+          </Card.Grid>
+        </Card>
+      </Col>
+    </Row>
+    </div>
+  ) : <Loading/>;
+};
+
+const StatsPanel2 = (props) => {
+  const stats = props.stats;
+  return stats ? (
+    <div className="dashboard-statistic-card">
+    <Row gutter="16">
+      <Col span="8">
+        <Card bodyStyle={{textAlign: 'center'}}>
+          <Statistic title="已发放"
+            value={stats['DISTRIBUTIONS']} 
+            suffix={"/"+stats['ORG_DISTRIBUTIONS']}/>
+        </Card>
+      </Col>
+      <Col span="8">
+        <Card bodyStyle={{textAlign: 'center'}}>
+          <Statistic title="已核销"
+              value={stats["ORG_REDEEMED"]} 
+          />
+        </Card>
+      </Col>
+      <Col span="8">
+        <Card bodyStyle={{textAlign: 'center'}}>
+          <Statistic title="核销"
+            value={stats["ORG_REDEMPTIONS"]} />            
+        </Card>
+      </Col>
+    </Row>
+    </div>
+  ) : <Loading />;
+}
 export default Dashboard;
