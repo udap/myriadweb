@@ -27,6 +27,13 @@ const CouponDetails = (props) => {
         <Descriptions.Item label="营销机构">
           {voucher.issuerName}
         </Descriptions.Item>
+        { 
+          voucher.campaign ? (
+            <Descriptions.Item label="营销活动">
+              {voucher.campaign.name}
+            </Descriptions.Item>
+          ) : null
+        }
         <Descriptions.Item label="标签">
           <span>{voucher.category ? voucher.category.split(",").map((t,index)=><Tag color="cyan" key={index}>{t}</Tag>) : ""}</span>
         </Descriptions.Item>
@@ -37,13 +44,16 @@ const CouponDetails = (props) => {
           </Descriptions.Item>
           ) : (
             <Descriptions.Item label="有效期">
-              {voucher.config.effective}至{comEvents.formatExpiry(voucher.config.expiry)}
+              {voucher.effective}至{comEvents.formatExpiry(voucher.expiry)}
             </Descriptions.Item>
           )
         }
         {
           _renderValueOff(voucher.config)
         }
+        <Descriptions.Item label="持有人">
+          {voucher.ownerName}
+        </Descriptions.Item>
         <Descriptions.Item label="状态">
           <Tag color="green" key={voucher.status}>
             {couponStatuses.map((item, index) => (
