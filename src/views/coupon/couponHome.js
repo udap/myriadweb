@@ -126,6 +126,7 @@ class CouponHome extends Component {
       {
         title: "标签",
         dataIndex: "tags",
+        width: 120,
         responsive: ['lg'],
         render: (tags) => {
           return <div>{tags ? tags.split(",").map((t,index)=><Tag color="cyan">{t}</Tag>) : ""}</div>
