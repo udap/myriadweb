@@ -431,7 +431,7 @@ class CampaignEdit extends Component {
   //第二步提交
   onFinish2 = async (values) => {
     let { campaignType, basicInfo, tags, isNew } = this.state;
-    if (!comEvents.compareToday(basicInfo.effective)) {
+    if (comEvents.compareToday(basicInfo.effective)) {
       notification.info({
         message: '活动时间不能小于今天'
       })
@@ -547,7 +547,7 @@ class CampaignEdit extends Component {
   // };
   //第三步
   renderStep3 = () => {
-    const {
+    let {
       multiple,
       coverImg,
       valueOff,

@@ -19,10 +19,8 @@ const formatNumber = (n) => {
   return n[1] ? n : "0" + n;
 };
 
-const compareToday = (date)=>{
-  let cur = new Date().getTime();
-  let choosetime = new Date(date).getTime(); 
-  return choosetime<cur?false:true;
+const compareToday = (dateValue)=>{
+  return new Date().getTime() >= new Date(dateValue).getTime() + 3600 * 1000 * 24;
 }
 const formatDate = (date) => {
   const year = date.getFullYear();
