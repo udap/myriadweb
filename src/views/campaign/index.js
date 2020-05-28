@@ -70,7 +70,7 @@ class Campaign extends Component {
   }
 
   initColumns(value) {
-   let btnWidth = value === "participant" ? 160 : 50;
+    let btnWidth = value === "participant" ? 160 : 50;
     this.columns = [
       {
         title: "名称",
@@ -87,14 +87,14 @@ class Campaign extends Component {
           return <div>优惠券活动</div>;
         },
         width: 110,
-        responsive: ['lg'],
+        responsive: ["lg"],
       },
       {
         title: "主办单位",
         dataIndex: "ownerName",
         key: "ownerName",
         ellipsis: true,
-        responsive: ['lg'],
+        responsive: ["lg"],
       },
       {
         title: "有效期",
@@ -102,14 +102,14 @@ class Campaign extends Component {
         key: "effective",
         colSpan: 2,
         width: 110,
-        responsive: ['md'],
+        responsive: ["md"],
       },
       {
         title: "终止时间",
         dataIndex: "expiry",
         colSpan: 0,
         key: "expiry",
-        responsive: ['md'],
+        responsive: ["md"],
         width: 110,
         render: (text) => {
           return (
@@ -167,10 +167,19 @@ class Campaign extends Component {
   showExtraBtns = (chooseItem) => {
     const { id, status, name } = chooseItem;
     return (
-      <div style={{display:"inline"}}>
+      <div style={{ display: "inline" }}>
         <Divider type="vertical" />
         {status === "INITIATED" ? (
           <span>
+            <b
+              onClick={() => {
+                this.props.history.push("/admin/campaign/edit/" + id);
+              }}
+              className="ant-blue-link cursor"
+            >
+              编辑
+            </b>
+            <Divider type="vertical" />
             <Popconfirm
               title="确认发布吗?"
               onConfirm={this.publishItem.bind(this, id)}
@@ -180,17 +189,8 @@ class Campaign extends Component {
               <b className="ant-green-link cursor">发布</b>
             </Popconfirm>
 
-            {/*<Divider type="vertical" />
-                   <b
-                    onClick={() => {
-                      this.props.history.push("/admin/campaign/edit/" + id);
-                    }}
-                    className="ant-blue-link"
-                  >
-                    修改
-                  </b> */}
-
             <Divider type="vertical" />
+
             <b
               onClick={() => {
                 let that = this;
@@ -230,13 +230,10 @@ class Campaign extends Component {
               发放
             </b>
           </span>
-        ) : (
-          null
-          )}
-          </div>
-    )
-          
-  }
+        ) : null}
+      </div>
+    );
+  };
   //展示活动详情
   showDetail = (item) => {
     this.reqGetCampaignById(item.id);
@@ -519,9 +516,9 @@ class Campaign extends Component {
           ]}
         ></PageHeader>
         {/* --搜索栏-- */}
-        <QueryForm 
+        <QueryForm
           loading={this.state.loading}
-          onChangeType={this.onChange} 
+          onChangeType={this.onChange}
           enableLoading={this.enterLoading}
           onFinish={this.searchValue}
         />
