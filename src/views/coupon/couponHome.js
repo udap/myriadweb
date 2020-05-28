@@ -13,6 +13,7 @@ import {
   Select,
   Pagination,
 } from "antd";
+import NumberFormat from 'react-number-format';
 import storageUtils from "../../utils/storageUtils";
 import { reqGetCoupons, reqGetVoucherById, reqPublishDis, reqGetClients } from "../../api";
 import { Loading } from "../../components";
@@ -115,8 +116,17 @@ class CouponHome extends Component {
         },
       },
       {
+        title: "营销活动",
+        dataIndex: "campaign",
+        responsive: ['lg'],
+        render: (campaign) => {
+          return <div>{campaign.name}</div>
+        }
+      },
+      {
         title: "标签",
         dataIndex: "tags",
+        width: 120,
         responsive: ['lg'],
         render: (tags) => {
           return <div>{tags ? tags.split(",").map((t,index)=><Tag color="cyan" key={index}>{t}</Tag>) : ""}</div>
@@ -145,8 +155,13 @@ class CouponHome extends Component {
         title: "折扣",
         dataIndex: "valueOff",
         width: 80,
-        render: (text) => {
-          return <div>{text}</div>;
+        render: (value, row, index) => {
+          if (row.type === "AMOUNT")
+            return <NumberFormat value={value/100} displayType={'text'} thousandSeparator={true} prefix={'¥'}/>
+          else if (row.type === "PERCENT")
+            return <NumberFormat value={value} displayType={'text'} suffix={'%'}/>
+          else
+            return <div>{value}</div>
         },
       },
       {
@@ -270,12 +285,6 @@ class CouponHome extends Component {
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
         let subType = cont[i].config.discount ? cont[i].config.discount.type : cont[i].config.type;
-        let valueOff = cont[i].config.discount ? cont[i].config.discount.valueOff : "";
-        if (subType === "AMOUNT") {
-          valueOff = "¥"+comEvents.formatCurrency(valueOff);
-        }
-        else if (subType === "PERCENT")
-          valueOff = valueOff + "%";
         data.push({
           key: i,
           id: cont[i].id,
@@ -284,10 +293,11 @@ class CouponHome extends Component {
           type: subType,
           tags: cont[i].category,
           name: cont[i].config.name,
-          valueOff: valueOff,
+          valueOff: cont[i].config.discount?cont[i].config.discount.valueOff:null,
           effective: cont[i].effective,
           end: comEvents.formatExpiry(cont[i].expiry),
           status: cont[i].status,
+          campaign: cont[i].campaign,
         });
       }
     }
