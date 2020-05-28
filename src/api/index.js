@@ -160,7 +160,6 @@ export const reqActivateEmployee = (uid) =>
          //修改员工
 export const reqPutEmployee = (uid, params) =>
          ajax.put(BASE + "/employees/" + uid, params);
-         ;
 //员工管理 END
 
 //三.商户管理 START
@@ -172,6 +171,11 @@ export const reqGetMerchants = (params) =>
 //添加商户
 export const reqAddMerchant = (params) =>
   ajax.post(BASE + "/merchants", params);
+
+  //添加商户标签
+export const reqPutMerchantTags = (uid,params) =>
+ajax.put(BASE + "/merchants/"+uid+"/tags", params);
+
 //商户管理 END
 
 //四：授权码 START

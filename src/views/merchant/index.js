@@ -11,15 +11,20 @@ import {
   Form,
   Drawer,
   notification,
+  Tag,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import comEvents from "../../utils/comEvents";
-import { reqPermit, reqAddMerchant, reqDelMerchant } from "../../api";
+import {
+  reqPermit,
+  reqAddMerchant,
+  reqDelMerchant,
+  reqPutMerchantTags,
+} from "../../api";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
-
 import storageUtils from "../../utils/storageUtils";
 import { reqGetMerchants } from "../../api";
-import { Loading } from "../../components";
+import { Loading, EditableTagGroup } from "../../components";
 import "../../css/common.less";
 import "./index.less";
 const { confirm } = Modal;
@@ -62,7 +67,7 @@ class Merchant extends Component {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
-      searchTxt: value?value:this.state.searchTxt,
+      searchTxt: value ? value : this.state.searchTxt,
     };
     const result = await reqGetMerchants(parmas);
     const cont = result && result.data ? result.data.content : [];
@@ -80,6 +85,7 @@ class Merchant extends Component {
           phone: item.phone,
           upCode: item.upCode,
           authorizedAt: cont.content[i].authorizedAt,
+          tags: cont.content[i].tags,
         });
       }
     }
@@ -100,7 +106,7 @@ class Merchant extends Component {
   };
   searchValue = (value) => {
     this.setState({
-      currentPage:1,
+      currentPage: 1,
       searchTxt: value.searchTxt,
     });
     this.getMerchant(1, value.searchTxt);
@@ -163,9 +169,11 @@ class Merchant extends Component {
         onFinishFailed={this.onFinishFailed}
         validateMessages={defaultValidateMessages.defaultValidateMessages}
       >
-        <p class="description">添加入驻商户需要获得相关商户授权。请向相关商户索取授权码及银联商户码。</p>
+        <p class="description">
+          添加入驻商户需要获得相关商户授权。请向相关商户索取授权码及银联商户码。
+        </p>
         <Form.Item label="授权码" name="authCode" rules={[{ required: true }]}>
-           <Input disabled={this.state.isNew ? false : true} />
+          <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
         <Form.Item
           label="银联商户码"
@@ -216,6 +224,13 @@ class Merchant extends Component {
       onCancel() {},
     });
   };
+  newTags = async (record, newTags) => {
+    const result = await reqPutMerchantTags(record.uid, newTags);
+    if (result.data.retcode !== 1) {
+      //刷新列表数据
+      this.getMerchant(1);
+    }
+  };
   renderContent = () => {
     const { merchants, size, currentPage, total, searchTxt } = this.state;
     //名字 银联商户码(upCode) 电话 地址
@@ -251,6 +266,24 @@ class Merchant extends Component {
         key: "authorizedAt",
         width: 120,
         responsive: ["lg"],
+      },
+      {
+        title: "标签",
+        dataIndex: "tags",
+        key: "tags",
+        width: 120,
+        responsive: ["lg"],
+        render: (tags) => {
+          return (
+            <div>
+              {tags.map((t, index) => (
+                <Tag color="cyan" key={index}>
+                  {t}
+                </Tag>
+              ))}
+            </div>
+          );
+        },
       },
       {
         title: "操作",
@@ -311,10 +344,7 @@ class Merchant extends Component {
           <Row>
             <Col span={7}>
               <Form.Item name="searchTxt" label="查询条件">
-                <Input
-                  placeholder="输入名字/商户号/电话/地址搜索"
-                  allowClear
-                />
+                <Input placeholder="输入名字/商户号/电话/地址搜索" allowClear />
               </Form.Item>
             </Col>
             <Col>
@@ -340,6 +370,16 @@ class Merchant extends Component {
           dataSource={merchants}
           columns={columns}
           pagination={false}
+          expandable={{
+            expandedRowRender: (record) => (
+              <div style={{ margin: 0 }}>
+                <EditableTagGroup
+                  tags={record.tags ? record.tags : []}
+                  newTags={this.newTags.bind(this, record)}
+                />
+              </div>
+            ),
+          }}
         />
         <div className="pagination">
           <Pagination
