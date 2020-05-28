@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import storageUtils from "../../utils/storageUtils";
 import { reqGetStats } from "../../api";
 import {
   PageHeader,
@@ -7,19 +6,17 @@ import {
   Card,
   Row,
   Col,
-  Modal,
-  Space,
   DatePicker,
+  Space,
 } from "antd";
 import {
-  ExclamationCircleOutlined,
-  SmileOutlined,
-  ReloadOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
-import { LinkBtn } from "../../components";
+import moment from "moment";
+import "moment/locale/zh-cn";
 import { Loading } from "../../components";
 import "./index.less";
-const { confirm } = Modal;
+import comEvents from "../../utils/comEvents";
 
 const gridStyle = {
  width: "100%",
@@ -33,6 +30,7 @@ class Dashboard extends Component {
     showSince: false,
     statsSince: null,
     inited: false,
+    since: comEvents.firstDayOfMonth(),
   };
 
   componentDidMount() {
@@ -60,8 +58,12 @@ class Dashboard extends Component {
       latestStats: stats,
     });
   };
-  onChange = (date, dateString) => {
-    this.initStatsSince(dateString)
+
+  onChangeSince = (date, dateString) => {
+    this.initStatsSince(dateString);
+    this.setState({
+      since: dateString,
+    });
   };
 
   initStatsSince = async (since) => {
@@ -82,16 +84,11 @@ class Dashboard extends Component {
         <PageHeader
           className="site-page-header-responsive cont"
           title="仪表仓"
-          extra={[
-            <ReloadOutlined
-              key="add"
-              className="setIcon"
-              onClick={() => this.initStatsSince("2020-05-01")}
-            />,
-          ]}
-        ></PageHeader>
+        />
         <StatsPanel1 stats={this.state.latestStats} />
-        <StatsPanel2 stats={this.state.statsSince} onChange={this.onChange} />
+        <StatsPanel2 stats={this.state.statsSince} 
+          since={this.state.since} 
+          onChange={this.onChangeSince} />
       </div>
     );
   }
@@ -102,8 +99,8 @@ const StatsPanel1 = (props) => {
   return stats ? (
     <div>
 
-          <Card>
-          <Row>
+    <Card>
+      <Row>
         <Col xs={24} sm={24} md={24} lg={6} xl={6}>
             <Card.Grid style={gridStyle}>
               <Statistic
@@ -143,7 +140,7 @@ const StatsPanel1 = (props) => {
             
         </Col>
       </Row>
-          </Card>
+    </Card>
     </div>
   ) : (
     <Loading />
@@ -155,7 +152,12 @@ const StatsPanel2 = (props) => {
   return stats ? (
     <div className="dashboard-statistic-card">
       <div className="since-date">
-      统计时间：<DatePicker onChange={props.onChange} />
+      <Space>
+        <div>开始时间: </div>
+        <DatePicker placeholder="开始时间" 
+          defaultValue={moment(props.since,'YYYY-MM-DD')} 
+          onChange={props.onChange} />
+      </Space>  
       </div>
       <Row>
         <Col  xs={24} sm={24} md={24} lg={8} xl={8}>

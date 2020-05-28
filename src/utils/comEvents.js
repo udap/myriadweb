@@ -46,6 +46,15 @@ const getDateStr = (AddDayCount, date) => {
   return [year, month, day].map(formatNumber).join("-");
 };
 
+const firstDayOfMonth = () => {
+  var dd = new Date();
+  const year = dd.getFullYear();
+  const month = dd.getMonth() + 1;
+  const day = dd.getDate();
+
+  return [year, month, 1].map(formatNumber).join("-");
+};
+
 const formatCurrency = (value) => {
   if (value && typeof value === 'number')
     return (value/100).toFixed(2);
@@ -75,6 +84,7 @@ export default {
   formatDate,
   formatExpiry,
   getDateStr,
+  firstDayOfMonth,
   formatCurrency,
   hasPower,
   compareToday
