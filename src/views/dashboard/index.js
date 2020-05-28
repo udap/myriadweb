@@ -1,16 +1,29 @@
 import React, { Component } from "react";
 import storageUtils from "../../utils/storageUtils";
 import { reqGetStats } from "../../api";
-import { PageHeader, Statistic, Card, Row, Col, Modal, Space } from "antd";
-import { ExclamationCircleOutlined, SmileOutlined, ReloadOutlined } from "@ant-design/icons";
+import {
+  PageHeader,
+  Statistic,
+  Card,
+  Row,
+  Col,
+  Modal,
+  Space,
+  DatePicker,
+} from "antd";
+import {
+  ExclamationCircleOutlined,
+  SmileOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import { LinkBtn } from "../../components";
 import { Loading } from "../../components";
 import "./index.less";
 const { confirm } = Modal;
 
 const gridStyle = {
-  width: '25%',
-  textAlign: 'center',
+ width: "100%",
+  textAlign: "center",
 };
 
 class Dashboard extends Component {
@@ -28,7 +41,7 @@ class Dashboard extends Component {
     this.setState({
       inited: true,
     });
-  };
+  }
 
   initLatestStats = async () => {
     const res = await reqGetStats([
@@ -47,14 +60,15 @@ class Dashboard extends Component {
       latestStats: stats,
     });
   };
+  onChange = (date, dateString) => {
+    this.initStatsSince(dateString)
+  };
 
   initStatsSince = async (since) => {
-    const res = await reqGetStats([
-      "DISTRIBUTIONS",
-      "ORG_DISTRIBUTIONS",
-      "ORG_REDEEMED",
-      "ORG_REDEMPTIONS",
-    ], since);
+    const res = await reqGetStats(
+      ["DISTRIBUTIONS", "ORG_DISTRIBUTIONS", "ORG_REDEEMED", "ORG_REDEMPTIONS"],
+      since
+    );
     const stats = res && res.data ? res.data.content : {};
     this.setState({
       showSince: true,
@@ -75,10 +89,9 @@ class Dashboard extends Component {
               onClick={() => this.initStatsSince("2020-05-01")}
             />,
           ]}
-        >
-        </PageHeader>
+        ></PageHeader>
         <StatsPanel1 stats={this.state.latestStats} />
-        <StatsPanel2 stats={this.state.statsSince} />
+        <StatsPanel2 stats={this.state.statsSince} onChange={this.onChange} />
       </div>
     );
   }
@@ -88,63 +101,86 @@ const StatsPanel1 = (props) => {
   const stats = props.stats;
   return stats ? (
     <div>
-    <Row gutter="16">
-      <Col span="24">
-        <Card>
-          <Card.Grid style={gridStyle}>
-            <Statistic title="客户"
-              value={stats['EMP_CUSTOMERS']} 
-              suffix={"/" + stats['ORG_CUSTOMERS']} />
-          </Card.Grid>
-          <Card.Grid style={gridStyle}>
-            <Statistic title="参与活动"
-              value={stats.CAMPAIGNS}
-              suffix={"/" + stats.ORG_CAMPAIGNS}/>
-          </Card.Grid>
-          <Card.Grid style={gridStyle}>
-            <Statistic title="可配券"
-              value={stats.TRANSFERABLE_COUPONS}
-              suffix={"/" + stats.ORG_TRANSFERABLE_COUPONS}/>
-          </Card.Grid>
-          <Card.Grid style={gridStyle}>
-            <Statistic title="可发券"
-              value={stats.DISTRIBUTABLE_COUPONS}
-              suffix={"/" + stats.ORG_DISTRIBUTABLE_COUPONS} />
-          </Card.Grid>
-        </Card>
-      </Col>
-    </Row>
+
+          <Card>
+          <Row>
+        <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+            <Card.Grid style={gridStyle}>
+              <Statistic
+                title="客户"
+                value={stats["EMP_CUSTOMERS"]}
+                suffix={"/" + stats["ORG_CUSTOMERS"]}
+              />
+              
+            </Card.Grid>
+            </Col>
+              <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+            <Card.Grid style={gridStyle}>
+              <Statistic
+                title="参与活动"
+                value={stats.CAMPAIGNS}
+                suffix={"/" + stats.ORG_CAMPAIGNS}
+              />
+            </Card.Grid>
+            </Col>
+              <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+            <Card.Grid style={gridStyle}>
+              <Statistic
+                title="可配券"
+                value={stats.TRANSFERABLE_COUPONS}
+                suffix={"/" + stats.ORG_TRANSFERABLE_COUPONS}
+              />
+            </Card.Grid>
+            </Col>
+              <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+            <Card.Grid style={gridStyle}>
+              <Statistic
+                title="可发券"
+                value={stats.DISTRIBUTABLE_COUPONS}
+                suffix={"/" + stats.ORG_DISTRIBUTABLE_COUPONS}
+              />
+            </Card.Grid>
+            
+        </Col>
+      </Row>
+          </Card>
     </div>
-  ) : <Loading/>;
+  ) : (
+    <Loading />
+  );
 };
 
 const StatsPanel2 = (props) => {
   const stats = props.stats;
   return stats ? (
     <div className="dashboard-statistic-card">
-    <Row gutter="16">
-      <Col span="8">
-        <Card bodyStyle={{textAlign: 'center'}}>
-          <Statistic title="已发放"
-            value={stats['DISTRIBUTIONS']} 
-            suffix={"/"+stats['ORG_DISTRIBUTIONS']}/>
-        </Card>
-      </Col>
-      <Col span="8">
-        <Card bodyStyle={{textAlign: 'center'}}>
-          <Statistic title="已核销"
-              value={stats["ORG_REDEEMED"]} 
-          />
-        </Card>
-      </Col>
-      <Col span="8">
-        <Card bodyStyle={{textAlign: 'center'}}>
-          <Statistic title="核销"
-            value={stats["ORG_REDEMPTIONS"]} />            
-        </Card>
-      </Col>
-    </Row>
+      <div className="since-date">
+      统计时间：<DatePicker onChange={props.onChange} />
+      </div>
+      <Row>
+        <Col  xs={24} sm={24} md={24} lg={8} xl={8}>
+          <Card bodyStyle={{ textAlign: "center" }}>
+            <Statistic
+              title="已发放"
+              value={stats["DISTRIBUTIONS"]}
+              suffix={"/" + stats["ORG_DISTRIBUTIONS"]}
+            />
+          </Card>
+        </Col>
+        <Col  xs={24} sm={24} md={24} lg={8} xl={8}>
+          <Card bodyStyle={{ textAlign: "center" }}>
+            <Statistic title="已核销" value={stats["ORG_REDEEMED"]} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+          <Card bodyStyle={{ textAlign: "center" }}>
+            <Statistic title="核销" value={stats["ORG_REDEMPTIONS"]} />
+          </Card>
+        </Col>
+      </Row>
     </div>
-  ) : <Loading />;
-}
+  ) : (
+    <Loading />
+  );
+};
 export default Dashboard;
