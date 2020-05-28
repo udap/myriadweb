@@ -11,14 +11,16 @@ import {
   Form,
   Input,
   Button,
+  Modal
 } from "antd";
 import { Loading } from "../../components";
 import { withRouter } from "react-router-dom";
-//import storageUtils from "../../utils/storageUtils";
-import { reqGetAccountProfile, reqPutAccountProfile } from "../../api";
+import storageUtils from "../../utils/storageUtils";
+import { reqGetAccountProfile, reqPutAccountProfile, reqGetWeChatState } from "../../api";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
+import { host } from "../../utils/config";
 import "./index.less";
 import "../../css/common.less";
 const { Meta } = Card;
@@ -32,10 +34,33 @@ class Profile extends Component {
     showView: false,
     //账户编辑
     showEdit: false,
+    //wechat
+    wxstate: null,
+    url:null,
+    showwx:false,
+    currenturl:''
+
   };
 
   componentDidMount() {
+    //let redurl = "https://www.baidu.com";
+    let redurl = "https://myriad-test.xinongtech.com/#/admin/profile";
+    //document.location.href;
+    //let redurl = "http://localhost:3000/#/admin/profile"//document.location.href;
+    console.log("Profile -> componentDidMount -> redurl", redurl)
+    this.setState({
+      currenturl:encodeURIComponent(redurl)
+    })
+    this.reqGetWeChatState();
     this.reqGetAccounts();
+  }
+  //获取微信state
+  reqGetWeChatState = async () => {
+    const result = await reqGetWeChatState()
+    console.log("Profile -> reqGetWeChatState -> result", result)
+    this.setState({
+      wxstate: result.data.content
+    })
   }
 
   //获取当前账户信息
@@ -54,6 +79,7 @@ class Profile extends Component {
       visible: false,
       showEdit: false,
       showView: false,
+      showwx:false
     });
   };
   showEditHandle = () => {
@@ -134,8 +160,8 @@ class Profile extends Component {
                 <Descriptions.Item label="分组">
                   {groups && groups.length !== 0
                     ? groups.map((item, index) => (
-                        <span key={index}>{item["name"]}</span>
-                      ))
+                      <span key={index}>{item["name"]}</span>
+                    ))
                     : null}
                 </Descriptions.Item>
                 <Descriptions.Item label="角色">
@@ -233,17 +259,60 @@ class Profile extends Component {
     this.reqGetAccounts();
     this.onClose();
   };
+  //绑定微信
+  bindWechat = () => {
+    console.log("Profile -> bindWechat -> bindWechat")
+    //wechat
+    let {wxstate,currenturl} = this.state;
+
+    let accountUid = storageUtils.getUser().uid;
+    const appid = 'wxe6f169c3efb14dce';
+    console.log("Profile -> bindWechat -> currenturl", currenturl)
+    let address = "https://myriad-test.xinongtech.com/myriadapi/public/wxAccounts/web/bind?&accountUid=" + accountUid + "&appid=" + appid+"&redirect="+currenturl;
+    let redirect_uri = encodeURIComponent(address);
+    let code = "code";
+    let scope = "snsapi_login";
+    let state = wxstate;
+    let url = "https://open.weixin.qq.com/connect/qrconnect?appid=" + appid + "&redirect_uri=" + redirect_uri + "&response_type=" + code + "&scope=" + scope + "&state=" + wxstate + "#wechat_redirect";
+    window.location.href=url;
+   //window.open(url)
+    // this.setState({
+    //   url: url,
+    //   showwx:true
+    // })
+  }
+  renderWeChat = () => {
+    let {url,showwx} = this.state;
+    return (
+      <Modal
+      className="markrt"
+          title="绑定微信"
+          onCancel={this.onClose}
+          footer={[]}
+          width="60%"
+        visible={showwx}>
+        <iframe src={url} width="100%" height="500px">url</iframe>
+      </Modal>
+    )
+  }
   render() {
-    let { showView, inited, showEdit } = this.state;
+    let { showView, inited, showEdit,showwx } = this.state;
+
+
     return (
       <div style={{ height: "100%" }}>
         <PageHeader
           className="site-page-header-responsive cont"
           title={"我的账户"}
         ></PageHeader>
+        <div className="profile-action">
+        <a className='actionItems' onClick={this.bindWechat}>微信绑定</a>
+        </div>
+
         {inited ? this.renderAccountCard() : <Loading />}
         {showEdit ? this.renderAccountEditDrawer() : null}
         {showView ? this.renderProfileDetailDrawer() : null}
+        {showwx?this.renderWeChat():null}
       </div>
     );
   }
