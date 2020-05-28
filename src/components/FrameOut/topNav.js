@@ -102,9 +102,9 @@ class TopNav extends Component {
             </Menu>
           </Col>
           <Col span={8}>
-            <AntdIcon name="LoginOutlined" />
             <LinkBtn className="title" onClick={this.logout.bind(this)}>
-              <span className="btnText">退出登录</span>
+            <AntdIcon name="LoginOutlined" />
+             <span className="btnText">退出登录</span>
             </LinkBtn>
           </Col>
         </Row>
