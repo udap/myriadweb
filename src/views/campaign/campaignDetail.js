@@ -3,7 +3,6 @@ import { Tag, Descriptions, Input, Drawer, Table, Collapse } from "antd";
 import comEvents from "../../utils/comEvents";
 import "./index.less";
 
-const { TextArea } = Input;
 const { Panel } = Collapse;
 
 class CampaignDetail extends Component {

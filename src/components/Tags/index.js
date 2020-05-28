@@ -11,15 +11,14 @@ class EditableTagGroup extends Component {
     editInputIndex: -1,
     editInputValue: "",
   };
-  componentDidMount=()=>{
-      this.setState({
-        tags:this.props.tags?this.props.tags:[],
-      });
+  componentDidMount = () => {
+    this.setState({
+      tags: this.props.tags ? this.props.tags : [],
+    });
   }
 
   handleClose = (removedTag) => {
     const tags = this.state.tags.filter((tag) => tag !== removedTag);
-    console.log(tags);
     this.setState({ tags });
     this.props.newTags(tags);
   };
@@ -78,7 +77,7 @@ class EditableTagGroup extends Component {
     } = this.state;
     return (
       <div>
-        {tags.map((tag, index) => {
+        {tags.length !== 0 && tags.map((tag, index) => {
           if (editInputIndex === index) {
             return (
               <Input
@@ -125,8 +124,8 @@ class EditableTagGroup extends Component {
               {tagElem}
             </Tooltip>
           ) : (
-            tagElem
-          );
+              tagElem
+            );
         })}
         {inputVisible && (
           <Input

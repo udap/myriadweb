@@ -81,7 +81,11 @@ export const reqAddCampaign = (params) =>
 //            headers: {
 //              "Content-Type": "multipart/form-data",
 //            },
-//          });
+//          }
+//更新活动基本信息
+
+export const reqPutCampaign = (id, params) =>
+  ajax.put(BASE + "/myriad/campaigns/" + id , params);
 export const reqPostConfig = (id, params) =>
   ajax.post(BASE + "/myriad/campaigns/" + id + "/voucherConfig", params);
 //更新活动配置
@@ -272,7 +276,13 @@ export const reqGetGroupItem = (id) => ajax.get(BASE + "/groups/" + id);
 //我的账户的详情  
 export const reqGetAccountProfile = () =>
          ajax.get(BASE + "/accounts/me/profile");
-
+//微信状态
+export const reqGetWeChatState = () =>
+  ajax.get(BASE + "/accounts/me/bindWxCode");
+//微信绑定
+export const reqGetWeChatBind=(accountUid)=>{
+  ajax.get(BASE+"/public/wxAccounts/web/bind?&appid=wxe6f169c3efb14dce&accountUid="+accountUid)
+}
 //修改我的账户
 export const reqPutAccountProfile = (params) =>
          ajax.put(BASE + "/accounts/me", params);

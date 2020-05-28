@@ -19,6 +19,11 @@ const formatNumber = (n) => {
   return n[1] ? n : "0" + n;
 };
 
+const compareToday = (date)=>{
+  let cur = new Date().getTime();
+  let choosetime = new Date(date).getTime(); 
+  return choosetime<cur?false:true;
+}
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -74,4 +79,5 @@ export default {
   getDateStr,
   formatCurrency,
   hasPower,
+  compareToday
 };

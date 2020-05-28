@@ -552,7 +552,7 @@ class SettlementHome extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
-          rowKey="uid"
+          rowKey="id"
           size="small"
           bordered
           showSizeChanger={false}

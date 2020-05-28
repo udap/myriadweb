@@ -91,7 +91,6 @@ class Login extends Component {
   /*获取用户信息*/
   getList = async () => {
     const result = await reqGetAccounts();
-    console.log("Login -> getList -> result", result);
     //请求成功
     if (result && result.data.retcode === 0) {
       const data = result.data.content;
@@ -148,7 +147,7 @@ class Login extends Component {
       const user = result.data.content;
       const token =
         result.headers["x-access-token"] || result.headers["X-ACCESS-TOKEN"];
-      storageUtils.saveUser(user); //保存到localStorage中
+      //storageUtils.saveUser(user); //保存到localStorage中
       //保存token
       storageUtils.saveToken(token); //保存到localStorage中
       //获取用户信息

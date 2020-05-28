@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 //加载中
-import { Button, Form, Input, Cascader, Modal, Card } from "antd";
+import { Button, Form, Input, Cascader, Modal } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import { regAddOrg } from "../../api";
 import { ChinaRegions } from "../../utils/china-regions";

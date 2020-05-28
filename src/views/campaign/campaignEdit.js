@@ -4,7 +4,6 @@ import {
   Button,
   Form,
   Input,
-  message,
   PageHeader,
   Switch,
   DatePicker,
@@ -16,6 +15,7 @@ import {
   InputNumber,
   List,
   Drawer,
+  notification
 } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
@@ -24,6 +24,7 @@ import {
   reqPutConfig,
   reqPostConfig,
   //reqPostConfigImg,
+  reqPutCampaign,
 } from "../../api";
 import storageUtils from "../../utils/storageUtils";
 import comEvents from "../../utils/comEvents";
@@ -106,7 +107,7 @@ class CampaignEdit extends Component {
     basicInfo: {
       name: "",
       description: "",
-      category: "",
+      category: [],
       url: "",
       effective: comEvents.getDateStr(0),
       end: comEvents.getDateStr(0),
@@ -134,7 +135,7 @@ class CampaignEdit extends Component {
       multiple: true,
       coverImg: "",
       select: "AMOUNT",
-      valueOff: null,
+      valueOff: 1,
       amountLimit: null,
       description: "",
       //code:'',
@@ -148,6 +149,9 @@ class CampaignEdit extends Component {
     hasConfig: false,
     parties: [],
     disabledExpiry: false,
+    autoswitch: false,
+    //禁止跳转
+    disabledNext: false
   };
 
   componentDidMount() {
@@ -165,7 +169,7 @@ class CampaignEdit extends Component {
     }
   }
   //获取当前活动详情
-  getCampaigns = async (id) => {
+  getCampaigns = async (id, current) => {
     let curInfo = await reqGetCampaignById(id);
     let cont = curInfo.data ? curInfo.data : [];
     let voucherConfig = cont.voucherConfig;
@@ -175,13 +179,14 @@ class CampaignEdit extends Component {
       basicInfo: {
         name: cont.name,
         description: cont.description,
-        category: cont.category.split(","),
+        category: cont.category ? cont.category.split(",") : [],
         url: cont.url,
         effective: cont.effective,
         end: comEvents.formatExpiry(new Date(cont.expiry)),
         totalSupply: cont.totalSupply,
-        autoUpdate: cont.autoUpdate,  
+        autoUpdate: cont.autoUpdate,
       },
+      autoswitch: cont.autoUpdate,
       url: cont.url,
       name: cont.name,
       timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
@@ -191,8 +196,8 @@ class CampaignEdit extends Component {
           : "AMOUNT",
       typeText:
         voucherConfig &&
-        voucherConfig.discount &&
-        voucherConfig.discount.type === "AMOUNT"
+          voucherConfig.discount &&
+          voucherConfig.discount.type === "AMOUNT"
           ? "元"
           : "%",
       settings: {
@@ -211,15 +216,15 @@ class CampaignEdit extends Component {
             : "AMOUNT",
         valueOff:
           voucherConfig && voucherConfig.type && voucherConfig.discount
-            ? voucherConfig.type === "AMOUNT"
+            ? voucherConfig.discount.type === "AMOUNT"
               ? parseFloat(voucherConfig.discount.valueOff) / 100
               : voucherConfig.discount.valueOff
-            : null,
+            : 1,
         amountLimit:
           voucherConfig &&
-          voucherConfig.discount &&
-          voucherConfig.discount.amountLimit
-            ? voucherConfig.discount.amountLimit
+            voucherConfig.discount &&
+            voucherConfig.discount.amountLimit
+            ? parseFloat(voucherConfig.discount.amountLimit) / 100
             : null,
         //description: voucherConfig ? voucherConfig.description : "",
         //code:'',
@@ -229,14 +234,14 @@ class CampaignEdit extends Component {
             : cont.effective,
         end:
           voucherConfig && voucherConfig.expiry
-            ? comEvents.formatExpiry(voucherConfig.expiry) : cont.end,
+            ? comEvents.formatExpiry(voucherConfig.expiry) : comEvents.formatExpiry(new Date(cont.expiry)),
         daysAfterDist:
           voucherConfig && voucherConfig.daysAfterDist
             ? voucherConfig.daysAfterDist
             : null,
         timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
       },
-      current: voucherConfig ? 3 : 2,
+      current: current ? current : (voucherConfig ? 3 : 2),
       hasConfig: cont.voucherConfig ? true : false,
       parties: cont.parties ? cont.parties : [],
     });
@@ -255,7 +260,7 @@ class CampaignEdit extends Component {
 
   onSwitchChange = (value) => {
     this.setState({
-      autoUpdate: value,
+      autoswitch: value,
     });
   };
   disabledDate = (current) => {
@@ -312,7 +317,7 @@ class CampaignEdit extends Component {
     this.nextStep();
   };
   //跳转到下一步
-  nextStep = () => {
+  nextStep = (id) => {
     let { choose, current } = this.state;
     if (choose <= current) {
       this.setState({
@@ -322,6 +327,10 @@ class CampaignEdit extends Component {
       this.setState({
         current: current - 1,
       });
+    }
+    if (id) {
+      //刷新当前数据
+      this.getCampaigns(id, this.state.current)
     }
     //this.jumpStep(this.state.current);
   };
@@ -337,6 +346,7 @@ class CampaignEdit extends Component {
       totalSupply,
       autoUpdate,
     } = this.state.basicInfo;
+    let { autoswitch } = this.state;
     return (
       <Form
         {...layout}
@@ -378,9 +388,9 @@ class CampaignEdit extends Component {
         <Form.Item label="发行数量" name="totalSupply" rules={[{ required: true }]}>
           <InputNumber defaultValue={totalSupply} min={1} />
         </Form.Item>
-        <Form.Item name="autoUpdate" label="是否允许增发">
+        <Form.Item name="autoUpdate" label="是否允许增发" >
           <Switch
-            checked={this.state.autoUpdate}
+            checked={autoswitch}
             onChange={this.onSwitchChange}
           />
         </Form.Item>
@@ -406,7 +416,7 @@ class CampaignEdit extends Component {
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" disabled={this.state.disabledNext}>
             下一步
           </Button>
         </Form.Item>
@@ -420,7 +430,16 @@ class CampaignEdit extends Component {
   };
   //第二步提交
   onFinish2 = async (values) => {
-    let { campaignType, basicInfo, tags } = this.state;
+    let { campaignType, basicInfo, tags, isNew } = this.state;
+    if (!comEvents.compareToday(basicInfo.effective)) {
+      notification.info({
+        message: '活动时间不能小于今天'
+      })
+      return false;
+    }
+    this.setState({
+      disabledNext: true
+    })
     let params = {
       reqOrg: storageUtils.getUser().orgUid,
       reqUser: storageUtils.getUser().uid,
@@ -435,15 +454,23 @@ class CampaignEdit extends Component {
       url: values.url,
       metadata: {},
     };
-    console.log("CampaignEdit -> addCampaign", params);
-    let result = await reqAddCampaign(params);
+    let result;
+    if (isNew) {
+      result = await reqAddCampaign(params);
+    } else {
+      let id = this.props.match.params.id;
+      result = await reqPutCampaign(id, params);
+    }
+    this.setState({
+      disabledNext: false
+    })
     //新增活动的id
     this.setState({
-      id: result.data.id,
+      id: isNew ? result.data.id : this.props.match.params.id,
       basicInfo: {
         name: values.name,
         description: values.description,
-        category: tags.toString(),
+        category: tags,
         effective: basicInfo.effective,
         end: basicInfo.end,
         totalSupply: values.totalSupply,
@@ -451,9 +478,12 @@ class CampaignEdit extends Component {
         url: values.url,
       }
     });
-    console.log("onFinish2 -> basicInfo", this.state.basicInfo);
-    //跳转到第三步
-    this.nextStep();
+    if (result.data.retcode !== 1 || result.data.id) {
+      //retcode===1 有错误
+      //result.data.id 新增活动成功
+      //跳转到第三步
+      this.nextStep(this.state.id);
+    }
   };
   //保存URL显示预栏用
   handleInputChange = (e) => {
@@ -528,8 +558,10 @@ class CampaignEdit extends Component {
       select,
       daysAfterDist,
       name,
+      effective,
+      end,
     } = this.state.settings;
-    const { effective, end } = this.state.basicInfo;
+    //const { effective, end } = this.state.basicInfo;
     return (
       <div>
         <Form
@@ -537,10 +569,10 @@ class CampaignEdit extends Component {
           {...formItemLayout}
           onFinish={this.onFinish3}
           initialValues={{
-            name: name ? name : this.state.basicInfo.name.substr(0,10),
+            name: name ? name : this.state.basicInfo.name.substr(0, 10),
             multiple: multiple,
             select: select,
-            valueOff: valueOff / 100,
+            //valueOff: valueOff / 100,
             coverImg: coverImg,
             description: description,
             //code: code,
@@ -611,14 +643,14 @@ class CampaignEdit extends Component {
               </Form.Item>
             </div>
           ) : (
-            <Form.Item
-              label="金额(元)"
-              name={["discount", "valueOff"]}
-              rules={[{ required: true, message: "金额是必填项" }]}
-            >
-              <InputNumber defaultValue={valueOff} min={1} />
-            </Form.Item>
-          )}
+              <Form.Item
+                label="金额(元)"
+                name={["discount", "valueOff"]}
+                rules={[{ required: true, message: "金额是必填项" }]}
+              >
+                <InputNumber min={1} />
+              </Form.Item>
+            )}
           <Form.Item label="有效期" name="timeType">
             <Radio.Group
               className="timeRadio"
@@ -708,7 +740,7 @@ class CampaignEdit extends Component {
               offset: 6,
             }}
           >
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" disabled={this.state.disabledNext}>
               下一步
             </Button>
           </Form.Item>
@@ -754,48 +786,51 @@ class CampaignEdit extends Component {
 
   //提交数据
   onFinish3 = async (values) => {
+    this.setState({
+      disabledNext: true
+    })
     //折扣数量乘以100  前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
     let { settings } = this.state;
     let params =
       values.timeType === "date"
         ? {
-            name: values.name,
-            multiple: values.multiple,
-            // description: values.description,
-            discount:
-              values.select === "AMOUNT"
-                ? {
-                    type: values.select,
-                    valueOff: values.discount.valueOff * 100,
-                  }
-                : {
-                    type: values.select,
-                    valueOff: values.discount.valueOff,
-                    amountLimit: values.discount.amountLimit?values.discount.amountLimit*100:null,
-                  },
-            type: "COUPON",
-            effective: settings.effective,
-            expiry: comEvents.getDateStr(1, new Date(settings.end)),
-          }
+          name: values.name,
+          multiple: values.multiple,
+          // description: values.description,
+          discount:
+            values.select === "AMOUNT"
+              ? {
+                type: values.select,
+                valueOff: values.discount.valueOff * 100,
+              }
+              : {
+                type: values.select,
+                valueOff: values.discount.valueOff,
+                amountLimit: values.discount.amountLimit ? values.discount.amountLimit * 100 : null,
+              },
+          type: "COUPON",
+          effective: settings.effective,
+          expiry: comEvents.getDateStr(1, new Date(settings.end)),
+        }
         : {
-            name: values.name,
-            multiple: values.multiple,
-            //coverImg: this.state.coverImg,
-            // description: values.description,
-            discount:
-              values.select === "AMOUNT"
-                ? {
-                    type: values.select,
-                    valueOff: values.discount.valueOff * 100,
-                  }
-                : {
-                    type: values.select,
-                    valueOff: values.discount.valueOff,
-                    amountLimit: values.discount.amountLimit?values.discount.amountLimit*100:null,
-                  },
-            type: "COUPON",
-            daysAfterDist: values.daysAfterDist,
-          };
+          name: values.name,
+          multiple: values.multiple,
+          //coverImg: this.state.coverImg,
+          // description: values.description,
+          discount:
+            values.select === "AMOUNT"
+              ? {
+                type: values.select,
+                valueOff: values.discount.valueOff * 100,
+              }
+              : {
+                type: values.select,
+                valueOff: values.discount.valueOff,
+                amountLimit: values.discount.amountLimit ? values.discount.amountLimit * 100 : null,
+              },
+          type: "COUPON",
+          daysAfterDist: values.daysAfterDist,
+        };
     //图标的处理
     //     if (this.state.coverImg){
     //       var formData = new FormData();
@@ -807,13 +842,18 @@ class CampaignEdit extends Component {
     // let result = await reqPostConfigImg(this.state.id, formData);
     // this.nextStep();
     //     }else{
-    console.log("parmams", params);
+    let result;
     if (this.state.hasConfig) {
-      let result = await reqPutConfig(this.state.id, params);
-      this.nextStep();
+      result = await reqPutConfig(this.state.id, params);
     } else {
-      let result = await reqPostConfig(this.state.id, params);
-      this.nextStep();
+      result = await reqPostConfig(this.state.id, params);
+    }
+    this.setState({
+      disabledNext: false
+    })
+    if (result.data.retcode !== 1) {
+
+      this.nextStep(this.state.id);
     }
     //  }
   };
@@ -832,6 +872,7 @@ class CampaignEdit extends Component {
       choose: current,
       current,
     });
+
   };
   //显示对应的renderStep
   showCont = (current) => {
