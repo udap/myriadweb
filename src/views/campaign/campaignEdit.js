@@ -34,6 +34,7 @@ import moment from "moment";
 import "moment/locale/zh-cn";
 import CampaignMerchant from "./campaignMerchant";
 import "./index.less";
+import { thisExpression } from "@babel/types";
 const layout = {
   labelCol: {
     xs: { span: 24 },
@@ -141,7 +142,7 @@ class CampaignEdit extends Component {
       //code:'',
       timeType: "date",
       effective: comEvents.getDateStr(0),
-      end: comEvents.getDateStr(0),
+      end: null,
     },
     daysAfterDist: null,
 
@@ -476,7 +477,7 @@ class CampaignEdit extends Component {
         totalSupply: values.totalSupply,
         autoUpdate: values.autoUpdate,
         url: values.url,
-      }
+      },
     });
     if (result.data.retcode !== 1 || result.data.id) {
       //retcode===1 有错误
@@ -559,9 +560,7 @@ class CampaignEdit extends Component {
       daysAfterDist,
       name,
       effective,
-      end,
     } = this.state.settings;
-    //const { effective, end } = this.state.basicInfo;
     return (
       <div>
         <Form
@@ -662,7 +661,7 @@ class CampaignEdit extends Component {
                 <RangePicker
                   defaultValue={[
                     moment(effective, dateFormat),
-                    moment(end, dateFormat),
+                    moment(this.state.settings.end?this.state.settings.end:this.state.basicInfo.end, dateFormat),
                   ]}
                   onChange={this.changeSetDate}
                 />
@@ -810,7 +809,7 @@ class CampaignEdit extends Component {
               },
           type: "COUPON",
           effective: settings.effective,
-          expiry: comEvents.getDateStr(1, new Date(settings.end)),
+          expiry: comEvents.getDateStr(1, new Date(settings.end?settings.end:this.state.basicInfo.end)),
         }
         : {
           name: values.name,
