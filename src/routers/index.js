@@ -18,7 +18,7 @@ import {
   Merchant,
   Groups,
   Profile,
-  myTag,
+  TagManager,
 } from "../views";
 
 //公共路由
@@ -151,11 +151,11 @@ const privateRoutes = [
       },
       {
         pathname: "/admin/tag",
-        component: myTag,
+        component: TagManager,
         title: "公共标签",
         icon: "TagOutlined",
         isTop: false, //顶级菜单
-        isNav: true,
+        isNav: false,
       },
       {
         pathname: "/admin/settlement/new",

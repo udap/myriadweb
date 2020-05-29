@@ -88,7 +88,7 @@ const Profile = Loadable({
   loader: () => import("./profile"),
   loading: Loading,
 });
-const myTag = Loadable({
+const TagManager = Loadable({
   loader: () => import("./tag"),
   loading: Loading,
 });
@@ -113,5 +113,5 @@ export {
   Merchant,
   Groups,
   Profile,
-  myTag,
+  TagManager,
 };

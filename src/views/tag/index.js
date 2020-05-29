@@ -27,7 +27,7 @@ import comEvents from "../../utils/comEvents";
 import "../../css/common.less";
 const { confirm } = Modal;
 const { Option } = Select;
-class myTag extends Component {
+class TagManager extends Component {
   state = {
     inited: false,
     tags: [],
@@ -248,7 +248,6 @@ class myTag extends Component {
   };
   /*搜索*/
   searchValue = (value) => {
-    console.log("myTag -> searchValue -> value", value)
     this.setState({
       searchTxt: value.searchTxt,
       searchType: value.searchType,
@@ -262,6 +261,11 @@ class myTag extends Component {
       loading: true,
     });
   };
+
+  backIndex = () => {
+    this.props.history.push("/admin/myOrgs");
+  };
+
   render() {
     let { searchTxt, searchType } = this.state;
     return (
@@ -279,6 +283,7 @@ class myTag extends Component {
               }}
             />,
           ]}
+          onBack={this.backIndex}
         ></PageHeader>
         {/* --搜索栏-- */}
         <Form
@@ -330,4 +335,4 @@ class myTag extends Component {
     );
   }
 }
-export default myTag;
+export default TagManager;

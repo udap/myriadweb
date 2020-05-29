@@ -145,6 +145,15 @@ class MyOrgs extends Component {
             >
               权限与分组
             </b>
+            <Divider type="vertical" />
+            <b
+              onClick={() => {
+                this.props.history.push("/admin/tag");
+              }}
+              className="ant-green-link cursor"
+            >
+              公共标签
+            </b>
             <span>
               <Divider type="vertical" />
               <b
