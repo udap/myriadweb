@@ -295,7 +295,7 @@ class myTag extends Component {
               <Form.Item name="searchTxt" label="查询条件">
                 <Input
                   value={searchTxt}
-                  placeholder="请输入名称查询"
+                  placeholder="输入名称或描述等任意关键字查询"
                   allowClear
                 />
               </Form.Item>
