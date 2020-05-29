@@ -8,9 +8,14 @@ import {
   Col,
   DatePicker,
   Space,
+  Badge,
 } from "antd";
 import {
-  SearchOutlined,
+  UserOutlined,
+  UngroupOutlined,
+  NodeIndexOutlined,
+  GiftOutlined,
+  CarryOutOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import "moment/locale/zh-cn";
@@ -19,7 +24,7 @@ import "./index.less";
 import comEvents from "../../utils/comEvents";
 
 const gridStyle = {
- width: "100%",
+  width: "100%",
   textAlign: "center",
 };
 
@@ -80,15 +85,17 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div style={{ height: "100%" }}>
+      <div style={{ height: "100%" }} className="dashborad">
         <PageHeader
           className="site-page-header-responsive cont"
           title="仪表仓"
         />
         <StatsPanel1 stats={this.state.latestStats} />
-        <StatsPanel2 stats={this.state.statsSince} 
-          since={this.state.since} 
-          onChange={this.onChangeSince} />
+        <StatsPanel2
+          stats={this.state.statsSince}
+          since={this.state.since}
+          onChange={this.onChangeSince}
+        />
       </div>
     );
   }
@@ -98,49 +105,50 @@ const StatsPanel1 = (props) => {
   const stats = props.stats;
   return stats ? (
     <div>
-
-    <Card>
-      <Row>
-        <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+      <Card>
+        <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+          <Col xs={24} sm={24} md={24} lg={6} xl={6}>
             <Card.Grid style={gridStyle}>
               <Statistic
                 title="客户"
                 value={stats["EMP_CUSTOMERS"]}
                 suffix={"/" + stats["ORG_CUSTOMERS"]}
+                prefix={<UserOutlined className="dashborad-icon" />}
               />
-              
             </Card.Grid>
-            </Col>
-              <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={6} xl={6}>
             <Card.Grid style={gridStyle}>
               <Statistic
                 title="参与活动"
                 value={stats.CAMPAIGNS}
                 suffix={"/" + stats.ORG_CAMPAIGNS}
+                prefix={<GiftOutlined className="dashborad-icon" />}
               />
             </Card.Grid>
-            </Col>
-              <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={6} xl={6}>
             <Card.Grid style={gridStyle}>
               <Statistic
                 title="可配券"
                 value={stats.TRANSFERABLE_COUPONS}
                 suffix={"/" + stats.ORG_TRANSFERABLE_COUPONS}
+                prefix={<NodeIndexOutlined className="dashborad-icon" />}
               />
             </Card.Grid>
-            </Col>
-              <Col xs={24} sm={24} md={24} lg={6} xl={6}>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={6} xl={6}>
             <Card.Grid style={gridStyle}>
               <Statistic
                 title="可发券"
                 value={stats.DISTRIBUTABLE_COUPONS}
                 suffix={"/" + stats.ORG_DISTRIBUTABLE_COUPONS}
+                prefix={<UngroupOutlined className="dashborad-icon" />}
               />
             </Card.Grid>
-            
-        </Col>
-      </Row>
-    </Card>
+          </Col>
+        </Row>
+      </Card>
     </div>
   ) : (
     <Loading />
@@ -152,32 +160,46 @@ const StatsPanel2 = (props) => {
   return stats ? (
     <div className="dashboard-statistic-card">
       <div className="since-date">
-      <Space>
-        <div>开始时间: </div>
-        <DatePicker placeholder="开始时间" 
-          allowClear={false}
-          defaultValue={moment(props.since,'YYYY-MM-DD')} 
-          onChange={props.onChange} />
-      </Space>  
+        <Space>
+          <div>
+            <CarryOutOutlined />
+            开始时间:{" "}
+          </div>
+          <DatePicker
+            placeholder="开始时间"
+            allowClear={false}
+            defaultValue={moment(props.since, "YYYY-MM-DD")}
+            onChange={props.onChange}
+          />
+        </Space>
       </div>
       <Row>
-        <Col  xs={24} sm={24} md={24} lg={8} xl={8}>
+        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <Card bodyStyle={{ textAlign: "center" }}>
             <Statistic
               title="已发放"
               value={stats["DISTRIBUTIONS"]}
               suffix={"/" + stats["ORG_DISTRIBUTIONS"]}
+              prefix={<Badge color="orange" />}
             />
-          </Card>
-        </Col>
-        <Col  xs={24} sm={24} md={24} lg={8} xl={8}>
-          <Card bodyStyle={{ textAlign: "center" }}>
-            <Statistic title="已核销" value={stats["ORG_REDEEMED"]} />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <Card bodyStyle={{ textAlign: "center" }}>
-            <Statistic title="核销" value={stats["ORG_REDEMPTIONS"]} />
+            <Statistic
+              title="已核销"
+              value={stats["ORG_REDEEMED"]}
+              prefix={<Badge color="geekblue" />}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+          <Card bodyStyle={{ textAlign: "center" }}>
+            <Statistic
+              title="核销"
+              value={stats["ORG_REDEMPTIONS"]}
+              prefix={<Badge color="green" />}
+            />
           </Card>
         </Col>
       </Row>
