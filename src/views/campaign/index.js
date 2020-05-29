@@ -70,7 +70,7 @@ class Campaign extends Component {
   }
 
   initColumns(value) {
-    let btnWidth = value === "participant" ? 160 : 50;
+    let btnWidth = value === "participant" ? 180 : 50;
     this.columns = [
       {
         title: "名称",
