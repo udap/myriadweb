@@ -16,11 +16,10 @@ import storageUtils from "../../utils/storageUtils";
 import { withRouter } from "react-router-dom";
 import { Loading } from "../../components";
 import "../../css/common.less";
+import "./index.less";
 
 const { confirm } = Modal;
-
 @withRouter
-
 //没有数据组件
 class CampaignMerchant extends Component {
   state = {
@@ -313,6 +312,8 @@ class CampaignMerchant extends Component {
             ]}
           ></PageHeader>
           <Table
+            size="small"
+            className="tableFont"          
             columns={this.columns}
             dataSource={parties}
             pagination={false}
@@ -363,6 +364,7 @@ class CampaignMerchant extends Component {
 
               <Table
                 size="small"
+                className="tableFont"          
                 columns={this.listColumns}
                 dataSource={data}
                 pagination={{
@@ -374,7 +376,7 @@ class CampaignMerchant extends Component {
                 }}
                 rowSelection={rowSelection}
               />
-              <div style={{ marginBottom: 16, marginTop: 16 }}>
+              <div style={{ marginBottom: 8, marginTop: 8 }}>
                 <Button
                   type="primary"
                   onClick={this.backHome}
