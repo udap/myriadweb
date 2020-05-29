@@ -121,7 +121,7 @@ class Campaign extends Component {
         title: "发行数量",
         dataIndex: "totalSupply",
         key: "totalSupply",
-        width: 110,
+        width: 90,
         render: (value) => {
           return (
             <div style={{textAlign: "right"}}>

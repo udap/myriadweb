@@ -155,6 +155,7 @@ const StatsPanel2 = (props) => {
       <Space>
         <div>开始时间: </div>
         <DatePicker placeholder="开始时间" 
+          allowClear={false}
           defaultValue={moment(props.since,'YYYY-MM-DD')} 
           onChange={props.onChange} />
       </Space>  
