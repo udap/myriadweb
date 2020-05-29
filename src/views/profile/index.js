@@ -305,9 +305,9 @@ class Profile extends Component {
           className="site-page-header-responsive cont"
           title={"我的账户"}
         ></PageHeader>
-        <div className="profile-action">
+        {/* <div className="profile-action">
         <a className='actionItems' onClick={this.bindWechat}>微信绑定</a>
-        </div>
+        </div> */}
 
         {inited ? this.renderAccountCard() : <Loading />}
         {showEdit ? this.renderAccountEditDrawer() : null}
