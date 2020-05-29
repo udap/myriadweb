@@ -20,10 +20,10 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
-import { reqPostTags, reqDelTag, reqGetTags } from "../../api";
+import { reqPermit, reqPostTags, reqDelTag, reqGetTags } from "../../api";
 import { tagStatuses } from "../../utils/constants";
 import { Loading } from "../../components";
-import "./index.less";
+import comEvents from "../../utils/comEvents";
 import "../../css/common.less";
 const { confirm } = Modal;
 const { Option } = Select;
@@ -63,10 +63,8 @@ class myTag extends Component {
       loading: false,
     });
   };
-  newTags = async (newTags, type) => {
+  newTag = () => {
     this.setState({
-      curInfo: {},
-      isNew: true,
       visible: true,
     });
   };
@@ -112,6 +110,13 @@ class myTag extends Component {
           onFinish={this.onFinish}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
+          <Form.Item name="type" label="类型" rules={[{ required: true }]}>
+            <Select placeholder="请选择类型" allowClear>
+              {tagStatuses.map((item) => {
+                return <Option value={item.value}>{item.name}</Option>;
+              })}
+            </Select>
+          </Form.Item>
           <Form.Item
             label="名称"
             name="name"
@@ -122,13 +127,7 @@ class myTag extends Component {
           <Form.Item label="描述" name="desc" rules={[{ max: 64 }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="type" label="类型">
-            <Select placeholder="请选择类型" allowClear>
-              {tagStatuses.map((item) => {
-                return <Option value={item.value}>{item.name}</Option>;
-              })}
-            </Select>
-          </Form.Item>
+
           <Form.Item>
             <Button type="primary" htmlType="submit">
               提交
@@ -179,7 +178,7 @@ class myTag extends Component {
         dataIndex: "desc",
       },
       {
-        title: "活动类型",
+        title: "类型",
         width: 100,
         render: (chooseItem) => {
           let { type } = chooseItem;
@@ -204,7 +203,14 @@ class myTag extends Component {
           <div>
             <b
               onClick={() => {
-                this.delConfirm(chooseItem);
+                let self = this;
+                comEvents.hasPower(
+                  self,
+                  reqPermit,
+                  "DELETE_TAG",
+                  "delConfirm",
+                  chooseItem
+                );
               }}
               className="ant-pink-link cursor"
             >
@@ -264,7 +270,8 @@ class myTag extends Component {
               key="add"
               className="setIcon"
               onClick={() => {
-                this.newTags();
+                let self = this;
+                comEvents.hasPower(self, reqPermit, "CREATE_TAG", "newTag");
               }}
             />,
           ]}
