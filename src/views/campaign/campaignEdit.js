@@ -242,7 +242,7 @@ class CampaignEdit extends Component {
             : null,
         timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
       },
-      current: current ? current : (voucherConfig ? 3 : 2),
+      current: current ? current : 1,
       hasConfig: cont.voucherConfig ? true : false,
       parties: cont.parties ? cont.parties : [],
     });
