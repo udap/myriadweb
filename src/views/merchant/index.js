@@ -344,7 +344,7 @@ class Merchant extends Component {
           <Row>
             <Col span={7}>
               <Form.Item name="searchTxt" label="查询条件">
-                <Input placeholder="输入名字/商户号/电话/地址搜索" allowClear />
+                <Input placeholder="输入名字/标签/商户号/电话/地址搜索" allowClear />
               </Form.Item>
             </Col>
             <Col>

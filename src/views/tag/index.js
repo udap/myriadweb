@@ -41,24 +41,26 @@ class myTag extends Component {
     type: "CUSTOMER",
     visible: false,
     searchTxt: null,
+    searchType: null,
     loading: false,
   };
   componentDidMount() {
     this.getTags(1);
   }
-  getTags = async (currentPage, searchTxt) => {
+  getTags = async (currentPage, searchTxt, searchType) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
+      type: searchType ? searchType : this.state.searchType,
     };
     const result = await reqGetTags(parmas);
-    const cont = result && result.data ? result.data.content : [];
+    const cont = result && result.data  && result.data.content? result.data.content : [];
     this.totalPages =
-      result && result.data ? result.data.content.totalElements : 1;
+      result && result.data&& result.data.content ? result.data.content.totalElements : 1;
     this.setState({
       tags: cont.content,
-      total: result && result.data ? result.data.content.totalElements : 1,
+      total: result && result.data&& result.data.content ? result.data.content.totalElements : 1,
       inited: true,
       loading: false,
     });
@@ -246,11 +248,13 @@ class myTag extends Component {
   };
   /*搜索*/
   searchValue = (value) => {
+    console.log("myTag -> searchValue -> value", value)
     this.setState({
       searchTxt: value.searchTxt,
+      searchType: value.searchType,
       currentPage: 1,
     });
-    this.getTags(1, value.searchTxt);
+    this.getTags(1, value.searchTxt, value.searchType);
   };
   /*搜索loding*/
   enterLoading = () => {
@@ -259,7 +263,7 @@ class myTag extends Component {
     });
   };
   render() {
-    let { searchTxt } = this.state;
+    let { searchTxt, searchType } = this.state;
     return (
       <div>
         <PageHeader
@@ -287,13 +291,22 @@ class myTag extends Component {
           }}
         >
           <Row>
-            <Col span={6}>
+            <Col span={8}>
               <Form.Item name="searchTxt" label="查询条件">
                 <Input
                   value={searchTxt}
                   placeholder="请输入名称查询"
                   allowClear
                 />
+              </Form.Item>
+            </Col>
+            <Col span={4}>
+              <Form.Item name="searchType" >
+                <Select placeholder="请选择标签类型" allowClear>
+                  {tagStatuses.map((item) => {
+                    return <Option value={item.value}>{item.name}</Option>;
+                  })}
+                </Select>
               </Form.Item>
             </Col>
             <Col>

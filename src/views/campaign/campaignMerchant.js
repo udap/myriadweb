@@ -26,7 +26,7 @@ class CampaignMerchant extends Component {
   state = {
     currentPage: 1,
     listSize: 10,
-    size: 6,
+    size: 10,
     total: 10,
     data: [],
     selectedRowKeys: [], // Check here to configure the default column
@@ -345,7 +345,7 @@ class CampaignMerchant extends Component {
                     name="searchTxt"
                     value={searchTxt}
                     onChange={this.handleOrgChange}
-                    placeholder="请输入商户名称、简称、商户码搜索"
+                    placeholder="输入商户名称、标签、商户号搜索"
                     allowClear
                     onPressEnter={this.searchValue}
                   />
@@ -362,7 +362,7 @@ class CampaignMerchant extends Component {
               </Row>
 
               <Table
-                size="middle"
+                size="small"
                 columns={this.listColumns}
                 dataSource={data}
                 pagination={{
