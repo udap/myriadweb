@@ -24,7 +24,7 @@ var env = process.env.NODE_ENV;
 //LOGIN START
 //获取验证码
 export const reqVerify = (cellphone) =>
-ajax.get(BASE + "/public/login/phoneCode?cellphone=" + cellphone);
+  ajax.get(BASE + "/public/login/phoneCode?cellphone=" + cellphone);
 //登录
 export const reqLogin = (values) =>
   ajax.get(BASE + "/public/login", { params: values });
@@ -44,7 +44,7 @@ export const reqGetCampaigns = (params) =>
   ajax.get(BASE + "/myriad/campaigns", { params: params });
 //获取活动详情reqGetCampaigns
 export const reqGetCampaignById = (id) =>
-         ajax.get(BASE + "/myriad/campaigns/" + id);
+  ajax.get(BASE + "/myriad/campaigns/" + id);
 //删除某个活动
 export const reqDelCampaign = (id) =>
   ajax.delete(BASE + "/myriad/campaigns/" + id);
@@ -54,7 +54,13 @@ export const reqPublishCampaign = (id) =>
 //获取分配数量'/myriad/vouchers/count?campaignId=' + couponuid + '&owner=' + wx.getStorageSync('userId')
 export const reqGetNumber = (campaignId, owner, action) =>
   ajax.get(
-    BASE + "/myriad/vouchers/count?campaignId=" + campaignId + "&owner=" + owner + "&action=" + action.toUpperCase()
+    BASE +
+      "/myriad/vouchers/count?campaignId=" +
+      campaignId +
+      "&owner=" +
+      owner +
+      "&action=" +
+      action.toUpperCase()
   );
 
 //批量分配reqTransfer
@@ -85,7 +91,7 @@ export const reqAddCampaign = (params) =>
 //更新活动基本信息
 
 export const reqPutCampaign = (id, params) =>
-  ajax.put(BASE + "/myriad/campaigns/" + id , params);
+  ajax.put(BASE + "/myriad/campaigns/" + id, params);
 export const reqPostConfig = (id, params) =>
   ajax.post(BASE + "/myriad/campaigns/" + id + "/voucherConfig", params);
 //更新活动配置
@@ -155,11 +161,11 @@ export const reqAddEmployees = (params) =>
 export const reqDelEmployee = (uid) => ajax.delete(BASE + "/employees/" + uid);
 //激活员工
 export const reqActivateEmployee = (uid) =>
-         ajax.put(BASE + "/employees/" + uid + "/activate");
+  ajax.put(BASE + "/employees/" + uid + "/activate");
 
-         //修改员工
+//修改员工
 export const reqPutEmployee = (uid, params) =>
-         ajax.put(BASE + "/employees/" + uid, params);
+  ajax.put(BASE + "/employees/" + uid, params);
 //员工管理 END
 
 //三.商户管理 START
@@ -172,9 +178,13 @@ export const reqGetMerchants = (params) =>
 export const reqAddMerchant = (params) =>
   ajax.post(BASE + "/merchants", params);
 
-  //添加商户标签
-export const reqPutMerchantTags = (uid,params) =>
-ajax.put(BASE + "/merchants/"+uid+"/tags", params);
+//添加商户标签
+export const reqPutMerchantTags = (uid, params) =>
+  ajax.put(BASE + "/merchants/" + uid + "/tags", params);
+
+//添加公共标签
+export const reqPutMerchantCommonTags = (uid, params) =>
+  ajax.put(BASE + "/merchants/" + uid + "/tags", params);
 
 //商户管理 END
 
@@ -235,11 +245,11 @@ export const reqAgreeSettlement = (id, params) =>
 //结算详情;
 //get / myriad / settlements / { id } / redemptions;
 export const reqGetSettlementDetail = (id, params) =>
-         ajax.get(BASE + "/myriad/settlements/" + id + "/redemptions", {
-           params: params,
-         });
+  ajax.get(BASE + "/myriad/settlements/" + id + "/redemptions", {
+    params: params,
+  });
 
-         //结算管理 END
+//结算管理 END
 //核销记录 reqGetExchangeLists;
 export const reqGetRedemptions = (params) =>
   ajax.get(BASE + "/myriad/redemptions", {
@@ -274,37 +284,45 @@ export const reqDelGroup = (id) => ajax.delete(BASE + "/groups/" + id);
 export const reqGetGroupItem = (id) => ajax.get(BASE + "/groups/" + id);
 //分组管理 END
 
-
 //我的账户 START
 
-//我的账户的详情  
+//我的账户的详情
 export const reqGetAccountProfile = () =>
-         ajax.get(BASE + "/accounts/me/profile");
+  ajax.get(BASE + "/accounts/me/profile");
 //微信状态
 export const reqGetWeChatState = () =>
   ajax.get(BASE + "/accounts/me/bindWxCode");
 //微信绑定
-export const reqGetWeChatBind=(accountUid)=>{
-  ajax.get(BASE+"/public/wxAccounts/web/bind?&appid=wxe6f169c3efb14dce&accountUid="+accountUid)
-}
+export const reqGetWeChatBind = (accountUid) => {
+  ajax.get(
+    BASE +
+      "/public/wxAccounts/web/bind?&appid=wxe6f169c3efb14dce&accountUid=" +
+      accountUid
+  );
+};
 //修改我的账户
 export const reqPutAccountProfile = (params) =>
-         ajax.put(BASE + "/accounts/me", params);
+  ajax.put(BASE + "/accounts/me", params);
 //我的账户 END
-
 
 export const reqGetStats = (keys, since) =>
   ajax.get(BASE + "/myriad/stats", {
     params: {
       key: keys,
-      since: since
+      since: since,
     },
-    paramsSerializer: params => {
-      return qs.stringify(params, { indices: false })
-    }
+    paramsSerializer: (params) => {
+      return qs.stringify(params, { indices: false });
+    },
   });
 
 export const reqDownloadSettlement = (id) =>
-  ajax.get(BASE + "/myriad/settlements/" + id + "/export",{
-    responseType: "blob"
+  ajax.get(BASE + "/myriad/settlements/" + id + "/export", {
+    responseType: "blob",
   });
+
+//公共标签
+export const reqPostTags = (params) => ajax.post(BASE + "/tags", params);
+export const reqDelTag = (id) => ajax.delete(BASE + "/tags/" + id);
+export const reqGetTags = (params) =>
+  ajax.get(BASE + "/tags", { params: params });

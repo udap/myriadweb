@@ -88,7 +88,10 @@ const Profile = Loadable({
   loader: () => import("./profile"),
   loading: Loading,
 });
-
+const myTag = Loadable({
+  loader: () => import("./tag"),
+  loading: Loading,
+});
 //同时更新routers路由
 export {
   MyOrgs,
@@ -110,4 +113,5 @@ export {
   Merchant,
   Groups,
   Profile,
+  myTag,
 };

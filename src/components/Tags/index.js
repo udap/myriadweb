@@ -10,10 +10,12 @@ class EditableTagGroup extends Component {
     inputValue: "",
     editInputIndex: -1,
     editInputValue: "",
+    text:'新标签'
   };
   componentDidMount = () => {
     this.setState({
       tags: this.props.tags ? this.props.tags : [],
+      text:this.props.text?this.props.text:'新标签'
     });
   }
 
@@ -74,6 +76,7 @@ class EditableTagGroup extends Component {
       inputValue,
       editInputIndex,
       editInputValue,
+      text,
     } = this.state;
     return (
       <div>
@@ -141,7 +144,7 @@ class EditableTagGroup extends Component {
         )}
         {!inputVisible && (
           <Tag className="site-tag-plus cursor" onClick={this.showInput}>
-            <PlusOutlined />新标签
+            <PlusOutlined />{text}
           </Tag>
         )}
       </div>

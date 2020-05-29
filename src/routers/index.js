@@ -18,6 +18,7 @@ import {
   Merchant,
   Groups,
   Profile,
+  myTag,
 } from "../views";
 
 //公共路由
@@ -146,6 +147,14 @@ const privateRoutes = [
         icon: "TransactionOutlined",
         isTop: false, //顶级菜单
         exact: true,
+        isNav: true,
+      },
+      {
+        pathname: "/admin/tag",
+        component: myTag,
+        title: "公共标签",
+        icon: "TagOutlined",
+        isTop: false, //顶级菜单
         isNav: true,
       },
       {

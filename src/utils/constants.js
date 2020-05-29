@@ -185,7 +185,20 @@ var Operations = {
   VIEW_REDEMPTION: "核销记录",
   VIEW_DISTRIBUTION: "发放记录",
 };
-
+const tagStatuses = [
+  {
+    value: "CUSTOMER",
+    name: "客户",
+  },
+  {
+    value: "MERCHANT",
+    name: "商户",
+  },
+  {
+    value: "CAMPAIGN",
+    name: "活动",
+  },
+];
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
@@ -200,5 +213,6 @@ export {
   redemptionStatuses, //核销列表
   employeeStatuses, //员工状态
   roleTypes, //员工角色
-  orgStatusesList,//机构状态列表
+  orgStatusesList, //机构状态列表
+  tagStatuses, //公共标签
 };

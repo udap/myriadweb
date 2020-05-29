@@ -40,6 +40,7 @@ class FrameOut extends Component {
     "/admin/myOrgs",
     "/admin/merchant",
     "/admin/settlement",
+    "/admin/tag",
   ];
   state = {
     collapsed: false,
