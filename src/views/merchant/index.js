@@ -340,7 +340,7 @@ class Merchant extends Component {
     return (
       <Drawer
         width={480}
-        title="添加标签"
+        title="设置标签"
         visible={showTagForm}
         onClose={this.handleCancel}
         footer={null}
@@ -354,10 +354,10 @@ class Merchant extends Component {
           }}
           onFinish={this.newTags}
         >
-          <Form.Item name="radio" label="标签类型">
+          <Form.Item name="radio" label="设置方式">
             <Radio.Group onChange={this.onRadioChange}>
-              <Radio value="free">新标签</Radio>
-              <Radio value="common">公共标签</Radio>
+              <Radio value="free">添加新标签</Radio>
+              <Radio value="common">使用公共标签设置</Radio>
             </Radio.Group>
           </Form.Item>
           {radio === "free" ? (
