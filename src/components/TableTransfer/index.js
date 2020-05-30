@@ -95,8 +95,8 @@ class TreeSelectComponent extends React.Component {
             item.title.indexOf(inputValue) !== -1 ||
             item.tag.indexOf(inputValue) !== -1
           }
-          leftColumns={leftTableColumns}
-          rightColumns={rightTableColumns}
+          leftColumns={this.props.leftTableColumns}
+          rightColumns={this.props.rightTableColumns}
         />
       </div>
     );

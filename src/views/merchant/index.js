@@ -38,6 +38,24 @@ import "../../css/common.less";
 import "./index.less";
 const { confirm } = Modal;
 
+const leftTableColumns = [
+  {
+    dataIndex: "title",
+    title: "可选标签",
+  },
+  // {
+  //   dataIndex: "tag",
+  //   title: "类型",
+  //   render: (tag) => <Tag>{tag}</Tag>,
+  // },
+];
+const rightTableColumns = [
+  {
+    dataIndex: "title",
+    title: "已选标签",
+  },
+];
+
 class Merchant extends Component {
   state = {
     visible: false,
@@ -356,49 +374,28 @@ class Merchant extends Component {
         >
           <div class="grey-block">
           选择公共标签设置
-          {/* <Form.Item name="radio" label="设置方式">
-            <Radio.Group onChange={this.onRadioChange}> */}
-              {/* <Radio value="free">添加新标签</Radio> */}
-              {/* <Radio value="common">选择公共标签设置</Radio> */}
-            {/* </Radio.Group>
-          </Form.Item> */}
           </div>
-          {radio === "free" ? (
-            <Form.Item label="标签" name="tag">
-              <EditableTagGroup
-                tags={chooseItem.tags ? chooseItem.tags : []}
-                newTags={this.newTags}
-              />
-            </Form.Item>
-          ) : (
-            <Form.Item label="标签" name="tag">
-              <TreeSelectComponent
-                mockData={tagsData}
-                targetKeys={chooseItem.tags ? chooseItem.tags : targetKeys}
-                choosehandle={this.choosehandle}
-                showSearch={true}
-                //totalTagPages={totalTagPages}
-                //handleTagTableChange={this.handleTagTableChange}
-              />
-            </Form.Item>
-          )}
-          {radio === "free" ? (
-            <Form.Item>
-              <Button type="primary" onClick={this.handleCancel}>
-                取消
-              </Button>
-            </Form.Item>
-          ) : (
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={this.state.loading}
-              >
-                提交
-              </Button>
-            </Form.Item>
-          )}
+          <Form.Item label="" name="tag">
+            <TreeSelectComponent
+              mockData={tagsData}
+              targetKeys={chooseItem.tags ? chooseItem.tags : targetKeys}
+              choosehandle={this.choosehandle}
+              showSearch={true}
+              leftTableColumns={leftTableColumns}
+              rightTableColumns={rightTableColumns}
+              //totalTagPages={totalTagPages}
+              //handleTagTableChange={this.handleTagTableChange}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={this.state.loading}
+            >
+              提交
+            </Button>
+          </Form.Item>
         </Form>
       </Drawer>
     );
