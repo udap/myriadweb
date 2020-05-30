@@ -272,12 +272,13 @@ class Merchant extends Component {
         dataIndex: "tags",
         key: "tags",
         width: 120,
+        ellipsis: true,
         responsive: ["lg"],
         render: (tags) => {
           return (
             <div>
               {tags.map((t, index) => (
-                <Tag color="cyan" key={index}>
+                <Tag color="cyan" key={index} title={t}>
                   {t}
                 </Tag>
               ))}
