@@ -354,12 +354,14 @@ class Merchant extends Component {
           }}
           onFinish={this.newTags}
         >
+          <div class="grey-block">
           <Form.Item name="radio" label="设置方式">
             <Radio.Group onChange={this.onRadioChange}>
               <Radio value="free">添加新标签</Radio>
               <Radio value="common">使用公共标签设置</Radio>
             </Radio.Group>
           </Form.Item>
+          </div>
           {radio === "free" ? (
             <Form.Item label="标签" name="tag">
               <EditableTagGroup
