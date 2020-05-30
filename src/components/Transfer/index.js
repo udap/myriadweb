@@ -94,11 +94,11 @@ class TransferComponent extends Component {
 
   render() {
     const { targetKeys } = this.state;
-    const { treeData } = this.props;
+    const { treeData,titles } = this.props;
     return (
       <div>
         <TreeTransfer
-          titles={["可设置权限", "分组权限"]}
+          titles={titles?titles:["可设置权限", "分组权限"]}
           dataSource={treeData}
           targetKeys={targetKeys}
           onChange={this.onChange}

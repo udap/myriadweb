@@ -12,19 +12,28 @@ import {
   Drawer,
   notification,
   Tag,
+  Radio,
+  Divider,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import comEvents from "../../utils/comEvents";
+import { tagStatuses } from "../../utils/constants";
 import {
   reqPermit,
   reqAddMerchant,
   reqDelMerchant,
   reqPutMerchantTags,
+  reqGetTags,
 } from "../../api";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
 import { reqGetMerchants } from "../../api";
-import { Loading, EditableTagGroup } from "../../components";
+import {
+  Loading,
+  EditableTagGroup,
+  TreeSelectComponent,
+  TransferComponent,
+} from "../../components";
 import "../../css/common.less";
 import "./index.less";
 const { confirm } = Modal;
@@ -41,9 +50,17 @@ class Merchant extends Component {
     authCode: "",
     orgUid: "",
     currentPage: 1,
-    size: 15,
+    size: 20,
     total: 1,
     searchTxt: "",
+    chooseItem: null,
+    showTagForm: false,
+    radio: "free",
+    tagsData: [],
+    targetKeys: [],
+    targetTitles: [],
+    totalTagPages: 0,
+    currentTagPage: 1,
   };
   componentDidMount() {
     this.getMerchant(1);
@@ -57,6 +74,8 @@ class Merchant extends Component {
   handleCancel = (e) => {
     this.setState({
       visible: false,
+      showTagForm: false,
+      radio: "free",
     });
   };
   /*
@@ -151,10 +170,9 @@ class Merchant extends Component {
       this.getMerchant(1);
     }
   };
-
+  //授权码
   renderForm = () => {
     const { apCode, wpCode, upCode, authCode } = this.state;
-
     return (
       <Form
         layout="vertical"
@@ -224,15 +242,173 @@ class Merchant extends Component {
       onCancel() {},
     });
   };
-  newTags = async (record, newTags) => {
-    const result = await reqPutMerchantTags(record.uid, newTags);
+  //提交数据
+  newTags = async (newTags) => {
+    let result;
+    let { tagsData, radio, chooseItem, targetKeys, targetTitles } = this.state;
+    if (radio === "common" && targetKeys.length === 0) {
+      notification.error({ message: "权限不能为空" });
+      return false;
+    }
+    let arr = comEvents.compareTwoArrayEqual(targetKeys, tagsData);
+    let tag = radio === "free" ? newTags : arr;
+    result = await reqPutMerchantTags(chooseItem.uid, tag);
     if (result.data.retcode !== 1) {
+      notification.success({ message: "添加成功" });
       //刷新列表数据
       this.getMerchant(1);
+      if (radio === "common") {
+        this.setState({
+          showTagForm: false,
+        });
+      }
     }
   };
+  //添加展示抽屉
+  addTags = (item) => {
+    this.setState({
+      showTagForm: true,
+      chooseItem: item,
+      targetKeys: item.tags,
+    });
+    this.reqGetTags(1);
+  };
+  //组织树控件的数据
+  tree = (cont) => {
+    const list = [];
+    for (let i = 0; i < cont.length; i++) {
+      const key = cont[i].name; //`${path}-${i}`;
+      const treeNode = {
+        title: cont[i].name,
+        key,
+        description: cont[i].description,
+        tag: cont[i].type,
+      };
+      list.push(treeNode);
+    }
+    return list;
+  };
+  //获取公共标签
+  reqGetTags = async (currentPage) => {
+    let { size } = this.state;
+    const parmas = {
+      page: currentPage >= 0 ? currentPage - 1 : this.state.currentTagPage,
+      size: 1000//size,
+    };
+    const result = await reqGetTags(parmas);
+    let cont =
+      result &&
+      result.data &&
+      result.data.content &&
+      result.data.content.content
+        ? result.data.content.content
+        : [];
+    const tree = this.tree(cont);
+    this.totalTagPages = cont.totalElements ? cont.totalElements : 1;
+    this.setState({
+      tagsData: tree,
+      //totalTagPages:
+    });
+  };
+  onRadioChange = (e) => {
+    this.setState({
+      radio: e.target.value,
+    });
+  };
+  choosehandle = (value, arr) => {
+    this.setState({
+      targetKeys: value,
+      targetTitles: arr,
+    });
+  };
+  /*分页 */
+  handleTagTableChange = (page) => {
+    this.setState({
+      currentPage: page,
+    });
+    this.getTags(page);
+  };
+  renderTagForm = () => {
+    const {
+      showTagForm,
+      radio,
+      chooseItem,
+      tagsData,
+      targetKeys,
+      totalTagPages,
+    } = this.state;
+    return (
+      <Drawer
+        width={480}
+        title="添加标签"
+        visible={showTagForm}
+        onClose={this.handleCancel}
+        footer={null}
+      >
+        <Form
+          layout="vertical"
+          name="basic"
+          initialValues={{
+            radio: radio,
+            tag: [],
+          }}
+          onFinish={this.newTags}
+        >
+          <Form.Item name="radio" label="标签类型">
+            <Radio.Group onChange={this.onRadioChange}>
+              <Radio value="free">新标签</Radio>
+              <Radio value="common">公共标签</Radio>
+            </Radio.Group>
+          </Form.Item>
+          {radio === "free" ? (
+            <Form.Item label="标签" name="tag">
+              <EditableTagGroup
+                tags={chooseItem.tags ? chooseItem.tags : []}
+                newTags={this.newTags}
+              />
+            </Form.Item>
+          ) : (
+            <Form.Item label="标签" name="tag">
+              <TreeSelectComponent
+                mockData={tagsData}
+                targetKeys={chooseItem.tags ? chooseItem.tags : targetKeys}
+                choosehandle={this.choosehandle}
+                showSearch={true}
+                //totalTagPages={totalTagPages}
+                //handleTagTableChange={this.handleTagTableChange}
+              />
+            </Form.Item>
+          )}
+          {radio === "free" ? (
+            <Form.Item>
+              <Button type="primary" onClick={this.handleCancel}>
+                取消
+              </Button>
+            </Form.Item>
+          ) : (
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={this.state.loading}
+              >
+                提交
+              </Button>
+            </Form.Item>
+          )}
+        </Form>
+      </Drawer>
+    );
+  };
   renderContent = () => {
-    const { merchants, size, currentPage, total, searchTxt } = this.state;
+    const {
+      merchants,
+      size,
+      currentPage,
+      total,
+      searchTxt,
+      showTagForm,
+    } = this.state;
     //名字 银联商户码(upCode) 电话 地址
     const columns = [
       {
@@ -268,45 +444,34 @@ class Merchant extends Component {
         responsive: ["lg"],
       },
       {
-        title: "标签",
-        dataIndex: "tags",
-        key: "tags",
-        width: 120,
-        ellipsis: true,
-        responsive: ["lg"],
-        render: (tags) => {
-          return (
-            <div>
-              {tags.map((t, index) => (
-                <Tag color="cyan" key={index} title={t}>
-                  {t}
-                </Tag>
-              ))}
-            </div>
-          );
-        },
-      },
-      {
         title: "操作",
         width: 100,
         render: (item) => {
           return (
-            <b
-              onClick={() => {
-                let self = this;
-                //showDetalConfirm;
-                comEvents.hasPower(
-                  self,
-                  reqPermit,
-                  "MANAGE_ORGANIZATION",
-                  "showDetalConfirm",
-                  item
-                );
-              }}
-              className="ant-pink-link cursor"
-            >
-              删除
-            </b>
+            <div>
+              <b
+                className="ant-green-link cursor"
+                onClick={this.addTags.bind(this, item)}
+              >
+                标签
+              </b>
+              <Divider type="vertical" />
+              <b
+                onClick={() => {
+                  let self = this;
+                  comEvents.hasPower(
+                    self,
+                    reqPermit,
+                    "MANAGE_ORGANIZATION",
+                    "showDetalConfirm",
+                    item
+                  );
+                }}
+                className="ant-pink-link cursor"
+              >
+                删除
+              </b>
+            </div>
           );
         },
       },
@@ -345,7 +510,10 @@ class Merchant extends Component {
           <Row>
             <Col span={7}>
               <Form.Item name="searchTxt" label="查询条件">
-                <Input placeholder="输入名字/标签/商户号/电话/地址搜索" allowClear />
+                <Input
+                  placeholder="输入名字/标签/商户号/电话/地址搜索"
+                  allowClear
+                />
               </Form.Item>
             </Col>
             <Col>
@@ -401,6 +569,8 @@ class Merchant extends Component {
         >
           {this.renderForm()}
         </Drawer>
+
+        {showTagForm ? this.renderTagForm() : null}
       </div>
     );
   };

@@ -7,6 +7,8 @@ import ReactDocumentTitle from './SetTitle'
 import ModalTable from "./ModalTable";
 import TransferComponent from "./Transfer";
 import EditableTagGroup from "./Tags";
+import TreeSelectComponent from "./TableTransfer";
+
 export {
   FrameOut,
   Loading,
@@ -17,4 +19,5 @@ export {
   ModalTable,
   TransferComponent,
   EditableTagGroup,
+  TreeSelectComponent
 };

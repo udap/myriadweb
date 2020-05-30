@@ -19,9 +19,11 @@ const formatNumber = (n) => {
   return n[1] ? n : "0" + n;
 };
 
-const compareToday = (dateValue)=>{
-  return new Date().getTime() >= new Date(dateValue).getTime() + 3600 * 1000 * 24;
-}
+const compareToday = (dateValue) => {
+  return (
+    new Date().getTime() >= new Date(dateValue).getTime() + 3600 * 1000 * 24
+  );
+};
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -32,12 +34,11 @@ const formatDate = (date) => {
 
 const formatExpiry = (expiry) => {
   return expiry ? getDateStr(-1, expiry) : "";
-}
+};
 
 const getDateStr = (AddDayCount, date) => {
   var dd = date ? date : new Date();
-  if (date && typeof date === 'string')
-    dd = new Date(date);
+  if (date && typeof date === "string") dd = new Date(date);
   dd.setDate(dd.getDate() + AddDayCount);
   const year = dd.getFullYear();
   const month = dd.getMonth() + 1;
@@ -56,9 +57,8 @@ const firstDayOfMonth = () => {
 };
 
 const formatCurrency = (value) => {
-  if (value && typeof value === 'number')
-    return (value/100).toFixed(2);
-  if (value && typeof value === 'string')  
+  if (value && typeof value === "number") return (value / 100).toFixed(2);
+  if (value && typeof value === "string")
     return (parseInt(value) / 100).toFixed(2);
   return "";
 };
@@ -79,6 +79,15 @@ const hasPower = async (self, reqPermit, str, handleName, id, type) => {
     }
   }
 };
+const compareTwoArrayEqual = (arr1, arr2) => {
+  let newArr = [];
+  for (let j = 0; j < arr1.length; j++) {
+    arr2.map((item) => {
+      if (item.key === arr1[j]) newArr.push(item.title);
+    });
+  }
+  return newArr;
+};
 export default {
   getTitle,
   formatDate,
@@ -87,5 +96,6 @@ export default {
   firstDayOfMonth,
   formatCurrency,
   hasPower,
-  compareToday
+  compareToday,
+  compareTwoArrayEqual,
 };
