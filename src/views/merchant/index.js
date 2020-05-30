@@ -272,6 +272,9 @@ class Merchant extends Component {
 
   //提交数据
   submitCommonTags =  async() => {
+    this.setState({
+      inited:false
+    })
     let result;
     let { chooseItem, targetKeys } = this.state;
     result = await reqPutMerchantTags(chooseItem.uid, targetKeys);
