@@ -55,7 +55,7 @@ class Merchant extends Component {
     searchTxt: "",
     chooseItem: null,
     showTagForm: false,
-    radio: "free",
+    radio: "common",
     tagsData: [],
     targetKeys: [],
     targetTitles: [],
@@ -75,7 +75,7 @@ class Merchant extends Component {
     this.setState({
       visible: false,
       showTagForm: false,
-      radio: "free",
+      radio: "common",
     });
   };
   /*
@@ -356,8 +356,8 @@ class Merchant extends Component {
         >
           <Form.Item name="radio" label="标签类型">
             <Radio.Group onChange={this.onRadioChange}>
-              <Radio value="free">新标签</Radio>
               <Radio value="common">公共标签</Radio>
+              <Radio value="free">新标签</Radio>
             </Radio.Group>
           </Form.Item>
           {radio === "free" ? (
