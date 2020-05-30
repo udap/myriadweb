@@ -55,7 +55,7 @@ class Merchant extends Component {
     searchTxt: "",
     chooseItem: null,
     showTagForm: false,
-    radio: "free",
+    radio: "common",
     tagsData: [],
     targetKeys: [],
     targetTitles: [],
@@ -75,7 +75,7 @@ class Merchant extends Component {
     this.setState({
       visible: false,
       showTagForm: false,
-      radio: "free",
+      radio: "common",
     });
   };
   /*
@@ -254,10 +254,10 @@ class Merchant extends Component {
     let tag = radio === "free" ? newTags : arr;
     result = await reqPutMerchantTags(chooseItem.uid, tag);
     if (result.data.retcode !== 1) {
-      notification.success({ message: "添加成功" });
       //刷新列表数据
       this.getMerchant(1);
       if (radio === "common") {
+        notification.success({ message: "添加成功" });
         this.setState({
           showTagForm: false,
         });
