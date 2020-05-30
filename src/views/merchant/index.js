@@ -271,7 +271,7 @@ class Merchant extends Component {
   };
 
   //提交数据
-  newTags =  async() => {
+  submitCommonTags =  async() => {
     let result;
     let { chooseItem, targetKeys } = this.state;
     result = await reqPutMerchantTags(chooseItem.uid, targetKeys);
@@ -281,6 +281,9 @@ class Merchant extends Component {
       notification.success({ message: "标签设置成功" });
       this.setState({
         showTagForm: false,
+        chooseItem: {
+          tags: targetKeys,
+        }
       });
     }
   };
@@ -373,7 +376,7 @@ class Merchant extends Component {
             radio: radio,
             tag: [],
           }}
-          onFinish={this.newTags}
+          onFinish={this.submitCommonTags}
         >
           <div class="grey-block">
           选择公共标签设置
