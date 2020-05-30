@@ -310,6 +310,7 @@ class Merchant extends Component {
   reqGetTags = async (currentPage) => {
     let { size } = this.state;
     const parmas = {
+      type: "MERCHANT",
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentTagPage,
       size: 1000//size,
     };
@@ -375,7 +376,7 @@ class Merchant extends Component {
           <div class="grey-block">
           选择公共标签设置
           </div>
-          <Form.Item label="" name="tag">
+          <Form.Item name="tag">
             <TreeSelectComponent
               mockData={tagsData}
               targetKeys={chooseItem.tags ? chooseItem.tags : targetKeys}
