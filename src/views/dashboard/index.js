@@ -17,6 +17,10 @@ import {
   NodeIndexOutlined,
   GiftOutlined,
   CarryOutOutlined,
+  SwapOutlined,
+  ExportOutlined,
+  TransactionOutlined,
+  AccountBookOutlined,
 } from "@ant-design/icons";
 import NumberFormat from 'react-number-format';
 import moment from "moment";
@@ -126,36 +130,44 @@ const StatsPanel1 = (props) => {
   const stats = props.stats;
   return stats ? (
     <div className="dashboard-statistic-card">
-      <Card>
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-            <Card.Grid style={gridStyle}>
-            <Card.Meta
-              avatar={
-                <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-              }
-            />
+            <Card bodyStyle={bodyStyle} hoverable={true}>
+              <Card.Meta
+                avatar={
+                  <Avatar style={{ backgroundColor: '#ff8800' }} icon={<UserOutlined />} />
+                }
+              />
               <Statistic
                 title="客户"
                 value={stats["EMP_CUSTOMERS"]}
                 suffix={props.renderSuffix(stats["ORG_CUSTOMERS"])}
                 valueStyle={{ color: '#3f8600' }}
               />
-            </Card.Grid>
+            </Card>
           </Col>
           <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-            <Card.Grid style={gridStyle}>
+            <Card bodyStyle={bodyStyle} hoverable={true}>
+              <Card.Meta
+                avatar={
+                  <Avatar style={{ backgroundColor: '#ff8800' }} icon={<GiftOutlined />} />
+                }
+              />
               <Statistic
                 title="参与活动"
                 value={stats.CAMPAIGNS}
                 suffix={props.renderSuffix(stats.ORG_CAMPAIGNS)}
-                prefix={<GiftOutlined className="dashborad-icon" />}
                 valueStyle={{ color: '#3f8600' }}
               />
-            </Card.Grid>
+            </Card>
           </Col>
           <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-            <Card.Grid style={gridStyle}>
+            <Card bodyStyle={bodyStyle} hoverable={true}>
+              <Card.Meta
+                avatar={
+                  <Avatar style={{ backgroundColor: '#87d068' }} icon={<SwapOutlined />} />
+                }
+              />
               <Statistic
                 title="可配券"
                 value={stats.TRANSFERABLE_COUPONS}
@@ -163,10 +175,15 @@ const StatsPanel1 = (props) => {
                 prefix={<NodeIndexOutlined className="dashborad-icon" />}
                 valueStyle={{ color: '#3f8600' }}
               />
-            </Card.Grid>
+            </Card>
           </Col>
           <Col xs={24} sm={24} md={24} lg={6} xl={6}>
-            <Card.Grid style={gridStyle}>
+            <Card bodyStyle={bodyStyle} hoverable={true}>
+              <Card.Meta
+                avatar={
+                  <Avatar style={{ backgroundColor: '#87d068' }} icon={<ExportOutlined />} />
+                }
+              />
               <Statistic
                 title="可发券"
                 value={stats.DISTRIBUTABLE_COUPONS}
@@ -174,10 +191,9 @@ const StatsPanel1 = (props) => {
                 prefix={<UngroupOutlined className="dashborad-icon" />}
                 valueStyle={{ color: '#3f8600' }}
               />
-            </Card.Grid>
+            </Card>
           </Col>
         </Row>
-      </Card>
     </div>
   ) : (
     <Loading />
@@ -207,7 +223,7 @@ const StatsPanel2 = (props) => {
           <Card bodyStyle={bodyStyle} hoverable={true}>
             <Card.Meta
               avatar={
-                <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
+                <Avatar style={{ backgroundColor: '#dd4620' }} icon={<ExportOutlined />} />
               }
             />
             <Statistic
@@ -221,16 +237,26 @@ const StatsPanel2 = (props) => {
         </Col>
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <Card bodyStyle={bodyStyle} hoverable={true}>
+            <Card.Meta
+              avatar={
+                <Avatar style={{ backgroundColor: '#dd4620' }} icon={<TransactionOutlined />} />
+              }
+            />
             <Statistic
               title="已核销"
               value={stats["ORG_REDEEMED"]}
               prefix={<Badge color="geekblue" />}
-              valueStyle={{ color: '#3f8600' }}
+              valueStyle={{ color: '#dd4620' }}
             />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <Card bodyStyle={bodyStyle} hoverable={true}>
+            <Card.Meta
+              avatar={
+                <Avatar style={{ backgroundColor: '#dd4620' }} icon={<AccountBookOutlined />} />
+              }
+            />
             <Statistic
               title="核销"
               value={stats["ORG_REDEMPTIONS"]}
