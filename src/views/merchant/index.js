@@ -79,6 +79,7 @@ class Merchant extends Component {
     targetTitles: [],
     totalTagPages: 0,
     currentTagPage: 1,
+    expandedRowKeys: [],
   };
   componentDidMount() {
     this.getMerchant(1);
@@ -542,7 +543,7 @@ class Merchant extends Component {
         </Form>
         {/* --搜索栏-- */}
         <Table
-          rowKey="id"
+          rowKey={(record) => record.id}
           size="small"
           bordered
           dataSource={merchants}
@@ -557,6 +558,14 @@ class Merchant extends Component {
                 />
               </div>
             ),
+            onExpand: (expanded, record) => {
+              if (expanded) {
+                this.setState({ expandedRowKeys: [record.id] });
+              } else {
+                this.setState({ expandedRowKeys: [] });
+              }
+            },
+            expandedRowKeys: this.state.expandedRowKeys,
           }}
         />
         <div className="pagination">
