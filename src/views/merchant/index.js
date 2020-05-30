@@ -265,7 +265,7 @@ class Merchant extends Component {
     let result = await reqPutMerchantTags(chooseItem.uid, newTags);
     if (result.data.retcode !== 1) {
       //刷新列表数据
-      this.getMerchant(1);
+      this.getMerchant(this.state.currentPage);
       notification.success({ message: "标签设置成功" });
     }
   };
@@ -280,7 +280,7 @@ class Merchant extends Component {
     result = await reqPutMerchantTags(chooseItem.uid, targetKeys);
     if (result.data.retcode !== 1) {
       //刷新列表数据
-      this.getMerchant(1);
+      this.getMerchant(this.state.currentPage);
       notification.success({ message: "标签设置成功" });
       this.setState({
         showTagForm: false,
