@@ -32,7 +32,6 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
         },
         selectedRowKeys: listSelectedKeys,
       };
-
       return (
         <Table
           rowSelection={rowSelection}

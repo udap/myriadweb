@@ -41,7 +41,7 @@ const { confirm } = Modal;
 const leftTableColumns = [
   {
     dataIndex: "title",
-    title: "可选标签",
+    title: "可选公共标签",
   },
   // {
   //   dataIndex: "tag",
@@ -52,7 +52,7 @@ const leftTableColumns = [
 const rightTableColumns = [
   {
     dataIndex: "title",
-    title: "已选标签",
+    title: "已选公共标签",
   },
 ];
 
@@ -260,30 +260,32 @@ class Merchant extends Component {
       onCancel() {},
     });
   };
-  //提交数据
-  newTags = async (newTags) => {
-    let result;
-    let { tagsData, radio, chooseItem, targetKeys, targetTitles } = this.state;
-    if (radio === "common" && targetKeys.length === 0) {
-      notification.error({ message: "权限不能为空" });
-      return false;
-    }
-    let arr = comEvents.compareTwoArrayEqual(targetKeys, tagsData);
-    let tag = radio === "free" ? newTags : arr;
-    result = await reqPutMerchantTags(chooseItem.uid, tag);
+
+  addNewTags = async(chooseItem, newTags) => {
+    let result = await reqPutMerchantTags(chooseItem.uid, newTags);
     if (result.data.retcode !== 1) {
       //刷新列表数据
       this.getMerchant(1);
-      if (radio === "common") {
-        notification.success({ message: "添加成功" });
-        this.setState({
-          showTagForm: false,
-        });
-      }
+      notification.success({ message: "标签设置成功" });
+    }
+  };
+
+  //提交数据
+  newTags =  async() => {
+    let result;
+    let { chooseItem, targetKeys } = this.state;
+    result = await reqPutMerchantTags(chooseItem.uid, targetKeys);
+    if (result.data.retcode !== 1) {
+      //刷新列表数据
+      this.getMerchant(1);
+      notification.success({ message: "标签设置成功" });
+      this.setState({
+        showTagForm: false,
+      });
     }
   };
   //添加展示抽屉
-  addTags = (item) => {
+  showTagsDrawer = (item) => {
     this.setState({
       showTagForm: true,
       chooseItem: item,
@@ -291,7 +293,7 @@ class Merchant extends Component {
     });
     this.reqGetTags(1);
   };
-  //组织树控件的数据
+  //树控件的数据
   tree = (cont) => {
     const list = [];
     for (let i = 0; i < cont.length; i++) {
@@ -452,7 +454,7 @@ class Merchant extends Component {
             <div>
               <b
                 className="ant-green-link cursor"
-                onClick={this.addTags.bind(this, item)}
+                onClick={this.showTagsDrawer.bind(this, item)}
               >
                 标签
               </b>
@@ -545,7 +547,7 @@ class Merchant extends Component {
               <div style={{ margin: 0 }}>
                 <EditableTagGroup
                   tags={record.tags ? record.tags : []}
-                  newTags={this.newTags.bind(this, record)}
+                  newTags={this.addNewTags.bind(this,record)}
                 />
               </div>
             ),
