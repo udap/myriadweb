@@ -24,8 +24,9 @@ const { confirm } = Modal;
 class CampaignMerchant extends Component {
   state = {
     currentPage: 1,
+    currentListPage: 1,
     listSize: 10,
-    size: 10,
+    size: 7,
     total: 10,
     data: [],
     selectedRowKeys: [], // Check here to configure the default column
@@ -40,7 +41,6 @@ class CampaignMerchant extends Component {
   };
   componentDidMount() {
     let id = this.props.id;
-    console.log("JoinOrg -> componentDidMount -> id", id);
     this.initColumns();
     if (id) {
       this.setState({
@@ -91,7 +91,7 @@ class CampaignMerchant extends Component {
                 }}
                 className="ant-pink-link cursor"
               >
-                <DeleteOutlined/>
+                <DeleteOutlined />
               </b>
             </span>
           );
@@ -187,9 +187,18 @@ class CampaignMerchant extends Component {
   getMarket = async (id) => {
     let curInfo = await reqShowParties(id);
     let cont = curInfo.data ? curInfo.data : [];
+    this.parties = cont.parties ? cont.parties : [];
     this.setState({
       parties: cont.parties,
       loading: false,
+    });
+    let page = parseInt((cont.parties.length - 1) / this.state.listSize) + 1;
+    this.setState({
+      inited: true,
+      currentListPage:
+        this.state.currentListPage > page
+          ? this.state.currentListPage - 1
+          : this.state.currentListPage,
     });
   };
 
@@ -216,20 +225,20 @@ class CampaignMerchant extends Component {
     });
     this.handleCancel();
   };
-  addOneItem = async (id) => {
-    this.setState({ loading: true });
-    let params = {
-      parts: [{ partyId: id, type: "MERCHANT" }],
-    };
-    const result = await reqPostParties(this.state.id, params);
-    this.setState({
-      visible: false,
-      parties: [],
-      currentPage: 1,
-    });
+  // addOneItem = async (id) => {
+  //   this.setState({ loading: true });
+  //   let params = {
+  //     parts: [{ partyId: id, type: "MERCHANT" }],
+  //   };
+  //   const result = await reqPostParties(this.state.id, params);
+  //   this.setState({
+  //     visible: false,
+  //     parties: [],
+  //     currentPage: 1,
+  //   });
 
-    this.getMarket(this.state.id);
-  };
+  //   this.getMarket(this.state.id);
+  // };
 
   addItem = async (newList) => {
     this.setState({ loading: true });
@@ -239,7 +248,7 @@ class CampaignMerchant extends Component {
     const result = await reqPostParties(this.state.id, params);
     this.setState({
       visible: false,
-      parties: [],
+      // parties: [],
       currentPage: 1,
     });
 
@@ -247,10 +256,10 @@ class CampaignMerchant extends Component {
   };
 
   delItem = async (partyId) => {
-    const result = await reqDelParty(this.state.id, partyId);
     this.setState({
-      parties: [],
+      inited: false,
     });
+    const result = await reqDelParty(this.state.id, partyId);
     this.getMarket(this.state.id);
   };
   backHome = () => {
@@ -261,6 +270,11 @@ class CampaignMerchant extends Component {
       currentPage: page,
     });
     this.getOrgs(page);
+  };
+  handleListTableChange = (page, pageSize) => {
+    this.setState({
+      currentListPage: page,
+    });
   };
   // onShowSizeChange = (current, pageSize) => {
   //   this.setState({
@@ -273,6 +287,7 @@ class CampaignMerchant extends Component {
     this.setState({
       searchTxt: e.target.value,
     });
+    this.getMarket(this.state.id);
   };
   searchValue = (value) => {
     this.setState({
@@ -294,6 +309,7 @@ class CampaignMerchant extends Component {
       pageSize,
       totalList,
       searchTxt,
+      currentListPage,
     } = this.state;
     const rowSelection = {
       selectedRowKeys,
@@ -313,18 +329,19 @@ class CampaignMerchant extends Component {
           ></PageHeader>
           <Table
             size="small"
-            className="tableFont"          
+            className="tableFont"
             columns={this.columns}
-            dataSource={parties}
+            dataSource={this.parties}
             pagination={false}
             pagination={{
+              current: currentListPage,
               pageSize: listSize,
-              //showQuickJumper: true,
-              total: parties.length,
+              total: this.parties,
+              onChange: this.handleListTableChange,
             }}
           />
         </div>
-        <div style={{ marginBottom: 16, marginTop: 16 }}>
+        <div>
           <Button type="primary" onClick={this.backHome}>
             提交
           </Button>
@@ -364,11 +381,11 @@ class CampaignMerchant extends Component {
 
               <Table
                 size="small"
-                className="tableFont"          
+                className="tableFont"
                 columns={this.listColumns}
                 dataSource={data}
                 pagination={{
-                  current:currentPage,
+                  current: currentPage,
                   pageSize: size,
                   total: this.totalPages,
                   onChange: this.handleTableChange,
@@ -376,7 +393,7 @@ class CampaignMerchant extends Component {
                 }}
                 rowSelection={rowSelection}
               />
-              <div style={{ marginBottom: 8, marginTop: 8 }}>
+              <div>
                 <Button
                   type="primary"
                   onClick={this.backHome}
@@ -390,18 +407,6 @@ class CampaignMerchant extends Component {
                   {hasSelected ? `选择了 ${selectedRowKeys.length} 个商户` : ""}
                 </span>
               </div>
-              {/* <div className="pagination">
-                <Pagination
-                  pageSize={size}
-                  current={currentPage}
-                  current={currentPage}
-                  onChange={this.handleTableChange}
-                  total={this.totalPages}
-                  showTotal={(total) => `总共 ${total} 条数据`}
-                  //showSizeChanger={false}
-                  //onShowSizeChange={this.onShowSizeChange}
-                />
-              </div> */}
             </div>
           ) : (
             <Loading />

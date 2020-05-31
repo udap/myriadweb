@@ -42,7 +42,7 @@ class CouponHome extends Component {
     visible: false,
     /**发布客户 */
     current: 1,
-    listSize: 5,
+    listSize: 8,
     listTotal: 0,
     listData: [],
     partyId: "",
@@ -510,7 +510,7 @@ class CouponHome extends Component {
                   name="searchClientTxt"
                   value={searchClientTxt}
                   onChange={this.handleClientChange}
-                  placeholder="请输入客户姓名、手机号搜索"
+                  placeholder="输入姓名、手机号或客户标签搜索"
                   allowClear
                 />
               </Col>
@@ -526,6 +526,7 @@ class CouponHome extends Component {
             </Row>
             <Table
               size="small"
+              className='tableFont'
               columns={this.listColumns}
               dataSource={listData}
               pagination={false}
