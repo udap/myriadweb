@@ -39,7 +39,7 @@ const renderContent = (value, row, index) => {
 };
 const renderCampaign = (value, row, index) => {
   const obj = {
-    children: value ? value.name : "-",
+    children: value ? value.name : "",
   };
   return obj;
 };
@@ -87,14 +87,13 @@ class SettlementHome extends Component {
         dataIndex: "marketerName",
         key: "marketerName",
         width: 240,
-        //ellipsis: true,
       },
       {
         title: "结算类型",
         dataIndex: "type",
         key: "type",
-        width: 110,
-        responsive: ["md"],
+        width: 100,
+        responsive: ["lg"],
         render: (text) => {
           return (
             <div>
@@ -165,8 +164,6 @@ class SettlementHome extends Component {
       },
       {
         title: "操作",
-        //fixed: "right",
-        width: 140,
         render: (chooseItem) => {
           //操作（状态为草稿是，可以删除和提交操作，其中“提交”按钮只显示在机构提交页；状态为提交时，对于机构审批页，只有“批准”操作按钮）
           const { id, status } = chooseItem;
@@ -235,8 +232,8 @@ class SettlementHome extends Component {
         title: "结算类型",
         dataIndex: "type",
         key: "type",
-        width: 110,
-        responsive: ["md"],
+        width: 100,
+        responsive: ["lg"],
         render: (text) => {
           return (
             <div>
@@ -307,8 +304,6 @@ class SettlementHome extends Component {
       },
       {
         title: "操作",
-        //fixed: "right",
-        width: 110,
         render: (chooseItem) => {
           //操作（状态为草稿是，可以删除和提交操作，其中“提交”按钮只显示在机构提交页；状态为提交时，对于机构审批页，只有“批准”操作按钮）
           const { id, status } = chooseItem;
