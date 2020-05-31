@@ -174,13 +174,15 @@ class FrameOut extends Component {
 
     return (
       <ReactDocumentTitle title={curTtile}>
-        <Layout
-          style={{
+          <Layout style={{
             minHeight: "100%",
-          }}
-        >
-          <Layout>
-            <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
+          }}>
+            <Sider
+              breakpoint="lg"
+              collapsedWidth="0"
+              collapsible={true}
+              trigger={true}
+            >
               <Link
                 to="/admin/dashboard"
                 className="logo"
@@ -214,7 +216,7 @@ class FrameOut extends Component {
               >
                 <Row>
                   <Col xs={{ span: 12 }} lg={{ span: 12 }}>
-                    {React.createElement(
+                    {/* {React.createElement(
                       this.state.collapsed
                         ? MenuUnfoldOutlined
                         : MenuFoldOutlined,
@@ -222,7 +224,8 @@ class FrameOut extends Component {
                         className: "trigger",
                         onClick: this.toggle,
                       }
-                    )}
+                    )} */}
+
                   </Col>
                   <Col xs={{ span: 12 }} lg={{ span: 8, offset: 4 }}>
                     <TopNav />
@@ -241,7 +244,6 @@ class FrameOut extends Component {
               </Content>
             </Layout>
           </Layout>
-        </Layout>
       </ReactDocumentTitle>
     );
   }

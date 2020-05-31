@@ -172,7 +172,6 @@ const StatsPanel1 = (props) => {
                 title="可配券"
                 value={stats.TRANSFERABLE_COUPONS}
                 suffix={props.renderSuffix(stats.ORG_TRANSFERABLE_COUPONS)}
-                prefix={<NodeIndexOutlined className="dashborad-icon" />}
                 valueStyle={{ color: '#3f8600' }}
               />
             </Card>
@@ -188,7 +187,6 @@ const StatsPanel1 = (props) => {
                 title="可发券"
                 value={stats.DISTRIBUTABLE_COUPONS}
                 suffix={props.renderSuffix(stats.ORG_DISTRIBUTABLE_COUPONS)}
-                prefix={<UngroupOutlined className="dashborad-icon" />}
                 valueStyle={{ color: '#3f8600' }}
               />
             </Card>
@@ -230,7 +228,6 @@ const StatsPanel2 = (props) => {
               title="已发放"
               value={stats["DISTRIBUTIONS"]}
               suffix={props.renderSuffix(stats["ORG_DISTRIBUTIONS"])}
-              prefix={<Badge color="orange" />}
               valueStyle={{ color: '#3f8600' }}
             />
           </Card>
@@ -245,7 +242,6 @@ const StatsPanel2 = (props) => {
             <Statistic
               title="已核销"
               value={stats["ORG_REDEEMED"]}
-              prefix={<Badge color="geekblue" />}
               valueStyle={{ color: '#dd4620' }}
             />
           </Card>
@@ -260,7 +256,6 @@ const StatsPanel2 = (props) => {
             <Statistic
               title="核销"
               value={stats["ORG_REDEMPTIONS"]}
-              prefix={<Badge color="green" />}
               valueStyle={{ color: '#3f8600' }}
             />
           </Card>
