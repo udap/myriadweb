@@ -231,6 +231,9 @@ class Employee extends Component {
 
   deleteItem = async (id) => {
     let resultDel = await reqDelEmployee(id);
+    this.setState({
+      currentPage:1
+    })
     if (resultDel.data.retcode === 0) {
       notification.success({ message: "删除成功" });
       this.getEmployees(1);

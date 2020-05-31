@@ -293,6 +293,9 @@ class Campaign extends Component {
 
   delItem = async (id) => {
     const result = await reqDelCampaign(id);
+    this.setState({
+      currentPage:1
+    })
     this.getCampaigns(null, 1);
   };
   publishItem = async (id) => {

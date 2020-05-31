@@ -142,6 +142,9 @@ class Groups extends Component {
   //删除分组
   deleteItem = async (id) => {
     let result = await reqDelGroup(id);
+    this.setState({
+      currentPage:1
+    })
     if (result.data.retcode === 0) {
       notification.success({ message: "删除成功" });
       this.getGroups(1);

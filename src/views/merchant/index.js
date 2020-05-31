@@ -170,6 +170,9 @@ class Merchant extends Component {
       return false;
     }
     const result = await reqDelMerchant(uid);
+    this.setState({
+      currentPage:1
+    })
     this.getMerchant(1);
   };
   onFinish = async (values) => {
