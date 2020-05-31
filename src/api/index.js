@@ -145,7 +145,13 @@ export const reqGetPermissions = () =>
 //二.员工管理 START
 //获取员工列表
 export const reqGetEmployees = (params) =>
-  ajax.get(BASE + "/employees", { params: params });
+  ajax.get(BASE + "/employees", { 
+    params: params, 
+    paramsSerializer: (params) => {
+      return qs.stringify(params, { indices: false });
+    },
+  }
+);
 //获取员工详情
 export const reqGetEmployee = (uid) => ajax(BASE + "/employees/" + uid);
 
