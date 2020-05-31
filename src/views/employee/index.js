@@ -101,6 +101,7 @@ class Employee extends Component {
   getEmployees = async (currentPage, searchTxt, includingSubsidiaries) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+      sort: ["org", "createTime,desc"],
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
       searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
