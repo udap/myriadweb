@@ -517,7 +517,7 @@ class ChildOrg extends Component {
               <Form.Item
                 label="联系电话"
                 name="phone"
-                rules={[{ required: true }]}
+                rules={[{ required: true },{min:8}]}
               >
                 <Input />
               </Form.Item>
