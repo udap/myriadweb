@@ -98,7 +98,7 @@ const privateRoutes = [
   {
     pathname: "/admin/myChildOrg",
     component: ChildOrg,
-    title: "子机构管理",
+    title: "下属机构管理",
     icon: "UsergroupAddOutlined",
     isTop: false, //顶级菜单
   },
