@@ -1,24 +1,24 @@
 //inedx导出全部页面 其它时候按需导出
 //懒加载
-import Loadable from 'react-loadable';
-import Loading  from '../components/Loading';
- 
+import Loadable from "react-loadable";
+import Loading from "../components/Loading";
+
 const MyOrgs = Loadable({
-  loader: () => import('./myOrgs'),
-  loading: Loading
+  loader: () => import("./myOrgs"),
+  loading: Loading,
 });
 
 const NotFound = Loadable({
-  loader: () => import('./notFound'),
-  loading: Loading
+  loader: () => import("./notFound"),
+  loading: Loading,
 });
 const Empty = Loadable({
   loader: () => import("./empty"),
   loading: Loading,
 });
 const Dashboard = Loadable({
-  loader: () => import('./dashboard'),
-  loading: Loading
+  loader: () => import("./dashboard"),
+  loading: Loading,
 });
 
 const Employee = Loadable({
@@ -39,14 +39,13 @@ const CampaignDetail = Loadable({
   loading: Loading,
 });
 const Coupon = Loadable({
-  loader: () => import('./coupon'),
-  loading: Loading
+  loader: () => import("./coupon"),
+  loading: Loading,
 });
 const CouponHome = Loadable({
   loader: () => import("./coupon/couponHome"),
   loading: Loading,
 });
-
 
 const Distribution = Loadable({
   loader: () => import("./distribution"),
@@ -59,8 +58,8 @@ const Redemption = Loadable({
 });
 
 const Login = Loadable({
-  loader: () => import('./login'),
-  loading: Loading
+  loader: () => import("./login"),
+  loading: Loading,
 });
 
 const SettlementHome = Loadable({
@@ -92,6 +91,10 @@ const TagManager = Loadable({
   loader: () => import("./tag"),
   loading: Loading,
 });
+const ChildOrg = Loadable({
+  loader: () => import("./myChildOrg"),
+  loading: Loading,
+});
 //同时更新routers路由
 export {
   MyOrgs,
@@ -114,4 +117,5 @@ export {
   Groups,
   Profile,
   TagManager,
+  ChildOrg,
 };

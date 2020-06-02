@@ -145,13 +145,12 @@ export const reqGetPermissions = () =>
 //二.员工管理 START
 //获取员工列表
 export const reqGetEmployees = (params) =>
-  ajax.get(BASE + "/employees", { 
-    params: params, 
+  ajax.get(BASE + "/employees", {
+    params: params,
     paramsSerializer: (params) => {
       return qs.stringify(params, { indices: false });
     },
-  }
-);
+  });
 //获取员工详情
 export const reqGetEmployee = (uid) => ajax(BASE + "/employees/" + uid);
 
@@ -186,10 +185,6 @@ export const reqAddMerchant = (params) =>
 
 //添加商户标签
 export const reqPutMerchantTags = (uid, params) =>
-  ajax.put(BASE + "/merchants/" + uid + "/tags", params);
-
-//添加公共标签
-export const reqPutMerchantCommonTags = (uid, params) =>
   ajax.put(BASE + "/merchants/" + uid + "/tags", params);
 
 //商户管理 END
@@ -332,3 +327,15 @@ export const reqPostTags = (params) => ajax.post(BASE + "/tags", params);
 export const reqDelTag = (id) => ajax.delete(BASE + "/tags/" + id);
 export const reqGetTags = (params) =>
   ajax.get(BASE + "/tags", { params: params });
+
+//下属机构管理
+export const reqGetChildOrgs = (uid, params) =>
+  ajax.get(BASE + "/organizations/" + uid + "/subsidiaries", {
+    params: params,
+  });
+export const reqAddChildOrg = (params) =>
+  ajax.post(BASE + "/organizations", params);
+export const reqDelChildOrg = (uid) =>
+  ajax.delete(BASE + "/organizations/" + uid);
+export const reqPutChildOrg = (uid, params) =>
+  ajax.put(BASE + "/organizations/" + uid, params);

@@ -130,6 +130,15 @@ class MyOrgs extends Component {
                 </b> */}
             <b
               onClick={() => {
+                this.props.history.push("/admin/myChildOrg");
+              }}
+              className="ant-green-link cursor"
+            >
+              下属机构管理
+            </b>
+            <Divider type="vertical" />
+            <b
+              onClick={() => {
                 this.props.history.push("/admin/employee");
               }}
               className="ant-green-link cursor"
@@ -465,7 +474,7 @@ class MyOrgs extends Component {
       city: values.residence[1],
       district: values.residence[2],
       parentOrgUid: "",
-      upCode: values.code,
+      upCode: values.upCode,
     };
     const result = await regPutCurOrg(this.state.organization.uid, params);
     console.log("MyOrgs -> onFinish -> result", result);

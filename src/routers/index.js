@@ -19,6 +19,7 @@ import {
   Groups,
   Profile,
   TagManager,
+  ChildOrg,
 } from "../views";
 
 //公共路由
@@ -91,6 +92,13 @@ const privateRoutes = [
     pathname: "/admin/employee",
     component: Employee,
     title: "员工管理",
+    icon: "UsergroupAddOutlined",
+    isTop: false, //顶级菜单
+  },
+  {
+    pathname: "/admin/myChildOrg",
+    component: ChildOrg,
+    title: "子机构管理",
     icon: "UsergroupAddOutlined",
     isTop: false, //顶级菜单
   },
