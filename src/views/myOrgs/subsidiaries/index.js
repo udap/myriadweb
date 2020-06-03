@@ -450,7 +450,7 @@ class Subsidiaries extends Component {
     return (
       <Drawer
         width={480}
-        title={this.state.isNew ? "新增下属机构" : "编辑下属机构"}
+        title={this.state.isNew ? "新增机构" : "编辑机构"}
         onClose={this.handleCancel}
         visible={this.state.showEdit}
       >
@@ -479,7 +479,7 @@ class Subsidiaries extends Component {
     return (
       <div className="OrgFormDialog">
         <div class="grey-block">
-        {this.state.isNew?`${'您正在为'+orgName+'创建下属机构'}`:`${'您正在编辑'+orgName+'的下属机构'}`}
+        {this.state.isNew?`${'您正在为'+orgName+'创建下属机构'}`:`${'您正在编辑'+fullName+'的信息'}`}
           </div>
         <Form
           layout="vertical"
