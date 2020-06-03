@@ -15,6 +15,7 @@ import {
   SettlementNew,
   SettlementDetail,
   MyOrgs,
+  Subsidiaries,
   Merchant,
   Groups,
   Profile,
@@ -97,9 +98,9 @@ const privateRoutes = [
     isTop: false, //顶级菜单
   },
   {
-    pathname: "/admin/myChildOrg",
-    component: ChildOrg,
-    title: "下属机构管理",
+    pathname: "/admin/myOrgs/subsidiaries",
+    component: Subsidiaries,
+    title: "下属机构",
     icon: "UsergroupAddOutlined",
     isTop: false, //顶级菜单
   },

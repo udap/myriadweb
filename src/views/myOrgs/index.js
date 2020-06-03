@@ -130,7 +130,7 @@ class MyOrgs extends Component {
                 </b> */}
             <b
               onClick={() => {
-                this.props.history.push("/admin/myChildOrg");
+                this.props.history.push("/admin/myOrgs/subsidiaries");
               }}
               className="ant-green-link cursor"
             >

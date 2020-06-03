@@ -91,10 +91,12 @@ const TagManager = Loadable({
   loader: () => import("./tag"),
   loading: Loading,
 });
-const ChildOrg = Loadable({
-  loader: () => import("./myChildOrg"),
+
+const Subsidiaries = Loadable({
+  loader: () => import("./myOrgs/subsidiaries"),
   loading: Loading,
 });
+
 const ChildEmployee = Loadable({
   loader: () => import("./myChildEmployee"),
   loading: Loading,
@@ -121,6 +123,6 @@ export {
   Groups,
   Profile,
   TagManager,
-  ChildOrg,
+  Subsidiaries,
   ChildEmployee
 };
