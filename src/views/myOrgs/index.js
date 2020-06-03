@@ -134,7 +134,7 @@ class MyOrgs extends Component {
               }}
               className="ant-green-link cursor"
             >
-              下属机构管理
+              下属机构
             </b>
             <Divider type="vertical" />
             
