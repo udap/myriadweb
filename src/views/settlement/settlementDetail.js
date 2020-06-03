@@ -40,7 +40,6 @@ class SettlementDetail extends Component {
   };
   componentDidMount() {
     let item = this.props.location.state.chooseItem;
-    console.log("SettlementDetail -> componentDidMount -> item", item);
     this.setState({
       item: item,
     });

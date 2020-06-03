@@ -54,7 +54,7 @@ const scrollstyle = {
   overflow: "auto",
   overflowX: "hidden",
 };
-class Employee extends Component {
+class ChildEmployee extends Component {
   state = {
     inited: false,
     employees: [],
@@ -80,9 +80,21 @@ class Employee extends Component {
     //修改组
     operationsData: [],
     targetKeys: [],
+    parentItem: null,
   };
   componentDidMount() {
-    this.getList(1);
+    let uid = this.props.match.params.id;
+    console.log("ChildEmployee -> componentDidMount -> uid", uid)
+    // let item = this.props.location.state.item;
+    // console.log("ChildEmployee -> getEmployees -> item", item);
+    this.setState({
+      orgUid: uid,
+      //parentItem: item,
+    },() => {
+      //这里打印的是最新的state值
+      console.log(this.state.orgUid);
+      this.getList(1);
+});
   }
   getList = async () => {
     this.getEmployees(1);
@@ -103,7 +115,7 @@ class Employee extends Component {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       sort: ["org", "createTime,desc"],
       size: this.state.size,
-      orgUid: storageUtils.getUser().orgUid,
+      orgUid: this.state.orgUid,
       searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
       includingSubsidiaries:
         typeof includingSubsidiaries === "undefined"
@@ -111,13 +123,13 @@ class Employee extends Component {
           : includingSubsidiaries,
     };
     const result = await reqGetEmployees(parmas);
-    const cont = result && result.data ? result.data.content : [];
+    const cont = result && result.data&& result.data.content ? result.data.content : [];
 
     this.totalPages =
-      result && result.data ? result.data.content.totalElements : 1;
+      result && result.data && result.data.content ? result.data.content.totalElements : 1;
     this.setState({
       employees: cont.content,
-      total: result && result.data ? result.data.content.totalElements : 1,
+      total: result && result.data&& result.data.content ? result.data.content.totalElements : 1,
       inited: true,
     });
   };
@@ -126,7 +138,7 @@ class Employee extends Component {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
-      orgUid: storageUtils.getUser().orgUid,
+      orgUid: this.state.orgUid,
       searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
     };
     const result = await reqGetGroups(parmas);
@@ -154,14 +166,14 @@ class Employee extends Component {
     if (result) {
       this.getGroups();
       if (operate === "edit") {
-        let orgId = storageUtils.getUser().orgId;
-        if (data.org.id !== orgId) {
-          //不是当前机构的员工
-          notification.info({
-            message: "抱歉，您无权修改其它机构的员工信息！",
-          });
-          return false;
-        }
+        // let orgId = storageUtils.getUser().orgId;
+        // if (data.org.id !== orgId) {
+        //   //不是当前机构的员工
+        //   notification.info({
+        //     message: "抱歉，您无权修改其它机构的员工信息！",
+        //   });
+        //   return false;
+        // }
         this.getEmployee(data.uid, "visible");
         this.setState({
           isNew: false,
@@ -233,8 +245,8 @@ class Employee extends Component {
   deleteItem = async (id) => {
     let resultDel = await reqDelEmployee(id);
     this.setState({
-      currentPage:1
-    })
+      currentPage: 1,
+    });
     if (resultDel.data.retcode === 0) {
       notification.success({ message: "删除成功" });
       this.getEmployees(1);
@@ -242,12 +254,12 @@ class Employee extends Component {
   };
 
   backIndex = () => {
-    this.props.history.push("/admin/myOrgs");
+    this.props.history.push("/admin/myChildOrg");
   };
 
   //获取员工所在组
   getGroups = async () => {
-    let orgUid = storageUtils.getUser().orgUid;
+    let orgUid = this.state.orgUid;
     let groups = await reqGetGroupsByOrg(orgUid);
     let cont = groups.data.content ? groups.data.content.content : [];
 
@@ -276,7 +288,7 @@ class Employee extends Component {
           desc: values.desc,
           code: values.code,
           groupId: values.groupId,
-          orgUid: storageUtils.getUser().orgUid,
+          orgUid: this.state.orgUid,
         }
       : {
           name: values.name,
@@ -285,7 +297,7 @@ class Employee extends Component {
           desc: values.desc,
           code: values.code,
           groups: this.state.targetKeys,
-          orgUid: storageUtils.getUser().orgUid,
+          orgUid: this.state.orgUid,
         };
     if (this.state.isNew) {
       const result = await reqAddEmployees(params);
@@ -329,7 +341,7 @@ class Employee extends Component {
       this.getEmployees(1);
     }
   };
-  choosehandle = (nextTargetKeys ) => {
+  choosehandle = (nextTargetKeys) => {
     this.setState({
       targetKeys: nextTargetKeys,
     });
@@ -357,14 +369,20 @@ class Employee extends Component {
 
     //多选分组
     const { operationsData, targetKeys } = this.state;
+   // const orgName = this.state.parentItem.name;
     return (
       <Drawer
         width={480}
-        title={isNew ? "添加员工" : "修改员工"}
+        title={isNew ? "添加下属机构员工" : "修改下属机构员工"}
         visible={visible}
         onClose={this.handleCancel}
         footer={null}
       >
+        {/* <div class="grey-block">
+          {this.state.isNew
+            ? `${"您正在为" + orgName + "创建下属机构员工"}`
+            : `${"您正在编辑" + orgName + "的下属机构员工"}`}
+        </div> */}
         <Form
           name="basic"
           layout="vertical"
@@ -549,14 +567,14 @@ class Employee extends Component {
         dataIndex: "code",
         key: "code",
         width: 120,
-        responsive: ['md'],
+        responsive: ["md"],
         render: (text) => <span>{text ? text : "-"}</span>,
       },
       {
         title: "机构/部门",
         dataIndex: "org",
         key: "org",
-        responsive: ['lg'],
+        responsive: ["lg"],
         render: (text) => <span>{text ? text.name : "-"}</span>,
       },
       {
@@ -564,8 +582,8 @@ class Employee extends Component {
         dataIndex: "groups",
         key: "groups",
         width: 180,
-        responsive: ['lg'],
         ellipsis: true,
+        responsive: ["lg"],
         render: (groups) => (
           <div>
             {groups.length !== 0
@@ -583,7 +601,7 @@ class Employee extends Component {
         dataIndex: "role",
         key: "role",
         width: 80,
-        responsive: ['md'],
+        responsive: ["md"],
         render: (text) => (
           <span>
             <Tag color="green" key={text}>
@@ -676,12 +694,12 @@ class Employee extends Component {
             expandedRowRender: (record) => (
               <div style={{ margin: 0 }}>
                 {record.groups.length !== 0
-              ? record.groups.map((group) => (
-                  <Tag color="blue" key={group.id}>
-                    {group.name}
-                  </Tag>
-                ))
-              : "-"}
+                  ? record.groups.map((group) => (
+                      <Tag color="blue" key={group.id}>
+                        {group.name}
+                      </Tag>
+                    ))
+                  : "-"}
               </div>
             ),
             onExpand: (expanded, record) => {
@@ -715,7 +733,7 @@ class Employee extends Component {
       <div style={{ height: "100%" }}>
         <PageHeader
           className="site-page-header-responsive cont"
-          title="员工管理"
+          title="下属机构员工管理"
           extra={[
             <PlusSquareFilled
               key="add"
@@ -739,7 +757,7 @@ class Employee extends Component {
           }}
         >
           <Row>
-            <Col>
+            {/* <Col>
               <Form.Item name="includingSubsidiaries" label="查询条件">
                 <Checkbox
                   onChange={this.onCheckboxChange}
@@ -748,10 +766,13 @@ class Employee extends Component {
                   包括下属机构员工
                 </Checkbox>
               </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="searchTxt">
-                <Input placeholder="请输入员工姓名或手机号进行搜索" allowClear />
+            </Col> */}
+            <Col span={8}>
+              <Form.Item name="searchTxt" label="查询条件">
+                <Input
+                  placeholder="请输入员工姓名或手机号进行搜索"
+                  allowClear
+                />
               </Form.Item>
             </Col>
             <Col>
@@ -776,4 +797,4 @@ class Employee extends Component {
   }
 }
 
-export default Employee;
+export default ChildEmployee;

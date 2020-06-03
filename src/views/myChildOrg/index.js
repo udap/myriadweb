@@ -277,10 +277,22 @@ class ChildOrg extends Component {
       },
       {
         title: "操作",
-        width: 140,
+        width: 250,
         render: (item) => {
           return (
             <div>
+              <b
+              onClick={() => {
+                this.props.history.push({
+                  pathname: "/admin/myChildEmployee/" + item.uid,
+                  state: { item },
+                });
+              }}
+              className="ant-green-link cursor"
+            >
+              下属机构员工
+            </b>
+            <Divider type="vertical" />
               <b
                 className="ant-green-link cursor"
                 onClick={() => {
