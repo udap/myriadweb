@@ -125,27 +125,7 @@ class Employee extends Component {
       inited: true,
     });
   };
-  //获取组列表数据
-  // getGroups = async (currentPage, searchTxt, uid) => {
-  //   const parmas = {
-  //     page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-  //     size: this.state.size,
-  //     orgUid: uid ? uid : storageUtils.getUser().orgUid,
-  //     searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-  //     template:this.state.isCurrentOrg?false:true
-  //   };
-  //   const result = await reqGetGroups(parmas);
-  //   const cont =
-  //     result && result.data && result.data.content ? result.data.content : [];
-
-  //   this.totalPages =
-  //     result && result.data ? result.data.content.totalElements : 1;
-  //   this.setState({
-  //     groups: cont.content,
-  //     total: result && result.data ? result.data.content.totalElements : 1,
-  //     inited: true,
-  //   });
-  // };
+  
   /*分页 */
   handleTableChange = (page) => {
     this.setState({
@@ -169,11 +149,13 @@ class Employee extends Component {
         }
         this.getEmployee(data.uid, "visible");
         this.setState({
+          isCurrentOrg:true,
           isNew: false,
         });
       } else {
         // add
         this.setState({
+          isCurrentOrg:true,
           curInfo: {},
           isNew: true,
           selectedRows: null,
