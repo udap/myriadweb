@@ -97,10 +97,6 @@ const Subsidiaries = Loadable({
   loading: Loading,
 });
 
-const ChildEmployee = Loadable({
-  loader: () => import("./myChildEmployee"),
-  loading: Loading,
-});
 //同时更新routers路由
 export {
   MyOrgs,
@@ -124,5 +120,4 @@ export {
   Profile,
   TagManager,
   Subsidiaries,
-  ChildEmployee
 };

@@ -126,25 +126,26 @@ class Employee extends Component {
     });
   };
   //获取组列表数据
-  getGroups = async (currentPage, searchTxt, uid) => {
-    const parmas = {
-      page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-      size: this.state.size,
-      orgUid: uid ? uid : storageUtils.getUser().orgUid,
-      searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-    };
-    const result = await reqGetGroups(parmas);
-    const cont =
-      result && result.data && result.data.content ? result.data.content : [];
+  // getGroups = async (currentPage, searchTxt, uid) => {
+  //   const parmas = {
+  //     page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+  //     size: this.state.size,
+  //     orgUid: uid ? uid : storageUtils.getUser().orgUid,
+  //     searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
+  //     template:this.state.isCurrentOrg?false:true
+  //   };
+  //   const result = await reqGetGroups(parmas);
+  //   const cont =
+  //     result && result.data && result.data.content ? result.data.content : [];
 
-    this.totalPages =
-      result && result.data ? result.data.content.totalElements : 1;
-    this.setState({
-      groups: cont.content,
-      total: result && result.data ? result.data.content.totalElements : 1,
-      inited: true,
-    });
-  };
+  //   this.totalPages =
+  //     result && result.data ? result.data.content.totalElements : 1;
+  //   this.setState({
+  //     groups: cont.content,
+  //     total: result && result.data ? result.data.content.totalElements : 1,
+  //     inited: true,
+  //   });
+  // };
   /*分页 */
   handleTableChange = (page) => {
     this.setState({
@@ -156,7 +157,6 @@ class Employee extends Component {
   setItem = async (operate, permission, data) => {
     const result = await reqPermit(permission);
     if (result) {
-      // this.getGroups(1)
       this.getGroupsList();
       if (operate === "edit") {
         let orgId = storageUtils.getUser().orgId;
@@ -257,7 +257,13 @@ class Employee extends Component {
   //获取员工所在组
   getGroupsList = async (uid) => {
     let orgUid = uid ? uid : storageUtils.getUser().orgUid;
-    let groups = await reqGetGroupsByOrg(orgUid);
+    const parmas = {
+      page: 0,
+      size: 200,
+      orgUid: orgUid,
+      template: this.state.isCurrentOrg ? false : true,
+    };
+    let groups = await reqGetGroupsByOrg(parmas);
     let cont = groups.data.content ? groups.data.content.content : [];
 
     let data = [];
@@ -278,15 +284,19 @@ class Employee extends Component {
   };
   //add/edit
   onFinish = async (values) => {
-    let selectedRows = this.state.selectedRows
-    let params = this.state.isNew?{
+    let { selectedRows, isCurrentOrg } = this.state;
+    let params = this.state.isNew
+      ? {
           name: values.name,
           cellphone: values.cellphone,
           admin: values.admin,
           desc: values.desc,
           code: values.code,
           groupId: values.groupId,
-          orgUid: selectedRows&&selectedRows.length!==0 ? selectedRows[0].uid : storageUtils.getUser().orgUid,
+          orgUid:
+            selectedRows && selectedRows.length !== 0
+              ? selectedRows[0].uid
+              : storageUtils.getUser().orgUid,
         }
       : {
           name: values.name,
@@ -295,7 +305,10 @@ class Employee extends Component {
           desc: values.desc,
           code: values.code,
           groups: this.state.targetKeys,
-          orgUid: selectedRows&&selectedRows.length!==0  ? selectedRows[0].uid : storageUtils.getUser().orgUid,
+          orgUid:
+            selectedRows && selectedRows.length !== 0
+              ? selectedRows[0].uid
+              : storageUtils.getUser().orgUid,
         };
     if (this.state.isNew) {
       const result = await reqAddEmployees(params);
@@ -413,7 +426,7 @@ class Employee extends Component {
           onFinish={this.onFinish}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
-          <div class="grey-block orgDesc">
+          <div className="grey-block orgDesc">
             <text>
               {this.state.isNew
                 ? `${"您正在为【" + showName + "】添加员工"}`

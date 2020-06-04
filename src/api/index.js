@@ -155,9 +155,9 @@ export const reqGetEmployees = (params) =>
 export const reqGetEmployee = (uid) => ajax(BASE + "/employees/" + uid);
 
 //获取员工所在组
-export const reqGetGroupsByOrg = (orgid) =>
+export const reqGetGroupsByOrg = (params) =>
   ajax.get(BASE + "/groups", {
-    params: { size: 200, orgUid: orgid },
+    params: params,
   });
 //添加员工
 export const reqAddEmployees = (params) =>
