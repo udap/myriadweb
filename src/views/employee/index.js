@@ -237,13 +237,13 @@ class Employee extends Component {
   };
 
   //获取员工所在组
-  getGroupsList = async (uid) => {
+  getGroupsList = async (uid,template) => {
     let orgUid = uid ? uid : storageUtils.getUser().orgUid;
     const parmas = {
       page: 0,
       size: 200,
       orgUid: orgUid,
-      template: this.state.isCurrentOrg ? false : true,
+      template: template ? true : false,
     };
     let groups = await reqGetGroupsByOrg(parmas);
     let cont = groups.data.content ? groups.data.content.content : [];
@@ -346,7 +346,7 @@ class Employee extends Component {
       isCurrentOrg: selectedRows[0].id === orgId ? true : false,
       showListOfInstitutions: false,
     });
-    this.getGroupsList(selectedRows[0].uid);
+    this.getGroupsList(selectedRows[0].uid,true);
   };
   toogleListOfInstitutions = () => {
     this.setState({
