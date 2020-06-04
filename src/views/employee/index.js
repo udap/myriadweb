@@ -278,16 +278,15 @@ class Employee extends Component {
   };
   //add/edit
   onFinish = async (values) => {
-    let params = this.state.isNew;
     let selectedRows = this.state.selectedRows
-      ? {
+    let params = this.state.isNew?{
           name: values.name,
           cellphone: values.cellphone,
           admin: values.admin,
           desc: values.desc,
           code: values.code,
           groupId: values.groupId,
-          orgUid: selectedRows ? selectedRows : storageUtils.getUser().orgUid,
+          orgUid: selectedRows&&selectedRows.length!==0 ? selectedRows[0].uid : storageUtils.getUser().orgUid,
         }
       : {
           name: values.name,
@@ -296,7 +295,7 @@ class Employee extends Component {
           desc: values.desc,
           code: values.code,
           groups: this.state.targetKeys,
-          orgUid: selectedRows ? selectedRows : storageUtils.getUser().orgUid,
+          orgUid: selectedRows&&selectedRows.length!==0  ? selectedRows[0].uid : storageUtils.getUser().orgUid,
         };
     if (this.state.isNew) {
       const result = await reqAddEmployees(params);
