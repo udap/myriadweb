@@ -4,6 +4,7 @@ import {
   Table,
   PageHeader,
   Input,
+  Switch,
   Divider,
   Modal,
   Drawer,
@@ -188,6 +189,7 @@ class Groups extends Component {
       ? {
           name: values.name,
           description: values.description,
+          createTemplateGroup: values.createTemplateGroup,
           operations: targetKeys,
           orgUid: storageUtils.getUser().orgUid,
         }
@@ -272,6 +274,14 @@ class Groups extends Component {
           >
             <Input placeholder="分组名称不超过20个字" maxLength="20"/>
           </Form.Item>
+          {isNew? (
+            <Form.Item
+              label="创建模版组？"
+              name="createTemplateGroup"
+            >
+              <Switch />
+            </Form.Item>):null
+          }
           <Form.Item label="描述" name="description" rules={[{ max: 255 }]}>
             <TextArea rows={4} />
           </Form.Item>
@@ -457,7 +467,7 @@ class Groups extends Component {
   };
   //查看组的详情
   renderGroupDetail = () => {
-    let { name, desc, operations } = this.state.curInfo;
+    let { name, desc, operations, template } = this.state.curInfo;
     return (
       <div>
         <Drawer
@@ -475,6 +485,9 @@ class Groups extends Component {
             <Descriptions.Item label="名称">{name}</Descriptions.Item>
             <Descriptions.Item label="描述">
               {desc ? desc : "-"}
+            </Descriptions.Item>
+            <Descriptions.Item label="是否模版">
+              {template ? "是" : "否"}
             </Descriptions.Item>
             <Descriptions.Item label="权限">
               <div className="scrollStyle">
