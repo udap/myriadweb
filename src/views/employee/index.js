@@ -473,7 +473,7 @@ class Employee extends Component {
               </Select>
             </Form.Item>
           ) : (
-            <Form.Item label="权限" name="operations">
+            <Form.Item label="员工所在组" name="operations">
               <Transfer
                 dataSource={operationsData}
                 onChange={this.choosehandle}
