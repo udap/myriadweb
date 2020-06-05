@@ -15,7 +15,8 @@ import {
   InputNumber,
   List,
   Drawer,
-  notification
+  notification,
+  Checkbox,
 } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
@@ -35,6 +36,7 @@ import "moment/locale/zh-cn";
 import CampaignMerchant from "./campaignMerchant";
 import "./index.less";
 import { thisExpression } from "@babel/types";
+import StepRules from "./stepRules";
 const layout = {
   labelCol: {
     xs: { span: 24 },
@@ -145,14 +147,32 @@ class CampaignEdit extends Component {
       end: null,
     },
     daysAfterDist: null,
-
     orgList: [],
     hasConfig: false,
     parties: [],
     disabledExpiry: false,
     autoswitch: false,
     //禁止跳转
-    disabledNext: false
+    disabledNext: false,
+    //rules
+    rules: {
+      orderRules: {
+        name: "",//"MinimumValue",
+        option: null,
+      },
+      merchantRules: {
+        name: "",//"SelectedMerchants",
+        option: null,
+      },
+      tagRules: {
+        name: "",//"SelectedTags",
+        option: null,
+      },
+      regionRules: {
+        name: "",//"SelectedRegions",
+        option: null,
+      },
+    },
   };
 
   componentDidMount() {
@@ -197,8 +217,8 @@ class CampaignEdit extends Component {
           : "AMOUNT",
       typeText:
         voucherConfig &&
-          voucherConfig.discount &&
-          voucherConfig.discount.type === "AMOUNT"
+        voucherConfig.discount &&
+        voucherConfig.discount.type === "AMOUNT"
           ? "元"
           : "%",
       settings: {
@@ -223,8 +243,8 @@ class CampaignEdit extends Component {
             : 1,
         amountLimit:
           voucherConfig &&
-            voucherConfig.discount &&
-            voucherConfig.discount.amountLimit
+          voucherConfig.discount &&
+          voucherConfig.discount.amountLimit
             ? parseFloat(voucherConfig.discount.amountLimit) / 100
             : null,
         //description: voucherConfig ? voucherConfig.description : "",
@@ -235,7 +255,8 @@ class CampaignEdit extends Component {
             : cont.effective,
         end:
           voucherConfig && voucherConfig.expiry
-            ? comEvents.formatExpiry(voucherConfig.expiry) : comEvents.formatExpiry(new Date(cont.expiry)),
+            ? comEvents.formatExpiry(voucherConfig.expiry)
+            : comEvents.formatExpiry(new Date(cont.expiry)),
         daysAfterDist:
           voucherConfig && voucherConfig.daysAfterDist
             ? voucherConfig.daysAfterDist
@@ -331,7 +352,7 @@ class CampaignEdit extends Component {
     }
     if (id) {
       //刷新当前数据
-      this.getCampaigns(id, this.state.current)
+      this.getCampaigns(id, this.state.current);
     }
     //this.jumpStep(this.state.current);
   };
@@ -386,14 +407,15 @@ class CampaignEdit extends Component {
             onChange={this.changeDate}
           />
         </Form.Item>
-        <Form.Item label="发行数量" name="totalSupply" rules={[{ required: true }]}>
+        <Form.Item
+          label="发行数量"
+          name="totalSupply"
+          rules={[{ required: true }]}
+        >
           <InputNumber defaultValue={totalSupply} min={1} />
         </Form.Item>
-        <Form.Item name="autoUpdate" label="是否允许增发" >
-          <Switch
-            checked={autoswitch}
-            onChange={this.onSwitchChange}
-          />
+        <Form.Item name="autoUpdate" label="是否允许增发">
+          <Switch checked={autoswitch} onChange={this.onSwitchChange} />
         </Form.Item>
         <Form.Item
           label="活动主页"
@@ -417,7 +439,11 @@ class CampaignEdit extends Component {
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit" disabled={this.state.disabledNext}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={this.state.disabledNext}
+          >
             下一步
           </Button>
         </Form.Item>
@@ -434,13 +460,13 @@ class CampaignEdit extends Component {
     let { campaignType, basicInfo, tags, isNew } = this.state;
     if (comEvents.compareToday(basicInfo.effective)) {
       notification.info({
-        message: '活动时间不能小于今天'
-      })
+        message: "活动时间不能小于今天",
+      });
       return false;
     }
     this.setState({
-      disabledNext: true
-    })
+      disabledNext: true,
+    });
     let params = {
       reqOrg: storageUtils.getUser().orgUid,
       reqUser: storageUtils.getUser().uid,
@@ -463,8 +489,8 @@ class CampaignEdit extends Component {
       result = await reqPutCampaign(id, params);
     }
     this.setState({
-      disabledNext: false
-    })
+      disabledNext: false,
+    });
     //新增活动的id
     this.setState({
       id: isNew ? result.data.id : this.props.match.params.id,
@@ -642,14 +668,14 @@ class CampaignEdit extends Component {
               </Form.Item>
             </div>
           ) : (
-              <Form.Item
-                label="金额(元)"
-                name={["discount", "valueOff"]}
-                rules={[{ required: true, message: "金额是必填项" }]}
-              >
-                <InputNumber min={1} />
-              </Form.Item>
-            )}
+            <Form.Item
+              label="金额(元)"
+              name={["discount", "valueOff"]}
+              rules={[{ required: true, message: "金额是必填项" }]}
+            >
+              <InputNumber min={1} />
+            </Form.Item>
+          )}
           <Form.Item label="有效期" name="timeType">
             <Radio.Group
               className="timeRadio"
@@ -661,7 +687,12 @@ class CampaignEdit extends Component {
                 <RangePicker
                   defaultValue={[
                     moment(effective, dateFormat),
-                    moment(this.state.settings.end?this.state.settings.end:this.state.basicInfo.end, dateFormat),
+                    moment(
+                      this.state.settings.end
+                        ? this.state.settings.end
+                        : this.state.basicInfo.end,
+                      dateFormat
+                    ),
                   ]}
                   onChange={this.changeSetDate}
                 />
@@ -739,7 +770,11 @@ class CampaignEdit extends Component {
               offset: 6,
             }}
           >
-            <Button type="primary" htmlType="submit" disabled={this.state.disabledNext}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={this.state.disabledNext}
+            >
               下一步
             </Button>
           </Form.Item>
@@ -786,50 +821,57 @@ class CampaignEdit extends Component {
   //提交数据
   onFinish3 = async (values) => {
     this.setState({
-      disabledNext: true
-    })
+      disabledNext: true,
+    });
     //折扣数量乘以100  前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
     let { settings } = this.state;
     let params =
       values.timeType === "date"
         ? {
-          name: values.name,
-          multiple: values.multiple,
-          // description: values.description,
-          discount:
-            values.select === "AMOUNT"
-              ? {
-                type: values.select,
-                valueOff: values.discount.valueOff * 100,
-              }
-              : {
-                type: values.select,
-                valueOff: values.discount.valueOff,
-                amountLimit: values.discount.amountLimit ? values.discount.amountLimit * 100 : null,
-              },
-          type: "COUPON",
-          effective: settings.effective,
-          expiry: comEvents.getDateStr(1, new Date(settings.end?settings.end:this.state.basicInfo.end)),
-        }
+            name: values.name,
+            multiple: values.multiple,
+            // description: values.description,
+            discount:
+              values.select === "AMOUNT"
+                ? {
+                    type: values.select,
+                    valueOff: values.discount.valueOff * 100,
+                  }
+                : {
+                    type: values.select,
+                    valueOff: values.discount.valueOff,
+                    amountLimit: values.discount.amountLimit
+                      ? values.discount.amountLimit * 100
+                      : null,
+                  },
+            type: "COUPON",
+            effective: settings.effective,
+            expiry: comEvents.getDateStr(
+              1,
+              new Date(settings.end ? settings.end : this.state.basicInfo.end)
+            ),
+          }
         : {
-          name: values.name,
-          multiple: values.multiple,
-          //coverImg: this.state.coverImg,
-          // description: values.description,
-          discount:
-            values.select === "AMOUNT"
-              ? {
-                type: values.select,
-                valueOff: values.discount.valueOff * 100,
-              }
-              : {
-                type: values.select,
-                valueOff: values.discount.valueOff,
-                amountLimit: values.discount.amountLimit ? values.discount.amountLimit * 100 : null,
-              },
-          type: "COUPON",
-          daysAfterDist: values.daysAfterDist,
-        };
+            name: values.name,
+            multiple: values.multiple,
+            //coverImg: this.state.coverImg,
+            // description: values.description,
+            discount:
+              values.select === "AMOUNT"
+                ? {
+                    type: values.select,
+                    valueOff: values.discount.valueOff * 100,
+                  }
+                : {
+                    type: values.select,
+                    valueOff: values.discount.valueOff,
+                    amountLimit: values.discount.amountLimit
+                      ? values.discount.amountLimit * 100
+                      : null,
+                  },
+            type: "COUPON",
+            daysAfterDist: values.daysAfterDist,
+          };
     //图标的处理
     //     if (this.state.coverImg){
     //       var formData = new FormData();
@@ -848,18 +890,24 @@ class CampaignEdit extends Component {
       result = await reqPostConfig(this.state.id, params);
     }
     this.setState({
-      disabledNext: false
-    })
+      disabledNext: false,
+    });
     if (result.data.retcode !== 1) {
-
       this.nextStep(this.state.id);
     }
     //  }
   };
   //第四步
   renderStep4 = () => {
+    const { rules } = this.state;
+    return       <div className="stepCont">
+    <StepRules rules={rules} />
+    </div>
+  };
+  //第四步
+  renderStep5 = () => {
     return (
-      <div className="site-card-wrapper">
+      <div className="stepCont site-card-wrapper">
         <CampaignMerchant id={this.state.id} parties={this.state.parties} />
       </div>
     );
@@ -871,7 +919,6 @@ class CampaignEdit extends Component {
       choose: current,
       current,
     });
-
   };
   //显示对应的renderStep
   showCont = (current) => {
@@ -884,6 +931,9 @@ class CampaignEdit extends Component {
     } else if (current === 3) {
       //参与商户
       return this.renderStep4();
+    } else if (current === 4) {
+      //参与商户
+      return this.renderStep5();
     } else {
       //活动类型
       return this.renderStep1();
@@ -905,10 +955,17 @@ class CampaignEdit extends Component {
     //当前所在step 默认0
     const { current, showUrl } = this.state;
     //steps标题
-    const stepLists = ["活动类型", "基本信息", "详细配置", "参与商户"];
+    const stepLists = [
+      "活动类型",
+      "基本信息",
+      "详细配置",
+      "设置规则",
+      "参与商户",
+    ];
     return (
       <div>
         <Steps
+          size="small"
           type="navigation"
           current={current}
           onChange={this.jumpStep}
@@ -945,4 +1002,5 @@ class CampaignEdit extends Component {
     );
   }
 }
+
 export default CampaignEdit;
