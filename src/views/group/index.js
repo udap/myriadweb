@@ -280,7 +280,14 @@ class Groups extends Component {
               name="createTemplateGroup"
             >
               <Switch />
-            </Form.Item>):null
+            </Form.Item>):(
+            <Form.Item label="模版">
+              <Switch disabled defaultChecked={this.state.curInfo.template}/>  
+              {this.state.curInfo.template ? (
+              <div class="description">修改模版组的权限将影响所有使用模版组的下属机构员工权限</div>):null
+              }
+            </Form.Item>
+            )
           }
           <Form.Item label="描述" name="description" rules={[{ max: 255 }]}>
             <TextArea rows={4} />
