@@ -409,6 +409,7 @@ class Employee extends Component {
             <Form.Item label="员工所在组" name="groupId">
               <Select
                 placeholder="员工所在组"
+                disabled={this.state.admin}
                 onChange={onGenderChange}
                 allowClear
               >
@@ -421,7 +422,7 @@ class Employee extends Component {
             </Form.Item>
           ) : (
             <Form.Item label="员工所在组" name="operations">
-              <Transfer
+              <Transfer disabled={this.state.admin}
                 dataSource={operationsData}
                 onChange={this.choosehandle}
                 targetKeys={targetKeys}
