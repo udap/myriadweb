@@ -20,8 +20,6 @@ import {
   Groups,
   Profile,
   TagManager,
-  ChildOrg,
-  ChildEmployee
 } from "../views";
 
 //公共路由
@@ -101,13 +99,6 @@ const privateRoutes = [
     pathname: "/admin/myOrgs/subsidiaries",
     component: Subsidiaries,
     title: "下属机构",
-    icon: "UsergroupAddOutlined",
-    isTop: false, //顶级菜单
-  },
-  {
-    pathname: "/admin/myChildEmployee/:id",
-    component: ChildEmployee,
-    title: "下属机构员工",
     icon: "UsergroupAddOutlined",
     isTop: false, //顶级菜单
   },

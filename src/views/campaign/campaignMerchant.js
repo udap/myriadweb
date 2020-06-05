@@ -342,9 +342,16 @@ class CampaignMerchant extends Component {
           />
         </div>
         <div>
-          <Button type="primary" onClick={this.backHome}>
+          {
+            this.props.showBtn?<Button
+            className="step-marginTop"
+            type="primary"
+            onClick={this.backHome}
+          >
             提交
-          </Button>
+          </Button>:null
+          }
+          
         </div>
         <Modal
           className="markrt"

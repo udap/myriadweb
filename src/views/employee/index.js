@@ -18,6 +18,7 @@ import {
   Checkbox,
   Descriptions,
   Transfer,
+  Card,
 } from "antd";
 import {
   PlusSquareFilled,
@@ -44,7 +45,7 @@ import {
 } from "../../api";
 import { Loading, TransferComponent } from "../../components";
 import "../../css/common.less";
-
+import ListOfInstitutions from "./listOfInstitutions";
 const { confirm } = Modal;
 const { Option } = Select;
 const { TextArea } = Input;
@@ -80,6 +81,9 @@ class Employee extends Component {
     //修改组
     operationsData: [],
     targetKeys: [],
+    selectedRows: null,
+    isCurrentOrg: true,
+    showListOfInstitutions: false,
   };
   componentDidMount() {
     this.getList(1);
@@ -121,26 +125,7 @@ class Employee extends Component {
       inited: true,
     });
   };
-  //获取组列表数据
-  getGroups = async (currentPage, searchTxt) => {
-    const parmas = {
-      page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-      size: this.state.size,
-      orgUid: storageUtils.getUser().orgUid,
-      searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-    };
-    const result = await reqGetGroups(parmas);
-    const cont =
-      result && result.data && result.data.content ? result.data.content : [];
-
-    this.totalPages =
-      result && result.data ? result.data.content.totalElements : 1;
-    this.setState({
-      groups: cont.content,
-      total: result && result.data ? result.data.content.totalElements : 1,
-      inited: true,
-    });
-  };
+  
   /*分页 */
   handleTableChange = (page) => {
     this.setState({
@@ -152,7 +137,7 @@ class Employee extends Component {
   setItem = async (operate, permission, data) => {
     const result = await reqPermit(permission);
     if (result) {
-      this.getGroups();
+      this.getGroupsList();
       if (operate === "edit") {
         let orgId = storageUtils.getUser().orgId;
         if (data.org.id !== orgId) {
@@ -164,13 +149,16 @@ class Employee extends Component {
         }
         this.getEmployee(data.uid, "visible");
         this.setState({
+          isCurrentOrg:true,
           isNew: false,
         });
       } else {
         // add
         this.setState({
+          isCurrentOrg:true,
           curInfo: {},
           isNew: true,
+          selectedRows: null,
           visible: true,
         });
       }
@@ -187,11 +175,14 @@ class Employee extends Component {
         data.push(cont.groups[i].id);
       }
     }
+    let orgId = storageUtils.getUser().orgId;
     this.setState({
       curInfo: cont,
       targetKeys: data,
       [name]: true,
       admin: cont.admin,
+      selectedRows: cont.org.id === orgId ? null : cont.org.uid,
+      isCurrentOrg: cont.org.id === orgId ? true : false,
     });
   };
   //显示详情
@@ -233,8 +224,8 @@ class Employee extends Component {
   deleteItem = async (id) => {
     let resultDel = await reqDelEmployee(id);
     this.setState({
-      currentPage:1
-    })
+      currentPage: 1,
+    });
     if (resultDel.data.retcode === 0) {
       notification.success({ message: "删除成功" });
       this.getEmployees(1);
@@ -246,9 +237,15 @@ class Employee extends Component {
   };
 
   //获取员工所在组
-  getGroups = async () => {
-    let orgUid = storageUtils.getUser().orgUid;
-    let groups = await reqGetGroupsByOrg(orgUid);
+  getGroupsList = async (uid,template) => {
+    let orgUid = uid ? uid : storageUtils.getUser().orgUid;
+    const parmas = {
+      page: 0,
+      size: 200,
+      orgUid: orgUid,
+      template: template ? true : false,
+    };
+    let groups = await reqGetGroupsByOrg(parmas);
     let cont = groups.data.content ? groups.data.content.content : [];
 
     let data = [];
@@ -267,7 +264,9 @@ class Employee extends Component {
       groups: cont,
     });
   };
+  //add/edit
   onFinish = async (values) => {
+    let { selectedRows, isCurrentOrg } = this.state;
     let params = this.state.isNew
       ? {
           name: values.name,
@@ -276,7 +275,10 @@ class Employee extends Component {
           desc: values.desc,
           code: values.code,
           groupId: values.groupId,
-          orgUid: storageUtils.getUser().orgUid,
+          orgUid:
+            selectedRows && selectedRows.length !== 0
+              ? selectedRows[0].uid
+              : storageUtils.getUser().orgUid,
         }
       : {
           name: values.name,
@@ -285,7 +287,10 @@ class Employee extends Component {
           desc: values.desc,
           code: values.code,
           groups: this.state.targetKeys,
-          orgUid: storageUtils.getUser().orgUid,
+          orgUid:
+            selectedRows && selectedRows.length !== 0
+              ? selectedRows[0].uid
+              : storageUtils.getUser().orgUid,
         };
     if (this.state.isNew) {
       const result = await reqAddEmployees(params);
@@ -329,9 +334,24 @@ class Employee extends Component {
       this.getEmployees(1);
     }
   };
-  choosehandle = (nextTargetKeys ) => {
+  choosehandle = (nextTargetKeys) => {
     this.setState({
       targetKeys: nextTargetKeys,
+    });
+  };
+  selectedRows = (selectedRows) => {
+    let orgId = storageUtils.getUser().orgId;
+    this.setState({
+      selectedRows: selectedRows,
+      isCurrentOrg: selectedRows[0].id === orgId ? true : false,
+      showListOfInstitutions: false,
+    });
+    this.getGroupsList(selectedRows[0].uid,true);
+  };
+  toogleListOfInstitutions = () => {
+    this.setState({
+      groups: [],
+      showListOfInstitutions: this.state.showListOfInstitutions ? false : true,
     });
   };
   //员工表单
@@ -356,7 +376,15 @@ class Employee extends Component {
     let groupOption = isNew ? "" : groups.length !== 0 ? groups[0].name : "";
 
     //多选分组
-    const { operationsData, targetKeys } = this.state;
+    const {
+      operationsData,
+      targetKeys,
+      selectedRows,
+      isCurrentOrg,
+      showListOfInstitutions,
+    } = this.state;
+    const orgName = storageUtils.getUser().orgName;
+    const showName = isCurrentOrg ? orgName : selectedRows[0].fullName;
     return (
       <Drawer
         width={480}
@@ -380,6 +408,25 @@ class Employee extends Component {
           onFinish={this.onFinish}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
+          <div className="grey-block orgDesc">
+            <text>
+              {this.state.isNew
+                ? `${"您正在为【" + showName + "】添加员工"}`
+                : `${"您正在编辑【" + showName + "】员工"}`}
+            </text>
+            <b
+              className="ant-green-link cursor"
+              onClick={this.toogleListOfInstitutions}
+            >
+              选择下属机构
+            </b>
+          </div>
+          {showListOfInstitutions ? (
+            <Card>
+              <ListOfInstitutions selectedRows={this.selectedRows} />
+            </Card>
+          ) : null}
+
           <Form.Item
             label="员工姓名"
             name="name"
@@ -531,6 +578,7 @@ class Employee extends Component {
       isNew,
       curInfo,
       visible,
+      showListOfInstitutions,
     } = this.state;
     const columns = [
       {
@@ -550,14 +598,14 @@ class Employee extends Component {
         dataIndex: "code",
         key: "code",
         width: 120,
-        responsive: ['md'],
+        responsive: ["md"],
         render: (text) => <span>{text ? text : "-"}</span>,
       },
       {
         title: "机构/部门",
         dataIndex: "org",
         key: "org",
-        responsive: ['lg'],
+        responsive: ["lg"],
         render: (text) => <span>{text ? text.name : "-"}</span>,
       },
       {
@@ -565,7 +613,7 @@ class Employee extends Component {
         dataIndex: "groups",
         key: "groups",
         width: 180,
-        responsive: ['lg'],
+        responsive: ["lg"],
         ellipsis: true,
         render: (groups) => (
           <div>
@@ -584,7 +632,7 @@ class Employee extends Component {
         dataIndex: "role",
         key: "role",
         width: 80,
-        responsive: ['md'],
+        responsive: ["md"],
         render: (text) => (
           <span>
             <Tag color="green" key={text}>
@@ -677,12 +725,12 @@ class Employee extends Component {
             expandedRowRender: (record) => (
               <div style={{ margin: 0 }}>
                 {record.groups.length !== 0
-              ? record.groups.map((group) => (
-                  <Tag color="blue" key={group.id}>
-                    {group.name}
-                  </Tag>
-                ))
-              : "-"}
+                  ? record.groups.map((group) => (
+                      <Tag color="blue" key={group.id}>
+                        {group.name}
+                      </Tag>
+                    ))
+                  : "-"}
               </div>
             ),
             onExpand: (expanded, record) => {
@@ -752,7 +800,10 @@ class Employee extends Component {
             </Col>
             <Col span={6}>
               <Form.Item name="searchTxt">
-                <Input placeholder="请输入员工姓名或手机号进行搜索" allowClear />
+                <Input
+                  placeholder="请输入员工姓名或手机号进行搜索"
+                  allowClear
+                />
               </Form.Item>
             </Col>
             <Col>

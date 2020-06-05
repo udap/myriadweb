@@ -1,4 +1,5 @@
 import { privateRoutes } from "../routers";
+import { ChinaRegions } from "./china-regions";
 //获取当前页面的title
 const getTitle = (pathname) => {
   let title;
@@ -63,12 +64,6 @@ const formatCurrency = (value) => {
   return "";
 };
 
-/*console.log("前天：" + GetDateStr(-2));
-console.log("昨天：" + GetDateStr(-1));
-console.log("今天：" + GetDateStr(0));
-console.log("明天：" + GetDateStr(1));
-console.log("后天：" + GetDateStr(2));
-console.log("大后天：" + GetDateStr(3));*/
 const hasPower = async (self, reqPermit, str, handleName, id, type) => {
   const result = await reqPermit(str);
   if (result) {
@@ -88,6 +83,29 @@ const compareTwoArrayEqual = (arr1, arr2) => {
   }
   return newArr;
 };
+
+const siftRegion = (p, c) => {
+  //province, city, district
+  let newArr = [];
+  if (p) {
+    for (let i = 0; i < ChinaRegions.length; i++) {
+      newArr.push({
+        value: ChinaRegions[i].value,
+        label: ChinaRegions[i].label,
+      });
+    }
+  }
+  if (p && c) {
+    let data = JSON.parse(JSON.stringify(ChinaRegions));
+    for (let i = 0; i < data.length; i++) {
+      for (let j = 0; j < data[i].children.length; j++) {
+        data[i].children[j].children = [];
+      }
+    }
+    newArr = data;
+  }
+  return newArr;
+};
 export default {
   getTitle,
   formatDate,
@@ -98,4 +116,5 @@ export default {
   hasPower,
   compareToday,
   compareTwoArrayEqual,
+  siftRegion,
 };
