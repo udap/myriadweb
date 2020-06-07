@@ -562,7 +562,7 @@ class Employee extends Component {
                   <div style={scrollstyle}>
                     {groups && groups.length !== 0
                       ? groups.map((item, index) => (
-                          <p key={index}>{item["name"]}</p>
+                          <Tag color="blue" key={index}>{item["name"]}</Tag>
                         ))
                       : null}
                   </div>
