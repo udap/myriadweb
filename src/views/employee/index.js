@@ -86,9 +86,9 @@ class Employee extends Component {
     showListOfInstitutions: false,
   };
   componentDidMount() {
-    this.getList(1);
+    this.getEmployeeList(1);
   }
-  getList = async () => {
+  getEmployeeList = async () => {
     this.getEmployees(1);
   };
 
@@ -237,15 +237,14 @@ class Employee extends Component {
   };
 
   //获取员工所在组
-  getGroupsList = async (uid,template) => {
-    let orgUid = uid ? uid : storageUtils.getUser().orgUid;
-    const parmas = {
+  getGroupsList = async (template) => {
+    const params = {
       page: 0,
       size: 200,
-      orgUid: orgUid,
+      orgUid: storageUtils.getUser().orgUid,
       template: template ? true : false,
     };
-    let groups = await reqGetGroupsByOrg(parmas);
+    let groups = await reqGetGroupsByOrg(params);
     let cont = groups.data.content ? groups.data.content.content : [];
 
     let data = [];
@@ -339,23 +338,29 @@ class Employee extends Component {
       targetKeys: nextTargetKeys,
     });
   };
-  selectedRows = (selectedRows) => {
+  onSelectBranch = (selectedRows) => {
     let orgId = storageUtils.getUser().orgId;
     this.setState({
       selectedRows: selectedRows,
       isCurrentOrg: selectedRows[0].id === orgId ? true : false,
       showListOfInstitutions: false,
     });
-    this.getGroupsList(selectedRows[0].uid,true);
+    this.getGroupsList(true);
   };
-  toogleListOfInstitutions = () => {
+  onClickSelectBranch = () => {
     this.setState({
-      groups: [],
       showListOfInstitutions: this.state.showListOfInstitutions ? false : true,
     });
   };
+  onResetOrg = () => {
+    this.getGroupsList(false);
+    this.setState({
+      isCurrentOrg: true,
+      showListOfInstitutions: false,
+    });
+  }
   //员工表单
-  renderEmpolyContent = (data) => {
+  renderEmpolyeeForm = (data) => {
     const {
       name,
       cellphone,
@@ -366,9 +371,9 @@ class Employee extends Component {
       operations,
     } = this.state.curInfo;
     const onGenderChange = (value) => {};
-    /*当前机构是admin   可以设置是否管理员 */
+    /*当前机构是admin   只可以为当前机构设置管理员 */
     //并且当前机构是顶级机构删除
-    const ableSetAdmin = storageUtils.getUser().admin;
+    const isAdmin = storageUtils.getUser().admin;
     //&&JSON.stringify(storageUtils.getOrg().parent) === "{}";，并且是本机构的员工
     //如果是admin 不需要选择员工所在组
     //let isAdmin = this.state.admin;
@@ -384,7 +389,7 @@ class Employee extends Component {
       showListOfInstitutions,
     } = this.state;
     const orgName = storageUtils.getUser().orgName;
-    const showName = isCurrentOrg ? orgName : selectedRows[0].fullName;
+    const selectedOrgName = isCurrentOrg ? orgName : selectedRows[0].fullName;
     return (
       <Drawer
         width={480}
@@ -411,22 +416,33 @@ class Employee extends Component {
           <div className="grey-block orgDesc">
             <text>
               {this.state.isNew
-                ? `${"您正在为【" + showName + "】添加员工"}`
-                : `${"您正在编辑【" + showName + "】员工"}`}
+                ? `${"您正在为【" + selectedOrgName + "】添加员工"}`
+                : `${"您正在编辑【" + selectedOrgName + "】员工"}`}
             </text>
+            { isCurrentOrg ? (
             <b
               className="ant-green-link cursor"
-              onClick={this.toogleListOfInstitutions}
+              onClick={this.onClickSelectBranch}
             >
               选择下属机构
             </b>
+            ): (
+            <b
+              className="ant-green-link cursor"
+              onClick={this.onResetOrg}
+            >
+              重置
+            </b>
+            )
+            }
           </div>
-          {showListOfInstitutions ? (
+          {
+          showListOfInstitutions ? (
             <Card>
-              <ListOfInstitutions selectedRows={this.selectedRows} />
+              <ListOfInstitutions onSelectBranch={this.onSelectBranch} />
             </Card>
-          ) : null}
-
+          ) : (
+          <>
           <Form.Item
             label="员工姓名"
             name="name"
@@ -447,7 +463,7 @@ class Employee extends Component {
           </Form.Item>
           <Form.Item label="是否管理员" name="admin">
             <Switch
-              disabled={!ableSetAdmin}
+              disabled={!isAdmin || !isCurrentOrg}
               checked={this.state.admin}
               onChange={this.onSwitchChange}
             />
@@ -487,6 +503,9 @@ class Employee extends Component {
               提交
             </Button>
           </Form.Item>
+          </>
+          )
+          }
         </Form>
       </Drawer>
     );
@@ -753,7 +772,7 @@ class Employee extends Component {
             showTotal={(total) => `总共 ${total} 条数据`}
           />
         </div>
-        {visible ? this.renderEmpolyContent() : null}
+        {visible ? this.renderEmpolyeeForm() : null}
 
         {showDetail ? this.renderDetail() : null}
       </div>
