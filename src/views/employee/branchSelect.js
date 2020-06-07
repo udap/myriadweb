@@ -1,13 +1,7 @@
-import React, { useState, Component } from "react";
+import React, { Component } from "react";
 import {
   Table,
-  Tag,
-  Space,
   Pagination,
-  Row,
-  Col,
-  Form,
-  Button,
   Input,
 } from "antd";
 import { reqGetSubsidiaries } from "../../api";
