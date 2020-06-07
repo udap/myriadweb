@@ -21,11 +21,11 @@ import { ChinaRegions } from "../../../utils/china-regions";
 import { orgStatusesList } from "../../../utils/constants";
 import {
   reqPermit,
-  reqGetChildOrgs,
-  reqAddChildOrg,
-  reqDelChildOrg,
-  reqPutChildOrg,
-  regGetCurOrg,
+  reqGetSubsidiaries,
+  reqAddOrg,
+  reqDelOrg,
+  reqPutOrg,
+  regGetOrg,
 } from "../../../api";
 import defaultValidateMessages from "../../../utils/comFormErrorAlert";
 import storageUtils from "../../../utils/storageUtils";
@@ -80,7 +80,7 @@ class Subsidiaries extends Component {
       uid: storageUtils.getUser().orgUid,
       searchTxt: value ? value : this.state.searchTxt,
     };
-    const result = await reqGetChildOrgs(storageUtils.getUser().orgUid, parmas);
+    const result = await reqGetSubsidiaries(storageUtils.getUser().orgUid, parmas);
     const cont = result && result.data ? result.data.content : [];
     let list = [];
     if (cont && cont.content && cont.content.length !== 0) {
@@ -128,7 +128,7 @@ class Subsidiaries extends Component {
     });
   };
   delItem = async (uid) => {
-    const result = await reqDelChildOrg(uid);
+    const result = await reqDelOrg(uid);
     this.setState({
       currentPage: 1,
     });
@@ -223,7 +223,7 @@ class Subsidiaries extends Component {
   };
   //获取详情
   getCurrentItemDetail = async (uid, name) => {
-    let curInfo = await regGetCurOrg(uid);
+    let curInfo = await regGetOrg(uid);
     let cont = curInfo.data.content ? curInfo.data.content : [];
     this.setState({
       organization: cont,
@@ -618,9 +618,9 @@ class Subsidiaries extends Component {
     };
     let result;
     if (this.state.isNew) {
-      result = await reqAddChildOrg(params);
+      result = await reqAddOrg(params);
     } else {
-      result = await reqPutChildOrg(this.state.organization.uid, params);
+      result = await reqPutOrg(this.state.organization.uid, params);
     }
     if (result.data.retcode === 0) {
       notification.success({
