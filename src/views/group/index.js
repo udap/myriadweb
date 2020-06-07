@@ -184,7 +184,6 @@ class Groups extends Component {
       return false;
     }
     let { targetKeys, isNew, curInfo } = this.state;
-
     let params = isNew
       ? {
           name: values.name,
@@ -275,17 +274,16 @@ class Groups extends Component {
             <Input placeholder="分组名称不超过20个字" maxLength="20"/>
           </Form.Item>
           {isNew? (
-            <Form.Item
-              label="创建模版组？"
+            <Form.Item label="创建模版组？">
+            <div class="description">模版组是当前机构为限定下属机构员工权限而创建的分组</div>
+            <Form.Item noStyle
               name="createTemplateGroup"
             >
               <Switch />
+            </Form.Item>
             </Form.Item>):(
             <Form.Item label="模版">
               <Switch disabled defaultChecked={this.state.curInfo.template}/>  
-              {this.state.curInfo.template ? (
-              <div class="description">修改模版组的权限将影响所有使用该模版的下属机构员工权限</div>):null
-              }
             </Form.Item>
             )
           }
@@ -293,6 +291,9 @@ class Groups extends Component {
             <TextArea rows={4} />
           </Form.Item>
           <Form.Item label="权限" name="operations">
+            {this.state.curInfo.template ? (
+              <div class="description">修改模版组的权限将影响所有使用该模版的下属机构的员工权限</div>):null
+            }
             <TransferComponent
               treeData={operationsData}
               chooseItem={this.choosehandle}
