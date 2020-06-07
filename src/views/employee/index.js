@@ -43,7 +43,7 @@ import {
 } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
-import BranchSelect from "./BranchSelect";
+import BranchSelect from "./branchSelect";
 const { confirm } = Modal;
 const { Option } = Select;
 const { TextArea } = Input;
