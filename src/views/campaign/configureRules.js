@@ -241,19 +241,15 @@ class ConfigureRules extends Component {
                 </Col>
               </Row>
               {merchantStatus ? (
-                <>
                 <Row>
                   <Col>
-                  <Table size="small" className="tableFont" columns={MerchantColumns}
-                    pagination={false}
-                    dataSource={this.state.merchants}
-                    // renderItem={item => (
-                    //   <List.Item
-                    //     actions={[<a key="list-loadmore-edit">delete</a>]}
-                    //   >
-                    //     {item.fullName}
-                    //   </List.Item>)}
-                  />
+                  {
+                    this.state.merchants.map((t,index)=>(
+                      <Tag color="blue" key={index} closable>
+                        {t.fullName}
+                      </Tag>
+                    ))
+                  }
                   {/* <CampaignMerchant
                     id={this.props.campaign}
                     parties={this.state.parties}
@@ -261,14 +257,17 @@ class ConfigureRules extends Component {
                   /> */}
                   </Col>
                 </Row>
-                <Row>
-                  <Col>
-                  <b className="ant-green-link cursor" onClick={this.onClickSelectMerchants}>选择商户</b>
-                  </Col>
-                </Row>
-                </>
               ) : null}
               </Form.Item>
+              {
+                merchantStatus ? (
+                <div>
+                <Form.Item label="&nbsp;">
+                    <b className="ant-green-link cursor" onClick={this.onClickSelectMerchants}>选择商户</b>
+                </Form.Item>
+                </div>
+                ) : null
+              }
               {/* A. 指定商户 B. 指定商户标签 C. 指定区域。 */}
               <Form.Item name={["tagRules", "name"]} label="&nbsp;">
               <Row>
