@@ -34,9 +34,10 @@ import { withRouter } from "react-router-dom";
 import moment from "moment";
 import "moment/locale/zh-cn";
 import CampaignMerchant from "./campaignMerchant";
+import CampaignTypeSelect from "./campaignTypeSelect";
 import "./index.less";
 import { thisExpression } from "@babel/types";
-import StepRules from "./stepRules";
+import ConfigureRules from "./configureRules";
 const layout = {
   labelCol: {
     xs: { span: 24 },
@@ -94,16 +95,6 @@ class CampaignEdit extends Component {
     //导航step
     current: 0,
     choose: 0,
-    //活动类型
-    listData: [
-      {
-        name: "优惠券活动",
-        icon: "DollarCircleOutlined",
-        type: "VOUCHER", //VOUCHER, PROMOTION
-        desc:
-          "电子优惠券是企业利用App、短信、社交媒体等多种渠道进行数字化营销的便利手段。每一张优惠券都有一个唯一的、随机产生的编码，可以有效防止欺诈。",
-      },
-    ],
     campaignType: "VOUCHER",
     //基本信息
     tags: [],
@@ -292,42 +283,8 @@ class CampaignEdit extends Component {
   };
   //第一步
   renderStep1 = () => {
-    const { listData } = this.state;
     return (
-      <div className="site-card-wrapper">
-        <Row>
-          <List
-            dataSource={listData}
-            renderItem={(item) => (
-              <Col xs={24} sm={24} md={24} lg={12} xl={8}>
-                <Card bordered={false}>
-                  <List.Item key={item.name}>
-                    <Card bordered={false}>
-                      <List.Item.Meta
-                        title={item.name}
-                        description={item.desc}
-                      />
-
-                      <div className="market_icon_btn">
-                        <AntdIcon name="PlusCircleOutlined" />
-                        <LinkBtn
-                          className="btnChoose"
-                          onClick={this.chooseType.bind(this, item)}
-                        >
-                          选择
-                        </LinkBtn>
-                      </div>
-                    </Card>
-                    <div className="market_icon">
-                      <AntdIcon name="DollarCircleOutlined" />
-                    </div>
-                  </List.Item>
-                </Card>
-              </Col>
-            )}
-          ></List>
-        </Row>
-      </div>
+      <CampaignTypeSelect onSelect={this.chooseType} />
     );
   };
   //选择活动类型
@@ -900,9 +857,11 @@ class CampaignEdit extends Component {
   //第四步
   renderStep4 = () => {
     const { rules } = this.state;
-    return       <div className="stepCont">
-    <StepRules rules={rules} />
-    </div>
+    return (
+//      <div className="stepCont">
+        <ConfigureRules campaign={this.state.id} rules={rules} />
+//      </div>
+    )
   };
   //第四步
   renderStep5 = () => {

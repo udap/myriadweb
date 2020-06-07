@@ -7,9 +7,11 @@ import {
   Radio,
   InputNumber,
   Drawer,
+  Table,
   //notification,
   Checkbox,
-  Select,
+  List,
+  Tag,
   Collapse,
   Cascader,
   Modal,
@@ -19,7 +21,9 @@ import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {  TreeSelectComponent } from "../../components";
 import { ChinaRegions } from "../../utils/china-regions";
 import CampaignMerchant from "./campaignMerchant";
+import MerchantSelect from "./merchantSelect";
 import comEvents from "../../utils/comEvents";
+import "../../css/common.less";
 import "./index.less";
 const { Panel } = Collapse;
 
@@ -45,14 +49,35 @@ const formItemLayout = {
   },
 };
 
-class StepRules extends Component {
+const MerchantColumns = [
+  {
+    title: "商户名称",
+    dataIndex: "fullName",
+    key: "fullName",
+  },
+  {
+    title: "简称",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "银联商户码",
+    dataIndex: "upCode",
+    key: "upCode",
+  },
+];
+
+class ConfigureRules extends Component {
   state = {
     rules: this.props.rules,
     province: "重庆市",
     city: "重庆市",
     district: "渝中区",
     showTagForm: false,
+    // selected merchants
+    merchants:[],
     //tag
+    selectedTags: [],
     tagsData: [],
     targetKeys: [],
     targetTitles: [],
@@ -82,7 +107,13 @@ class StepRules extends Component {
       [name]: checkedValues.length !== 0 ? true : false,
     });
   };
- onFinish = (values) => {
+  onClickSelectMerchants = () => {
+    this.setState({
+      showMerchantSelect: true,
+    });
+  };
+
+  onFinish = (values) => {
     };
   renderRules = () => {
     const {
@@ -192,50 +223,86 @@ class StepRules extends Component {
                   },
                 ]}
               >
+              <Row>
+                <Col>
                 <Checkbox.Group
                   onChange={this.onCheckboxChange.bind(this, "merchantStatus")}
                 >
-                  <Row>
-                    <Col>
-                      <Checkbox
-                        value="SelectedMerchants"
-                        style={{
-                          lineHeight: "32px",
-                        }}
-                      >
-                        指定商户
-                      </Checkbox>
-                    </Col>
-                  </Row>
+                  <Checkbox
+                    value="SelectedMerchants"
+                    style={{
+                      lineHeight: "32px",
+                    }}
+                    checked={this.state.merchants.length>0}
+                  >
+                    指定商户
+                  </Checkbox>
                 </Checkbox.Group>
-              </Form.Item>
+                </Col>
+              </Row>
               {merchantStatus ? (
-                <div className="stepCont site-card-wrapper">
-                  <CampaignMerchant
-                    id={this.state.id}
+                <>
+                <Row>
+                  <Col>
+                  <Table size="small" className="tableFont" columns={MerchantColumns}
+                    pagination={false}
+                    dataSource={this.state.merchants}
+                    // renderItem={item => (
+                    //   <List.Item
+                    //     actions={[<a key="list-loadmore-edit">delete</a>]}
+                    //   >
+                    //     {item.fullName}
+                    //   </List.Item>)}
+                  />
+                  {/* <CampaignMerchant
+                    id={this.props.campaign}
                     parties={this.state.parties}
                     showBtn={false}
-                  />
-                </div>
+                  /> */}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                  <b className="ant-green-link cursor" onClick={this.onClickSelectMerchants}>选择商户</b>
+                  </Col>
+                </Row>
+                </>
               ) : null}
+              </Form.Item>
               {/* A. 指定商户 B. 指定商户标签 C. 指定区域。 */}
               <Form.Item name={["tagRules", "name"]} label="&nbsp;">
+              <Row>
+                <Col>
                 <Checkbox.Group
                   onChange={this.onCheckboxChange.bind(this, "tagStatus")}
                 >
-                  <Row>
-                    <Col>
                       <Checkbox
                         value="SelectedTags"
+                        checked={this.state.selectedTags.length > 0}
                         style={{
                           lineHeight: "32px",
                         }}
                       >
                         指定标签
                       </Checkbox>
+                </Checkbox.Group>
+                </Col>
+              </Row>
+                {this.state.selectedTags.length > 0 ? (
+                  <Row>
+                    <Col>
+                  {
+                    this.state.selectedTags.map((t,index)=>(
+                      <Tag color="blue" key={index} closable>
+                        {t}
+                      </Tag>
+                    ))
+                  }
                     </Col>
                   </Row>
-                </Checkbox.Group>
+                  ): null
+                }
+
               </Form.Item>
               {tagStatus ? (
                 <div>
@@ -385,6 +452,7 @@ class StepRules extends Component {
   handleCancel = (e) => {
     this.setState({
       showTagForm: false,
+      showMerchantSelect: false,
     });
   };
   choosehandle = (value, arr) => {
@@ -393,6 +461,34 @@ class StepRules extends Component {
       targetTitles: arr,
     });
   };
+
+  handleSelection = (selectedMerchants) => {
+    console.log("handleSelection", selectedMerchants);
+    let merchants = this.state.merchants.concat(selectedMerchants);
+    this.setState({
+      merchants: merchants,
+      showMerchantSelect: false,
+    });
+  };
+
+  renderMerchantSelect = () => {
+    return (
+      <MerchantSelect 
+        visible={this.state.showMerchantSelect} 
+        handleCancel={this.handleCancel}
+        handleSelection={this.handleSelection}
+      />
+    )
+  };
+
+  onSelectCommonTags = (values) => {
+    let selectedTags = comEvents.mergeArrays(this.state.selectedTags,this.state.targetKeys);
+    this.setState({
+      showTagForm: false,
+      selectedTags: selectedTags,
+    });
+  };
+
   renderTagForm = () => {
     const {
       showTagForm,
@@ -417,7 +513,7 @@ class StepRules extends Component {
             radio: radio,
             tag: [],
           }}
-          onFinish={this.submitCommonTags}
+          onFinish={this.onSelectCommonTags}
         >
           <div class="grey-block">选择公共标签设置</div>
           <Form.Item name="tag">
@@ -446,14 +542,15 @@ class StepRules extends Component {
     );
   };
   render() {
-    const { showTagForm } = this.state;
+    const { showTagForm, showMerchantSelect } = this.state;
     return (
       <div>
         {this.renderRules()}
+        {showMerchantSelect? this.renderMerchantSelect() : null}
         {showTagForm ? this.renderTagForm() : null}
       </div>
     );
   }
 }
 
-export default StepRules;
+export default ConfigureRules;

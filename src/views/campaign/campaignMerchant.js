@@ -10,7 +10,7 @@ import {
   reqPostParties,
   reqDelParty,
   reqGetMerchants,
-  reqShowParties,
+  reqGetCampaignMerchants,
 } from "../../api";
 import storageUtils from "../../utils/storageUtils";
 import { withRouter } from "react-router-dom";
@@ -47,7 +47,7 @@ class CampaignMerchant extends Component {
         id: this.props.id,
         // parties: this.props.parties,
       });
-      this.getMarket(id);
+      this.getMerchants(id);
     }
     this.getOrgs(1); //this.state.currentPage
   }
@@ -184,15 +184,15 @@ class CampaignMerchant extends Component {
     });
   };
   //获取当前添加商户 list type=MERCHANT
-  getMarket = async (id) => {
-    let curInfo = await reqShowParties(id);
+  getMerchants = async (id) => {
+    let curInfo = await reqGetCampaignMerchants(id);
     let cont = curInfo.data ? curInfo.data : [];
     this.parties = cont.parties ? cont.parties : [];
     this.setState({
-      parties: cont.parties,
+      parties: this.parties,
       loading: false,
     });
-    let page = parseInt((cont.parties.length - 1) / this.state.listSize) + 1;
+    let page = parseInt((this.parties.length - 1) / this.state.listSize) + 1;
     this.setState({
       inited: true,
       currentListPage:
@@ -237,7 +237,7 @@ class CampaignMerchant extends Component {
   //     currentPage: 1,
   //   });
 
-  //   this.getMarket(this.state.id);
+  //   this.getMerchants(this.state.id);
   // };
 
   addItem = async (newList) => {
@@ -245,6 +245,7 @@ class CampaignMerchant extends Component {
     let params = {
       parts: newList,
     };
+    console.log("addItem", params);
     const result = await reqPostParties(this.state.id, params);
     this.setState({
       visible: false,
@@ -252,7 +253,7 @@ class CampaignMerchant extends Component {
       currentPage: 1,
     });
 
-    this.getMarket(this.state.id);
+    this.getMerchants(this.state.id);
   };
 
   delItem = async (partyId) => {
@@ -260,7 +261,7 @@ class CampaignMerchant extends Component {
       inited: false,
     });
     const result = await reqDelParty(this.state.id, partyId);
-    this.getMarket(this.state.id);
+    this.getMerchants(this.state.id);
   };
   backHome = () => {
     this.props.history.push("/admin/campaign");
@@ -287,7 +288,7 @@ class CampaignMerchant extends Component {
     this.setState({
       searchTxt: e.target.value,
     });
-    this.getMarket(this.state.id);
+    this.getMerchants(this.state.id);
   };
   searchValue = (value) => {
     this.setState({

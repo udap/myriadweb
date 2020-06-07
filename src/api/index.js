@@ -98,7 +98,7 @@ export const reqPostConfig = (id, params) =>
 export const reqPutConfig = (id, params) =>
   ajax.put(BASE + "/myriad/campaigns/" + id + "/voucherConfig", params);
 //展示参与商户列表
-export const reqShowParties = (id) =>
+export const reqGetCampaignMerchants = (id) =>
   ajax.get(BASE + "/myriad/campaigns/" + id + "/parties?type=MERCHANT");
 //新增参与商户
 export const reqPostParties = (id, params) =>

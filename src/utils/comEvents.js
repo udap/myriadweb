@@ -84,6 +84,10 @@ const compareTwoArrayEqual = (arr1, arr2) => {
   return newArr;
 };
 
+const mergeArrays = (arr1, arr2) => {
+  return arr1.concat(arr2.filter((item) => arr1.indexOf(item) < 0));
+};
+
 const siftRegion = (p, c) => {
   //province, city, district
   let newArr = [];
@@ -116,5 +120,6 @@ export default {
   hasPower,
   compareToday,
   compareTwoArrayEqual,
+  mergeArrays,
   siftRegion,
 };
