@@ -10,7 +10,7 @@ import {
   Button,
   Input,
 } from "antd";
-import { reqGetChildOrgs } from "../../api";
+import { reqGetSubsidiaries } from "../../api";
 import storageUtils from "../../utils/storageUtils";
 import { Loading } from "../../components";
 const { Search } = Input;
@@ -21,30 +21,30 @@ const columns = [
     key: "fullName",
   },
 ];
-class OrgTable extends Component {
+class BranchSelect extends Component {
   state = {
     inited: false,
     org: {},
     //分页
     currentPage: 1,
-    size: 5,
+    size: 10,
     total: 1,
     searchTxt: "",
   };
   componentDidMount() {
-    this.getChildOrg(1);
+    this.getBranchList(1);
   }
   /*
 获取列表数据
 */
-  getChildOrg = async (currentPage, value) => {
+  getBranchList = async (currentPage, value) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
-      uid: storageUtils.getUser().orgUid,
+      uid: this.props.orgUid, //storageUtils.getUser().orgUid,
       searchTxt: value ? value : this.state.searchTxt,
     };
-    const result = await reqGetChildOrgs(storageUtils.getUser().orgUid, parmas);
+    const result = await reqGetSubsidiaries(storageUtils.getUser().orgUid, parmas);
     const cont = result && result.data ? result.data.content : [];
     let list = [];
     if (cont && cont.content && cont.content.length !== 0) {
@@ -78,7 +78,7 @@ class OrgTable extends Component {
     this.setState({
       currentPage: page,
     });
-    this.getChildOrg(page);
+    this.getBranchList(page);
   };
   enterLoading = () => {
     this.setState({
@@ -90,7 +90,7 @@ class OrgTable extends Component {
       currentPage: 1,
       searchTxt: value,
     });
-    this.getChildOrg(1, value);
+    this.getBranchList(1, value);
   };
   render() {
     const { org, size, currentPage, total, searchTxt, loading } = this.state;
@@ -112,7 +112,7 @@ class OrgTable extends Component {
               rowSelection={{
                 type: "radio",
                 onChange: (selectedRowKeys, selectedRows) => {
-                  this.props.selectedRows(selectedRows);
+                  this.props.onSelectBranch(selectedRows);
                 },
               }}
               columns={columns}
@@ -138,4 +138,4 @@ class OrgTable extends Component {
   }
 }
 
-export default OrgTable;
+export default BranchSelect;

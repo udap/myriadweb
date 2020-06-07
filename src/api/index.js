@@ -114,19 +114,19 @@ export const reqDelParty = (id, partyId) =>
 
 //一.注册机构 START
 //注册机构
-export const regAddOrg = (params) => ajax.post(BASE + "/organizations", params);
+export const reqAddOrg = (params) => ajax.post(BASE + "/organizations", params);
 //查看当前机构
-export const regGetOrg = (uid) =>
+export const reqGetOrg = (uid) =>
   ajax.get(BASE + "/organizations/" + uid);
 //修改机构信息
-export const regPutOrg = (uid, params) =>
+export const reqPutOrg = (uid, params) =>
   ajax.put(BASE + "/organizations/" + uid, params);
 
 export const reqDelOrg = (uid) =>
   ajax.delete(BASE + "/organizations/" + uid);
 
 //获取机构列表
-export const regGetOrgs = (params) => ajax(BASE + "/organizations");
+export const reqGetOrgs = (params) => ajax(BASE + "/organizations");
 
 //权限判断
 export const reqPermit = (str) =>

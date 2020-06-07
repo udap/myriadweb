@@ -19,9 +19,9 @@ import storageUtils from "../../utils/storageUtils";
 import { Loading } from "../../components";
 import {
   reqPermit,
-  regGetOrg,
+  reqGetOrg,
   reqGetAuthCode,
-  regPutOrg,
+  reqPutOrg,
 } from "../../api";
 import OrgFormDialog from "./orgFormDialog";
 import { orgStatusesList } from "../../utils/constants";
@@ -64,7 +64,7 @@ class MyOrgs extends Component {
   //获取当前机构信息
   regGetCurOrg = async (newOrg) => {
     let uid = newOrg ? newOrg : storageUtils.getUser().orgUid;
-    const result = await regGetOrg(uid);
+    const result = await reqGetOrg(uid);
     const cont = result && result.data ? result.data.content : null;
     this.setState({
       inited: true,
@@ -477,7 +477,7 @@ class MyOrgs extends Component {
       parentOrgUid: "",
       upCode: values.upCode,
     };
-    const result = await regPutOrg(this.state.organization.uid, params);
+    const result = await reqPutOrg(this.state.organization.uid, params);
     console.log("MyOrgs -> onFinish -> result", result);
     if (result.data.retcode === 0) {
       notification.success({

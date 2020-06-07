@@ -18,7 +18,7 @@ import {
   PoweroffOutlined,
 } from "@ant-design/icons";
 import "./index.less";
-import { reqLogin, reqVerify, reqGetAccounts, regAddOrg } from "../../api";
+import { reqLogin, reqVerify, reqGetAccounts, reqAddOrg } from "../../api";
 import { ChinaRegions } from "../../utils/china-regions";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
@@ -358,7 +358,7 @@ class Login extends Component {
       upCode: values.upCode,
       //verificationCode: this.state.verificationCode,
     };
-    const result = await regAddOrg(params);
+    const result = await reqAddOrg(params);
     if (
       result &&
       result.data &&

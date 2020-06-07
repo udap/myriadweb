@@ -25,7 +25,7 @@ import {
   reqAddOrg,
   reqDelOrg,
   reqPutOrg,
-  regGetOrg,
+  reqGetOrg,
 } from "../../../api";
 import defaultValidateMessages from "../../../utils/comFormErrorAlert";
 import storageUtils from "../../../utils/storageUtils";
@@ -223,7 +223,7 @@ class Subsidiaries extends Component {
   };
   //获取详情
   getCurrentItemDetail = async (uid, name) => {
-    let curInfo = await regGetOrg(uid);
+    let curInfo = await reqGetOrg(uid);
     let cont = curInfo.data.content ? curInfo.data.content : [];
     this.setState({
       organization: cont,

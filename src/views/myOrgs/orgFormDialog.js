@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 //加载中
 import { Button, Form, Input, Cascader, Modal } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
-import { regAddOrg } from "../../api";
+import { reqAddOrg } from "../../api";
 import { ChinaRegions } from "../../utils/china-regions";
 import storageUtils from "../../utils/storageUtils";
 import { Loading } from "../../components";
@@ -79,7 +79,7 @@ class OrgFormDialog extends Component {
       parentOrgUid: "",
       upCode: values.code,
     };
-    const result = await regAddOrg(params);
+    const result = await reqAddOrg(params);
     if (
       result &&
       result.data &&

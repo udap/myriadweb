@@ -27,7 +27,6 @@ import {
   CheckCircleOutlined,
   EditOutlined,
   EyeOutlined,
-  UnlockOutlined,
 } from "@ant-design/icons";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
@@ -41,11 +40,10 @@ import {
   reqGetEmployee,
   reqActivateEmployee,
   reqPutEmployee,
-  reqGetGroups,
 } from "../../api";
-import { Loading, TransferComponent } from "../../components";
+import { Loading } from "../../components";
 import "../../css/common.less";
-import ListOfInstitutions from "./listOfInstitutions";
+import BranchSelect from "./BranchSelect";
 const { confirm } = Modal;
 const { Option } = Select;
 const { TextArea } = Input;
@@ -439,7 +437,7 @@ class Employee extends Component {
           {
           showListOfInstitutions ? (
             <Card>
-              <ListOfInstitutions onSelectBranch={this.onSelectBranch} />
+              <BranchSelect orgUid={storageUtils.getUser().orgUid} onSelectBranch={this.onSelectBranch} />
             </Card>
           ) : (
           <>

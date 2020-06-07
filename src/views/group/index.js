@@ -284,7 +284,7 @@ class Groups extends Component {
             <Form.Item label="模版">
               <Switch disabled defaultChecked={this.state.curInfo.template}/>  
               {this.state.curInfo.template ? (
-              <div class="description">修改模版组的权限将影响所有使用模版组的下属机构员工权限</div>):null
+              <div class="description">修改模版组的权限将影响所有使用该模版的下属机构员工权限</div>):null
               }
             </Form.Item>
             )
