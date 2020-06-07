@@ -116,11 +116,14 @@ export const reqDelParty = (id, partyId) =>
 //注册机构
 export const regAddOrg = (params) => ajax.post(BASE + "/organizations", params);
 //查看当前机构
-export const regGetCurOrg = (params) =>
-  ajax.get(BASE + "/organizations/" + params);
+export const regGetOrg = (uid) =>
+  ajax.get(BASE + "/organizations/" + uid);
 //修改机构信息
-export const regPutCurOrg = (uid, params) =>
+export const regPutOrg = (uid, params) =>
   ajax.put(BASE + "/organizations/" + uid, params);
+
+export const reqDelOrg = (uid) =>
+  ajax.delete(BASE + "/organizations/" + uid);
 
 //获取机构列表
 export const regGetOrgs = (params) => ajax(BASE + "/organizations");
@@ -329,13 +332,7 @@ export const reqGetTags = (params) =>
   ajax.get(BASE + "/tags", { params: params });
 
 //下属机构管理
-export const reqGetChildOrgs = (uid, params) =>
+export const reqGetSubsidiaries = (uid, params) =>
   ajax.get(BASE + "/organizations/" + uid + "/subsidiaries", {
     params: params,
   });
-export const reqAddChildOrg = (params) =>
-  ajax.post(BASE + "/organizations", params);
-export const reqDelChildOrg = (uid) =>
-  ajax.delete(BASE + "/organizations/" + uid);
-export const reqPutChildOrg = (uid, params) =>
-  ajax.put(BASE + "/organizations/" + uid, params);
