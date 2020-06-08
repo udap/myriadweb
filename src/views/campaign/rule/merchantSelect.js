@@ -1,33 +1,18 @@
 import React, { Component } from "react";
-import { Button, Input, PageHeader, Col, Row, Table, Modal } from "antd";
+import { Button, Input, Col, Row, Table,Drawer } from "antd";
 import {
-  ExclamationCircleOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-
-import {
-  reqPostParties,
-  reqDelParty,
   reqGetMerchants,
-  reqGetCampaignMerchants,
-} from "../../api";
-import storageUtils from "../../utils/storageUtils";
-import { withRouter } from "react-router-dom";
-import { Loading } from "../../components";
-import "../../css/common.less";
-import "./index.less";
+} from "../../../api";
+import storageUtils from "../../../utils/storageUtils";
+import { Loading } from "../../../components";
+import "../../../css/common.less";
+import "../index.less";
 
 const MerchantColumns = [
   {
     title: "商户名称",
     dataIndex: "fullName",
     key: "fullName",
-  },
-  {
-    title: "简称",
-    dataIndex: "name",
-    key: "name",
   },
   {
     title: "银联商户码",
@@ -41,7 +26,7 @@ class MerchantSelect extends Component {
     currentPage: 1,
     currentListPage: 1,
     listSize: 10,
-    size: 7,
+    size: 10,
     total: 10,
     data: [],
     selectedRowKeys: [], // Check here to configure the default column
@@ -51,7 +36,7 @@ class MerchantSelect extends Component {
     isNew: true,
     id: null,
     parties: [],
-    visible: this.props.visible,
+    visible: false,
     inited: false,
   };
   componentDidMount() {
@@ -113,7 +98,7 @@ class MerchantSelect extends Component {
     console.log("onSubmitSelection", this.state);
     let selections = [];
     for (var i = 0; i < selectedRowKeys.length; i++) {
-      for (var j=0; j < merchants.length; j++) {
+      for (var j = 0; j < merchants.length; j++) {
         if (merchants[j].key === selectedRowKeys[i])
           selections.push(merchants[j]);
       }
@@ -124,7 +109,7 @@ class MerchantSelect extends Component {
       loading: false,
     });
 
-    this.props.handleSelection(selections);
+    this.props.handleSelection(selections, selectedRowKeys);
   };
 
   render() {
@@ -144,72 +129,71 @@ class MerchantSelect extends Component {
     };
     const hasSelected = selectedRowKeys.length > 0;
     return (
-      <Modal
+      <Drawer
         className="markrt"
-        title="入驻商户"
-        visible={this.state.visible}
-//        onOk={this.handleOk}
+        title="选择商户"
+        visible={this.props.visible}
         onCancel={this.props.handleCancel}
-        footer={[]}
-        width="60%"
+        footer={null}
+        width={480}
       >
-      {this.state.inited ? (
-        <div>
-          <Row style={{ marginBottom: "24px" }}>
-            <Col span={14}>
-              <Input
-                name="searchTxt"
-                value={searchTxt}
-                onChange={this.handleOrgChange}
-                placeholder="输入商户名称、标签、商户号搜索"
-                allowClear
-                onPressEnter={this.onSearch}
-              />
-            </Col>
-            <Col span={6} offset={1}>
+        {this.state.inited ? (
+          <div>
+            <Row style={{ marginBottom: "24px" }}>
+              <Col span={14}>
+                <Input
+                  name="searchTxt"
+                  value={searchTxt}
+                  onChange={this.handleOrgChange}
+                  placeholder="输入商户名称、标签、商户号搜索"
+                  allowClear
+                  onPressEnter={this.onSearch}
+                />
+              </Col>
+              <Col span={6} offset={1}>
+                <Button
+                  type="primary"
+                  className="cursor"
+                  onClick={this.onSearch}
+                >
+                  查询
+                </Button>
+              </Col>
+            </Row>
+
+            <Table
+              size="small"
+              className="tableFont"
+              columns={MerchantColumns}
+              dataSource={merchants}
+              pagination={{
+                current: currentPage,
+                pageSize: size,
+                total: this.totalPages,
+                onChange: this.onPageChange,
+                showTotal: (total) => `总共 ${total} 条数据`,
+              }}
+              rowSelection={rowSelection}
+            />
+            <div>
               <Button
                 type="primary"
-                className="cursor"
-                onClick={this.onSearch}
+                onClick={this.onSubmitSelection}
+                disabled={!hasSelected}
+                loading={loading}
               >
-                查询
+                提交
               </Button>
-            </Col>
-          </Row>
-
-          <Table
-            size="small"
-            className="tableFont"
-            columns={MerchantColumns}
-            dataSource={merchants}
-            pagination={{
-              current: currentPage,
-              pageSize: size,
-              total: this.totalPages,
-              onChange: this.onPageChange,
-              showTotal: (total) => `总共 ${total} 条数据`,
-            }}
-            rowSelection={rowSelection}
-          />
-          <div>
-            <Button
-              type="primary"
-              onClick={this.onSubmitSelection}
-              disabled={!hasSelected}
-              loading={loading}
-            >
-              提交
-            </Button>
-            <span style={{ marginLeft: 8 }}>
-              {hasSelected ? `选择了 ${selectedRowKeys.length} 个商户` : ""}
-            </span>
+              <span style={{ marginLeft: 8 }}>
+                {hasSelected ? `选择了 ${selectedRowKeys.length} 个商户` : ""}
+              </span>
+            </div>
           </div>
-        </div>
-      ) : (
-        <Loading />
-      )}
-    </Modal>
-    )
+        ) : (
+          <Loading />
+        )}
+      </Drawer>
+    );
   }
 }
 

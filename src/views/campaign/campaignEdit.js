@@ -167,6 +167,10 @@ class CampaignEdit extends Component {
   };
 
   componentDidMount() {
+
+comEvents.formatRegions();
+
+
     let id = this.props.match.params.id;
     this.setState({
       isNew: id === "new" ? true : false,
@@ -859,7 +863,7 @@ class CampaignEdit extends Component {
     const { rules } = this.state;
     return (
 //      <div className="stepCont">
-        <ConfigureRules campaign={this.state.id} rules={rules} />
+        <ConfigureRules id={this.state.id} rules={rules} />
 //      </div>
     )
   };
@@ -919,7 +923,7 @@ class CampaignEdit extends Component {
       "基本信息",
       "详细配置",
       "设置规则",
-      "参与商户",
+      //"参与商户",
     ];
     return (
       <div>

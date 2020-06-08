@@ -110,6 +110,53 @@ const siftRegion = (p, c) => {
   }
   return newArr;
 };
+
+const formatRegions = (selectedRegion) => {
+  let testData = [
+    "重庆市,重庆市,渝中区",
+    "重庆市,重庆市,江北区",
+    "重庆市,重庆市",
+  ];
+  let newData = [];
+  for (let i = 0; i <= testData.length - 1; i++) {
+    let element = {};
+    let item = testData[i];
+    let itemLength = item.split(",");
+    if (itemLength.length === 3) {
+      element.type = "P";
+      element.name = itemLength[0];
+      element.children = [
+        {
+          type: "C",
+          name: itemLength[1],
+          children: [
+            {
+              type: "C",
+              name: itemLength[2],
+            },
+          ],
+        },
+      ];
+      newData.push(element);
+    } else if (itemLength.length === 2) {
+      element.type = "P";
+      element.name = itemLength[0];
+      element.children = [
+        {
+          type: "C",
+          name: itemLength[1],
+        },
+      ];
+      newData.push(element);
+    } else {
+      element.type = "P";
+      element.name = itemLength[0];
+      newData.push(element);
+    }
+  }
+console.log("newData", newData);
+  return newData;
+};
 export default {
   getTitle,
   formatDate,
@@ -122,4 +169,5 @@ export default {
   compareTwoArrayEqual,
   mergeArrays,
   siftRegion,
+  formatRegions,
 };
