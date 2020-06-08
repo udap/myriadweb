@@ -337,6 +337,13 @@ class Groups extends Component {
         responsive: ['lg'],
       },
       {
+        title: "管理机构",
+        dataIndex: "owner",
+        key: "owner",
+        responsive: ['lg'],
+        render: (owner) => <span>{owner ? owner.name : "-"}</span>,
+      },
+      {
         title: "类别",
         dataIndex: "template",
         width: 120,
