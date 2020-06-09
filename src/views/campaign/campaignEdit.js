@@ -148,29 +148,25 @@ class CampaignEdit extends Component {
     //rules
     rules: {
       orderRules: {
-        name: "",//"MinimumValue",
+        name: "", //"MinimumValue",
         option: null,
       },
       merchantRules: {
-        name: "",//"SelectedMerchants",
+        name: "", //"SelectedMerchants",
         option: null,
       },
       tagRules: {
-        name: "",//"SelectedTags",
+        name: "", //"SelectedTags",
         option: null,
       },
       regionRules: {
-        name: "",//"SelectedRegions",
+        name: "", //"SelectedRegions",
         option: null,
       },
     },
   };
 
   componentDidMount() {
-
-comEvents.formatRegions();
-
-
     let id = this.props.match.params.id;
     this.setState({
       isNew: id === "new" ? true : false,
@@ -287,9 +283,7 @@ comEvents.formatRegions();
   };
   //第一步
   renderStep1 = () => {
-    return (
-      <CampaignTypeSelect onSelect={this.chooseType} />
-    );
+    return <CampaignTypeSelect onSelect={this.chooseType} />;
   };
   //选择活动类型
   chooseType = (item) => {
@@ -862,10 +856,10 @@ comEvents.formatRegions();
   renderStep4 = () => {
     const { rules } = this.state;
     return (
-//      <div className="stepCont">
-        <ConfigureRules id={this.state.id} rules={rules} />
-//      </div>
-    )
+      //      <div className="stepCont">
+      <ConfigureRules id={this.state.id} rules={rules} />
+      //      </div>
+    );
   };
   //第四步
   renderStep5 = () => {

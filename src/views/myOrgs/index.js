@@ -396,7 +396,16 @@ class MyOrgs extends Component {
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="营业执照号码" name="licenseNo">
+              <Form.Item
+                label="营业执照号码"
+                name="licenseNo"
+                rules={[
+                  {
+                    message: "营业执照号码格式不正确",
+                    pattern: /(^(?:(?![IOZSV])[dA-Z]){2}d{6}(?:(?![IOZSV])[dA-Z]){10}$)|(^d{15}$)/,
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
             </Col>
@@ -438,17 +447,14 @@ class MyOrgs extends Component {
                 name="street"
                 rules={[{ required: true }, { max: 45 }]}
               >
-                <Input.TextArea allowClear/>
+                <Input.TextArea allowClear />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                >
+                <Button type="primary" htmlType="submit">
                   提交
                 </Button>
               </Form.Item>

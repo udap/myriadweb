@@ -144,7 +144,7 @@ class ConfigureRules extends Component {
     //逗号分隔的商户的ID列表
     let rules1 = {
       name: "SelectedMerchants",
-      option: selectedRowKeys,
+      option: selectedRowKeys.toString(),
     };
 
     let rules = [rules1];
@@ -152,7 +152,7 @@ class ConfigureRules extends Component {
     if (selectedTags.length !== 0) {
       rules.push({
         name: "SelectedTags",
-        option: selectedTags,
+        option: selectedTags.toString(),
       });
     }
     //选择的区域JSON数据

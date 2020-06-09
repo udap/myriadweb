@@ -110,52 +110,121 @@ const siftRegion = (p, c) => {
   }
   return newArr;
 };
-
-const formatRegions = (selectedRegion) => {
-  let testData = [
-    "重庆市,重庆市,渝中区",
-    "重庆市,重庆市,江北区",
-    "重庆市,重庆市",
-  ];
-  let newData = [];
-  for (let i = 0; i <= testData.length - 1; i++) {
-    let element = {};
-    let item = testData[i];
-    let itemLength = item.split(",");
-    if (itemLength.length === 3) {
-      element.type = "P";
-      element.name = itemLength[0];
-      element.children = [
-        {
-          type: "C",
-          name: itemLength[1],
-          children: [
-            {
-              type: "C",
-              name: itemLength[2],
-            },
-          ],
-        },
-      ];
-      newData.push(element);
-    } else if (itemLength.length === 2) {
-      element.type = "P";
-      element.name = itemLength[0];
-      element.children = [
-        {
-          type: "C",
-          name: itemLength[1],
-        },
-      ];
-      newData.push(element);
-    } else {
-      element.type = "P";
-      element.name = itemLength[0];
-      newData.push(element);
+const distinct = (arr) => {
+  let map = new Map();
+  let newArr = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (!map.has(arr[i])) {
+      map.set(arr[i]);
+      newArr.push(arr[i]);
     }
   }
-console.log("newData", newData);
-  return newData;
+  return newArr;
+};
+const trans = (arr, keys) => {
+  let result = [];
+  let keyToRef = {};
+  let len = keys.length;
+  arr.forEach((cur) => {
+    let obj;
+    let cacheKey = "";
+    for (let i = 0; i < len; i++) {
+      let key = keys[i];
+      cacheKey += key + cur[key];
+      let ref = keyToRef[cacheKey];
+      if (ref) {
+        obj = ref;
+      } else {
+        ref =
+          i === 0 ? result : obj.children ? obj.children : (obj.children = []);
+        obj = {
+          [key]: cur[key],
+        };
+        keyToRef[cacheKey] = obj;
+        ref.push(obj);
+      }
+    }
+  });
+  return result;
+};
+const formatDistrict = (data, type) => {
+  let obj = {};
+  let result = [];
+  data.forEach((element, index) => {
+    if (!obj[element]) {
+      obj[element] = [];
+    }
+    obj[element].push(element);
+  });
+  for (let key in obj) {
+    result.push({
+      type: type,
+      name: key,
+    });
+  }
+  return result;
+};
+const formatCity = (data, type) => {
+  let obj = {};
+  let result = [];
+  data.forEach((element, index) => {
+    let elem = element.split(",")[0];
+    let elemValue =
+      element.indexOf(",") !== -1
+        ? element.substring(element.indexOf(",") + 1)
+        : null;
+    if (!obj[elem]) {
+      obj[elem] = [];
+    }
+    if (elemValue) obj[elem].push(elemValue);
+  });
+  for (let key in obj) {
+    if (obj[key].length > 0) {
+      result.push({
+        type: type,
+        name: key,
+        children: formatDistrict(obj[key], "D"),
+      });
+    } else {
+      result.push({
+        type: type,
+        name: key,
+      });
+    }
+  }
+  return result;
+};
+const formatProvince = (data, type) => {
+  let obj = {};
+  let result = [];
+  data.forEach((element, index) => {
+    let elem = element.split(",")[0];
+    let elemValue = element.indexOf(",") !== -1?element.substring(element.indexOf(",") + 1):null;
+    if (!obj[elem]) {
+      obj[elem] = [];
+    }
+    if (elemValue) obj[elem].push(elemValue);
+  });
+  for (let key in obj) {
+     if (obj[key].length > 0) {
+       result.push({
+         type: type,
+         name: key,
+         children: formatCity(obj[key], "C"),
+       });
+     } else {
+       result.push({
+         type: type,
+         name: key,
+       });
+     }
+  }
+  return result;
+};
+const formatRegions = (selectedRegion) => {
+  let resultArr = selectedRegion? formatProvince(selectedRegion, "P"):[];
+  let strifyArr = JSON.stringify(resultArr);
+  return strifyArr;
 };
 export default {
   getTitle,
