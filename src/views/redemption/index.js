@@ -10,9 +10,13 @@ import {
   Row,
   Col,
   Pagination,
+  notification,
 } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import FileSaver from 'file-saver';
+import NumberFormat from 'react-number-format';
 import storageUtils from "../../utils/storageUtils";
-import { reqGetRedemptions } from "../../api";
+import { reqGetRedemptions, reqDownloadRedemption } from "../../api";
 import { Loading } from "../../components";
 import { redemptionStatuses, settlementStatuses } from "../../utils/constants";
 import "../../css/common.less";
@@ -32,6 +36,7 @@ class Redemption extends Component {
     visible: false,
     /*搜索框 */
     loading: false,
+    downloading: false,
     chooseRadio: "owner",
     /*是否有权限 */
     hasAuthority: false,
@@ -54,12 +59,14 @@ class Redemption extends Component {
         title: "券号",
         dataIndex: "voucher",
         key: "voucher",
+        width: 160,
       },
       {
         title: "营销活动",
         dataIndex: "campaignName",
         key: "campaignName",
         responsive: ['lg'],
+        ellipsis: true,
       },
       {
         title: "订单号",
@@ -72,14 +79,27 @@ class Redemption extends Component {
         dataIndex: "merchantName",
         key: "merchantName",
         responsive: ['md'],
+        ellipsis: true,
+      },
+      {
+        title: "优惠金额",
+        dataIndex: "discountOff",
+        key: "discountOff",
+        width: 80,
+        render: (value, row, index) => {
+            return value? <NumberFormat value={value/100} displayType={'text'} 
+              thousandSeparator={true} prefix={'¥'}/>:null
+        },
       },
       {
         title: "核销时间",
         dataIndex: "updatedAt",
         key: "updatedAt",
+        width: 180,
       },
       {
         title: "状态",
+        width: 80,
         render: (chooseItem) => {
           const { status, settlementStatus } = chooseItem;
           return (
@@ -108,12 +128,14 @@ class Redemption extends Component {
         title: "券号",
         dataIndex: "voucher",
         key: "voucher",
+        width: 160,
       },
       {
         title: "营销活动",
         dataIndex: "campaignName",
         key: "campaignName",
         responsive: ['lg'],
+        ellipsis: true,
       },
       {
         title: "订单号",
@@ -126,14 +148,27 @@ class Redemption extends Component {
         dataIndex: "issuerName",
         key: "issuerName",
         responsive: ['md'],
+        ellipsis: true,
+      },
+      {
+        title: "优惠金额",
+        dataIndex: "discountOff",
+        key: "discountOff",
+        width: 80,
+        render: (value, row, index) => {
+            return value? <NumberFormat value={value/100} displayType={'text'} 
+              thousandSeparator={true} prefix={'¥'}/>:null
+        },
       },
       {
         title: "核销时间",
         dataIndex: "updatedAt",
         key: "updatedAt",
+        width: 180,
       },
       {
         title: "状态",
+        width: 80,
         render: (chooseItem) => {
           const { status, settlementStatus } = chooseItem;
           //show settlementStatus 结算状态
@@ -196,6 +231,7 @@ class Redemption extends Component {
           status: cont[i].status,
           updatedAt: cont[i].updatedAt,
           orderId: cont[i].orderId,
+          discountOff: cont[i].discountOff,
           settlementStatus:
             cont[i].settlement && cont[i].settlement.status
               ? cont[i].settlement.status
@@ -255,6 +291,31 @@ class Redemption extends Component {
     this.getMarkets(null, 1, null, e.target.value);
   };
 
+  handleDownload = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({
+      downloading: true
+    });
+    let id = this.props.match.params.id;
+    const filename = 'redemption.xlsx';
+    reqDownloadRedemption(id).then(
+      response => {
+        FileSaver.saveAs(response.data, filename);
+        this.setState({
+          downloading: false
+        });
+      }
+    ).catch((e)=>{
+      this.setState({
+        downloading: false
+      });
+      notification.warning({
+        message: "下载失败，请稍后再试",
+      });
+    });
+  }
+
   renderContent = () => {
     const { campaigns, size, total, currentPage, hasAuthority,chooseRadio } = this.state;
     let columns = chooseRadio==='owner'?this.marketColumns:this.columns;
@@ -263,7 +324,17 @@ class Redemption extends Component {
         <PageHeader
           className="site-page-header-responsive cont"
           title="核销记录"
-        ></PageHeader>
+          extra={[
+            <Button type="primary" 
+              shape="circle"
+              loading={this.state.downloading}
+              icon={<DownloadOutlined />} 
+              onClick = {
+                (e) => this.handleDownload(e)
+              } 
+            />
+          ]}
+        />
         {hasAuthority ? (
           <Form
             onFinish={this.onFinish}
