@@ -148,19 +148,19 @@ class CampaignEdit extends Component {
     //rules
     rules: {
       orderRules: {
-        name: "",//"MinimumValue",
+        name: "", //"MinimumValue",
         option: null,
       },
       merchantRules: {
-        name: "",//"SelectedMerchants",
+        name: "", //"SelectedMerchants",
         option: null,
       },
       tagRules: {
-        name: "",//"SelectedTags",
+        name: "", //"SelectedTags",
         option: null,
       },
       regionRules: {
-        name: "",//"SelectedRegions",
+        name: "", //"SelectedRegions",
         option: null,
       },
     },
@@ -283,9 +283,7 @@ class CampaignEdit extends Component {
   };
   //第一步
   renderStep1 = () => {
-    return (
-      <CampaignTypeSelect onSelect={this.chooseType} />
-    );
+    return <CampaignTypeSelect onSelect={this.chooseType} />;
   };
   //选择活动类型
   chooseType = (item) => {
@@ -858,10 +856,10 @@ class CampaignEdit extends Component {
   renderStep4 = () => {
     const { rules } = this.state;
     return (
-//      <div className="stepCont">
-        <ConfigureRules campaign={this.state.id} rules={rules} />
-//      </div>
-    )
+      //      <div className="stepCont">
+      <ConfigureRules id={this.state.id} rules={rules} />
+      //      </div>
+    );
   };
   //第四步
   renderStep5 = () => {
@@ -919,7 +917,7 @@ class CampaignEdit extends Component {
       "基本信息",
       "详细配置",
       "设置规则",
-      "参与商户",
+      //"参与商户",
     ];
     return (
       <div>

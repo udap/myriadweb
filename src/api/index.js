@@ -78,6 +78,9 @@ export const reqBatchDistribution = (params) =>
 //创建活动
 export const reqAddCampaign = (params) =>
   ajax.post(BASE + "/myriad/campaigns", params);
+//POST / myriad / campaigns / { id } / rules;
+export const reqAddCampaignRule = (id,params) =>
+         ajax.post(BASE + "/myriad/campaigns/" + id + "/rules", params);
 //提交活动配置 有图片
 // export const reqPostConfigImg = (id, params) =>
 //          ajax({
@@ -89,7 +92,6 @@ export const reqAddCampaign = (params) =>
 //            },
 //          }
 //更新活动基本信息
-
 export const reqPutCampaign = (id, params) =>
   ajax.put(BASE + "/myriad/campaigns/" + id, params);
 export const reqPostConfig = (id, params) =>

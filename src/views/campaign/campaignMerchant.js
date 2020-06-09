@@ -277,13 +277,7 @@ class CampaignMerchant extends Component {
       currentListPage: page,
     });
   };
-  // onShowSizeChange = (current, pageSize) => {
-  //   this.setState({
-  //     currentPage: current,
-  //     size: pageSize,
-  //   });
-  //   this.getOrgs(current, pageSize);
-  // };
+  
   handleOrgChange = (e) => {
     this.setState({
       searchTxt: e.target.value,
