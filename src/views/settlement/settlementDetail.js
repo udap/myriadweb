@@ -272,11 +272,6 @@ class SettlementDetail extends Component {
                 (e) => this.handleDownload(e)
               } 
             />,
-            // <DownloadOutlined
-            //   key="add"
-            //   className="setIcon"
-            //   onClick={(e)=>this.handleDownload(e)}
-            // />,
           ]}
         ></PageHeader>
         <Descriptions
