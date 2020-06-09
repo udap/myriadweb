@@ -320,10 +320,17 @@ export const reqGetStats = (keys, since) =>
     },
   });
 
+// export functions
 export const reqDownloadSettlement = (id) =>
   ajax.get(BASE + "/myriad/settlements/" + id + "/export", {
     responseType: "blob",
   });
+
+export const reqDownloadRedemption = (params) =>
+  ajax.get(BASE + "/myriad/redemptions/export", {
+    params: params,
+    responseType: "blob",
+  });  
 
 //公共标签
 export const reqPostTags = (params) => ajax.post(BASE + "/tags", params);
