@@ -402,7 +402,7 @@ class MyOrgs extends Component {
                 rules={[
                   {
                     message: "营业执照号码格式不正确",
-                    pattern: /(^(?:(?![IOZSV])[dA-Z]){2}d{6}(?:(?![IOZSV])[dA-Z]){10}$)|(^d{15}$)/,
+                    pattern: /^[a-zA-Z0-9]{10,20}$/,
                   },
                 ]}
               >
@@ -410,7 +410,12 @@ class MyOrgs extends Component {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="银联商户码" name="upCode">
+              <Form.Item label="银联商户码" name="upCode" rules={[
+                  {
+                    message: "银联商户码格式不正确",
+                    pattern: /^[0-9a-zA-Z]*$/g,
+                  },
+                ]}>
                 <Input />
               </Form.Item>
             </Col>

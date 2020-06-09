@@ -171,8 +171,8 @@ class Merchant extends Component {
     }
     const result = await reqDelMerchant(uid);
     this.setState({
-      currentPage:1
-    })
+      currentPage: 1,
+    });
     this.getMerchant(1);
   };
   onFinish = async (values) => {
@@ -218,7 +218,14 @@ class Merchant extends Component {
         <Form.Item
           label="银联商户码"
           name="upCode"
-          rules={[{ required: true }, { max: 45 }]}
+          rules={[
+            { required: true },
+            { max: 45 },
+            {
+              message: "银联商户码格式不正确",
+              pattern: /^[0-9a-zA-Z]*$/g,
+            },
+          ]}
         >
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
@@ -265,7 +272,7 @@ class Merchant extends Component {
     });
   };
 
-  addNewTags = async(chooseItem, newTags) => {
+  addNewTags = async (chooseItem, newTags) => {
     let result = await reqPutMerchantTags(chooseItem.uid, newTags);
     if (result.data.retcode !== 1) {
       //刷新列表数据
@@ -275,10 +282,10 @@ class Merchant extends Component {
   };
 
   //提交数据
-  submitCommonTags =  async() => {
+  submitCommonTags = async () => {
     this.setState({
-      inited:false
-    })
+      inited: false,
+    });
     let result;
     let { chooseItem, targetKeys } = this.state;
     result = await reqPutMerchantTags(chooseItem.uid, targetKeys);
@@ -290,7 +297,7 @@ class Merchant extends Component {
         showTagForm: false,
         chooseItem: {
           tags: targetKeys,
-        }
+        },
       });
     }
   };
@@ -324,7 +331,7 @@ class Merchant extends Component {
     const parmas = {
       type: "MERCHANT",
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentTagPage,
-      size: 1000//size,
+      size: 1000, //size,
     };
     const result = await reqGetTags(parmas);
     let cont =
@@ -385,9 +392,7 @@ class Merchant extends Component {
           }}
           onFinish={this.submitCommonTags}
         >
-          <div class="grey-block">
-          选择公共标签设置
-          </div>
+          <div class="grey-block">选择公共标签设置</div>
           <Form.Item name="tag">
             <TreeSelectComponent
               mockData={tagsData}
@@ -557,7 +562,7 @@ class Merchant extends Component {
               <div style={{ margin: 0 }}>
                 <EditableTagGroup
                   tags={record.tags ? record.tags : []}
-                  newTags={this.addNewTags.bind(this,record)}
+                  newTags={this.addNewTags.bind(this, record)}
                 />
               </div>
             ),
