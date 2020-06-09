@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import {
   Button,
   Form,
@@ -30,6 +31,7 @@ const formItemLayout = {
   },
 };
 
+@withRouter
 class ConfigureRules extends Component {
   state = {
     rules: this.props.rules,
@@ -175,9 +177,10 @@ class ConfigureRules extends Component {
       notification.success({
         message: "操作成功！",
       });
+      this.backHome();
     }
   };
-  backIndex = () => {
+  backHome = () => {
     this.props.history.push("/admin/campaign");
   };
   renderRules = () => {
