@@ -74,6 +74,7 @@ const hasPower = async (self, reqPermit, str, handleName, id, type) => {
     }
   }
 };
+
 const compareTwoArrayEqual = (arr1, arr2) => {
   let newArr = [];
   for (let j = 0; j < arr1.length; j++) {
