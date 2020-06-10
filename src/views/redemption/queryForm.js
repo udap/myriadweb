@@ -14,13 +14,16 @@ import "moment/locale/zh-cn";
 
 import "../../css/common.less";
 
-const QueryForm = ({loading, beginDate, onLoading, onSwitchRole, onSubmit}) => {
+const {RangePicker} = DatePicker;
+
+const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
+  let beginDate = dateRange ? dateRange[0] : new Date();
   return (
     <Form
       onFinish={onSubmit}
       layout="horizontal"
       name="advanced_search"
-      className="ant-advanced-search-form"
+      className="search-form"
       initialValues={{
         role: "marketer",
         searchTxt: "",
@@ -37,19 +40,19 @@ const QueryForm = ({loading, beginDate, onLoading, onSwitchRole, onSubmit}) => {
         </Col>
       </Row>
       <Row>
-        <Col>
-          <Form.Item name="beginDate" label="开始时间">
-            <DatePicker
-              allowClear={false}
-              defaultValue={moment(beginDate, "YYYY-MM-DD")}
-            />
-          </Form.Item>
-        </Col>
         <Col span={6}>
           <Form.Item name="searchTxt">
             <Input
               placeholder="请输入券号、活动名、订单号进行搜索"
               allowClear
+            />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item name="dateRange">
+            <RangePicker
+              format="YYYY-MM-DD"
+              defaultValue={[moment(beginDate, "YYYY-MM-DD"),moment(new Date(),"YYYY-MM-DD")]}
             />
           </Form.Item>
         </Col>

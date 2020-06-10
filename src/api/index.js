@@ -328,7 +328,7 @@ export const reqDownloadSettlement = (id) =>
     responseType: "blob",
   });
 
-export const reqDownloadRedemption = (params) =>
+export const reqExportRedemption = (params) =>
   ajax.get(BASE + "/myriad/redemptions/export", {
     params: params,
     responseType: "blob",

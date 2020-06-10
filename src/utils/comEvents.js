@@ -53,7 +53,6 @@ const firstDayOfMonth = () => {
   const year = dd.getFullYear();
   const month = dd.getMonth() + 1;
   const day = dd.getDate();
-
   return [year, month, 1].map(formatNumber).join("-");
 };
 

@@ -15,7 +15,7 @@ import QueryForm from './queryForm';
 import storageUtils from "../../utils/storageUtils";
 import comEvents from "../../utils/comEvents";
 
-import { reqGetRedemptions, reqDownloadRedemption } from "../../api";
+import { reqGetRedemptions, reqExportRedemption } from "../../api";
 import { Loading } from "../../components";
 
 import { redemptionStatuses, settlementStatuses } from "../../utils/constants";
@@ -34,22 +34,14 @@ class Redemption extends Component {
     /*搜索框 */
     loading: false,
     beginDate: comEvents.firstDayOfMonth(),
+    endDate: null,
     downloading: false,
     role: "marketer",
-    /*是否有权限 */
-    hasAuthority: false,
   };
   componentDidMount() {
     this.initColumns();
-    this.getList();
+    this.getRedemptions(0,this.state.searchTxt,this.state.beginDate,this.state.endDate);
   }
-  getList = async () => {
-      //有权限
-      this.setState({
-        hasAuthority: true,
-      });
-      this.getRedemptions(1);
-  };
   initColumns() {
     //显示券号，活动，发券机构，核销机构，核销时间，核销状态以及结算状态
     this.marketColumns = [
@@ -198,7 +190,7 @@ class Redemption extends Component {
   /*
 获取列表数据
 */
-  getRedemptions = async (currentPage, searchTxt, role, beginDate) => {
+  getRedemptions = async (currentPage, searchTxt, role, beginDate, endDate) => {
     //owner Li:显示要有两个选择：营销机构，核销机构   前者传入issuerid，后者传入merchant id
     let roleStr = role ? role : this.state.role;
     let parmas =
@@ -207,14 +199,16 @@ class Redemption extends Component {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
             issuerId: storageUtils.getUser().orgId,
-            since: beginDate? beginDate: this.state.beginDate,
+            beginDate: beginDate? beginDate: this.state.beginDate,
+            endDate: endDate? endDate: this.state.endDate,
             searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
             merchantId: storageUtils.getUser().orgId,
-            since: beginDate?beginDate:this.state.beginDate,
+            beginDate: beginDate?beginDate:this.state.beginDate,
+            endDate: endDate? endDate: this.state.endDate,
             searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           };
 
@@ -261,12 +255,6 @@ class Redemption extends Component {
     //parseInt((this.receipts.length - 1) / PAGE_SIZE) + 1;//
   };
 
-  // handleChange = (value) => {
-  //   this.setState({
-  //     codeType: value,
-  //   });
-  // };
-
   enterLoading = () => {
     this.setState({
       loading: true,
@@ -277,9 +265,10 @@ class Redemption extends Component {
     this.setState({
       currentPage: 1,
       searchTxt: values.searchTxt,
-      beginDate: values['beginDate'].format("YYYY-MM-DD"),
+      beginDate: values['dateRange'][0].format("YYYY-MM-DD"),
+      endDate: values['dateRange'][1].format("YYYY-MM-DD"),
     });
-    this.getRedemptions(1, values.searchTxt);
+    this.getRedemptions(1, values.searchTxt, this.state.role, this.state.beginDate,this.state.endDate);
   };
 
   handleTableChange = (page) => {
@@ -297,7 +286,7 @@ class Redemption extends Component {
       role: e.target.value,
       currentPage: 1,
     });
-    this.getRedemptions(1, null, e.target.value);
+    this.getRedemptions(1, null, e.target.value, this.state.beginDate, this.state.endDate);
   };
 
   handleDownload = async (event) => {
@@ -306,17 +295,19 @@ class Redemption extends Component {
     this.setState({
       downloading: true
     });
-    let params = this.state.role === "MARKETER" ? {
+    let params = this.state.role === "marketer" ? {
       issuerId: storageUtils.getUser().orgId,
       beginDate: this.state.beginDate,
+      endDate: this.state.endDate,
       searchTxt: this.state.searchTxt,
     } : {
       merchantId: storageUtils.getUser().orgId,
       beginDate: this.state.beginDate,
+      endDate: this.state.endDate,
       searchTxt: this.state.searchTxt,
     };
     const filename = 'redemption.xlsx';
-    reqDownloadRedemption(params).then(
+    reqExportRedemption(params).then(
       response => {
         FileSaver.saveAs(response.data, filename);
         this.setState({
@@ -334,7 +325,7 @@ class Redemption extends Component {
   }
 
   renderContent = () => {
-    const { campaigns, size, total, currentPage, hasAuthority,chooseRadio } = this.state;
+    const { campaigns, size, total, currentPage,chooseRadio } = this.state;
     let columns = chooseRadio==='owner'?this.marketColumns:this.columns;
     return (
       <div>
@@ -352,15 +343,13 @@ class Redemption extends Component {
             />
           ]}
         />
-        {hasAuthority ? 
-          <QueryForm 
-            loading={this.state.loading}
-            beginDate={this.state.beginDate}
-            onLoading={this.enterLoading}
-            onSwitchRole={this.onSwitchRole}
-            onSubmit={this.submitQuery}
-          /> : null
-        }
+        <QueryForm 
+          loading={this.state.loading}
+          dateRange={[this.state.beginDate]}
+          onLoading={this.enterLoading}
+          onSwitchRole={this.onSwitchRole}
+          onSubmit={this.submitQuery}
+        />
         <Table
           rowKey="key"
           size="small"
