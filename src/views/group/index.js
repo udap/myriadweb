@@ -354,7 +354,7 @@ class Groups extends Component {
         key: "action",
         width: 120,
         render: (chooseItem) => {
-          const { id } = chooseItem;
+          const { id, owner } = chooseItem;
           return (
             <div>
               <b

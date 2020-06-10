@@ -3,21 +3,21 @@ import {
   Button,
   Table,
   PageHeader,
-  Input,
   Tag,
-  Radio,
-  Form,
-  Row,
-  Col,
   Pagination,
   notification,
 } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import FileSaver from 'file-saver';
 import NumberFormat from 'react-number-format';
+
+import QueryForm from './queryForm';
 import storageUtils from "../../utils/storageUtils";
+import comEvents from "../../utils/comEvents";
+
 import { reqGetRedemptions, reqDownloadRedemption } from "../../api";
 import { Loading } from "../../components";
+
 import { redemptionStatuses, settlementStatuses } from "../../utils/constants";
 import "../../css/common.less";
 
@@ -25,19 +25,17 @@ class Redemption extends Component {
   state = {
     inited: false,
     campaigns: [],
-    publisherId: storageUtils.getUser().orgId,
     ownerId: storageUtils.getUser().id,
     hasChoose: false,
-    merchantCode: "",
-    codeType: "UPCODE",
     currentPage: 1,
     size: 20,
     total: 0,
     visible: false,
     /*搜索框 */
     loading: false,
+    beginDate: comEvents.firstDayOfMonth(),
     downloading: false,
-    chooseRadio: "owner",
+    role: "marketer",
     /*是否有权限 */
     hasAuthority: false,
   };
@@ -50,7 +48,7 @@ class Redemption extends Component {
       this.setState({
         hasAuthority: true,
       });
-      this.getMarkets(null, 1);
+      this.getRedemptions(1);
   };
   initColumns() {
     //显示券号，活动，发券机构，核销机构，核销时间，核销状态以及结算状态
@@ -109,15 +107,14 @@ class Redemption extends Component {
                   <span key={index}>{item[status]}</span>
                 ))}
               </Tag>
-              {settlementStatus !== "-" ? (
-                <Tag color="green" key={settlementStatus}>
+              {settlementStatus ? 
+                <Tag color="blue" key={settlementStatus}>
                   {settlementStatuses.map((item, index) => (
                     <span key={index}>{item[settlementStatus]}</span>
                   ))}
                 </Tag>
-              ) : (
-                ""
-              )}
+                : null 
+              }
             </div>
           );
         },
@@ -179,11 +176,12 @@ class Redemption extends Component {
                   <span key={index}>{item[status]}</span>
                 ))}
               </Tag>
-              <Tag color="green" key={settlementStatus}>
+              {settlementStatus ?
+              <Tag color="blue" key={settlementStatus}>
                 {settlementStatuses.map((item, index) => (
-                  <span key={index}>{item[settlementStatus]}</span>
+                  item[settlementStatus]
                 ))}
-              </Tag>
+              </Tag> : null }
             </div>
           );
         },
@@ -194,21 +192,23 @@ class Redemption extends Component {
   /*
 获取列表数据
 */
-  getMarkets = async (values, currentPage, searchTxt, chooseRadio) => {
+  getRedemptions = async (currentPage, searchTxt, role, beginDate) => {
     //owner Li:显示要有两个选择：营销机构，核销机构   前者传入issuerid，后者传入merchant id
-    let typeStr = chooseRadio ? chooseRadio : this.state.chooseRadio;
+    let roleStr = role ? role : this.state.role;
     let parmas =
-      typeStr === "owner"
+      roleStr === "marketer"
         ? {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
-            issuerId: this.state.publisherId,
+            issuerId: storageUtils.getUser().orgId,
+            since: beginDate? beginDate: this.state.beginDate,
             searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
-            merchantId: this.state.publisherId,
+            merchantId: storageUtils.getUser().orgId,
+            since: beginDate?beginDate:this.state.beginDate,
             searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           };
 
@@ -235,7 +235,7 @@ class Redemption extends Component {
           settlementStatus:
             cont[i].settlement && cont[i].settlement.status
               ? cont[i].settlement.status
-              : "-",
+              : null,
         });
       }
     }
@@ -255,40 +255,43 @@ class Redemption extends Component {
     //parseInt((this.receipts.length - 1) / PAGE_SIZE) + 1;//
   };
 
-  handleChange = (value) => {
-    this.setState({
-      codeType: value,
-    });
-  };
+  // handleChange = (value) => {
+  //   this.setState({
+  //     codeType: value,
+  //   });
+  // };
+
   enterLoading = () => {
     this.setState({
       loading: true,
     });
   };
-  onFinish = (values) => {
+
+  submitQuery = (values) => {
     this.setState({
       currentPage: 1,
       searchTxt: values.searchTxt,
+      beginDate: values['beginDate'].format("YYYY-MM-DD"),
     });
-    this.getMarkets(null, 1, values.searchTxt);
+    this.getRedemptions(1, values.searchTxt);
   };
 
   handleTableChange = (page) => {
     this.setState({
       currentPage: page,
     });
-    this.getMarkets(null, page);
+    this.getRedemptions(page);
   };
 
   /*radio 切换*/
-  onRadioChange = (e) => {
+  onSwitchRole = (e) => {
     //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
     this.setState({
       page: 0,
-      chooseRadio: e.target.value,
+      role: e.target.value,
       currentPage: 1,
     });
-    this.getMarkets(null, 1, null, e.target.value);
+    this.getRedemptions(1, null, e.target.value);
   };
 
   handleDownload = async (event) => {
@@ -297,9 +300,17 @@ class Redemption extends Component {
     this.setState({
       downloading: true
     });
-    let id = this.props.match.params.id;
+    let params = this.state.role === "MARKETER" ? {
+      issuerId: storageUtils.getUser().orgId,
+      beginDate: this.state.beginDate,
+      searchTxt: this.state.searchTxt,
+    } : {
+      merchantId: storageUtils.getUser().orgId,
+      beginDate: this.state.beginDate,
+      searchTxt: this.state.searchTxt,
+    };
     const filename = 'redemption.xlsx';
-    reqDownloadRedemption(id).then(
+    reqDownloadRedemption(params).then(
       response => {
         FileSaver.saveAs(response.data, filename);
         this.setState({
@@ -335,51 +346,15 @@ class Redemption extends Component {
             />
           ]}
         />
-        {hasAuthority ? (
-          <Form
-            onFinish={this.onFinish}
-            layout="horizontal"
-            name="advanced_search"
-            className="ant-advanced-search-form"
-            initialValues={{
-              searchTxt: "",
-              group: "owner",
-            }}
-          >
-            <Row>
-              <Col>
-                <Form.Item name="group" label="查询条件">
-                  <Radio.Group onChange={this.onRadioChange}>
-                    <Radio value="owner">营销机构</Radio>
-                    <Radio value="publisherId">核销机构</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item name="searchTxt">
-                  <Input
-                    placeholder="请输入券号、活动名、订单号进行搜索"
-                    allowClear
-                  />
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    className="cursor searchBtn"
-                    htmlType="submit"
-                    loading={this.state.loading}
-                    onClick={this.enterLoading}
-                  >
-                    搜索
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        ) : null}
-
+        {hasAuthority ? 
+          <QueryForm 
+            loading={this.state.loading}
+            beginDate={this.state.beginDate}
+            onLoading={this.enterLoading}
+            onSwitchRole={this.onSwitchRole}
+            onSubmit={this.submitQuery}
+          /> : null
+        }
         <Table
           rowKey="key"
           size="small"
