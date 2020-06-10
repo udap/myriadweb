@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Input, Col, Row, Table,Drawer } from "antd";
 import {
   reqGetMerchants,
+  reqPostParties
 } from "../../../api";
 import storageUtils from "../../../utils/storageUtils";
 import { Loading } from "../../../components";
@@ -40,7 +41,10 @@ class MerchantSelect extends Component {
     inited: false,
   };
   componentDidMount() {
-    //let id = this.props.id;
+    let id = this.props.id;
+    this.setState({
+      id:id
+    })
     this.getMerchants(1); //this.state.currentPage
   }
 
@@ -95,7 +99,6 @@ class MerchantSelect extends Component {
     this.setState({ loading: true });
     let selectedRowKeys = this.state.selectedRowKeys || [];
     let merchants = this.state.merchants || [];
-    console.log("onSubmitSelection", this.state);
     let selections = [];
     for (var i = 0; i < selectedRowKeys.length; i++) {
       for (var j = 0; j < merchants.length; j++) {
@@ -103,13 +106,27 @@ class MerchantSelect extends Component {
           selections.push(merchants[j]);
       }
     }
+
     this.setState({
       merchants: [],
       selectedRowKeys: [],
       loading: false,
     });
-
+    
+    if (selectedRowKeys.length !== 0) {
+      for (var i = 0; i < selectedRowKeys.length; i++) {
+        this.state.list.push({ partyId: selectedRowKeys[i], type: "MERCHANT" });
+      }
+      this.addItem(this.state.list);
+    }
     this.props.handleSelection(selections, selectedRowKeys);
+  };
+  addItem = async (newList) => {
+    let params = {
+      parts: newList,
+    };
+    const result = await reqPostParties(this.state.id, params);
+    
   };
 
   render() {
@@ -133,7 +150,7 @@ class MerchantSelect extends Component {
         className="markrt"
         title="选择商户"
         visible={this.props.visible}
-        onCancel={this.props.handleCancel}
+        onClose={this.props.handleCancel}
         footer={null}
         width={480}
       >

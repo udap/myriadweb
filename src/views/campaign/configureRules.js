@@ -15,7 +15,13 @@ import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import MerchantSelect from "./rule/merchantSelect";
 import MerchantRegion from "./rule/merchantRegion";
 import MerchantTag from "./rule/merchantTag";
-import { reqAddCampaignRule } from "../../api";
+import {
+  reqAddCampaignRule,
+  reqGetCampaignMerchants,
+  reqDelParty,
+  reqPutCampaignRule,
+} from "../../api";
+import { Loading } from "../../components";
 import comEvents from "../../utils/comEvents";
 import "../../css/common.less";
 import "./index.less";
@@ -34,7 +40,7 @@ const formItemLayout = {
 @withRouter
 class ConfigureRules extends Component {
   state = {
-    rules: this.props.rules,
+    rules: [],
     province: "重庆市",
     city: "重庆市",
     district: "渝中区",
@@ -44,7 +50,6 @@ class ConfigureRules extends Component {
     merchants: [],
     //tag
     selectedTags: [],
-
     totalTagPages: 0,
     currentTagPage: 1,
     expandedRowKeys: [],
@@ -63,13 +68,61 @@ class ConfigureRules extends Component {
     showMerchantSelect: false,
     showMerchantRegion: false,
     id: "",
+    isNew: true,
+    minimum: null,
   };
   componentDidMount() {
     let id = this.props.id;
+    let path = this.props.match.params.id;
+    let rules = this.props.rules;
+    this.dealData(id);
     this.setState({
       id: id,
+      rules: rules,
+      isNew: path === "new" ? true : false,
+      inited: true,
     });
   }
+  dealData = (id) => {
+    let rules = this.props.rules;
+    this.getMerchants(id);
+    if (rules.merchantRules.name) {
+      this.setState({
+        merchantStatus: true,
+        selectedRowKeys: rules.merchantRules.option.split(","),
+      });
+    }
+    if (rules.orderRules.name) {
+      this.setState({
+        orderStatus: true,
+        minimum: rules.orderRules.option,
+      });
+    }
+    if (rules.regionRules.name) {
+      let region = JSON.parse(rules.regionRules.option);
+      this.setState({
+        selectedRegion: comEvents.formatRegionList(region),
+        regionStatus: true,
+      });
+    }
+    if (rules.tagRules.name) {
+      this.setState({
+        selectedTags: rules.tagRules.option.split(","),
+        tagStatus: true,
+      });
+    }
+  };
+  //获取当前添加商户 list type=MERCHANT
+  getMerchants = async (id) => {
+    let curInfo = await reqGetCampaignMerchants(id);
+    let cont = curInfo.data ? curInfo.data : [];
+    this.parties = cont.parties ? cont.parties : [];
+    this.setState({
+      merchantStatus: this.parties.length > 0 ? true : false,
+      merchants: this.parties,
+      loading: false,
+    });
+  };
   onRadioChange = (name, value) => {
     this.setState({
       [name]: value,
@@ -85,10 +138,16 @@ class ConfigureRules extends Component {
       showMerchantSelect: true,
     });
   };
+  delItem = async (partyId) => {
+    this.setState({
+      inited: false,
+    });
+    const result = await reqDelParty(this.state.id, partyId);
+  };
   handleClose = (removedItem, name, selectedRowKeys) => {
     if (selectedRowKeys) {
       const keys = this.state.selectedRowKeys.filter(
-        (item) => item !== removedItem.key
+        (item) => item !== removedItem.partyId
       );
       this.setState({
         selectedRowKeys: keys,
@@ -99,15 +158,14 @@ class ConfigureRules extends Component {
         [name]: items,
       });
     }
+
+    if (name === "merchants") {
+      this.delItem(removedItem.partyId);
+    }
   };
   onFinish = async (values) => {
     let params = [];
-    const {
-      orderStatus,
-      merchantStatus,
-      tagStatus,
-      regionStatus,
-    } = this.state;
+    const { orderStatus, merchantStatus, tagStatus, regionStatus } = this.state;
 
     if (orderStatus && !values.minimum) {
       notification.info({
@@ -139,7 +197,6 @@ class ConfigureRules extends Component {
     }
     // 这是商户规则部分
     const { selectedRowKeys, selectedRegion, selectedTags } = this.state;
-    console.log("selectedRegion", selectedRegion);
     let expression1 = "#SelectedMerchants ";
     let expression2 = tagStatus ? "and #SelectedMerchants " : "";
     let expression3 = regionStatus ? "and #SelectedRegions" : "";
@@ -171,8 +228,13 @@ class ConfigureRules extends Component {
         rules: rules,
       });
     }
+    let result;
+    if (this.state.isNew) {
+      result = await reqAddCampaignRule(this.state.id, params);
+    } else {
+      result = await reqPutCampaignRule(this.state.id, params);
+    }
 
-    let result = await reqAddCampaignRule(this.state.id, params);
     if (result.data.retcode !== 1) {
       notification.success({
         message: "操作成功！",
@@ -202,6 +264,27 @@ class ConfigureRules extends Component {
       regionStatus,
       minimum,
     } = this.state;
+    let orderRule =
+      orderRules && orderRules.name
+        ? {
+            name: orderRules.name,
+            option: orderRules.option,
+          }
+        : null;
+    let merchantRule =
+      merchantRules && merchantRules.name
+        ? {
+            name: merchantRules.name,
+            option: merchantRules.option,
+          }
+        : null;
+    let tagRule =
+      tagRules && tagRules.name
+        ? {
+            name: tagRules.name,
+            option: tagRules.option,
+          }
+        : null;
 
     return (
       <div>
@@ -212,20 +295,11 @@ class ConfigureRules extends Component {
           onFinish={this.onFinish}
           colon={false}
           initialValues={{
-            orderRules: {
-              name: orderRules.name,
-              option: orderRules.option,
-            },
-            merchantRules: {
-              name: merchantRules.name,
-              option: merchantRules.option,
-            },
-            tagRules: {
-              name: tagRules.name,
-              option: tagRules.option,
-            },
+            orderRules: orderRule,
+            merchantRules: merchantRule,
+            tagRules: tagRule,
             regionRules: {
-              name: regionRules.name,
+              name: regionRules ? regionRules.name : "",
               option:
                 regionType === "p"
                   ? [province]
@@ -235,7 +309,6 @@ class ConfigureRules extends Component {
             },
             tagType: tagType,
             regionType: regionType,
-
             //new
             minimum: minimum,
           }}
@@ -287,7 +360,7 @@ class ConfigureRules extends Component {
                         style={{
                           lineHeight: "32px",
                         }}
-                        checked={this.state.merchants.length > 0}
+                        //checked={this.state.merchants.length > 0}
                       >
                         指定商户
                       </Checkbox>
@@ -300,13 +373,17 @@ class ConfigureRules extends Component {
                       {this.state.merchants.map((t, index) => (
                         <Tag
                           onClose={() =>
-                            this.handleClose(t, "merchants", "selectedRowKeys")
+                            this.handleClose(
+                              t,
+                              "merchants",
+                              "selectedRowKeys"
+                            )
                           }
                           color="blue"
-                          key={t}
+                          key={t.id ? t.id : t.partyId}
                           closable
                         >
-                          {t.fullName}
+                          {t.fullName ? t.fullName : t.partyName}
                         </Tag>
                       ))}
                     </Col>
@@ -334,7 +411,7 @@ class ConfigureRules extends Component {
                     >
                       <Checkbox
                         value="SelectedTags"
-                        checked={this.state.selectedTags.length > 0}
+                        //checked={this.state.selectedTags.length > 0}
                         style={{
                           lineHeight: "32px",
                         }}
@@ -433,7 +510,7 @@ class ConfigureRules extends Component {
               htmlType="submit"
               className="step-marginTop"
               // disabled={this.state.disabledNext}
-              onClick={this.backHome}
+              //onClick={this.backHome}
             >
               提交
             </Button>
@@ -470,9 +547,10 @@ class ConfigureRules extends Component {
   };
 
   renderMerchantSelect = () => {
-    const { showMerchantSelect } = this.state;
+    const { showMerchantSelect, id } = this.state;
     return (
       <MerchantSelect
+        id={id}
         visible={showMerchantSelect}
         handleCancel={this.handleCancel}
         handleSelection={this.handleSelection}
@@ -534,7 +612,7 @@ class ConfigureRules extends Component {
     const { showTagForm, showMerchantSelect, showMerchantRegion } = this.state;
     return (
       <div>
-        {this.renderRules()}
+        {this.state.inited ? this.renderRules() : <Loading />}
         {showMerchantSelect ? this.renderMerchantSelect() : null}
         {showTagForm ? this.renderTagForm() : null}
         {showMerchantRegion ? this.renderMerchantRegion() : null}

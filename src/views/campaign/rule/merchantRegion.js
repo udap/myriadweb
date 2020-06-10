@@ -54,7 +54,7 @@ class MerchantRegion extends Component {
           className="markrt"
           title="选择区域"
           visible={visible}
-          onCancel={this.props.handleCancel}
+          onClose={this.props.handleCancel}
           footer={null}
           width={480}
         >

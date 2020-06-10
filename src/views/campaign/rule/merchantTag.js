@@ -77,14 +77,9 @@ class MerchantTag extends Component {
     });
   };
   onSelectCommonTags = (values) => {
-    console.log("MerchantTag -> onSelectCommonTags -> values", values);
     let selectedTags = comEvents.mergeArrays(
       this.state.selectedTags,
       this.state.targetKeys
-    );
-    console.log(
-      "MerchantTag -> onSelectCommonTags -> selectedTags",
-      selectedTags
     );
     this.setState({
       showTagForm: false,
@@ -94,7 +89,6 @@ class MerchantTag extends Component {
   };
   choosehandle = (value) => {
     //nextTargetKeys
-    console.log("MerchantTag -> choosehandle -> value, arr", value);
     this.setState({
       targetKeys: value,
       //targetTitles: arr,

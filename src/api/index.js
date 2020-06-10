@@ -79,8 +79,10 @@ export const reqBatchDistribution = (params) =>
 export const reqAddCampaign = (params) =>
   ajax.post(BASE + "/myriad/campaigns", params);
 //POST / myriad / campaigns / { id } / rules;
-export const reqAddCampaignRule = (id,params) =>
-         ajax.post(BASE + "/myriad/campaigns/" + id + "/rules", params);
+export const reqAddCampaignRule = (id, params) =>
+  ajax.post(BASE + "/myriad/campaigns/" + id + "/rules", params);
+export const reqPutCampaignRule = (id, params) =>
+  ajax.put(BASE + "/myriad/campaigns/" + id + "/rules", params);
 //提交活动配置 有图片
 // export const reqPostConfigImg = (id, params) =>
 //          ajax({
@@ -118,14 +120,12 @@ export const reqDelParty = (id, partyId) =>
 //注册机构
 export const reqAddOrg = (params) => ajax.post(BASE + "/organizations", params);
 //查看当前机构
-export const reqGetOrg = (uid) =>
-  ajax.get(BASE + "/organizations/" + uid);
+export const reqGetOrg = (uid) => ajax.get(BASE + "/organizations/" + uid);
 //修改机构信息
 export const reqPutOrg = (uid, params) =>
   ajax.put(BASE + "/organizations/" + uid, params);
 
-export const reqDelOrg = (uid) =>
-  ajax.delete(BASE + "/organizations/" + uid);
+export const reqDelOrg = (uid) => ajax.delete(BASE + "/organizations/" + uid);
 
 //获取机构列表
 export const reqGetOrgs = (params) => ajax(BASE + "/organizations");
@@ -332,7 +332,7 @@ export const reqExportRedemption = (params) =>
   ajax.get(BASE + "/myriad/redemptions/export", {
     params: params,
     responseType: "blob",
-  });  
+  });
 
 //公共标签
 export const reqPostTags = (params) => ajax.post(BASE + "/tags", params);

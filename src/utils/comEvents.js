@@ -226,6 +226,16 @@ const formatRegions = (selectedRegion) => {
   let strifyArr = JSON.stringify(resultArr);
   return strifyArr;
 };
+
+const formatRegionList=(regionList)=>{
+  return regionList.map((item) => {
+    if (!item.children) {
+        return item.name;
+    } else {
+      return item.name+','+formatRegionList(item.children);
+    }
+  });
+}
 export default {
   getTitle,
   formatDate,
@@ -239,4 +249,5 @@ export default {
   mergeArrays,
   siftRegion,
   formatRegions,
+  formatRegionList
 };

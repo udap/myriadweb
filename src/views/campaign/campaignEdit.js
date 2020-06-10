@@ -164,6 +164,7 @@ class CampaignEdit extends Component {
         option: null,
       },
     },
+    configRules:[]
   };
 
   componentDidMount() {
@@ -185,9 +186,32 @@ class CampaignEdit extends Component {
     let curInfo = await reqGetCampaignById(id);
     let cont = curInfo.data ? curInfo.data : [];
     let voucherConfig = cont.voucherConfig;
+    //处理规则的数据格式
+    let configRules = cont.rules;
+    if (configRules.length > 0) {
+      configRules.map((item) => {
+        if (item.expression==='#MinimumValue') {
+          this.state.rules.orderRules=item.rules[0];
+        }else{
+          let merchantRules=item.rules;
+          merchantRules.map(elem=>{
+            if(elem.name==='SelectedMerchants'){
+              this.state.rules.merchantRules=elem;
+            }else if(elem.name==='SelectedTags'){
+              this.state.rules.tagRules=elem;
+            }else if(elem.name==='SelectedRegions'){
+              this.state.rules.regionRules=elem;
+            }
+          })
+          
+        }
+      });
+    }
+    
     this.setState({
       inited: true,
       curInfo: cont,
+      rules:this.state.rules,
       basicInfo: {
         name: cont.name,
         description: cont.description,
@@ -854,10 +878,10 @@ class CampaignEdit extends Component {
   };
   //第四步
   renderStep4 = () => {
-    const { rules } = this.state;
+    const { rules,configRules } = this.state;
     return (
       //      <div className="stepCont">
-      <ConfigureRules id={this.state.id} rules={rules} />
+      <ConfigureRules id={this.state.id} rules={rules}  configRules={configRules}/>
       //      </div>
     );
   };

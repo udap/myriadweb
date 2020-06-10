@@ -225,27 +225,12 @@ class CampaignMerchant extends Component {
     });
     this.handleCancel();
   };
-  // addOneItem = async (id) => {
-  //   this.setState({ loading: true });
-  //   let params = {
-  //     parts: [{ partyId: id, type: "MERCHANT" }],
-  //   };
-  //   const result = await reqPostParties(this.state.id, params);
-  //   this.setState({
-  //     visible: false,
-  //     parties: [],
-  //     currentPage: 1,
-  //   });
-
-  //   this.getMerchants(this.state.id);
-  // };
 
   addItem = async (newList) => {
     this.setState({ loading: true });
     let params = {
       parts: newList,
     };
-    console.log("addItem", params);
     const result = await reqPostParties(this.state.id, params);
     this.setState({
       visible: false,
