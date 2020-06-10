@@ -80,8 +80,8 @@ class Redemption extends Component {
             return value? (
               <div style={{textAlign: "right"}}>
                 <NumberFormat value={value/100} displayType={'text'} 
-                  thousandSeparator={true} prefix={'¥'}/></div>
-              ):null
+                thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} prefix={'¥'}/></div>
+                ):null
         },
       },
       {
@@ -151,7 +151,7 @@ class Redemption extends Component {
           return value? (
             <div style={{textAlign: "right"}}>
               <NumberFormat value={value/100} displayType={'text'} 
-                thousandSeparator={true} prefix={'¥'}/></div>
+                thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} prefix={'¥'}/></div>
             ):null
         },
       },
