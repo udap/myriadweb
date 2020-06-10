@@ -85,8 +85,11 @@ class Redemption extends Component {
         key: "discountOff",
         width: 80,
         render: (value, row, index) => {
-            return value? <NumberFormat value={value/100} displayType={'text'} 
-              thousandSeparator={true} prefix={'¥'}/>:null
+            return value? (
+              <div style={{textAlign: "right"}}>
+                <NumberFormat value={value/100} displayType={'text'} 
+                  thousandSeparator={true} prefix={'¥'}/></div>
+              ):null
         },
       },
       {
@@ -153,8 +156,11 @@ class Redemption extends Component {
         key: "discountOff",
         width: 80,
         render: (value, row, index) => {
-            return value? <NumberFormat value={value/100} displayType={'text'} 
-              thousandSeparator={true} prefix={'¥'}/>:null
+          return value? (
+            <div style={{textAlign: "right"}}>
+              <NumberFormat value={value/100} displayType={'text'} 
+                thousandSeparator={true} prefix={'¥'}/></div>
+            ):null
         },
       },
       {
