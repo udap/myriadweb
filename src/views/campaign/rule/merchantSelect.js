@@ -117,7 +117,7 @@ class MerchantSelect extends Component {
       for (var i = 0; i < selectedRowKeys.length; i++) {
         this.state.list.push({ partyId: selectedRowKeys[i], type: "MERCHANT" });
       }
-      this.addItem(this.state.list);
+//      this.addItem(this.state.list);
     }
     this.props.handleSelection(selections, selectedRowKeys);
   };

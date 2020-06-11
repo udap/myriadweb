@@ -178,11 +178,11 @@ class CampaignEdit extends Component {
       this.setState({
         id: id,
       });
-      this.getCampaigns(id);
+      this.getCampaign(id);
     }
   }
   //获取当前活动详情
-  getCampaigns = async (id, current) => {
+  getCampaign = async (id, current) => {
     let curInfo = await reqGetCampaignById(id);
     let cont = curInfo.data ? curInfo.data : [];
     let voucherConfig = cont.voucherConfig;
@@ -190,12 +190,11 @@ class CampaignEdit extends Component {
     let configRules = cont.rules;
     if (configRules.length > 0) {
       configRules.map((item) => {
-        if (item.expression==='#MinimumValue') {
-          this.state.rules.orderRules=item.rules[0];
-        }else{
-          let merchantRules=item.rules;
-          merchantRules.map(elem=>{
-            if(elem.name==='SelectedMerchants'){
+          let rules=item.rules;
+          rules.map(elem=>{
+            if (elem.name==='MinimumValue'){
+              this.state.rules.orderRules=elem;
+            } else if(elem.name==='SelectedMerchants'){
               this.state.rules.merchantRules=elem;
             }else if(elem.name==='SelectedTags'){
               this.state.rules.tagRules=elem;
@@ -203,11 +202,9 @@ class CampaignEdit extends Component {
               this.state.rules.regionRules=elem;
             }
           })
-          
         }
-      });
-    }
-    
+      )
+    };
     this.setState({
       inited: true,
       curInfo: cont,
@@ -331,7 +328,7 @@ class CampaignEdit extends Component {
     }
     if (id) {
       //刷新当前数据
-      this.getCampaigns(id, this.state.current);
+      //this.getCampaign(id, this.state.current);
     }
     //this.jumpStep(this.state.current);
   };
@@ -373,6 +370,26 @@ class CampaignEdit extends Component {
         <Form.Item label="活动描述" name="description" rules={[{ max: 255 }]}>
           <TextArea rows={4} />
         </Form.Item>
+        <Form.Item
+          label="活动主页"
+          name="url"
+          rules={[{ type: "url" }, { min: 0, max: 255 }]}
+        >
+          <Row>
+            <Col span={20}>
+              <Input value={this.state.url} onChange={this.handleInputChange} />
+            </Col>
+            <Col>
+              <Button
+                style={{ display: "inline" }}
+                type="link"
+                onClick={this.showURLDrawer}
+              >
+                预览
+              </Button>
+            </Col>
+          </Row>
+        </Form.Item>
         <Form.Item label="标签" name="category">
           {/* <Input /> */}
           <EditableTagGroup tags={category} newTags={this.newTags} />
@@ -396,27 +413,6 @@ class CampaignEdit extends Component {
         <Form.Item name="autoUpdate" label="是否允许增发">
           <Switch checked={autoswitch} onChange={this.onSwitchChange} />
         </Form.Item>
-        <Form.Item
-          label="活动主页"
-          name="url"
-          rules={[{ type: "url" }, { min: 0, max: 255 }]}
-        >
-          <Row>
-            <Col span={20}>
-              <Input value={this.state.url} onChange={this.handleInputChange} />
-            </Col>
-            <Col>
-              <Button
-                style={{ display: "inline" }}
-                type="link"
-                onClick={this.showURLDrawer}
-              >
-                预览
-              </Button>
-            </Col>
-          </Row>
-        </Form.Item>
-
         <Form.Item {...tailLayout}>
           <Button
             type="primary"
@@ -576,7 +572,6 @@ class CampaignEdit extends Component {
             name: name ? name : this.state.basicInfo.name.substr(0, 10),
             multiple: multiple,
             select: select,
-            //valueOff: valueOff / 100,
             coverImg: coverImg,
             description: description,
             //code: code,

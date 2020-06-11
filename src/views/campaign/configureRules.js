@@ -16,10 +16,9 @@ import MerchantSelect from "./rule/merchantSelect";
 import MerchantRegion from "./rule/merchantRegion";
 import MerchantTag from "./rule/merchantTag";
 import {
-  reqAddCampaignRule,
+  reqAddCampaignRules,
+  reqUpdateCampaignRules,
   reqGetCampaignMerchants,
-  reqDelParty,
-  reqPutCampaignRule,
 } from "../../api";
 import { Loading } from "../../components";
 import comEvents from "../../utils/comEvents";
@@ -75,7 +74,7 @@ class ConfigureRules extends Component {
     let id = this.props.id;
     let path = this.props.match.params.id;
     let rules = this.props.rules;
-    this.dealData(id);
+    this.initCampaignRules(id);
     this.setState({
       id: id,
       rules: rules,
@@ -83,10 +82,10 @@ class ConfigureRules extends Component {
       inited: true,
     });
   }
-  dealData = (id) => {
+  initCampaignRules = (id) => {
     let rules = this.props.rules;
-    this.getMerchants(id);
     if (rules.merchantRules.name) {
+      this.getMerchants(id);
       this.setState({
         merchantStatus: true,
         selectedRowKeys: rules.merchantRules.option.split(","),
@@ -128,9 +127,9 @@ class ConfigureRules extends Component {
       [name]: value,
     });
   };
-  onCheckboxChange = (name, checkedValues) => {
+  onCheckboxChange = (name, checkedValue) => {
     this.setState({
-      [name]: checkedValues.length !== 0 ? true : false,
+      [name]: checkedValue.length !== 0 ? true : false,
     });
   };
   onClickSelectMerchants = () => {
@@ -138,33 +137,22 @@ class ConfigureRules extends Component {
       showMerchantSelect: true,
     });
   };
-  delItem = async (partyId) => {
-    this.setState({
-      inited: false,
-    });
-    const result = await reqDelParty(this.state.id, partyId);
-  };
   handleClose = (removedItem, name, selectedRowKeys) => {
-    if (selectedRowKeys) {
+    if (name === "merchants") {
       const keys = this.state.selectedRowKeys.filter(
         (item) => item !== removedItem.partyId
       );
       this.setState({
         selectedRowKeys: keys,
       });
-    } else {
+    } else  {
       const items = this.state[name].filter((item) => item !== removedItem);
       this.setState({
         [name]: items,
       });
-    }
-
-    if (name === "merchants") {
-      this.delItem(removedItem.partyId);
-    }
+    } 
   };
   onFinish = async (values) => {
-    let params = [];
     const { orderStatus, merchantStatus, tagStatus, regionStatus } = this.state;
 
     if (orderStatus && !values.minimum) {
@@ -174,65 +162,64 @@ class ConfigureRules extends Component {
       return false;
     }
     if (
-      !merchantStatus ||
+      (!merchantStatus && !tagStatus && !regionStatus) ||
       (merchantStatus && this.state.merchants.length === 0)
     ) {
       notification.info({
-        message: "请选择指定商户！",
+        message: "请设置商户规则！",
       });
       return false;
     }
+    let exps = [];
+    let rules = [];
     // 这是订单规则部分
-    if (orderStatus) {
-      params.push({
-        namespace: "REDEMPTION",
-        expression: "#MinimumValue",
-        rules: [
-          {
-            name: "MinimumValue",
-            option: values.minimum,
-          },
-        ],
+    if (orderStatus && values.minimum) {
+      exps.push("#MinimumValue");
+      rules.push({
+        name: "MinimumValue",
+        option: values.minimum,
       });
-    }
+    };
     // 这是商户规则部分
     const { selectedRowKeys, selectedRegion, selectedTags } = this.state;
-    let expression1 = "#SelectedMerchants ";
-    let expression2 = tagStatus ? "and #SelectedMerchants " : "";
-    let expression3 = regionStatus ? "and #SelectedRegions" : "";
     //逗号分隔的商户的ID列表
-    let rules1 = {
-      name: "SelectedMerchants",
-      option: selectedRowKeys.toString(),
+    if (merchantStatus && selectedRowKeys.length > 0) {
+      exps.push("#SelectedMerchants");
+      rules.push({
+        name: "SelectedMerchants",
+        option: selectedRowKeys.toString(),  
+      });
     };
-
-    let rules = [rules1];
     //逗号分隔的标签
-    if (selectedTags.length !== 0) {
+    if (tagStatus && selectedTags.length > 0) {
+      exps.push("#SelectedTags");
       rules.push({
         name: "SelectedTags",
         option: selectedTags.toString(),
       });
     }
     //选择的区域JSON数据
-    if (selectedRegion.length !== 0) {
+    if (regionStatus && selectedRegion.length > 0) {
+      exps.push("SelectedRegions");
       rules.push({
         name: "SelectedRegions",
         option: comEvents.formatRegions(selectedRegion),
       });
     }
-    if (merchantStatus || tagStatus || regionStatus) {
+    let expression = exps.toString().replace(/,/g," and ");
+    let params = [];
+    if (expression.length > 0) {
       params.push({
         namespace: "REDEMPTION",
-        expression: expression1 + expression2 + expression3,
+        expression: expression,
         rules: rules,
       });
     }
     let result;
     if (this.state.isNew) {
-      result = await reqAddCampaignRule(this.state.id, params);
+      result = await reqAddCampaignRules(this.state.id, params);
     } else {
-      result = await reqPutCampaignRule(this.state.id, params);
+      result = await reqUpdateCampaignRules(this.state.id, params);
     }
 
     if (result.data.retcode !== 1) {
@@ -327,7 +314,7 @@ class ConfigureRules extends Component {
                 >
                   <Row>
                     <Col>
-                      <Checkbox
+                      <Checkbox 
                         value="MinimumValue"
                         style={{
                           lineHeight: "32px",
@@ -341,7 +328,7 @@ class ConfigureRules extends Component {
               </Form.Item>
               {orderStatus ? (
                 <Form.Item label="最低消费金额(元)：" name="minimum">
-                  <InputNumber />
+                  <InputNumber defaultValue={orderRule.option} />
                 </Form.Item>
               ) : null}
             </Panel>
@@ -349,13 +336,13 @@ class ConfigureRules extends Component {
               <Form.Item name={["merchantRules", "name"]} label="&nbsp;">
                 <Row>
                   <Col>
-                    <Checkbox.Group
+                    <Checkbox.Group defaultValue={merchantStatus?"SelectedMerchants":""}
                       onChange={this.onCheckboxChange.bind(
                         this,
                         "merchantStatus"
                       )}
                     >
-                      <Checkbox
+                      <Checkbox defaultChecked={merchantStatus}
                         value="SelectedMerchants"
                         style={{
                           lineHeight: "32px",
@@ -367,14 +354,14 @@ class ConfigureRules extends Component {
                     </Checkbox.Group>
                   </Col>
                 </Row>
-                {merchantStatus ? (
+                {this.state.merchantStatus ? (
                   <Row>
                     <Col>
                       {this.state.merchants.map((t, index) => (
                         <Tag
                           onClose={() =>
                             this.handleClose(
-                              t,
+                              t.partyId,
                               "merchants",
                               "selectedRowKeys"
                             )
@@ -390,7 +377,7 @@ class ConfigureRules extends Component {
                   </Row>
                 ) : null}
               </Form.Item>
-              {merchantStatus ? (
+              {this.state.merchantStatus ? (
                 <div>
                   <Form.Item label="&nbsp;">
                     <b
@@ -406,7 +393,7 @@ class ConfigureRules extends Component {
               <Form.Item name={["tagRules", "name"]} label="&nbsp;">
                 <Row>
                   <Col>
-                    <Checkbox.Group
+                    <Checkbox.Group defaultValue={tagStatus?"SelectedTags":""}
                       onChange={this.onCheckboxChange.bind(this, "tagStatus")}
                     >
                       <Checkbox
@@ -421,7 +408,7 @@ class ConfigureRules extends Component {
                     </Checkbox.Group>
                   </Col>
                 </Row>
-                {this.state.selectedTags.length > 0 ? (
+                {this.state.tagStatus ? (
                   <Row>
                     <Col>
                       {this.state.selectedTags.map((t, index) => (
@@ -438,7 +425,7 @@ class ConfigureRules extends Component {
                   </Row>
                 ) : null}
               </Form.Item>
-              {tagStatus ? (
+              {this.state.tagStatus ? (
                 <div>
                   <Form.Item label="&nbsp;">
                     <b
@@ -451,7 +438,7 @@ class ConfigureRules extends Component {
                 </div>
               ) : null}
               <Form.Item name={["regionRules", "name"]} label="&nbsp;">
-                <Checkbox.Group
+                <Checkbox.Group defaultValue={regionStatus?"SelectedRegions":""}
                   onChange={this.onCheckboxChange.bind(this, "regionStatus")}
                 >
                   <Row>
@@ -467,7 +454,7 @@ class ConfigureRules extends Component {
                     </Col>
                   </Row>
                 </Checkbox.Group>
-                {this.state.selectedRegion.length > 0 ? (
+                {this.state.regionStatus ? (
                   <Row>
                     <Col>
                       {this.state.selectedRegion.map((t, index) => (
@@ -485,7 +472,7 @@ class ConfigureRules extends Component {
                 ) : null}
               </Form.Item>
 
-              {regionStatus ? (
+              {this.state.regionStatus ? (
                 <div>
                   <Form.Item label="&nbsp;">
                     <b
@@ -537,8 +524,13 @@ class ConfigureRules extends Component {
   };
 
   handleSelection = (selectedMerchants, selectedRowKeys) => {
-    let merchants = this.state.merchants.concat(selectedMerchants);
-    let keys = this.state.selectedRowKeys.concat(selectedRowKeys);
+    let keys = comEvents.mergeArrays(this.state.selectedRowKeys,selectedRowKeys);
+    let merchants = comEvents.mergeArrays(this.state.merchants,selectedMerchants);
+    // remove duplicate merchant
+    for (let i=0; i<merchants.length; i++)
+      for (let j=i+1; j<merchants.length; j++)
+        if (merchants[i].partyId == merchants[j].partyId)
+          merchants.splice(j,1);
     this.setState({
       merchants: merchants,
       selectedRowKeys: keys,
@@ -558,7 +550,7 @@ class ConfigureRules extends Component {
     );
   };
   handleRegion = (selectedRegion) => {
-    let regions = this.state.selectedRegion.concat(selectedRegion);
+    let regions = comEvents.mergeArrays(this.state.selectedRegion,[selectedRegion]);
     this.setState({
       selectedRegion: regions,
       showMerchantRegion: false,
