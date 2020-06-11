@@ -88,6 +88,11 @@ const mergeArrays = (arr1, arr2) => {
   return arr1.concat(arr2.filter((item) => arr1.indexOf(item) < 0));
 };
 
+const formatExpression = (ruleExpressions) => {
+  let expr = ruleExpressions.toString();
+  return expr.replace(/,/, " and ");
+};
+
 const siftRegion = (p, c) => {
   //province, city, district
   let newArr = [];
@@ -176,7 +181,10 @@ const formatCity = (data, type) => {
     if (!obj[elem]) {
       obj[elem] = [];
     }
-    if (elemValue) obj[elem].push(elemValue);
+    if (elemValue) 
+      obj[elem].push(elemValue);
+    else
+      obj[elem] = [];
   });
   for (let key in obj) {
     if (obj[key].length > 0) {
@@ -195,22 +203,23 @@ const formatCity = (data, type) => {
   return result;
 };
 const formatProvince = (data, type) => {
-  let obj = {};
+  let provs = {};
   let result = [];
   data.forEach((element, index) => {
     let elem = element.split(",")[0];
     let elemValue = element.indexOf(",") !== -1?element.substring(element.indexOf(",") + 1):null;
-    if (!obj[elem]) {
-      obj[elem] = [];
+    if (!provs[elem]) {
+      provs[elem] = [];
     }
-    if (elemValue) obj[elem].push(elemValue);
+    if (elemValue) provs[elem].push(elemValue);
+    else provs[elem] = [];
   });
-  for (let key in obj) {
-     if (obj[key].length > 0) {
+  for (let key in provs) {
+     if (provs[key].length > 0) {
        result.push({
          type: type,
          name: key,
-         children: formatCity(obj[key], "C"),
+         children: formatCity(provs[key], "C"),
        });
      } else {
        result.push({
