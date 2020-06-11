@@ -78,11 +78,6 @@ export const reqBatchDistribution = (params) =>
 //创建活动
 export const reqAddCampaign = (params) =>
   ajax.post(BASE + "/myriad/campaigns", params);
-//POST / myriad / campaigns / { id } / rules;
-export const reqAddCampaignRule = (id, params) =>
-  ajax.post(BASE + "/myriad/campaigns/" + id + "/rules", params);
-export const reqPutCampaignRule = (id, params) =>
-  ajax.put(BASE + "/myriad/campaigns/" + id + "/rules", params);
 //提交活动配置 有图片
 // export const reqPostConfigImg = (id, params) =>
 //          ajax({
@@ -107,11 +102,21 @@ export const reqGetCampaignMerchants = (id) =>
 //新增参与商户
 export const reqPostParties = (id, params) =>
   ajax.post(BASE + "/myriad/campaigns/" + id + "/parties", params);
+export const reqPutCampaignParties = (id, params) =>
+  ajax.put(BASE + "/myriad/campaigns/" + id + "/parties", params);
+
 //删除参与商户
 export const reqDelMerchant = (uid) => ajax.delete(BASE + "/merchants/" + uid);
 //删除参与机构
 export const reqDelParty = (id, partyId) =>
   ajax.delete(BASE + "/myriad/campaigns/" + id + "/parties/" + partyId);
+
+//POST / myriad / campaigns / { id } / rules;
+export const reqAddCampaignRules = (id, params) =>
+  ajax.post(BASE + "/myriad/campaigns/" + id + "/rules", params);
+export const reqUpdateCampaignRules = (id, params) =>
+  ajax.put(BASE + "/myriad/campaigns/" + id + "/rules", params);
+
 //营销活动 END
 
 //TOPNAV START
