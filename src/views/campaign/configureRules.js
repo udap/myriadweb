@@ -328,7 +328,7 @@ class ConfigureRules extends Component {
               </Form.Item>
               {orderStatus ? (
                 <Form.Item label="最低消费金额(元)：" name="minimum">
-                  <InputNumber defaultValue={orderRule.option} />
+                  <InputNumber defaultValue={orderRule && orderRule.option ? orderRule.option : ""} />
                 </Form.Item>
               ) : null}
             </Panel>
