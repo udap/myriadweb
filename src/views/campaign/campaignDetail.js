@@ -69,10 +69,9 @@ class CampaignDetail extends Component {
             {campaign.autoUpdate ? "是" : "否"}
         </Descriptions.Item>
         <Descriptions.Item label="活动主页">
-          {campaign.url ? campaign.url : ""}
+          <div className="word-wrap">{campaign.url ? campaign.url : ""}</div>
         </Descriptions.Item>
         <Descriptions.Item label="活动描述">
-          {/* <TextArea placeholder={curInfo.description} rows={4} disabled /> */}
           {campaign.description}
         </Descriptions.Item>
       </Descriptions>
