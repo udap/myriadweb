@@ -140,7 +140,7 @@ class ConfigureRules extends Component {
   handleClose = (removedItem, name, selectedRowKeys) => {
     if (name === "merchants") {
       const keys = this.state.selectedRowKeys.filter(
-        (item) => item !== removedItem.partyId
+        (item) => item !== removedItem
       );
       this.setState({
         selectedRowKeys: keys,
