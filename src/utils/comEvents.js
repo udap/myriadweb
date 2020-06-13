@@ -1,5 +1,7 @@
 import { privateRoutes } from "../routers";
 import { ChinaRegions } from "./china-regions";
+import { traverse } from "@babel/types";
+import { rootCertificates } from "tls";
 //获取当前页面的title
 const getTitle = (pathname) => {
   let title;
@@ -236,15 +238,28 @@ const formatRegions = (selectedRegion) => {
   return strifyArr;
 };
 
-const formatRegionList=(regionList)=>{
-  return regionList.map((item) => {
-    if (!item.children) {
-        return item.name;
-    } else {
-      return item.name+','+formatRegionList(item.children);
+const flatRegions = (regions) => {
+  let out = [];
+  for (let i=0; i<regions.length; i++) {
+    let regionPath = [];
+    traverseTree(regions[i], [], regionPath);
+    out = out.concat(regionPath);
+  }
+  return out;  
+};
+
+const traverseTree = (root, path, result) => {
+  path.push(root.name);
+  if (!root.children || root.children.length === 0) {
+    let leaf = path.toString();
+    result.push(leaf);
+  } else {
+    for (let i=0; i<root.children.length; i++) {
+      traverseTree(root.children[i], path.concat(), result);
     }
-  });
+  }
 }
+
 export default {
   getTitle,
   formatDate,
@@ -258,5 +273,5 @@ export default {
   mergeArrays,
   siftRegion,
   formatRegions,
-  formatRegionList
+  flatRegions,
 };

@@ -100,7 +100,7 @@ class ConfigureRules extends Component {
     if (rules.regionRules.name) {
       let region = JSON.parse(rules.regionRules.option);
       this.setState({
-        selectedRegion: comEvents.formatRegionList(region),
+        selectedRegion: comEvents.flatRegions(region),
         regionStatus: true,
       });
     }

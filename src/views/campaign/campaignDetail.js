@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from "react";
-import { Tag, Descriptions, Input, Drawer, Table, Collapse } from "antd";
+import { Tag, Descriptions, Drawer, Table, Collapse } from "antd";
 import NumberFormat from 'react-number-format';
 import comEvents from "../../utils/comEvents";
 import "./index.less";
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
 
@@ -23,7 +24,7 @@ class CampaignDetail extends Component {
   initColumns() {
     this.columns = [
       {
-        title: "商户名称",
+        title: "指定商户",
         dataIndex: "partyName",
         key: "partyName",
       },
@@ -104,7 +105,8 @@ class CampaignDetail extends Component {
         代金券
         </Descriptions.Item>
         <Descriptions.Item label="金额">
-          <NumberFormat value={voucherConfig.discount.valueOff/100} displayType={'text'} thousandSeparator={true} prefix={'¥'}/>
+          <NumberFormat value={voucherConfig.discount.valueOff/100} displayType={'text'} 
+            thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} prefix={'¥'}/>
         </Descriptions.Item> 
         </Fragment>
       )
@@ -136,9 +138,66 @@ class CampaignDetail extends Component {
     }
   };
 
+  _renderRedemptionRule = (rule) => {
+    if (rule.name === "MinimumValue")
+      return (
+      <Descriptions.Item label="满减规则">
+        <NumberFormat value={rule.option/100} displayType={"text"} 
+            thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} prefix={'最低消费金额 ¥'}/>
+      </Descriptions.Item>
+      );
+    else if (rule.name === "SelectedTags")
+      return (
+        <Descriptions.Item label="商户标签">
+          {rule.option.split(",")
+                .map((item, index) => <Tag color="cyan">{item}</Tag>)}
+        </Descriptions.Item>
+      );
+    else if (rule.name === "SelectedRegions") {
+      return (
+        <Descriptions.Item label="所在区域">
+          {comEvents.flatRegions(JSON.parse(rule.option)).map((t,idx)=>
+          <Tag color="blue">{t}</Tag>
+          )}
+        </Descriptions.Item>
+      );
+    }
+  }
+  _renderRedemptionRules=(rules, merchants)=>{
+    return (
+      <>
+      <Descriptions size="small" bordered column={1}>
+        {
+          rules.map(r=>{
+            if (r.name === "MinimumValue") return this._renderRedemptionRule(r);
+          })
+        }
+        {
+          rules.map(r=>{
+            if (r.name === "SelectedTags" || r.name === "SelectedRegions")
+              return this._renderRedemptionRule(r);
+          })  
+        }
+      </Descriptions>
+      <Table
+        bordered
+        size="small"
+        className="step-marginTop tableFont"
+        columns={this.columns}
+        dataSource={merchants}
+        pagination={{
+          pageSize: 20,
+          total: merchants.length,
+          hideOnSinglePage: true,
+        }}
+      />
+      </>
+    );
+  };
+
   renderContent = () => {
     const { curInfo, visible, listSize } = this.state;
-    const { voucherConfig } = this.state.curInfo;
+    const { voucherConfig, rules } = this.state.curInfo;
     var parties = curInfo.parties ? curInfo.parties : [];
     var merchants = [];
     parties.forEach(p => {
@@ -163,18 +222,11 @@ class CampaignDetail extends Component {
           发行方式 一码一券 发行数量 1 是否自动增发 */}
             {this._renderConfigPanel(voucherConfig)}
           </Panel>
-          <Panel header="参与商户" key="3">
-            <Table
-              bordered
-              size="small"
-              className="tableFont"
-              columns={this.columns}
-              dataSource={merchants}
-              pagination={{
-                pageSize: listSize,
-                total: merchants.length,
-              }}
-            />
+        
+          <Panel header="使用规则" key="3">
+            {
+              rules ? rules.map(v=>(v.namespace==="REDEMPTION"?this._renderRedemptionRules(v.rules,merchants):null)):null
+            }
           </Panel>
         </Collapse>
       </Drawer>
