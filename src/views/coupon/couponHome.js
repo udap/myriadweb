@@ -152,16 +152,18 @@ class CouponHome extends Component {
         },
       },
       {
-        title: "折扣",
+        title: "优惠金额",
         dataIndex: "valueOff",
         width: 80,
         render: (value, row, index) => {
-          if (row.type === "AMOUNT")
-            return <NumberFormat value={value/100} displayType={'text'} thousandSeparator={true} prefix={'¥'}/>
-          else if (row.type === "PERCENT")
-            return <NumberFormat value={value} displayType={'text'} suffix={'%'}/>
-          else
-            return <div>{value}</div>
+             if (row.type === "AMOUNT")
+                return <div style={{textAlign: "right"}}><NumberFormat value={value/100} displayType={'text'} 
+                  thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} prefix={'¥'}/></div>
+              else if (row.type === "PERCENT")
+                return (<div style={{textAlign: "right"}}>
+                  <NumberFormat value={value} displayType={'text'} prefix={'优惠 '} suffix={'%'}/></div>)
+              else
+                return <div style={{textAlign: "right"}}>{value}</div>
         },
       },
       {
