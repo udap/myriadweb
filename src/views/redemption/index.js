@@ -40,7 +40,7 @@ class Redemption extends Component {
   };
   componentDidMount() {
     this.initColumns();
-    this.getRedemptions(0,this.state.searchTxt,this.state.beginDate,this.state.endDate);
+    this.getRedemptions(1,this.state.searchTxt,this.state.beginDate,this.state.endDate);
   }
   initColumns() {
     //显示券号，活动，发券机构，核销机构，核销时间，核销状态以及结算状态
@@ -190,13 +190,13 @@ class Redemption extends Component {
   /*
 获取列表数据
 */
-  getRedemptions = async (currentPage, searchTxt, role, beginDate, endDate) => {
+  getRedemptions = async (currentPage, searchTxt, beginDate, endDate) => {
     //owner Li:显示要有两个选择：营销机构，核销机构   前者传入issuerid，后者传入merchant id
-    let roleStr = role ? role : this.state.role;
+    let roleStr = this.state.role;
     let parmas =
       roleStr === "marketer"
         ? {
-            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+            page: currentPage-1,
             size: this.state.size,
             issuerId: storageUtils.getUser().orgId,
             beginDate: beginDate? beginDate: this.state.beginDate,
@@ -204,14 +204,13 @@ class Redemption extends Component {
             searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           }
         : {
-            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+            page: currentPage - 1,
             size: this.state.size,
             merchantId: storageUtils.getUser().orgId,
             beginDate: beginDate?beginDate:this.state.beginDate,
             endDate: endDate? endDate: this.state.endDate,
             searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           };
-
     const result = await reqGetRedemptions(parmas);
     const cont =
       result && result.data && result.data.content
@@ -268,14 +267,15 @@ class Redemption extends Component {
       beginDate: values['dateRange'][0].format("YYYY-MM-DD"),
       endDate: values['dateRange'][1].format("YYYY-MM-DD"),
     });
-    this.getRedemptions(1, values.searchTxt, this.state.role, this.state.beginDate,this.state.endDate);
+    this.getRedemptions(1, values.searchTxt, this.state.beginDate,this.state.endDate);
   };
 
-  handleTableChange = (page) => {
+  handlePageChange = (page) => {
     this.setState({
       currentPage: page,
+    }, ()=>{
+      this.getRedemptions(page);
     });
-    this.getRedemptions(page);
   };
 
   /*radio 切换*/
@@ -285,8 +285,9 @@ class Redemption extends Component {
       page: 0,
       role: e.target.value,
       currentPage: 1,
+    },()=>{
+      this.getRedemptions(1, null, this.state.beginDate, this.state.endDate);  
     });
-    this.getRedemptions(1, null, e.target.value, this.state.beginDate, this.state.endDate);
   };
 
   handleDownload = async (event) => {
@@ -362,7 +363,7 @@ class Redemption extends Component {
           <Pagination
             pageSize={size}
             current={currentPage}
-            onChange={this.handleTableChange}
+            onChange={this.handlePageChange}
             total={this.totalPages}
             showSizeChanger={false}
             size="small"
