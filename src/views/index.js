@@ -96,6 +96,10 @@ const Subsidiaries = Loadable({
   loader: () => import("./myOrgs/subsidiaries"),
   loading: Loading,
 });
+const Customer = Loadable({
+  loader: () => import("./customer"),
+  loading: Loading,
+});
 
 //同时更新routers路由
 export {
@@ -120,4 +124,5 @@ export {
   Profile,
   TagManager,
   Subsidiaries,
+  Customer,
 };

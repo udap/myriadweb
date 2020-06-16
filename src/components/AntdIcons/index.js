@@ -17,6 +17,7 @@ import {
   TransactionOutlined,
   createFromIconfontCN,
   TagOutlined,
+  SolutionOutlined,
 } from "@ant-design/icons";
 
 const IconFont = createFromIconfontCN({
@@ -61,6 +62,8 @@ class AntdIcon extends Component {
         return <TransactionOutlined />;
       case "TagOutlined":
         return <TagOutlined />;
+      case 'SolutionOutlined':
+      return <SolutionOutlined />;
       default:
         return <DashboardOutlined />;
     }

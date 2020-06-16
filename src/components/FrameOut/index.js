@@ -41,6 +41,7 @@ class FrameOut extends Component {
     "/admin/merchant",
     "/admin/settlement",
     "/admin/tag",
+    "/admin/customer",
   ];
   state = {
     collapsed: false,
@@ -174,49 +175,51 @@ class FrameOut extends Component {
 
     return (
       <ReactDocumentTitle title={curTtile}>
-          <Layout style={{
+        <Layout
+          style={{
             minHeight: "100%",
-          }}>
-            <Sider
-              breakpoint="lg"
-              collapsedWidth="0"
-              collapsible={true}
-              trigger={true}
+          }}
+        >
+          <Sider
+            breakpoint="lg"
+            collapsedWidth="0"
+            collapsible={true}
+            trigger={true}
+          >
+            <Link
+              to="/admin/dashboard"
+              className="logo"
+              onClick={this.updateSelected.bind(this, "/admin/dashboard")}
             >
-              <Link
-                to="/admin/dashboard"
-                className="logo"
-                onClick={this.updateSelected.bind(this, "/admin/dashboard")}
-              >
-                <img alt="江渝礼享" src={logo} />
-              </Link>
-              <Menu
-                onClick={this.menusHandler}
-                mode="inline"
-                theme="dark"
-                selectedKeys={[path]}
-                openKeys={openKey || selectedOpenKeys}
-                onOpenChange={this.onOpenChange}
-                defaultOpenKeys={[openKey]}
-              >
-                {this.getNavMap(navsLeft)}
-              </Menu>
-            </Sider>
-            <Layout
-              className="site-layout"
+              <img alt="江渝礼享" src={logo} />
+            </Link>
+            <Menu
+              onClick={this.menusHandler}
+              mode="inline"
+              theme="dark"
+              selectedKeys={[path]}
+              openKeys={openKey || selectedOpenKeys}
+              onOpenChange={this.onOpenChange}
+              defaultOpenKeys={[openKey]}
+            >
+              {this.getNavMap(navsLeft)}
+            </Menu>
+          </Sider>
+          <Layout
+            className="site-layout"
+            style={{
+              padding: 0,
+            }}
+          >
+            <Header
+              className="site-layout-background"
               style={{
                 padding: 0,
               }}
             >
-              <Header
-                className="site-layout-background"
-                style={{
-                  padding: 0,
-                }}
-              >
-                <Row>
-                  <Col xs={{ span: 12 }} lg={{ span: 12 }}>
-                    {/* {React.createElement(
+              <Row>
+                <Col xs={{ span: 12 }} lg={{ span: 12 }}>
+                  {/* {React.createElement(
                       this.state.collapsed
                         ? MenuUnfoldOutlined
                         : MenuFoldOutlined,
@@ -225,25 +228,24 @@ class FrameOut extends Component {
                         onClick: this.toggle,
                       }
                     )} */}
-
-                  </Col>
-                  <Col xs={{ span: 12 }} lg={{ span: 8, offset: 4 }}>
-                    <TopNav />
-                  </Col>
-                </Row>
-              </Header>
-              <Content
-                className="site-layout-background"
-                style={{
-                  margin: "24px 16px",
-                  padding: 24,
-                  minHeight: 280,
-                }}
-              >
-                {this.props.children}
-              </Content>
-            </Layout>
+                </Col>
+                <Col xs={{ span: 12 }} lg={{ span: 8, offset: 4 }}>
+                  <TopNav />
+                </Col>
+              </Row>
+            </Header>
+            <Content
+              className="site-layout-background"
+              style={{
+                margin: "24px 16px",
+                padding: 24,
+                minHeight: 280,
+              }}
+            >
+              {this.props.children}
+            </Content>
           </Layout>
+        </Layout>
       </ReactDocumentTitle>
     );
   }

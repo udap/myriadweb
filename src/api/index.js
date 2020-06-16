@@ -350,3 +350,12 @@ export const reqGetSubsidiaries = (uid, params) =>
   ajax.get(BASE + "/organizations/" + uid + "/subsidiaries", {
     params: params,
   });
+
+
+//客户管理
+export const reqGetCustomers = (params) =>
+  ajax.get(BASE + "/customers", { params: params });
+export const reqPostCustomer = (params) =>
+         ajax.post(BASE + "/customers", params);
+export const reqGetCustomer = (id) => ajax(BASE + "/customers/" + id);
+export const reqDelCustomer = (id) => ajax.delete(BASE + "/customers/" + id);

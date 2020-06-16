@@ -20,6 +20,7 @@ import {
   Groups,
   Profile,
   TagManager,
+  Customer
 } from "../views";
 
 //公共路由
@@ -180,6 +181,15 @@ const privateRoutes = [
         icon: "",
         isTop: false,
         isNav: false,
+      },
+      {
+        pathname: "/admin/customer",
+        component: Customer,
+        title: "我的客户",
+        icon: "SolutionOutlined",
+        isTop: false, //顶级菜单
+        //exact: true,
+        isNav: true,
       },
     ],
   },
