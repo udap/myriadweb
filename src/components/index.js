@@ -8,6 +8,7 @@ import ModalTable from "./ModalTable";
 import TransferComponent from "./Transfer";
 import EditableTagGroup from "./Tags";
 import TreeSelectComponent from "./TableTransfer";
+import SearchForm from "./SearchForm";
 
 export {
   FrameOut,
@@ -19,5 +20,6 @@ export {
   ModalTable,
   TransferComponent,
   EditableTagGroup,
-  TreeSelectComponent
+  TreeSelectComponent,
+  SearchForm
 };
