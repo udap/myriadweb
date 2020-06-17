@@ -357,5 +357,12 @@ export const reqGetCustomers = (params) =>
   ajax.get(BASE + "/customers", { params: params });
 export const reqPostCustomer = (params) =>
          ajax.post(BASE + "/customers", params);
-export const reqGetCustomer = (id) => ajax(BASE + "/customers/" + id);
-export const reqDelCustomer = (id) => ajax.delete(BASE + "/customers/" + id);
+export const reqGetCustomer = (uid) => ajax(BASE + "/customers/" + uid);
+export const reqDelCustomer = (uid) => ajax.delete(BASE + "/customers/" + uid);
+export const reqPutCustomer = (uid, params) =>
+         ajax.put(BASE + "/customers/" + uid, params);
+//机构客户等级
+///organizations/{uid}/customerRankings
+export const reqGetCustomerRankings = (uid) =>
+         ajax(BASE + "/organizations/" + uid + "/customerRankings");
+
