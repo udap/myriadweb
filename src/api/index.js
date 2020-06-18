@@ -351,18 +351,25 @@ export const reqGetSubsidiaries = (uid, params) =>
     params: params,
   });
 
-
 //客户管理
 export const reqGetCustomers = (params) =>
   ajax.get(BASE + "/customers", { params: params });
 export const reqPostCustomer = (params) =>
-         ajax.post(BASE + "/customers", params);
+  ajax.post(BASE + "/customers", params);
 export const reqGetCustomer = (uid) => ajax(BASE + "/customers/" + uid);
 export const reqDelCustomer = (uid) => ajax.delete(BASE + "/customers/" + uid);
 export const reqPutCustomer = (uid, params) =>
-         ajax.put(BASE + "/customers/" + uid, params);
+  ajax.put(BASE + "/customers/" + uid, params);
 //机构客户等级
 ///organizations/{uid}/customerRankings
 export const reqGetCustomerRankings = (uid) =>
-         ajax(BASE + "/organizations/" + uid + "/customerRankings");
+  ajax(BASE + "/organizations/" + uid + "/customerRankings");
 
+//设置账户信息
+export const reqGetVerificationCode = () =>
+  ajax(BASE + "/phone/verificationCode?action=SET_PASSWORD");
+export const reqPutPassword = (params) =>
+  ajax.put(BASE + "/accounts/me/password", params);
+  //密码登录
+  export const reqLoginByPassword = (params) =>
+  ajax.get(BASE + "/login",{ params: params });

@@ -11,20 +11,29 @@ import {
   notification,
   Cascader,
   Modal,
+  Space,
 } from "antd";
 import {
   UserOutlined,
   LockOutlined,
   PoweroffOutlined,
+  KeyOutlined
 } from "@ant-design/icons";
 import "./index.less";
-import { reqLogin, reqVerify, reqGetAccounts, reqAddOrg } from "../../api";
+import {
+  reqLogin,
+  reqVerify,
+  reqGetAccounts,
+  reqAddOrg,
+  reqLoginByPassword,
+} from "../../api";
 import { ChinaRegions } from "../../utils/china-regions";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
 import { Redirect } from "react-router-dom";
 import linkBtn from "../../components/linkBtn";
 import "../../css/common.less";
+import md5 from 'blueimp-md5';
 const { Text } = Typography;
 const layout = {
   labelCol: {
@@ -80,11 +89,10 @@ class Login extends Component {
       parentOrgUid: "",
       upCode: "",
       orgVerifyCode: "",
+      showPassword: true,
     };
   }
-  componentDidMount() {
-    
-  }
+  componentDidMount() {}
   /*获取用户信息*/
   getList = async () => {
     const result = await reqGetAccounts();
@@ -137,9 +145,19 @@ class Login extends Component {
   };
   //async await 以同步编码方式实现promise的异步流程
   onFinish = async (values) => {
-    const result = await reqLogin(values);
+
+    let result;
+    if (this.state.showPassword) {
+      let params = {
+        username: values.cellphone,
+        password: md5(values.password),
+      };
+      result = await reqLoginByPassword(params);
+    } else {
+      result = await reqLogin(values);
+    }
     //登录成功
-    if (result.data.retcode === 0) {
+    if (result.data.retcode === 0) {      
       //登录成功 保存用户信息到相应位置
       const user = result.data.content;
       const token =
@@ -206,7 +224,13 @@ class Login extends Component {
       });
     }
   };
+  showLoginByCellphone = () => {
+    this.setState({
+      showPassword: !this.state.showPassword,
+    });
+  };
   renderLoginForm = () => {
+    let { showPassword } = this.state;
     return (
       <Form
         name="normal_login"
@@ -236,51 +260,77 @@ class Login extends Component {
             placeholder="请输入手机号"
             name="cellphone"
             value={this.state.cellphone}
+            allowClear
           />
         </Form.Item>
-        <Form.Item>
-          <Row gutter={8}>
-            <Col span={14}>
-              <Form.Item
-                name="verificationCode"
-                noStyle
-                type="number"
-                rules={[
-                  {
-                    required: true,
-                    message: "请输入验证码!",
-                  },
-                  {
-                    len: 6,
-                    message: "验证码只能是6位数字!",
-                  },
-                ]}
-              >
-                <Input
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  placeholder="请输入验证码"
+        {showPassword ? (
+          <Form.Item
+            type="password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "请输入密码!",
+              },
+            ]}
+          >
+            <Input.Password
+              prefix={<KeyOutlined className="site-form-item-icon" />}
+              placeholder="请输入密码"
+              name="password"
+              value={this.state.password}
+            />
+          </Form.Item>
+        ) : (
+          <Form.Item>
+            <Row gutter={8}>
+              <Col span={14}>
+                <Form.Item
                   name="verificationCode"
-                  value={this.state.verificationCode}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={10}>
-              <Button
-                className="getCodeBtn"
-                type="primary"
-                block
-                icon={<PoweroffOutlined />}
-                loading={this.state.iconLoading}
-                onClick={this.enterIconLoading.bind(this, this.state.cellphone)}
-                disabled={this.state.unableClick}
-              >
-                <span className="btnText">
-                  {this.state.unableClick ? this.state.number + "秒" : "验证码"}
-                </span>
-              </Button>
-            </Col>
-          </Row>
-        </Form.Item>
+                  noStyle
+                  type="number"
+                  rules={[
+                    {
+                      required: true,
+                      message: "请输入验证码!",
+                    },
+                    {
+                      len: 6,
+                      message: "验证码只能是6位数字!",
+                    },
+                  ]}
+                >
+                  <Input
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    placeholder="请输入验证码"
+                    name="verificationCode"
+                    value={this.state.verificationCode}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={10}>
+                <Button
+                  className="getCodeBtn"
+                  type="primary"
+                  block
+                  icon={<PoweroffOutlined />}
+                  loading={this.state.iconLoading}
+                  onClick={this.enterIconLoading.bind(
+                    this,
+                    this.state.cellphone
+                  )}
+                  disabled={this.state.unableClick}
+                >
+                  <span className="btnText">
+                    {this.state.unableClick
+                      ? this.state.number + "秒"
+                      : "验证码"}
+                  </span>
+                </Button>
+              </Col>
+            </Row>
+          </Form.Item>
+        )}
 
         {/* {this.state.showRegOrg ? this.regOrgForm() : null} */}
         <Form.Item>
@@ -289,17 +339,20 @@ class Login extends Component {
             type="primary"
             htmlType="submit"
             className="login-form-button"
-            // loading={this.state.loading}
-            onClick={this.enterLoading}
+            //loading={this.state.loading}
+            //onClick={this.enterLoading}
           >
             登录
           </Button>
         </Form.Item>
-        <div className="margin-top text-right">
-          <a className="cursor" onClick={this.showRegOrg}>
+        <Space className="margin-top right">
+          <a key='login' className="cursor" onClick={this.showLoginByCellphone}>
+            {showPassword ? "手机登录" : "密码登录"}
+          </a>
+          <a key="reg" className="cursor" onClick={this.showRegOrg}>
             注册机构
           </a>
-        </div>
+        </Space>
       </Form>
     );
   };
@@ -562,7 +615,7 @@ class Login extends Component {
             type="primary"
             htmlType="submit"
             className="login-form-button"
-            // loading={this.state.loading}
+            loading={this.state.loading}
           >
             注册
           </Button>

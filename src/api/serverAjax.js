@@ -49,9 +49,10 @@ axios.interceptors.response.use(
          message: "服务器被吃了⊙﹏⊙∥",
        });
     } else if (error.response.status === 401) {
+
       //message.error("登录信息失效⊙﹏⊙∥");
        notification.warning({
-         message: "登录信息失效⊙﹏⊙∥",
+         message: error.response.data.msg||"登录信息失效⊙﹏⊙∥",
        });
       //清空缓存localStorage
       storageUtils.removeUser();
