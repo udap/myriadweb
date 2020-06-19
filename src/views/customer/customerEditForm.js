@@ -75,7 +75,6 @@ class CustomerEditForm extends Component {
     const result = reqVerify(value).then((res) => {
       this.setState({
         iconLoading: true,
-        smsCode: result,
         unableClick: true,
       });
 

@@ -67,7 +67,6 @@ class PasswordDrawer extends Component {
     if (result.data.retcode === 0) {
       this.setState({
         iconLoading: true,
-        verificationCode: result,
         unableClick: true,
       });
       this.countdown();
@@ -181,7 +180,7 @@ class PasswordDrawer extends Component {
             name="password"
             rules={[{ required: true }, { max: 32 }]}
           >
-            <Input />
+            <Input.Password />
           </Form.Item>
 
           <Form.Item>

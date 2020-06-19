@@ -206,7 +206,6 @@ class Login extends Component {
     const result = reqVerify(value).then((res) => {
       this.setState({
         iconLoading: true,
-        veryCode: result,
         unableClick: true,
       });
 
