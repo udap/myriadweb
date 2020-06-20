@@ -45,7 +45,7 @@ class ConfigureRules extends Component {
     district: "渝中区",
     showTagForm: false,
     // selected merchants
-    selectedRowKeys: [],
+    selectedMerchantKeys: [],
     merchants: [],
     //tag
     selectedTags: [],
@@ -88,7 +88,7 @@ class ConfigureRules extends Component {
       this.getMerchants(id);
       this.setState({
         merchantStatus: true,
-        selectedRowKeys: rules.merchantRules.option.split(","),
+        selectedMerchantKeys: rules.merchantRules.option.split(","),
       });
     }
     if (rules.orderRules.name) {
@@ -137,13 +137,13 @@ class ConfigureRules extends Component {
       showMerchantSelect: true,
     });
   };
-  handleClose = (removedItem, name, selectedRowKeys) => {
+  handleClose = (removedItem, name) => {
     if (name === "merchants") {
-      const keys = this.state.selectedRowKeys.filter(
+      const keys = this.state.selectedMerchantKeys.filter(
         (item) => item !== removedItem
       );
       this.setState({
-        selectedRowKeys: keys,
+        selectedMerchantKeys: keys,
       });
     } else  {
       const items = this.state[name].filter((item) => item !== removedItem);
@@ -181,13 +181,13 @@ class ConfigureRules extends Component {
       });
     };
     // 这是商户规则部分
-    const { selectedRowKeys, selectedRegion, selectedTags } = this.state;
+    const { selectedMerchantKeys, selectedRegion, selectedTags } = this.state;
     //逗号分隔的商户的ID列表
-    if (merchantStatus && selectedRowKeys.length > 0) {
+    if (merchantStatus && selectedMerchantKeys.length > 0) {
       exps.push("#SelectedMerchants");
       rules.push({
         name: "SelectedMerchants",
-        option: selectedRowKeys.toString(),  
+        option: selectedMerchantKeys.toString(),  
       });
     };
     //逗号分隔的标签
@@ -362,8 +362,7 @@ class ConfigureRules extends Component {
                           onClose={() =>
                             this.handleClose(
                               t.partyId,
-                              "merchants",
-                              "selectedRowKeys"
+                              "merchants"
                             )
                           }
                           color="blue"
@@ -523,17 +522,20 @@ class ConfigureRules extends Component {
     });
   };
 
-  handleSelection = (selectedMerchants, selectedRowKeys) => {
-    let keys = comEvents.mergeArrays(this.state.selectedRowKeys,selectedRowKeys);
+  handleMerchantSelection = (selectedMerchants) => {
     let merchants = comEvents.mergeArrays(this.state.merchants,selectedMerchants);
     // remove duplicate merchant
     for (let i=0; i<merchants.length; i++)
       for (let j=i+1; j<merchants.length; j++)
         if (merchants[i].partyId == merchants[j].partyId)
           merchants.splice(j,1);
+    // selected merchant keys
+    let selectedMerchantKeys = [];
+    merchants.forEach((m)=>selectedMerchantKeys.push(m.key));
+    let keys = comEvents.mergeArrays(this.state.selectedMerchantKeys,selectedMerchantKeys);
     this.setState({
       merchants: merchants,
-      selectedRowKeys: keys,
+      selectedMerchantKeys: keys,
       showMerchantSelect: false,
     });
   };
@@ -545,7 +547,7 @@ class ConfigureRules extends Component {
         id={id}
         visible={showMerchantSelect}
         handleCancel={this.handleCancel}
-        handleSelection={this.handleSelection}
+        handleSelection={this.handleMerchantSelection}
       />
     );
   };

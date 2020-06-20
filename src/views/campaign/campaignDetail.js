@@ -189,6 +189,7 @@ class CampaignDetail extends Component {
           pageSize: 20,
           total: merchants.length,
           hideOnSinglePage: true,
+          showSizeChanger: false,
         }}
       />
       </>
