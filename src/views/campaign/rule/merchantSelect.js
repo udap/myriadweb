@@ -8,6 +8,7 @@ import storageUtils from "../../../utils/storageUtils";
 import { Loading } from "../../../components";
 import "../../../css/common.less";
 import "../index.less";
+import comEvents from "../../../utils/comEvents";
 
 const MerchantColumns = [
   {
@@ -33,10 +34,10 @@ class MerchantSelect extends Component {
     selectedRowKeys: [], // Check here to configure the default column
     loading: false,
     value: 1,
-    list: [],
     isNew: true,
     id: null,
-    parties: [],
+    merchants: [], // current page merchants
+    selectedMerchants: [],
     visible: false,
     inited: false,
   };
@@ -47,7 +48,7 @@ class MerchantSelect extends Component {
     })
     this.getMerchants(1); //this.state.currentPage
   }
-
+  // obtain authorized merchants of current org
   getMerchants = async (currentPage, searchTxt) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
@@ -81,13 +82,6 @@ class MerchantSelect extends Component {
       inited: true,
     });
   };
-
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({
-      selectedRowKeys,
-    });
-  };
-
   onPageChange = (page) => {
     this.setState({
       currentPage: page,
@@ -97,29 +91,15 @@ class MerchantSelect extends Component {
 
   onSubmitSelection = () => {
     this.setState({ loading: true });
-    let selectedRowKeys = this.state.selectedRowKeys || [];
-    let merchants = this.state.merchants || [];
-    let selections = [];
-    for (var i = 0; i < selectedRowKeys.length; i++) {
-      for (var j = 0; j < merchants.length; j++) {
-        if (merchants[j].key === selectedRowKeys[i])
-          selections.push(merchants[j]);
-      }
-    }
-
+    let selectedMerchants = this.state.selectedMerchants;
     this.setState({
       merchants: [],
       selectedRowKeys: [],
+      selectedMerchants: [],
       loading: false,
     });
     
-    if (selectedRowKeys.length !== 0) {
-      for (var i = 0; i < selectedRowKeys.length; i++) {
-        this.state.list.push({ partyId: selectedRowKeys[i], type: "MERCHANT" });
-      }
-//      this.addItem(this.state.list);
-    }
-    this.props.handleSelection(selections, selectedRowKeys);
+    this.props.handleSelection(selectedMerchants);
   };
   addItem = async (newList) => {
     let params = {
@@ -128,7 +108,36 @@ class MerchantSelect extends Component {
     const result = await reqPostParties(this.state.id, params);
     
   };
-
+  handleOrgChange = (e) => {
+    this.setState({
+      searchTxt: e.target.value,
+    });
+    // this.getMerchants(1);
+  };
+  onSearch = (value) => {
+    this.setState({
+      currentPage: 1,
+      selectedRowKeys: [],
+    });
+    this.getMerchants(1, this.state.searchTxt);
+  };
+  onSelectChange = (selectedRowKeys) => {
+    let merchants = this.state.merchants || [];
+    let selectedMerchants = [];
+    for (var i = 0; i < selectedRowKeys.length; i++) {
+      for (var j = 0; j < merchants.length; j++) {
+        if (merchants[j].key === selectedRowKeys[i])
+          selectedMerchants.push(merchants[j]);
+      }
+    }
+    // merge previous selections
+    selectedMerchants = comEvents.mergeArrays(this.state.selectedMerchants,selectedMerchants);
+    selectedRowKeys = comEvents.mergeArrays(this.state.selectedRowKeys,selectedRowKeys);
+    this.setState({
+      selectedMerchants: selectedMerchants,
+      selectedRowKeys : selectedRowKeys,
+    });
+  };
   render() {
     const {
       loading,
@@ -141,7 +150,7 @@ class MerchantSelect extends Component {
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
-      hideDefaultSelections: true,
+ //     hideDefaultSelections: true,
       //selections: [Table.SELECTION_ALL],
     };
     const hasSelected = selectedRowKeys.length > 0;
@@ -189,6 +198,7 @@ class MerchantSelect extends Component {
                 total: this.totalPages,
                 onChange: this.onPageChange,
                 showTotal: (total) => `总共 ${total} 条数据`,
+                showSizeChanger: false,
               }}
               rowSelection={rowSelection}
             />

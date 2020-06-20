@@ -61,6 +61,11 @@ class Distribution extends Component {
         responsive: ['lg'],
       },
       {
+        title: "发放人",
+        dataIndex: "fromOwnerName",
+        key: "fromOwnerName",
+      },
+      {
         title: "客户",
         dataIndex: "customerName",
         key: "customerName",
@@ -122,6 +127,7 @@ class Distribution extends Component {
           id: cont[i].id,
           code: cont[i].voucher.code,
           campaignName: cont[i].campaign.name,
+          fromOwnerName: cont[i].fromOwnerName,
           customerName: cont[i].customerName,
           updatedAt: cont[i].updatedAt,
           channel: cont[i].channel,
