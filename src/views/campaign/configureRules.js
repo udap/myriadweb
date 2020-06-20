@@ -200,7 +200,7 @@ class ConfigureRules extends Component {
     }
     //选择的区域JSON数据
     if (regionStatus && selectedRegion.length > 0) {
-      exps.push("SelectedRegions");
+      exps.push("#SelectedRegions");
       rules.push({
         name: "SelectedRegions",
         option: comEvents.formatRegions(selectedRegion),
