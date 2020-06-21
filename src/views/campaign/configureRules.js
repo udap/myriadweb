@@ -142,8 +142,10 @@ class ConfigureRules extends Component {
       const keys = this.state.selectedMerchantKeys.filter(
         (item) => item !== removedItem
       );
+      const merchants = this.state.merchants.filter(m=>m.partyId!==removedItem);
       this.setState({
         selectedMerchantKeys: keys,
+        merchants: merchants,
       });
     } else  {
       const items = this.state[name].filter((item) => item !== removedItem);
@@ -182,6 +184,7 @@ class ConfigureRules extends Component {
     };
     // 这是商户规则部分
     const { selectedMerchantKeys, selectedRegion, selectedTags } = this.state;
+    console.log("selectedMerchants",selectedMerchantKeys);
     //逗号分隔的商户的ID列表
     if (merchantStatus && selectedMerchantKeys.length > 0) {
       exps.push("#SelectedMerchants");
@@ -537,6 +540,7 @@ class ConfigureRules extends Component {
       merchants: merchants,
       selectedMerchantKeys: keys,
       showMerchantSelect: false,
+      merchantStatus: merchants.length > 0,
     });
   };
 

@@ -54,7 +54,7 @@ class MerchantSelect extends Component {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
-      excludeCampaignId: this.state.id,
+//      excludeCampaignId: this.state.id,
       searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
     };
     const result = await reqGetMerchants(parmas);
@@ -76,6 +76,7 @@ class MerchantSelect extends Component {
       result && result.data && result.data.content ? cont.totalElements : 1;
     this.setState({
       merchants: data,
+      currentPage: currentPage,
       total:
         result && result.data && result.data.content ? cont.totalElements : 1,
       loading: false,
@@ -83,9 +84,9 @@ class MerchantSelect extends Component {
     });
   };
   onPageChange = (page) => {
-    this.setState({
-      currentPage: page,
-    });
+    // this.setState({
+    //   currentPage: page,
+    // });
     this.getMerchants(page);
   };
 
@@ -98,15 +99,7 @@ class MerchantSelect extends Component {
       selectedMerchants: [],
       loading: false,
     });
-    
     this.props.handleSelection(selectedMerchants);
-  };
-  addItem = async (newList) => {
-    let params = {
-      parts: newList,
-    };
-    const result = await reqPostParties(this.state.id, params);
-    
   };
   handleOrgChange = (e) => {
     this.setState({
@@ -121,23 +114,32 @@ class MerchantSelect extends Component {
     });
     this.getMerchants(1, this.state.searchTxt);
   };
-  onSelectChange = (selectedRowKeys) => {
-    let merchants = this.state.merchants || [];
-    let selectedMerchants = [];
-    for (var i = 0; i < selectedRowKeys.length; i++) {
-      for (var j = 0; j < merchants.length; j++) {
-        if (merchants[j].key === selectedRowKeys[i])
-          selectedMerchants.push(merchants[j]);
-      }
-    }
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+    // let merchants = this.state.merchants || [];
+    // let selectedMerchants = [];
+    // for (var i = 0; i < selectedRowKeys.length; i++) {
+    //   for (var j = 0; j < merchants.length; j++) {
+    //     if (merchants[j].key === selectedRowKeys[i])
+    //       selectedMerchants.push(merchants[j]);
+    //   }
+    // }
     // merge previous selections
-    selectedMerchants = comEvents.mergeArrays(this.state.selectedMerchants,selectedMerchants);
-    selectedRowKeys = comEvents.mergeArrays(this.state.selectedRowKeys,selectedRowKeys);
+    let selectedMerchants = comEvents.mergeArrays(this.state.selectedMerchants,selectedRows);
+    let rowKeys = comEvents.mergeArrays(this.state.selectedRowKeys,selectedRowKeys);
     this.setState({
+      selectedRowKeys: rowKeys,
       selectedMerchants: selectedMerchants,
-      selectedRowKeys : selectedRowKeys,
     });
   };
+  onSelect = (record, selected, selectedRows) => {
+    if (!selected) {
+      let {selectedRowKeys} = this.state;
+      selectedRowKeys.splice(selectedRowKeys.findIndex(item => item === record.key), 1);
+      this.setState({
+        selectedRowKeys: selectedRowKeys,
+      });
+    }
+  }
   render() {
     const {
       loading,
@@ -148,9 +150,10 @@ class MerchantSelect extends Component {
       searchTxt,
     } = this.state;
     const rowSelection = {
-      selectedRowKeys,
+      selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange,
- //     hideDefaultSelections: true,
+      onSelect: this.onSelect,
+//      hideDefaultSelections: true,
       //selections: [Table.SELECTION_ALL],
     };
     const hasSelected = selectedRowKeys.length > 0;
@@ -190,6 +193,7 @@ class MerchantSelect extends Component {
             <Table
               size="small"
               className="tableFont"
+              rowSelection={rowSelection}
               columns={MerchantColumns}
               dataSource={merchants}
               pagination={{
@@ -200,7 +204,6 @@ class MerchantSelect extends Component {
                 showTotal: (total) => `总共 ${total} 条数据`,
                 showSizeChanger: false,
               }}
-              rowSelection={rowSelection}
             />
             <div>
               <Button
