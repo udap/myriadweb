@@ -69,6 +69,8 @@ class ConfigureRules extends Component {
     id: "",
     isNew: true,
     minimum: null,
+    btnLoading:false,
+    loading:false
   };
   componentDidMount() {
     let id = this.props.id;
@@ -157,6 +159,7 @@ class ConfigureRules extends Component {
     }
   };
   onFinish = async (values) => {
+    
     const { orderStatus, merchantStatus, tagStatus, regionStatus } = this.state;
 
     if (orderStatus && !values.minimum) {
@@ -174,6 +177,10 @@ class ConfigureRules extends Component {
       });
       return false;
     }
+    //显示loading
+    this.setState({
+      btnLoading:true
+    })
     let exps = [];
     let rules = [];
     // 这是订单规则部分
@@ -230,6 +237,9 @@ class ConfigureRules extends Component {
       notification.success({
         message: "操作成功！",
       });
+      this.setState({
+        btnLoading:false
+      })
       this.backHome();
     }
   };
@@ -506,6 +516,7 @@ class ConfigureRules extends Component {
               className="step-marginTop"
               // disabled={this.state.disabledNext}
               //onClick={this.backHome}
+              loading={this.state.btnLoading}
             >
               提交
             </Button>

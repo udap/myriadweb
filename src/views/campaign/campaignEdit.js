@@ -164,7 +164,7 @@ class CampaignEdit extends Component {
         option: null,
       },
     },
-    configRules:[]
+    configRules: [],
   };
 
   componentDidMount() {
@@ -190,25 +190,24 @@ class CampaignEdit extends Component {
     let configRules = cont.rules;
     if (configRules.length > 0) {
       configRules.map((item) => {
-          let rules=item.rules;
-          rules.map(elem=>{
-            if (elem.name==='MinimumValue'){
-              this.state.rules.orderRules=elem;
-            } else if(elem.name==='SelectedMerchants'){
-              this.state.rules.merchantRules=elem;
-            }else if(elem.name==='SelectedTags'){
-              this.state.rules.tagRules=elem;
-            }else if(elem.name==='SelectedRegions'){
-              this.state.rules.regionRules=elem;
-            }
-          })
-        }
-      )
-    };
+        let rules = item.rules;
+        rules.map((elem) => {
+          if (elem.name === "MinimumValue") {
+            this.state.rules.orderRules = elem;
+          } else if (elem.name === "SelectedMerchants") {
+            this.state.rules.merchantRules = elem;
+          } else if (elem.name === "SelectedTags") {
+            this.state.rules.tagRules = elem;
+          } else if (elem.name === "SelectedRegions") {
+            this.state.rules.regionRules = elem;
+          }
+        });
+      });
+    }
     this.setState({
       inited: true,
       curInfo: cont,
-      rules:this.state.rules,
+      rules: this.state.rules,
       basicInfo: {
         name: cont.name,
         description: cont.description,
@@ -418,6 +417,7 @@ class CampaignEdit extends Component {
             type="primary"
             htmlType="submit"
             disabled={this.state.disabledNext}
+            loading={this.state.loading}
           >
             下一步
           </Button>
@@ -441,6 +441,7 @@ class CampaignEdit extends Component {
     }
     this.setState({
       disabledNext: true,
+      loading: true,
     });
     let params = {
       reqOrg: storageUtils.getUser().orgUid,
@@ -463,9 +464,6 @@ class CampaignEdit extends Component {
       let id = this.props.match.params.id;
       result = await reqPutCampaign(id, params);
     }
-    this.setState({
-      disabledNext: false,
-    });
     //新增活动的id
     this.setState({
       id: isNew ? result.data.id : this.props.match.params.id,
@@ -480,10 +478,16 @@ class CampaignEdit extends Component {
         url: values.url,
       },
     });
+
+    this.setState({
+      disabledNext: false,
+      loading: false,
+    });
     if (result.data.retcode !== 1 || result.data.id) {
       //retcode===1 有错误
       //result.data.id 新增活动成功
       //跳转到第三步
+
       this.nextStep(this.state.id);
     }
   };
@@ -748,6 +752,7 @@ class CampaignEdit extends Component {
               type="primary"
               htmlType="submit"
               disabled={this.state.disabledNext}
+              loading={this.state.loading}
             >
               下一步
             </Button>
@@ -796,6 +801,7 @@ class CampaignEdit extends Component {
   onFinish3 = async (values) => {
     this.setState({
       disabledNext: true,
+      loading: true,
     });
     //折扣数量乘以100  前端输入20.00或者0.5，传回到后台前需要转换成2000或者50的整数
     let { settings } = this.state;
@@ -865,6 +871,7 @@ class CampaignEdit extends Component {
     }
     this.setState({
       disabledNext: false,
+      loading: false,
     });
     if (result.data.retcode !== 1) {
       this.nextStep(this.state.id);
@@ -873,10 +880,14 @@ class CampaignEdit extends Component {
   };
   //第四步
   renderStep4 = () => {
-    const { rules,configRules } = this.state;
+    const { rules, configRules } = this.state;
     return (
       //      <div className="stepCont">
-      <ConfigureRules id={this.state.id} rules={rules}  configRules={configRules}/>
+      <ConfigureRules
+        id={this.state.id}
+        rules={rules}
+        configRules={configRules}
+      />
       //      </div>
     );
   };
