@@ -93,13 +93,15 @@ class MerchantSelect extends Component {
   onSubmitSelection = () => {
     this.setState({ loading: true });
     let selectedMerchants = this.state.selectedMerchants;
+    
+    this.props.handleSelection(selectedMerchants);
+    return false
     this.setState({
       merchants: [],
       selectedRowKeys: [],
       selectedMerchants: [],
       loading: false,
     });
-    this.props.handleSelection(selectedMerchants);
   };
   handleOrgChange = (e) => {
     this.setState({

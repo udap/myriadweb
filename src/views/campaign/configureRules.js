@@ -142,17 +142,19 @@ class ConfigureRules extends Component {
       const keys = this.state.selectedMerchantKeys.filter(
         (item) => item !== removedItem
       );
-      const merchants = this.state.merchants.filter(m=>m.partyId!==removedItem);
+      const merchants = this.state.merchants.filter(
+        (m) => m.partyId !== removedItem
+      );
       this.setState({
         selectedMerchantKeys: keys,
         merchants: merchants,
       });
-    } else  {
+    } else {
       const items = this.state[name].filter((item) => item !== removedItem);
       this.setState({
         [name]: items,
       });
-    } 
+    }
   };
   onFinish = async (values) => {
     const { orderStatus, merchantStatus, tagStatus, regionStatus } = this.state;
@@ -181,18 +183,17 @@ class ConfigureRules extends Component {
         name: "MinimumValue",
         option: values.minimum,
       });
-    };
+    }
     // 这是商户规则部分
     const { selectedMerchantKeys, selectedRegion, selectedTags } = this.state;
-    console.log("selectedMerchants",selectedMerchantKeys);
     //逗号分隔的商户的ID列表
     if (merchantStatus && selectedMerchantKeys.length > 0) {
       exps.push("#SelectedMerchants");
       rules.push({
         name: "SelectedMerchants",
-        option: selectedMerchantKeys.toString(),  
+        option: selectedMerchantKeys.toString(),
       });
-    };
+    }
     //逗号分隔的标签
     if (tagStatus && selectedTags.length > 0) {
       exps.push("#SelectedTags");
@@ -209,7 +210,7 @@ class ConfigureRules extends Component {
         option: comEvents.formatRegions(selectedRegion),
       });
     }
-    let expression = exps.toString().replace(/,/g," and ");
+    let expression = exps.toString().replace(/,/g, " and ");
     let params = [];
     if (expression.length > 0) {
       params.push({
@@ -317,7 +318,7 @@ class ConfigureRules extends Component {
                 >
                   <Row>
                     <Col>
-                      <Checkbox 
+                      <Checkbox
                         value="MinimumValue"
                         style={{
                           lineHeight: "32px",
@@ -331,7 +332,11 @@ class ConfigureRules extends Component {
               </Form.Item>
               {orderStatus ? (
                 <Form.Item label="最低消费金额(元)：" name="minimum">
-                  <InputNumber defaultValue={orderRule && orderRule.option ? orderRule.option : ""} />
+                  <InputNumber
+                    defaultValue={
+                      orderRule && orderRule.option ? orderRule.option : ""
+                    }
+                  />
                 </Form.Item>
               ) : null}
             </Panel>
@@ -339,13 +344,15 @@ class ConfigureRules extends Component {
               <Form.Item name={["merchantRules", "name"]} label="&nbsp;">
                 <Row>
                   <Col>
-                    <Checkbox.Group defaultValue={merchantStatus?"SelectedMerchants":""}
+                    <Checkbox.Group
+                      defaultValue={merchantStatus ? "SelectedMerchants" : ""}
                       onChange={this.onCheckboxChange.bind(
                         this,
                         "merchantStatus"
                       )}
                     >
-                      <Checkbox defaultChecked={merchantStatus}
+                      <Checkbox
+                        defaultChecked={merchantStatus}
                         value="SelectedMerchants"
                         style={{
                           lineHeight: "32px",
@@ -363,10 +370,7 @@ class ConfigureRules extends Component {
                       {this.state.merchants.map((t, index) => (
                         <Tag
                           onClose={() =>
-                            this.handleClose(
-                              t.partyId,
-                              "merchants"
-                            )
+                            this.handleClose(t.partyId, "merchants")
                           }
                           color="blue"
                           key={t.id ? t.id : t.partyId}
@@ -395,7 +399,8 @@ class ConfigureRules extends Component {
               <Form.Item name={["tagRules", "name"]} label="&nbsp;">
                 <Row>
                   <Col>
-                    <Checkbox.Group defaultValue={tagStatus?"SelectedTags":""}
+                    <Checkbox.Group
+                      defaultValue={tagStatus ? "SelectedTags" : ""}
                       onChange={this.onCheckboxChange.bind(this, "tagStatus")}
                     >
                       <Checkbox
@@ -440,7 +445,8 @@ class ConfigureRules extends Component {
                 </div>
               ) : null}
               <Form.Item name={["regionRules", "name"]} label="&nbsp;">
-                <Checkbox.Group defaultValue={regionStatus?"SelectedRegions":""}
+                <Checkbox.Group
+                  defaultValue={regionStatus ? "SelectedRegions" : ""}
                   onChange={this.onCheckboxChange.bind(this, "regionStatus")}
                 >
                   <Row>
@@ -526,16 +532,22 @@ class ConfigureRules extends Component {
   };
 
   handleMerchantSelection = (selectedMerchants) => {
-    let merchants = comEvents.mergeArrays(this.state.merchants,selectedMerchants);
+    let merchants = comEvents.mergeArrays(
+      this.state.merchants,
+      selectedMerchants
+    );
     // remove duplicate merchant
-    for (let i=0; i<merchants.length; i++)
-      for (let j=i+1; j<merchants.length; j++)
+    for (let i = 0; i < merchants.length; i++)
+      for (let j = i + 1; j < merchants.length; j++)
         if (merchants[i].partyId == merchants[j].partyId)
-          merchants.splice(j,1);
+          merchants.splice(j, 1);
     // selected merchant keys
     let selectedMerchantKeys = [];
-    merchants.forEach((m)=>selectedMerchantKeys.push(m.key));
-    let keys = comEvents.mergeArrays(this.state.selectedMerchantKeys,selectedMerchantKeys);
+    merchants.forEach((m) => selectedMerchantKeys.push(m.key));
+    let keys = comEvents.mergeArrays(
+      this.state.selectedMerchantKeys,
+      selectedMerchantKeys
+    );
     this.setState({
       merchants: merchants,
       selectedMerchantKeys: keys,
@@ -556,7 +568,9 @@ class ConfigureRules extends Component {
     );
   };
   handleRegion = (selectedRegion) => {
-    let regions = comEvents.mergeArrays(this.state.selectedRegion,[selectedRegion]);
+    let regions = comEvents.mergeArrays(this.state.selectedRegion, [
+      selectedRegion,
+    ]);
     this.setState({
       selectedRegion: regions,
       showMerchantRegion: false,

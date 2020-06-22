@@ -87,7 +87,7 @@ const compareTwoArrayEqual = (arr1, arr2) => {
 };
 
 const mergeArrays = (arr1, arr2) => {
-  return arr1.concat(arr2.filter((item) => arr1.indexOf(item) < 0));
+  return arr1.concat(arr2.filter((item) => item!==undefined&&arr1.indexOf(item) < 0));
 };
 
 const formatExpression = (ruleExpressions) => {
