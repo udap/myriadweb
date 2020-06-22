@@ -628,7 +628,8 @@ class ConfigureRules extends Component {
         selectedTags={selectedTags}
         showTagForm={showTagForm}
         onSelectCommonTags={this.onSelectCommonTags}
-      />
+        handleCancel={this.handleCancel}
+        />
     );
   };
   render() {
