@@ -98,6 +98,7 @@ class MerchantTag extends Component {
     this.setState({
       showTagForm: false,
     });
+    this.props.handleCancel();
   };
   render() {
     const {
