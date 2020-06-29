@@ -54,7 +54,6 @@ const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
           <Form.Item name="dateRange">
             <RangePicker
               format="YYYY-MM-DD"
-              defaultValue={[moment(beginDate, "YYYY-MM-DD"),moment(new Date(),"YYYY-MM-DD")]}
             />
           </Form.Item>
         </Col>
