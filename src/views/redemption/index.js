@@ -261,7 +261,6 @@ class Redemption extends Component {
   };
 
   submitQuery = (values) => {
-    console.log("onSubmit",values);
     this.setState({
       currentPage: 1,
       searchTxt: values.searchTxt,
