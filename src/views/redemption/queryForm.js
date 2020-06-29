@@ -17,7 +17,8 @@ import "../../css/common.less";
 const {RangePicker} = DatePicker;
 
 const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
-  let beginDate = dateRange ? dateRange[0] : new Date();
+  let beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date();
+  let endDate = dateRange && dateRange[1] ? dateRange[1] : new Date();
   return (
     <Form
       onFinish={onSubmit}
@@ -52,7 +53,7 @@ const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
           <Form.Item name="dateRange">
             <RangePicker
               format="YYYY-MM-DD"
-              defaultValue={[moment(beginDate, "YYYY-MM-DD"),moment(new Date(),"YYYY-MM-DD")]}
+              defaultValue={[moment(beginDate, "YYYY-MM-DD"),moment(endDate,"YYYY-MM-DD")]}
             />
           </Form.Item>
         </Col>
