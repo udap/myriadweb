@@ -28,6 +28,7 @@ const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
       initialValues={{
         role: "marketer",
         searchTxt: "",
+        dateRange: [moment(beginDate,"YYYY-MM-DD"),moment(endDate,"YYYY-MM-DD")]
       }}
     >
       <Row>
@@ -53,7 +54,6 @@ const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
           <Form.Item name="dateRange">
             <RangePicker
               format="YYYY-MM-DD"
-              defaultValue={[moment(beginDate, "YYYY-MM-DD"),moment(endDate,"YYYY-MM-DD")]}
             />
           </Form.Item>
         </Col>

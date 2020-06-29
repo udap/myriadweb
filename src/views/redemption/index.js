@@ -326,7 +326,7 @@ class Redemption extends Component {
   }
 
   renderContent = () => {
-    const { campaigns, size, total, currentPage,chooseRadio } = this.state;
+    const { campaigns, size, total, currentPage,chooseRadio, loading } = this.state;
     let columns = chooseRadio==='owner'?this.marketColumns:this.columns;
     return (
       <div>
@@ -345,7 +345,7 @@ class Redemption extends Component {
           ]}
         />
         <QueryForm 
-          loading={this.state.loading}
+          loading={loading}
           dateRange={[this.state.beginDate]}
           onLoading={this.enterLoading}
           onSwitchRole={this.onSwitchRole}
