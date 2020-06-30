@@ -27,6 +27,7 @@ import {
   CheckCircleOutlined,
   EditOutlined,
   EyeOutlined,
+  ConsoleSqlOutlined,
 } from "@ant-design/icons";
 import { employeeStatuses, roleTypes } from "../../utils/constants";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
@@ -132,25 +133,28 @@ class Employee extends Component {
     });
     this.getEmployees(page);
   };
-  setItem = async (operate, permission, data) => {
+  setItem = async (operate, permission, empItem) => {
     const result = await reqPermit(permission);
     if (result) {
-      this.getGroupsList();
       if (operate === "edit") {
-        let orgId = storageUtils.getUser().orgId;
-        if (data.org.id !== orgId) {
-          //不是当前机构的员工
-          notification.info({
-            message: "抱歉，您无权修改其它机构的员工信息！",
-          });
-          return false;
-        }
-        this.getEmployee(data.uid, "visible");
+        let orgUid = empItem.org.uid;
+        this.getGroupsList(orgUid, false);
+        // let orgId = storageUtils.getUser().orgId;
+        // if (empItem.org.id !== orgId) {
+        //   //不是当前机构的员工
+        //   notification.info({
+        //     message: "抱歉，您无权修改其它机构的员工信息！",
+        //   });
+        //   return false;
+        // }
+        this.getEmployee(empItem.uid, "visible");
         this.setState({
-          isCurrentOrg:true,
+//          isCurrentOrg:true,
           isNew: false,
         });
       } else {
+        let orgUid = storageUtils.getUser().orgUid;
+        this.getGroupsList(orgUid, false);
         // add
         this.setState({
           isCurrentOrg:true,
@@ -235,11 +239,11 @@ class Employee extends Component {
   };
 
   //获取员工所在组
-  getGroupsList = async (template) => {
+  getGroupsList = async (orgUid, template) => {
     const params = {
       page: 0,
       size: 200,
-      orgUid: storageUtils.getUser().orgUid,
+      orgUid: orgUid,
       template: template ? true : false,
     };
     let groups = await reqGetGroupsByOrg(params);
@@ -337,13 +341,14 @@ class Employee extends Component {
     });
   };
   onSelectBranch = (selectedRows) => {
+    console.log("onSelectBranch",selectedRows);
     let orgId = storageUtils.getUser().orgId;
     this.setState({
       selectedRows: selectedRows,
       isCurrentOrg: selectedRows[0].id === orgId ? true : false,
       showListOfInstitutions: false,
     });
-    this.getGroupsList(true);
+    this.getGroupsList(storageUtils.getUser().orgUid,true);
   };
   onClickSelectBranch = () => {
     this.setState({
@@ -351,14 +356,40 @@ class Employee extends Component {
     });
   };
   onResetOrg = () => {
-    this.getGroupsList(false);
+    console.log("onResetOrg");
+    let orgUid = storageUtils.getUser().orgUid;
+    this.getGroupsList(orgUid,false);
     this.setState({
       isCurrentOrg: true,
       showListOfInstitutions: false,
     });
-  }
+};
+
+  showBranchSelectButton = (isNew, selectBranch) => {
+    if (!isNew)
+      return null;
+    if (selectBranch) 
+      return (
+        <b
+        className="ant-green-link cursor"
+        onClick={this.onClickSelectBranch}
+        >
+          选择下属机构
+        </b>
+      );
+    else
+        return (
+          <b
+            className="ant-green-link cursor"
+            onClick={this.onResetOrg}
+          >
+            重置
+          </b>
+        );
+  };
+
   //员工表单
-  renderEmpolyeeForm = (data) => {
+  renderEmpolyeeForm = () => {
     const {
       name,
       cellphone,
@@ -367,6 +398,7 @@ class Employee extends Component {
       code,
       groups,
       operations,
+      org,
     } = this.state.curInfo;
     const onGenderChange = (value) => {};
     /*当前机构是admin   只可以为当前机构设置管理员 */
@@ -386,8 +418,9 @@ class Employee extends Component {
       isCurrentOrg,
       showListOfInstitutions,
     } = this.state;
+    console.log("current state",this.state);
     const orgName = storageUtils.getUser().orgName;
-    const selectedOrgName = isCurrentOrg ? orgName : selectedRows[0].fullName;
+    const selectedOrgName = isCurrentOrg ? orgName : org.name;
     return (
       <Drawer
         width={480}
@@ -417,22 +450,7 @@ class Employee extends Component {
                 ? `${"您正在为【" + selectedOrgName + "】添加员工"}`
                 : `${"您正在编辑【" + selectedOrgName + "】员工"}`}
             </text>
-            { isCurrentOrg ? (
-            <b
-              className="ant-green-link cursor"
-              onClick={this.onClickSelectBranch}
-            >
-              选择下属机构
-            </b>
-            ): (
-            <b
-              className="ant-green-link cursor"
-              onClick={this.onResetOrg}
-            >
-              重置
-            </b>
-            )
-            }
+            { this.showBranchSelectButton(this.state.isNew, isCurrentOrg) }
           </div>
           {
           showListOfInstitutions ? (
@@ -681,11 +699,6 @@ class Employee extends Component {
         width: 125,
         render: (chooseItem) => (
           <div>
-            {/* <b onClick={() => {}} className="ant-green-link cursor">
-              调用
-            </b>
-            <Divider type="vertical" />*/}
-
             <b
               onClick={() => {
                 this.showDetailDrawer(chooseItem.uid);
