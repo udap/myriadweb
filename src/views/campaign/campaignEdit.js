@@ -8,15 +8,12 @@ import {
   Switch,
   DatePicker,
   Steps,
-  Card,
   Col,
   Row,
   Radio,
   InputNumber,
-  List,
   Drawer,
   notification,
-  Checkbox,
 } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
@@ -28,8 +25,9 @@ import {
   reqPutCampaign,
 } from "../../api";
 import storageUtils from "../../utils/storageUtils";
+import { distributionMethods } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
-import { Loading, AntdIcon, LinkBtn, EditableTagGroup } from "../../components";
+import { Loading, EditableTagGroup } from "../../components";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
 import "moment/locale/zh-cn";
@@ -105,30 +103,25 @@ class CampaignEdit extends Component {
       url: "",
       effective: comEvents.getDateStr(0),
       end: comEvents.getDateStr(0),
+      distMethod: "CSR_DISTRIBUTE",
+      distLimit: 1,
       totalSupply: 1,
       autoUpdate: false,
     },
     //活动主页预览
     showUrl: false,
-    url: "",
     //新增活动的id
     id: null,
 
-    currentDisplayName: "门店兑换",
-
-    value: 0,
-    number: 1,
     fileList: [],
     //配置信息
-    name: "",
-    select: "AMOUNT",
     typeText: "元",
     //valueOff: "",
     settings: {
-      name: null,
+      name: "",
       multiple: true,
       coverImg: "",
-      select: "AMOUNT",
+      discountType: "AMOUNT",
       valueOff: 1,
       amountLimit: null,
       description: "",
@@ -136,13 +129,13 @@ class CampaignEdit extends Component {
       timeType: "date",
       effective: comEvents.getDateStr(0),
       end: null,
+      daysAfterDist: null,
+      authorizationRequired: false,
     },
-    daysAfterDist: null,
     orgList: [],
     hasConfig: false,
     parties: [],
     disabledExpiry: false,
-    autoswitch: false,
     //禁止跳转
     disabledNext: false,
     //rules
@@ -188,11 +181,13 @@ class CampaignEdit extends Component {
     let voucherConfig = cont.voucherConfig;
     //处理规则的数据格式
     let configRules = cont.rules;
-    if (configRules.length > 0) {
+    if (configRules && configRules.length > 0) {
       configRules.map((item) => {
         let rules = item.rules;
         rules.map((elem) => {
-          if (elem.name === "MinimumValue") {
+          if (elem.name === "NumberLimit") {
+            this.state.rules.distLimit = elem;
+          } else if (elem.name === "MinimumValue") {
             this.state.rules.orderRules = elem;
           } else if (elem.name === "SelectedMerchants") {
             this.state.rules.merchantRules = elem;
@@ -215,17 +210,13 @@ class CampaignEdit extends Component {
         url: cont.url,
         effective: cont.effective,
         end: comEvents.formatExpiry(new Date(cont.expiry)),
+        distMethod: cont.distMethod,
+        distLimit: cont.distLimit,
         totalSupply: cont.totalSupply,
         autoUpdate: cont.autoUpdate,
       },
-      autoswitch: cont.autoUpdate,
-      url: cont.url,
       name: cont.name,
       timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
-      select:
-        voucherConfig && voucherConfig.discount
-          ? voucherConfig.discount.type
-          : "AMOUNT",
       typeText:
         voucherConfig &&
         voucherConfig.discount &&
@@ -242,7 +233,7 @@ class CampaignEdit extends Component {
             ? voucherConfig.multiple
             : true,
         //coverImg: voucherConfig.coverImg,
-        select:
+        discountType:
           voucherConfig && voucherConfig.discount
             ? voucherConfig.discount.type
             : "AMOUNT",
@@ -273,6 +264,7 @@ class CampaignEdit extends Component {
             ? voucherConfig.daysAfterDist
             : null,
         timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
+        authorizationRequired: voucherConfig ? voucherConfig.authorizationRequired:false,
       },
       current: current ? current : 1,
       hasConfig: cont.voucherConfig ? true : false,
@@ -284,18 +276,18 @@ class CampaignEdit extends Component {
     this.props.history.push("/admin/campaign");
   };
 
-  onTypeRadioChange = (e) => {
+  onCodeTypeChange = (e) => {
     this.setState({
       value: e.target.value,
       type: e.target.value,
     });
   };
 
-  onSwitchChange = (value) => {
-    this.setState({
-      autoswitch: value,
-    });
-  };
+  // onSwitchChange = (value) => {
+  //   this.setState({
+  //     autoswitch: value,
+  //   });
+  // };
   disabledDate = (current) => {
     // Can not select days before today and today
     //return current && current < moment().endOf("day");
@@ -333,6 +325,11 @@ class CampaignEdit extends Component {
   };
   //第二步
   renderStep2 = () => {
+    const radioStyle = {
+      display: 'block',
+      height: '30px',
+      lineHeight: '30px',
+    };
     const {
       name,
       category,
@@ -340,10 +337,11 @@ class CampaignEdit extends Component {
       url,
       effective,
       end,
+      distMethod,
       totalSupply,
       autoUpdate,
+      distLimit,
     } = this.state.basicInfo;
-    let { autoswitch } = this.state;
     return (
       <Form
         {...layout}
@@ -353,6 +351,8 @@ class CampaignEdit extends Component {
           category: category,
           totalSupply: totalSupply,
           autoUpdate: autoUpdate,
+          distLimit: distLimit,
+          distMethod: distMethod,
           description: description,
           url: url,
         }}
@@ -376,7 +376,7 @@ class CampaignEdit extends Component {
         >
           <Row>
             <Col span={20}>
-              <Input value={this.state.url} onChange={this.handleInputChange} />
+              <Input value={url} />
             </Col>
             <Col>
               <Button
@@ -407,10 +407,30 @@ class CampaignEdit extends Component {
           name="totalSupply"
           rules={[{ required: true }]}
         >
-          <InputNumber defaultValue={totalSupply} min={1} />
+          <InputNumber min={0} />
         </Form.Item>
-        <Form.Item name="autoUpdate" label="是否允许增发">
-          <Switch checked={autoswitch} onChange={this.onSwitchChange} />
+        <Form.Item name="autoUpdate" label="允许增发" rules={[{ required: true }]}>
+          <Switch defaultChecked={autoUpdate}/>
+        </Form.Item>
+        <Form.Item name="distMethod" label="发放形式" rules={[{ required: true }]}>
+          <Radio.Group>
+          <Radio style={radioStyle} value="CSR_DISTRIBUTE">
+            {distributionMethods.map((item, index) => (
+            <span key={index}>{item['CSR_DISTRIBUTE']}</span>)
+            )}
+          </Radio>
+          <Radio style={radioStyle} value="CUSTOMER_COLLECT">
+            {distributionMethods.map((item, index) => (<span key={index}>{item['CUSTOMER_COLLECT']}</span>))}
+          </Radio>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          label="领取限制"
+          name="distLimit"
+          help="每人最高领取数量"
+          rules={[{ required: true }]}
+        >
+          <InputNumber min={1} />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button
@@ -443,6 +463,26 @@ class CampaignEdit extends Component {
       disabledNext: true,
       loading: true,
     });
+
+    let exps = [];
+    let rules = [];
+    if (values.distLimit) {
+      exps.push("#NumberLimit");
+      rules.push({
+        name: "NumberLimit",
+        option: values.distLimit,
+      });
+    }
+    let expression = exps.toString().replace(/,/g, " and ");
+    let validations = [];
+    if (expression.length > 0) {
+      validations.push({
+        namespace: "DISTRIBUTION",
+        expression: expression,
+        rules: rules,
+      });
+    }
+
     let params = {
       reqOrg: storageUtils.getUser().orgUid,
       reqUser: storageUtils.getUser().uid,
@@ -452,6 +492,8 @@ class CampaignEdit extends Component {
       category: tags.toString(),
       effective: basicInfo.effective,
       expiry: comEvents.getDateStr(1, new Date(basicInfo.end)),
+      distMethod: values.distMethod,
+      distLimit: values.distLimit,
       totalSupply: values.totalSupply,
       autoUpdate: values.autoUpdate,
       url: values.url,
@@ -473,6 +515,8 @@ class CampaignEdit extends Component {
         category: tags,
         effective: basicInfo.effective,
         end: basicInfo.end,
+        distMethod: values.distMethod,
+        distLimit: values.distLimit,
         totalSupply: values.totalSupply,
         autoUpdate: values.autoUpdate,
         url: values.url,
@@ -522,7 +566,8 @@ class CampaignEdit extends Component {
   };
   //显示活动预览
   urlDrawerCont = () => {
-    const { showUrl, url } = this.state;
+    const {showUrl} = this.state;
+    const {url} = this.state.basicInfo;
     return (
       <div>
         <Drawer
@@ -561,10 +606,11 @@ class CampaignEdit extends Component {
       description,
       //code,
       timeType,
-      select,
+      discountType,
       daysAfterDist,
       name,
       effective,
+      authorizationRequired,
     } = this.state.settings;
     return (
       <div>
@@ -575,7 +621,7 @@ class CampaignEdit extends Component {
           initialValues={{
             name: name ? name : this.state.basicInfo.name.substr(0, 10),
             multiple: multiple,
-            select: select,
+            discountType: discountType,
             coverImg: coverImg,
             description: description,
             //code: code,
@@ -585,6 +631,7 @@ class CampaignEdit extends Component {
               valueOff: valueOff,
               amountLimit: amountLimit,
             },
+            authorizationRequired: authorizationRequired,
           }}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
@@ -610,7 +657,7 @@ class CampaignEdit extends Component {
           </Form.Item>
 
           <Form.Item
-            name="select"
+            name="discountType"
             label="类型"
             rules={[
               {
@@ -620,7 +667,7 @@ class CampaignEdit extends Component {
           >
             <Radio.Group
               onChange={this.onRadioTypeChange}
-              value={this.state.select}
+              value={discountType}
             >
               <Radio value={"AMOUNT"} checked>
                 代金券
@@ -629,7 +676,7 @@ class CampaignEdit extends Component {
             </Radio.Group>
           </Form.Item>
 
-          {this.state.select === "PERCENT" ? (
+          {discountType === "PERCENT" ? (
             <div>
               <Form.Item
                 label="折扣比例(%)"
@@ -723,12 +770,12 @@ class CampaignEdit extends Component {
           </Form.Item> */}
           <Form.Item
             name="multiple"
-            label="发行方式"
+            label="券码生成"
             rules={[{ required: true }]}
           >
             <Radio.Group
-              onChange={this.onTypeRadioChange}
-              value={this.state.multiple}
+//              onChange={this.onCodeTypeChange}
+//              value={this.state.multiple}
             >
               <Radio value={true}>一码一券</Radio>
               {/*<Radio value={false}>通用码券</Radio>*/}
@@ -742,6 +789,9 @@ class CampaignEdit extends Component {
             </div>
           ) : (
             <div> */}
+          <Form.Item name="authorizationRequired" label="领取后需要额外授权">
+            <Switch defaultChecked={authorizationRequired} />
+          </Form.Item>
           <Form.Item
             wrapperCol={{
               span: 12,
@@ -775,7 +825,7 @@ class CampaignEdit extends Component {
     }
     this.setState({
       valueOff: null,
-      select: value,
+      discountType: value,
       typeText: typeText,
     });
   };
@@ -810,15 +860,15 @@ class CampaignEdit extends Component {
         ? {
             name: values.name,
             multiple: values.multiple,
-            // description: values.description,
+            authorizationRequired: values.authorizationRequired,
             discount:
-              values.select === "AMOUNT"
+              values.discountType === "AMOUNT"
                 ? {
-                    type: values.select,
+                    type: values.discountType,
                     valueOff: values.discount.valueOff * 100,
                   }
                 : {
-                    type: values.select,
+                    type: values.discountType,
                     valueOff: values.discount.valueOff,
                     amountLimit: values.discount.amountLimit
                       ? values.discount.amountLimit * 100
@@ -834,16 +884,16 @@ class CampaignEdit extends Component {
         : {
             name: values.name,
             multiple: values.multiple,
+            authorizationRequired: values.authorizationRequired,
             //coverImg: this.state.coverImg,
-            // description: values.description,
             discount:
-              values.select === "AMOUNT"
+              values.discountType === "AMOUNT"
                 ? {
-                    type: values.select,
+                    type: values.discountType,
                     valueOff: values.discount.valueOff * 100,
                   }
                 : {
-                    type: values.select,
+                    type: values.discountType,
                     valueOff: values.discount.valueOff,
                     amountLimit: values.discount.amountLimit
                       ? values.discount.amountLimit * 100
@@ -863,6 +913,7 @@ class CampaignEdit extends Component {
     // let result = await reqPostConfigImg(this.state.id, formData);
     // this.nextStep();
     //     }else{
+    console.log("config", params);  
     let result;
     if (this.state.hasConfig) {
       result = await reqPutConfig(this.state.id, params);

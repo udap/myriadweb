@@ -86,6 +86,7 @@ class ConfigureRules extends Component {
   }
   initCampaignRules = (id) => {
     let rules = this.props.rules;
+    // init redemption rules
     if (rules.merchantRules.name) {
       this.getMerchants(id);
       this.setState({
@@ -180,7 +181,9 @@ class ConfigureRules extends Component {
     //显示loading
     this.setState({
       btnLoading:true
-    })
+    });
+
+    // redemption rules
     let exps = [];
     let rules = [];
     // 这是订单规则部分
@@ -217,6 +220,7 @@ class ConfigureRules extends Component {
         option: comEvents.formatRegions(selectedRegion),
       });
     }
+    // combine redemption rules
     let expression = exps.toString().replace(/,/g, " and ");
     let params = [];
     if (expression.length > 0) {
@@ -318,7 +322,7 @@ class ConfigureRules extends Component {
           <Collapse defaultActiveKey={["1", "2"]}>
             <Panel
               size="small"
-              header="订单相关规则"
+              header="兑换规则：订单相关规则"
               key="1"
               // extra={<a href="#">添加满减规则</a>}
             >
@@ -350,7 +354,9 @@ class ConfigureRules extends Component {
                 </Form.Item>
               ) : null}
             </Panel>
-            <Panel size="small" header="商户相关规则" key="2">
+            <Panel size="small" 
+              header="兑换规则：商户相关规则" 
+              key="2">
               <Form.Item name={["merchantRules", "name"]} label="&nbsp;">
                 <Row>
                   <Col>

@@ -1,5 +1,9 @@
 const user = {};
 const token = "";
+const distributionMethods = [
+  { CSR_DISTRIBUTE: "手动发放（由营销人员决定发放对象）"},
+  { CUSTOMER_COLLECT: "手动领取（由客户主动领取）"},
+];
 const campaignStatuses = [
   //INITIATED 草稿, ACTIVATING 券正在生成, ACTIVATED 券已生成, REJECTED 审批拒绝, ARCHIVED 已删除, TERMINATED 已终止;
   { INITIATED: "草稿" },
@@ -207,6 +211,7 @@ export {
   token, //保存当前登录的token信息
   campaignTypes,
   voucherTypes,
+  distributionMethods,
   campaignStatuses, //营销活动
   couponStatuses, //票券管理
   settlementStatuses, //结算中心

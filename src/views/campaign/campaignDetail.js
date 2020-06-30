@@ -2,8 +2,8 @@ import React, { Component, Fragment } from "react";
 import { Tag, Descriptions, Drawer, Table, Collapse } from "antd";
 import NumberFormat from 'react-number-format';
 import comEvents from "../../utils/comEvents";
+import { distributionMethods } from "../../utils/constants";
 import "./index.less";
-import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
 
@@ -68,6 +68,12 @@ class CampaignDetail extends Component {
         </Descriptions.Item>
         <Descriptions.Item label="允许增发?">
             {campaign.autoUpdate ? "是" : "否"}
+        </Descriptions.Item>
+        <Descriptions.Item label="发放形式">
+          {distributionMethods.map((item, index) => (<span key={index}>{item[campaign.distMethod]}</span>))}
+        </Descriptions.Item>
+        <Descriptions.Item label="领取限制">
+          <NumberFormat value={campaign.distLimit} displayType={'text'} suffix={' 张券/账户'}/>    
         </Descriptions.Item>
         <Descriptions.Item label="活动主页">
           <div className="word-wrap">{campaign.url ? campaign.url : ""}</div>
