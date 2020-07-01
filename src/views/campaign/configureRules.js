@@ -556,7 +556,7 @@ class ConfigureRules extends Component {
     // remove duplicate merchant
     for (let i = 0; i < merchants.length; i++)
       for (let j = i + 1; j < merchants.length; j++)
-        if (merchants[i].partyId == merchants[j].partyId)
+        if (merchants[i].partyId === merchants[j].partyId)
           merchants.splice(j, 1);
     // selected merchant keys
     let selectedMerchantKeys = [];
