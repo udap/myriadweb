@@ -357,7 +357,6 @@ class Employee extends Component {
     });
   };
   onResetOrg = () => {
-    console.log("onResetOrg");
     let orgUid = storageUtils.getUser().orgUid;
     this.getGroupsList(orgUid,false);
     this.setState({
@@ -421,7 +420,6 @@ class Employee extends Component {
     } = this.state;
     const selectedOrgName = isCurrentOrg ? storageUtils.getUser().orgName : (org ? org.name : selectedRows[0].name);
     const selectedOrgUid = isCurrentOrg ? storageUtils.getUser().orgUid : (org ? org.uid : selectedRows[0].uid);
-    console.log("selected org", selectedOrgName, selectedOrgUid);
     return (
       <Drawer
         width={480}
