@@ -2,14 +2,7 @@ import React, { Component } from "react";
 import {
   Button,
   Form,
-  Col,
-  Row,
-  InputNumber,
   Drawer,
-  notification,
-  Checkbox,
-  Tag,
-  Collapse,
 } from "antd";
 import { TreeSelectComponent } from "../../../components";
 import comEvents from "../../../utils/comEvents";
@@ -55,7 +48,6 @@ class MerchantTag extends Component {
   };
   //获取公共标签
   reqGetTags = async (currentPage) => {
-    let { size } = this.state;
     const parmas = {
       type: "MERCHANT",
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentTagPage,
