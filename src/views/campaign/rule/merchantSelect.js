@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Button, Input, Col, Row, Table,Drawer } from "antd";
 import {
-  reqGetMerchants,
-  reqPostParties
+  reqGetMerchants
 } from "../../../api";
 import storageUtils from "../../../utils/storageUtils";
 import { Loading } from "../../../components";
@@ -96,12 +95,12 @@ class MerchantSelect extends Component {
     
     this.props.handleSelection(selectedMerchants);
     return false
-    this.setState({
-      merchants: [],
-      selectedRowKeys: [],
-      selectedMerchants: [],
-      loading: false,
-    });
+    // this.setState({
+    //   merchants: [],
+    //   selectedRowKeys: [],
+    //   selectedMerchants: [],
+    //   loading: false,
+    // });
   };
   handleOrgChange = (e) => {
     this.setState({
