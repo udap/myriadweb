@@ -38,7 +38,7 @@ class BranchSelect extends Component {
       uid: this.props.orgUid, //storageUtils.getUser().orgUid,
       searchTxt: value ? value : this.state.searchTxt,
     };
-    const result = await reqGetSubsidiaries(storageUtils.getUser().orgUid, parmas);
+    const result = await reqGetSubsidiaries(this.props.orgUid, parmas);
     const cont = result && result.data ? result.data.content : [];
     let list = [];
     if (cont && cont.content && cont.content.length !== 0) {
@@ -87,7 +87,7 @@ class BranchSelect extends Component {
     this.getBranchList(1, value);
   };
   render() {
-    const { org, size, currentPage, total, searchTxt, loading } = this.state;
+    const { org, size, currentPage, loading } = this.state;
     return (
       <div>
         {/* --搜索栏-- */}

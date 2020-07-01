@@ -11,13 +11,10 @@ import {
   Form,
   Drawer,
   notification,
-  Tag,
-  Radio,
   Divider,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import comEvents from "../../utils/comEvents";
-import { tagStatuses } from "../../utils/constants";
 import {
   reqPermit,
   reqAddMerchant,
@@ -32,7 +29,6 @@ import {
   Loading,
   EditableTagGroup,
   TreeSelectComponent,
-  TransferComponent,
 } from "../../components";
 import "../../css/common.less";
 import "./index.less";

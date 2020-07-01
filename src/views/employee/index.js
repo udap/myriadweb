@@ -303,6 +303,7 @@ class Employee extends Component {
         this.getEmployees(1);
       }
     } else {
+      console.log("update employee", params);
       let uid = this.state.curInfo.uid;
       const result = await reqPutEmployee(uid, params);
       if (result.data.retcode === 0) {
@@ -341,16 +342,16 @@ class Employee extends Component {
     });
   };
   onSelectBranch = (selectedRows) => {
-    console.log("onSelectBranch",selectedRows);
     let orgId = storageUtils.getUser().orgId;
+    let isCurrentOrg = selectedRows[0].id === orgId ? true : false;
     this.setState({
       selectedRows: selectedRows,
-      isCurrentOrg: selectedRows[0].id === orgId ? true : false,
+      isCurrentOrg: isCurrentOrg,
       showListOfInstitutions: false,
     });
     this.getGroupsList(storageUtils.getUser().orgUid,true);
   };
-  onClickSelectBranch = () => {
+  showBranchSelect = () => {
     this.setState({
       showListOfInstitutions: this.state.showListOfInstitutions ? false : true,
     });
@@ -368,24 +369,24 @@ class Employee extends Component {
   showBranchSelectButton = (isNew, selectBranch) => {
     if (!isNew)
       return null;
-    if (selectBranch) 
+    if (selectBranch)  
       return (
-        <b
-        className="ant-green-link cursor"
-        onClick={this.onClickSelectBranch}
-        >
-          选择下属机构
+        <b className="ant-green-link cursor" onClick={this.showBranchSelect}>
+          下属机构
         </b>
       );
-    else
-        return (
-          <b
-            className="ant-green-link cursor"
-            onClick={this.onResetOrg}
-          >
-            重置
-          </b>
-        );
+    else 
+      return (
+        <>
+        <b className="ant-green-link cursor" onClick={this.showBranchSelect}>
+          下属机构
+        </b>
+        <Divider className="ant-green-link" type="vertical" />
+        <b className="ant-green-link cursor" onClick={this.onResetOrg}>
+          重置
+        </b>
+        </>
+      );
   };
 
   //员工表单
@@ -418,9 +419,9 @@ class Employee extends Component {
       isCurrentOrg,
       showListOfInstitutions,
     } = this.state;
-    console.log("current state",this.state);
-    const orgName = storageUtils.getUser().orgName;
-    const selectedOrgName = isCurrentOrg ? orgName : org.name;
+    const selectedOrgName = isCurrentOrg ? storageUtils.getUser().orgName : (org ? org.name : selectedRows[0].name);
+    const selectedOrgUid = isCurrentOrg ? storageUtils.getUser().orgUid : (org ? org.uid : selectedRows[0].uid);
+    console.log("selected org", selectedOrgName, selectedOrgUid);
     return (
       <Drawer
         width={480}
@@ -445,17 +446,17 @@ class Employee extends Component {
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
           <div className="grey-block orgDesc">
-            <text>
+            <>
               {this.state.isNew
                 ? `${"您正在为【" + selectedOrgName + "】添加员工"}`
                 : `${"您正在编辑【" + selectedOrgName + "】员工"}`}
-            </text>
+            </>
             { this.showBranchSelectButton(this.state.isNew, isCurrentOrg) }
           </div>
           {
           showListOfInstitutions ? (
             <Card>
-              <BranchSelect orgUid={storageUtils.getUser().orgUid} onSelectBranch={this.onSelectBranch} />
+              <BranchSelect orgUid={selectedOrgUid} onSelectBranch={this.onSelectBranch} />
             </Card>
           ) : (
           <>
