@@ -1,4 +1,4 @@
-import { privateRoutes } from "../routers";
+import { privateRoutes } from "../routes";
 import { ChinaRegions } from "./china-regions";
 import { traverse } from "@babel/types";
 import { rootCertificates } from "tls";
