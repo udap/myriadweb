@@ -3,7 +3,7 @@ import { Layout, Menu, Row, Col, Modal, notification } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import "./index.less";
 //动态渲染导航栏
-import { privateRoutes } from "../../routers";
+import { privateRoutes } from "../../routes";
 //引入装饰器 因为FrameOut没有Route
 import { withRouter, Link } from "react-router-dom";
 //引入图标
