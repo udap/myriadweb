@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import { privateRoutes } from "./routers";
+import { privateRoutes } from "./routes";
 import { FrameOut } from "./components";
 
 class App extends Component {
