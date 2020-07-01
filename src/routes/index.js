@@ -142,6 +142,15 @@ const privateRoutes = [
         isNav: true,
       },
       {
+        pathname: "/admin/customer",
+        component: Customer,
+        title: "我的客户",
+        icon: "SolutionOutlined",
+        isTop: false, //顶级菜单
+        //exact: true,
+        isNav: true,
+      },
+      {
         pathname: "/admin/merchant",
         component: Merchant,
         title: "入驻商户",
@@ -181,15 +190,6 @@ const privateRoutes = [
         icon: "",
         isTop: false,
         isNav: false,
-      },
-      {
-        pathname: "/admin/customer",
-        component: Customer,
-        title: "我的客户",
-        icon: "SolutionOutlined",
-        isTop: false, //顶级菜单
-        //exact: true,
-        isNav: true,
       },
     ],
   },

@@ -12,7 +12,7 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import { commonRoutes } from './routers'
+import { commonRoutes } from './routes'
 import './css/index.less'
 
 ReactDOM.render(
