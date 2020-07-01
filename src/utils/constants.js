@@ -188,9 +188,6 @@ var Operations = {
   DELETE_SETTLEMENT: "删除结算",
   VIEW_REDEMPTION: "核销记录",
   VIEW_DISTRIBUTION: "发放记录",
-  LIST_TAGS:"标签列表",
-  CREATE_TAG:"新增标签",
-  DELETE_TAG:"删除标签",
 };
 const tagStatuses = [
   {
