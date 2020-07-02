@@ -1,3 +1,9 @@
+## Install dotenv-cli
+
+### `yarn add --dev dotenv-cli`
+
+Runs the above command to install dotenv-cli before you create deployment package.
+
 ## Environment Variables
 
 In the project directory, you need create 3 files to hold some environment variables for different
