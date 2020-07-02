@@ -1,3 +1,16 @@
+## Environment Variables
+
+In the project directory, you need create 3 files to hold some environment variables for different
+environment:
+
+.env.development
+.env.support
+.end.production
+
+Currently you only need to set REACT_APP_API_URL to point to the base url of the backend API endpoints, e.g., <br/>
+
+REACT_APP_API_URL=https://myriad-test.xinongtech.com/myriadapi
+
 ## Available Scripts
 
 In the project directory, you can run:
