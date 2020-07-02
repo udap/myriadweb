@@ -1,5 +1,5 @@
 {
-  "name": "gifto-web",
+  "name": "myriadweb",
   "version": "0.1.0",
   "homepage": "./",
   "private": true,
@@ -12,6 +12,7 @@
     "babel-plugin-import": "^1.13.0",
     "blueimp-md5": "^2.16.0",
     "customize-cra": "^0.9.1",
+    "dotenv": "^8.2.0",
     "file-saver": "^2.0.2",
     "http-proxy-middleware": "^1.0.3",
     "jschardet": "^2.1.1",
@@ -19,6 +20,7 @@
     "less-loader": "^5.0.0",
     "moment": "^2.24.0",
     "papaparse": "^5.2.0",
+    "qrcode.react": "^1.0.0",
     "qs": "^6.9.3",
     "react": "^16.13.1",
     "react-app-rewired": "^2.1.5",
@@ -35,6 +37,8 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "build:support": "dotenv -e .env.support react-app-rewired build",
+    "build:dev": "dotenv -e .env.development react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
@@ -53,5 +57,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://myriad-test.xinongtech.com"
+  "proxy": "https://myriad-test.xinongtech.com",
+  "devDependencies": {
+    "dotenv-cli": "^3.2.0"
+  }
 }
