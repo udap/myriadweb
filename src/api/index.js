@@ -20,7 +20,6 @@ var env = process.env.NODE_ENV;
 // } {
 //   BASE = `https://gift-test.xinongtech.com`; // 生产环境
 // }
-
 //LOGIN START
 //获取验证码
 export const reqVerify = (cellphone) =>

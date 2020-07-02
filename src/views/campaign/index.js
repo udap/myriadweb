@@ -149,6 +149,7 @@ class Campaign extends Component {
       },
       {
         title: "操作",
+        key: "ops",
         //fixed: "right",
         width: btnWidth,
         render: (chooseItem) => {
@@ -249,7 +250,7 @@ class Campaign extends Component {
   reqGetCampaignById = async (id) => {
     let curInfo = await reqGetCampaignById(id);
     let cont = curInfo && curInfo.data ? curInfo.data : [];
-    console.log("FormDialog -> getEmployee -> cont", cont);
+    cont.id = id;
     this.setState({
       showDetail: true,
       listItem: cont,
@@ -505,7 +506,7 @@ class Campaign extends Component {
       listItem,
     } = this.state;
     return (
-      <div>
+      <>
         <PageHeader
           className="site-page-header-responsive cont"
           title="营销活动"
@@ -554,17 +555,17 @@ class Campaign extends Component {
         {showCSV ? this.showCSVModal() : null}
         {showDetail ? (
           <CampaignDetail
-            listItem={listItem}
-            closeDetail={this.closeDetail}
+            campaign={listItem}
+            onClose={this.closeDetail}
             visible={showDetail}
           />
         ) : null}
-      </div>
+      </>
     );
   };
   render() {
     return (
-      <div
+      <div key="content"
         style={{
           height: "100%",
         }}

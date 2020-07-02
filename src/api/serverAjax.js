@@ -1,6 +1,6 @@
 import axios from "axios";
 //import qs from "qs";
-import { message,notification } from "antd";
+import { notification } from "antd";
 import storageUtils from "../utils/storageUtils";
 
 // 添加请求拦截器:让post请求的请求格式为urlencode格式 a=1&b=2

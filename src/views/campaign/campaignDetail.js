@@ -1,8 +1,9 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Tag, Descriptions, Drawer, Table, Collapse } from "antd";
 import NumberFormat from 'react-number-format';
+import QRCode from 'qrcode.react';
 import comEvents from "../../utils/comEvents";
-import { distributionMethods } from "../../utils/constants";
+import { distributionMethods, API_BASE_URL, VOUCHER_COLLECT_URL } from "../../utils/constants";
 import "./index.less";
 
 const { Panel } = Collapse;
@@ -10,13 +11,13 @@ const { Panel } = Collapse;
 class CampaignDetail extends Component {
   state = {
     listSize: 20,
-    curInfo: {},
+    campaign: {},
     visible: false,
   };
   componentDidMount() {
-    let { listItem, visible } = this.props;
+    let { campaign, visible } = this.props;
     this.setState({
-      curInfo: listItem,
+      campaign: campaign,
       visible: visible,
     });
     this.initColumns();
@@ -39,10 +40,11 @@ class CampaignDetail extends Component {
     this.setState({
       visible: false,
     });
-    this.props.closeDetail();
+    this.props.onClose();
   };
     
   _renderInfoPanel = (campaign) => {
+    console.log("API_BASE_URL",API_BASE_URL);
     return (
       <Descriptions
         size="small"
@@ -75,6 +77,20 @@ class CampaignDetail extends Component {
         <Descriptions.Item label="领取限制">
           <NumberFormat value={campaign.distLimit} displayType={'text'} suffix={' 张券/账户'}/>    
         </Descriptions.Item>
+        {
+          campaign.distMethod === "CUSTOMER_COLLECT" ? (<Descriptions.Item label="领取码">
+            <QRCode value={API_BASE_URL + VOUCHER_COLLECT_URL+"?campaignId="+campaign.id}
+              size={120}
+              level={'H'}
+              imageSettings={{
+                src:"/images/logo.jpg",
+                height:30,
+                width:30,
+                excavate: true
+              }}/>
+          </Descriptions.Item>
+          ) : null
+        }
         <Descriptions.Item label="活动主页">
           <div className="word-wrap">{campaign.url ? campaign.url : ""}</div>
         </Descriptions.Item>
@@ -89,7 +105,7 @@ class CampaignDetail extends Component {
     let discountContent = null;
     if (voucherConfig && voucherConfig.discount && voucherConfig.discount.type === "PERCENT") {
       discountContent = (
-        <Fragment>
+        <>
         <Descriptions.Item label="类型">折扣券</Descriptions.Item>
         <Descriptions.Item label="折扣">
           <NumberFormat value={voucherConfig.discount.valueOff} displayType={'text'} suffix={'%'}/>
@@ -100,13 +116,13 @@ class CampaignDetail extends Component {
              : "无限制"
           }
         </Descriptions.Item>
-        </Fragment>
+        </>
       )
     }
 
     if (voucherConfig && voucherConfig.discount && voucherConfig.discount.type === "AMOUNT") {
       discountContent = (
-        <Fragment>
+        <>
         <Descriptions.Item label="类型">
         代金券
         </Descriptions.Item>
@@ -114,7 +130,7 @@ class CampaignDetail extends Component {
           <NumberFormat value={voucherConfig.discount.valueOff/100} displayType={'text'} 
             thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} prefix={'¥'}/>
         </Descriptions.Item> 
-        </Fragment>
+        </>
       )
     }
 
@@ -203,9 +219,9 @@ class CampaignDetail extends Component {
   };
 
   renderContent = () => {
-    const { curInfo, visible, listSize } = this.state;
-    const { voucherConfig, rules } = this.state.curInfo;
-    var parties = curInfo.parties ? curInfo.parties : [];
+    const { campaign, visible, listSize } = this.state;
+    const { voucherConfig, rules } = this.state.campaign;
+    var parties = campaign.parties ? campaign.parties : [];
     var merchants = [];
     parties.forEach(p => {
       if (p.type === "MERCHANT")
@@ -221,7 +237,7 @@ class CampaignDetail extends Component {
       >
         <Collapse defaultActiveKey={['1']}>
           <Panel header="基本信息" key="1">
-            {this._renderInfoPanel(curInfo)}
+            {this._renderInfoPanel(campaign)}
           </Panel>
           <Panel header="详细设置" key="2">
           {/* 优惠券名称 类型 代金券 折扣券 折扣比例 % 最高优惠金额 元 有效期

@@ -1,5 +1,9 @@
 const user = {};
 const token = "";
+
+const VOUCHER_COLLECT_URL = "/myriad/distributions/collect";
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 const distributionMethods = [
   { CSR_DISTRIBUTE: "手动发放（由营销人员决定发放对象）"},
   { CUSTOMER_COLLECT: "手动领取（由客户主动领取）"},
@@ -206,6 +210,8 @@ const tagStatuses = [
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
+  VOUCHER_COLLECT_URL,
+  API_BASE_URL,
   campaignTypes,
   voucherTypes,
   distributionMethods,
