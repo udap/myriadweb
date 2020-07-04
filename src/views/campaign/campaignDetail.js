@@ -44,7 +44,6 @@ class CampaignDetail extends Component {
   };
     
   _renderInfoPanel = (campaign) => {
-    console.log("API_BASE_URL",API_BASE_URL);
     return (
       <Descriptions
         size="small"
@@ -65,7 +64,10 @@ class CampaignDetail extends Component {
         <Descriptions.Item label="活动时间">
           {campaign.effective}至{comEvents.formatExpiry(campaign.expiry)}
         </Descriptions.Item>
-        <Descriptions.Item label="发行数量">
+        <Descriptions.Item label="计划发行">
+          <NumberFormat value={campaign.plannedSupply} displayType={'text'} thousandSeparator={true}/>
+        </Descriptions.Item>
+        <Descriptions.Item label="实际发行">
           <NumberFormat value={campaign.totalSupply} displayType={'text'} thousandSeparator={true}/>
         </Descriptions.Item>
         <Descriptions.Item label="允许增发?">

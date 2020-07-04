@@ -105,7 +105,7 @@ class CampaignEdit extends Component {
       end: comEvents.getDateStr(0),
       distMethod: "CSR_DISTRIBUTE",
       distLimit: 1,
-      totalSupply: 1,
+      plannedSupply: 0,
       autoUpdate: false,
     },
     //活动主页预览
@@ -212,7 +212,7 @@ class CampaignEdit extends Component {
         end: comEvents.formatExpiry(new Date(cont.expiry)),
         distMethod: cont.distMethod,
         distLimit: cont.distLimit,
-        totalSupply: cont.totalSupply,
+        plannedSupply: cont.plannedSupply,
         autoUpdate: cont.autoUpdate,
       },
       name: cont.name,
@@ -338,7 +338,7 @@ class CampaignEdit extends Component {
       effective,
       end,
       distMethod,
-      totalSupply,
+      plannedSupply,
       autoUpdate,
       distLimit,
     } = this.state.basicInfo;
@@ -349,7 +349,7 @@ class CampaignEdit extends Component {
         initialValues={{
           name: name,
           category: category,
-          totalSupply: totalSupply,
+          plannedSupply: plannedSupply,
           autoUpdate: autoUpdate,
           distLimit: distLimit,
           distMethod: distMethod,
@@ -403,8 +403,8 @@ class CampaignEdit extends Component {
           />
         </Form.Item>
         <Form.Item
-          label="发行数量"
-          name="totalSupply"
+          label="计划发行数量"
+          name="plannedSupply"
           rules={[{ required: true }]}
         >
           <InputNumber min={0} />
@@ -494,7 +494,7 @@ class CampaignEdit extends Component {
       expiry: comEvents.getDateStr(1, new Date(basicInfo.end)),
       distMethod: values.distMethod,
       distLimit: values.distLimit,
-      totalSupply: values.totalSupply,
+      plannedSupply: values.plannedSupply,
       autoUpdate: values.autoUpdate,
       url: values.url,
       metadata: {},
@@ -517,7 +517,7 @@ class CampaignEdit extends Component {
         end: basicInfo.end,
         distMethod: values.distMethod,
         distLimit: values.distLimit,
-        totalSupply: values.totalSupply,
+        plannedSupply: values.plannedSupply,
         autoUpdate: values.autoUpdate,
         url: values.url,
       },

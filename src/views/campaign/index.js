@@ -118,7 +118,20 @@ class Campaign extends Component {
         },
       },
       {
-        title: "发行数量",
+        title: "计划发行",
+        dataIndex: "plannedSupply",
+        key: "plannedSupply",
+        width: 90,
+        render: (value) => {
+          return (
+            <div style={{textAlign: "right"}}>
+            <NumberFormat value={value} displayType={'text'} thousandSeparator={true} />
+            </div>
+          );
+        },
+      },
+      {
+        title: "实际发行",
         dataIndex: "totalSupply",
         key: "totalSupply",
         width: 90,
