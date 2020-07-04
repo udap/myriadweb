@@ -36,7 +36,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "dotenv -e .env.production react-app-rewired build",
     "build:support": "dotenv -e .env.support react-app-rewired build",
     "build:dev": "dotenv -e .env.development react-app-rewired build",
     "test": "react-app-rewired test",
