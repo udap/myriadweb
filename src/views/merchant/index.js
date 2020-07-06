@@ -558,7 +558,7 @@ class Merchant extends Component {
               <div style={{ margin: 0 }}>
                 <EditableTagGroup
                   tags={record.tags ? record.tags : []}
-                  newTags={this.addNewTags.bind(this, record)}
+                  onChange={this.addNewTags.bind(this, record)}
                 />
               </div>
             ),

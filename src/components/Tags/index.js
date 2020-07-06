@@ -22,7 +22,7 @@ class EditableTagGroup extends Component {
   handleClose = (removedTag) => {
     const tags = this.state.tags.filter((tag) => tag !== removedTag);
     this.setState({ tags });
-    this.props.newTags(tags);
+    this.props.onChange(tags);
   };
 
   showInput = () => {
@@ -44,7 +44,7 @@ class EditableTagGroup extends Component {
       inputVisible: false,
       inputValue: "",
     });
-    this.props.newTags(tags);
+    this.props.onChange(tags);
   };
 
   handleEditInputChange = (e) => {

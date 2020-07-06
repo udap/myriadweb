@@ -391,7 +391,7 @@ class CampaignEdit extends Component {
         </Form.Item>
         <Form.Item label="标签" name="category">
           {/* <Input /> */}
-          <EditableTagGroup tags={category} newTags={this.newTags} />
+          <EditableTagGroup tags={category} onChange={this.onChangeTags} />
         </Form.Item>
         <Form.Item label="活动时间">
           <RangePicker
@@ -445,7 +445,7 @@ class CampaignEdit extends Component {
       </Form>
     );
   };
-  newTags = (newTags) => {
+  onChangeTags = (newTags) => {
     this.setState({
       tags: newTags,
     });
@@ -482,14 +482,13 @@ class CampaignEdit extends Component {
         rules: rules,
       });
     }
-
     let params = {
       reqOrg: storageUtils.getUser().orgUid,
       reqUser: storageUtils.getUser().uid,
       name: values.name,
       description: values.description,
       type: campaignType,
-      category: tags.toString(),
+      category: values.category.toString(),
       effective: basicInfo.effective,
       expiry: comEvents.getDateStr(1, new Date(basicInfo.end)),
       distMethod: values.distMethod,
@@ -512,7 +511,7 @@ class CampaignEdit extends Component {
       basicInfo: {
         name: values.name,
         description: values.description,
-        category: tags,
+        category: values.category,
         effective: basicInfo.effective,
         end: basicInfo.end,
         distMethod: values.distMethod,
@@ -913,7 +912,6 @@ class CampaignEdit extends Component {
     // let result = await reqPostConfigImg(this.state.id, formData);
     // this.nextStep();
     //     }else{
-    console.log("config", params);  
     let result;
     if (this.state.hasConfig) {
       result = await reqPutConfig(this.state.id, params);
