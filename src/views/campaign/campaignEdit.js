@@ -822,11 +822,16 @@ class CampaignEdit extends Component {
     } else {
       //typeText = "折扣类型";
     }
-    this.setState({
+    let { settings } = this.state;
+    let newData = Object.assign(settings, {
       valueOff: null,
       discountType: value,
       typeText: typeText,
     });
+    this.setState({
+      settings: newData,
+    });
+    console.log(this.state.settings);
   };
   //有效期切换
   onRadioTimeChange = (e) => {
