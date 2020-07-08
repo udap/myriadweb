@@ -831,7 +831,6 @@ class CampaignEdit extends Component {
     this.setState({
       settings: newData,
     });
-    console.log(this.state.settings);
   };
   //有效期切换
   onRadioTimeChange = (e) => {
