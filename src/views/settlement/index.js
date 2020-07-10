@@ -309,36 +309,36 @@ class SettlementHome extends Component {
           const { id, status } = chooseItem;
           return (
             <span>
+              <b onClick={() => {
+                  this.props.history.push({
+                    pathname: "/admin/settlement/" + id,
+                    state: { chooseItem },
+                  });
+                }}
+                className="ant-green-link cursor"
+              >
+                明细
+              </b>
               {status === "SUBMITTED" ? (
-                <span>
-                  <b
-                    onClick={() => {
-                      let that = this;
-                      that.hasPower(
-                        id,
-                        "确认批准该结算",
-                        "APPROVE_SETTLEMENT",
-                        "approveItem"
-                      );
-                    }}
-                    className="ant-blue-link cursor"
-                  >
-                    批准
-                  </b>
-                </span>
-              ) : (
+                <>
+                <Divider type="vertical" />
                 <b
                   onClick={() => {
-                    this.props.history.push({
-                      pathname: "/admin/settlement/" + id,
-                      state: { chooseItem },
-                    });
+                    let that = this;
+                    that.hasPower(
+                      id,
+                      "确认批准该结算",
+                      "APPROVE_SETTLEMENT",
+                      "approveItem"
+                    );
                   }}
-                  className="ant-green-link cursor"
+                  className="ant-blue-link cursor"
                 >
-                  明细
+                  批准
                 </b>
-              )}
+                </>
+              ) : null
+              }
             </span>
           );
         },
