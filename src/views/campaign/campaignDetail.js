@@ -2,11 +2,17 @@ import React, { Component } from "react";
 import { Tag, Descriptions, Drawer, Table, Collapse } from "antd";
 import NumberFormat from 'react-number-format';
 import QRCode from 'qrcode.react';
+import saveAs from 'save-svg-as-png';
 import comEvents from "../../utils/comEvents";
 import { distributionMethods, API_BASE_URL, VOUCHER_COLLECT_URL } from "../../utils/constants";
 import "./index.less";
 
 const { Panel } = Collapse;
+const imageOptions = {
+  scale: 5,
+  encoderOptions: 1,
+  backgroundColor: 'white',
+};
 
 class CampaignDetail extends Component {
   state = {
@@ -41,6 +47,11 @@ class CampaignDetail extends Component {
       visible: false,
     });
     this.props.onClose();
+  };
+
+  downloadQrCode = () => {
+//    let canvas=document.getElementById('qrcode');  
+    saveAs.saveSvgAsPng(document.getElementById('qrcode'), 'qrcode.png', imageOptions);
   };
     
   _renderInfoPanel = (campaign) => {
@@ -81,7 +92,10 @@ class CampaignDetail extends Component {
         </Descriptions.Item>
         {
           campaign.distMethod === "CUSTOMER_COLLECT" ? (<Descriptions.Item label="领取码">
-            <QRCode value={API_BASE_URL + VOUCHER_COLLECT_URL+"?campaignId="+campaign.id}
+            <a id="download" title="点我下载">
+            <QRCode id="qrcode" value={API_BASE_URL + VOUCHER_COLLECT_URL+"?campaignId="+campaign.id}
+              renderAs={'svg'}
+              onClick={this.downloadQrCode}
               size={120}
               level={'H'}
               imageSettings={{
@@ -90,6 +104,7 @@ class CampaignDetail extends Component {
                 width:30,
                 excavate: true
               }}/>
+            </a>
           </Descriptions.Item>
           ) : null
         }
