@@ -204,7 +204,7 @@ class MyOrgs extends Component {
                 comEvents.hasPower(
                   self,
                   reqPermit,
-                  "MANAGE_ORGANIZATION",
+                  "UPDATE_ORGANIZATION",
                   "showEdit"
                 );
               }}

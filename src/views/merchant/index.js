@@ -476,7 +476,7 @@ class Merchant extends Component {
                   comEvents.hasPower(
                     self,
                     reqPermit,
-                    "MANAGE_ORGANIZATION",
+                    "DELETE_MERCHANT",
                     "showDetalConfirm",
                     item
                   );
@@ -504,7 +504,7 @@ class Merchant extends Component {
                 comEvents.hasPower(
                   self,
                   reqPermit,
-                  "MANAGE_ORGANIZATION",
+                  "CREATE_MERCHANT",
                   "showModal"
                 );
               }}
