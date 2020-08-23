@@ -14,7 +14,7 @@ import {
   reqPostCustomer,
   reqPutCustomer,
   reqGetCustomerRankings,
-  reqVerify, //获取验证码
+  reqVerifyCustomer, //获取客户验证码
 } from "../../api";
 import storageUtils from "../../utils/storageUtils";
 
@@ -72,7 +72,7 @@ class CustomerEditForm extends Component {
       notification.error({ message: "请输入手机号码！" });
       return false;
     }
-    const result = reqVerify(value).then((res) => {
+    const result = reqVerifyCustomer(value).then((res) => {
       this.setState({
         iconLoading: true,
         unableClick: true,

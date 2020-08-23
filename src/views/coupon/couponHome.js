@@ -259,11 +259,10 @@ class CouponHome extends Component {
         ? {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: size ? size : this.state.size,
-            orgUid: storageUtils.getUser().orgUid,
+//            orgUid: storageUtils.getUser().orgUid,
             ownerId: this.state.ownerId,
-            issuerId: "",
-//            merchantCode: values ? values.merchantCode : "",
-            codeType: this.state.codeType,
+//            codeType: this.state.codeType,
+            status: "NEW",
             searchTxt: values
               ? values.searchTxt
               : this.state.searchTxt,
@@ -271,11 +270,11 @@ class CouponHome extends Component {
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: size ? size : this.state.size,
-            orgUid: storageUtils.getUser().orgUid,
-            ownerId: "",
+//            orgUid: storageUtils.getUser().orgUid,
             issuerId: this.state.publisherId,
 //            merchantCode: values ? values.merchantCode : "",
-            codeType: this.state.codeType,
+//            codeType: this.state.codeType,
+            status: "NEW",
             searchTxt: values
               ? values.searchTxt
               : this.state.searchTxt,

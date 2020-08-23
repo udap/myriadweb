@@ -24,6 +24,8 @@ var env = process.env.NODE_ENV;
 //获取验证码
 export const reqVerify = (cellphone) =>
   ajax.get(BASE + "/public/login/phoneCode?cellphone=" + cellphone);
+export const reqVerifyCustomer = (cellphone) =>
+  ajax.get(BASE + "/public/login/phoneCode?cellphone=" + cellphone + "&type=CUSTOMER:");
 //登录
 export const reqLogin = (values) =>
   ajax.get(BASE + "/public/login", { params: values });
