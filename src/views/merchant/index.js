@@ -152,19 +152,19 @@ class Merchant extends Component {
     });
   };
   addItem = () => {
-    let isAdmin = storageUtils.getUser().admin;
-    if (!isAdmin) {
-      notification.info({ message: "对不起，您没有权限！" });
-      return false;
-    }
+    // let isAdmin = storageUtils.getUser().admin;
+    // if (!isAdmin) {
+    //   notification.info({ message: "对不起，您没有权限！" });
+    //   return false;
+    // }
     this.props.history.push("/admin/merchant/edit/new");
   };
   delItem = async (uid) => {
-    let isAdmin = storageUtils.getUser().admin;
-    if (!isAdmin) {
-      notification.info({ message: "对不起，您没有权限！" });
-      return false;
-    }
+    // let isAdmin = storageUtils.getUser().admin;
+    // if (!isAdmin) {
+    //   notification.info({ message: "对不起，您没有权限！" });
+    //   return false;
+    // }
     const result = await reqDelMerchant(uid);
     this.setState({
       currentPage: 1,

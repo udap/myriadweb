@@ -25,7 +25,7 @@ var env = process.env.NODE_ENV;
 export const reqVerify = (cellphone) =>
   ajax.get(BASE + "/public/login/phoneCode?cellphone=" + cellphone);
 export const reqVerifyCustomer = (cellphone) =>
-  ajax.get(BASE + "/public/login/phoneCode?cellphone=" + cellphone + "&type=CUSTOMER:");
+  ajax.get(BASE + "/phone/verificationCode?cellphone=" + cellphone);
 //登录
 export const reqLogin = (values) =>
   ajax.get(BASE + "/public/login", { params: values });
