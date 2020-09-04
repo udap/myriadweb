@@ -72,14 +72,14 @@ class CustomerEditForm extends Component {
       notification.error({ message: "请输入手机号码！" });
       return false;
     }
-    const result = reqVerifyCustomer(value).then((res) => {
-      this.setState({
-        iconLoading: true,
-        unableClick: true,
-      });
+    // const result = reqVerifyCustomer(value).then((res) => {
+    //   this.setState({
+    //     iconLoading: true,
+    //     unableClick: true,
+    //   });
 
-      this.countdown();
-    });
+    //   this.countdown();
+    // });
   };
   onFinish = async (values) => {
     this.setState({
@@ -94,7 +94,7 @@ class CustomerEditForm extends Component {
 
     if (this.state.isNew) {
       //验证码
-      params.smsCode = values.smsCode;
+//      params.smsCode = values.smsCode;
       const result = await reqPostCustomer(params);
       this.setState({
         loading: false,
@@ -169,7 +169,7 @@ class CustomerEditForm extends Component {
               value={this.state.cellphone}
             />
           </Form.Item>
-          {isNew ? (
+{/*           {isNew ? (
             <Form.Item
               name="smsCode"
               label="验证码"
@@ -213,7 +213,7 @@ class CustomerEditForm extends Component {
               </Row>
             </Form.Item>
           ) : null}
-
+ */}
           <Form.Item name="ranking" label="客户等级">
             <Select
               placeholder="请选择客户等级"

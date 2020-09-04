@@ -12,6 +12,7 @@ import {
   Drawer,
   notification,
   Divider,
+  Radio,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import comEvents from "../../utils/comEvents";
@@ -30,6 +31,7 @@ import {
   EditableTagGroup,
   TreeSelectComponent,
 } from "../../components";
+import MerchantSelect from "./merchantSelect";
 import "../../css/common.less";
 import "./index.less";
 const { confirm } = Modal;
@@ -56,6 +58,7 @@ class Merchant extends Component {
   state = {
     visible: false,
     inited: false,
+    addMode: 1,
     merchants: [],
     isNew: true,
     apCode: "",
@@ -78,7 +81,7 @@ class Merchant extends Component {
     expandedRowKeys: [],
   };
   componentDidMount() {
-    this.getMerchant(1);
+    this.getMerchants(1);
   }
   showModal = () => {
     this.setState({
@@ -96,7 +99,7 @@ class Merchant extends Component {
   /*
 获取列表数据
 */
-  getMerchant = async (currentPage, value) => {
+  getMerchants = async (currentPage, value) => {
     const parmas = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
@@ -143,7 +146,7 @@ class Merchant extends Component {
       currentPage: 1,
       searchTxt: value.searchTxt,
     });
-    this.getMerchant(1, value.searchTxt);
+    this.getMerchants(1, value.searchTxt);
   };
 
   enterLoading = () => {
@@ -169,7 +172,7 @@ class Merchant extends Component {
     this.setState({
       currentPage: 1,
     });
-    this.getMerchant(1);
+    this.getMerchants(1);
   };
   onFinish = async (values) => {
     let params = {
@@ -177,6 +180,7 @@ class Merchant extends Component {
       wpCode: values.wpCode,
       upCode: values.upCode,
       authCode: values.authCode,
+      merchantUid: values.merchantUid,
       orgUid: storageUtils.getUser().orgUid,
     };
 
@@ -185,11 +189,11 @@ class Merchant extends Component {
       this.setState({
         visible: false,
       });
-      this.getMerchant(1);
+      this.getMerchants(1);
     }
   };
   //授权码
-  renderForm = () => {
+  renderAddForm = () => {
     const { apCode, wpCode, upCode, authCode } = this.state;
     return (
       <Form
@@ -215,7 +219,6 @@ class Merchant extends Component {
           label="银联商户码"
           name="upCode"
           rules={[
-            { required: true },
             { max: 45 },
             {
               message: "银联商户码格式不正确",
@@ -225,13 +228,6 @@ class Merchant extends Component {
         >
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
-        {/* <Form.Item label="微信收付款号" name="wpCode" rules={[{ max: 45 }]}>
-          <Input disabled={this.state.isNew ? false : true} />
-        </Form.Item>
-
-        <Form.Item label="阿里收付款号" name="apCode" rules={[{ max: 45 }]}>
-          <Input disabled={this.state.isNew ? false : true} />
-        </Form.Item> */}
 
         {this.state.isNew ? (
           <Form.Item>
@@ -247,6 +243,7 @@ class Merchant extends Component {
       </Form>
     );
   };
+
   handleTableChange = (page) => {
     this.setState({
       currentPage: page,
@@ -414,6 +411,39 @@ class Merchant extends Component {
       </Drawer>
     );
   };
+
+  onChangeAddMode = (e) => {
+    this.setState({
+      addMode: e.target.value,
+    });
+  };
+
+  onSelectMerchant = async (selectedRows) => {
+    let orgId = storageUtils.getUser().orgId;
+    // let isCurrentOrg = selectedRows[0].id === orgId ? true : false;
+    let params = {
+      merchantUid: selectedRows[0].uid,
+      orgUid: storageUtils.getUser().orgUid,
+    };
+    const result = await reqAddMerchant(params);
+    if (result) {
+      this.setState({
+        visible: false,
+        addMode: 1,
+      });
+      this.getMerchants(1);
+    } else {
+      this.setState({
+        visible: false,
+      })
+    }
+  };
+
+
+  renderMerchantSelect = () => {
+    return  <MerchantSelect onSelectMerchant={this.onSelectMerchant} />
+  }
+
   renderContent = () => {
     const {
       merchants,
@@ -583,13 +613,17 @@ class Merchant extends Component {
           />
         </div>
         <Drawer
-          width={400}
+          width={480}
           title="添加入驻商户"
           visible={this.state.visible}
           onClose={this.handleCancel}
           footer={null}
         >
-          {this.renderForm()}
+          <Radio.Group onChange={this.onChangeAddMode} value={this.state.addMode}>
+            <Radio value={1}>使用商户授权码添加</Radio>
+            <Radio value={2}>选择上级机构的入驻商户</Radio>
+          </Radio.Group>
+          { this.state.addMode == 1 ? this.renderAddForm() : this.renderMerchantSelect()}
         </Drawer>
 
         {showTagForm ? this.renderTagForm() : null}
