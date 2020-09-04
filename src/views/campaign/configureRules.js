@@ -191,7 +191,7 @@ class ConfigureRules extends Component {
       exps.push("#MinimumValue");
       rules.push({
         name: "MinimumValue",
-        option: values.minimum,
+        option: parseFloat(values.minimum)*100,
       });
     }
     // 这是商户规则部分
@@ -315,7 +315,7 @@ class ConfigureRules extends Component {
             tagType: tagType,
             regionType: regionType,
             //new
-            minimum: minimum,
+            minimum: minimum ? (parseFloat(minimum)/100).toFixed(2):"",
           }}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
@@ -346,10 +346,10 @@ class ConfigureRules extends Component {
               </Form.Item>
               {orderStatus ? (
                 <Form.Item label="最低消费金额(元)：" name="minimum">
-                  <InputNumber
-                    defaultValue={
-                      orderRule && orderRule.option ? orderRule.option : ""
-                    }
+                  <InputNumber min={0}
+                    // defaultValue={
+                    //   orderRule && orderRule.option ? (parseFloat(orderRule.option)/100).toFixed(2) : ""
+                    // }
                   />
                 </Form.Item>
               ) : null}
