@@ -28,13 +28,6 @@ import CustomerView from "./customerView";
 import CustomerEditForm from "./customerEditForm";
 const { confirm } = Modal;
 
-const renderTableObj = (value, row, index) => {
-  const obj = {
-    children: value.name,
-    props: {},
-  };
-  return obj;
-};
 @withRouter
 class Customer extends Component {
   state = {
@@ -70,19 +63,19 @@ class Customer extends Component {
         title: "客户经理",
         key: "employee",
         dataIndex: "employee",
-        render: renderTableObj,
+        render: (employee) => <div>{employee?employee.name:''}</div>,
       },
       {
         title: "客户所在机构",
         key: "organization",
         dataIndex: "organization",
-        render: renderTableObj,
+        render: (organization) => <div>{organization.name}</div>,
       },
       {
         title: "客户等级",
         key: "ranking",
         dataIndex: "ranking",
-        render: (text) => <div>{text?text:'-'}</div>,
+        render: (ranking) => <div>{ranking?ranking:'-'}</div>,
       },
       {
         title: "操作",
