@@ -340,6 +340,12 @@ export const reqExportRedemption = (params) =>
     responseType: "blob",
   });
 
+export const reqExportDistributions = (params) =>
+ajax.get(BASE + "/myriad/distributions/export", {
+  params: params,
+  responseType: "blob",
+});
+
 //公共标签
 export const reqPostTags = (params) => ajax.post(BASE + "/tags", params);
 export const reqDelTag = (id) => ajax.delete(BASE + "/tags/" + id);

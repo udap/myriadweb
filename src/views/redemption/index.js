@@ -307,7 +307,7 @@ class Redemption extends Component {
       endDate: this.state.endDate,
       searchTxt: this.state.searchTxt,
     };
-    const filename = 'redemption.xlsx';
+    const filename = 'redemptions.xlsx';
     reqExportRedemption(params).then(
       response => {
         FileSaver.saveAs(response.data, filename);
