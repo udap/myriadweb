@@ -149,7 +149,7 @@ class Customer extends Component {
   };
   getCustomerDetail = async (customer, name) => {
     let result = await reqGetCustomer(customer.uid);
-    if (result.data.retcode === 0) {
+    if (result && result.data && result.data.retcode === 0) {
       this.setState({
         isNew: false,
         [name]: true,
@@ -172,8 +172,19 @@ class Customer extends Component {
     this.getCustomerList(page, this.state.searchTxt, this.state.restricted);
   };
   showDetailDrawer = (customer) => {
-    this.getCustomerDetail(customer, "showDetail");
+    console.log("selected",customer);
+    this.setState({
+      isNew: false,
+      showDetail: true,
+      selectedCustomer: customer,
+    });
   };
+
+  isAuthorized = async (operation) => {
+    const result = await reqPermit(operation);
+    return result;
+  };
+
   addCustomer = async () => {
     const result = await reqPermit("CREATE_CUSTOMER");
     if (result) {
@@ -185,10 +196,16 @@ class Customer extends Component {
     }
   };
 
-  editCustomer = async (customer) => {
-    const result = await reqPermit("UPDATE_CUSTOMER");
-    if (result) {
-      this.getCustomerDetail(customer, "showForm");
+  editCustomer = (customer) => {
+    const result = this.isAuthorized("UPDATE_CUSTOMER");
+    console.log("editCustomer:",result);
+     if (result) {
+      this.setState({
+        isNew: false,
+        showForm: true,
+        selectedCustomer: customer,
+      });
+//      this.getCustomerDetail(customer, "showForm");
     }
   };
   deleteCustomer = async (chooseItem) => {
@@ -247,7 +264,7 @@ class Customer extends Component {
       tableLoading,
     } = this.state;
     return (
-      <div>
+      <>
         <PageHeader
           className="site-page-header-responsive cont"
           title="我的客户"
@@ -305,12 +322,12 @@ class Customer extends Component {
             selectedCustomer={selectedCustomer}
           />
         ) : null}
-      </div>
+      </>
     );
   };
   render() {
     const { inited } = this.state;
-    return <div>{inited ? this.renderContent() : <Loading />}</div>;
+    return <>{inited ? this.renderContent() : <Loading />}</>;
   }
 }
 

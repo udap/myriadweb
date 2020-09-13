@@ -21,24 +21,21 @@ class CustomerView extends Component {
                 <Descriptions.Item label="手机号">
                   {selectedCustomer.cellphone}
                 </Descriptions.Item>
-                <Descriptions.Item label="员工编码">
-                  {selectedCustomer.code ? selectedCustomer.code : "-"}
-                </Descriptions.Item>
                 <Descriptions.Item label="客户经理">
                   {selectedCustomer.employee
                     ? selectedCustomer.employee.name
                     : "-"}
                 </Descriptions.Item>
-                <Descriptions.Item label="员工所在机构">
+                <Descriptions.Item label="所属机构">
                   {selectedCustomer.organization
                     ? selectedCustomer.organization.name
-                    : "-"}
+                    : ""}
                 </Descriptions.Item>
                 <Descriptions.Item label="客户等级">
-                  {selectedCustomer.ranking?selectedCustomer.ranking:'-'}
+                  {selectedCustomer.ranking?selectedCustomer.ranking:''}
                 </Descriptions.Item>
                 <Descriptions.Item label="备注">
-                  {selectedCustomer.remarks?selectedCustomer.remarks:'-'}
+                  {selectedCustomer.remarks?selectedCustomer.remarks:''}
                 </Descriptions.Item>
                 <Descriptions.Item label="添加时间">
                   {selectedCustomer.createTime}

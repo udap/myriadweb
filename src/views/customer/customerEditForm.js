@@ -5,8 +5,7 @@ import {
   Input,
   Button,
   Select,
-  Row,
-  Col,
+  Spin,
   notification,
 } from "antd";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
@@ -14,7 +13,7 @@ import {
   reqPostCustomer,
   reqPutCustomer,
   reqGetCustomerRankings,
-  reqVerifyCustomer, //获取客户验证码
+  reqGetEmployees,
 } from "../../api";
 import storageUtils from "../../utils/storageUtils";
 
@@ -28,6 +27,9 @@ class CustomerEditForm extends Component {
     number: 60,
     selectedCustomer: this.props.selectedCustomer,
     rankList: [],
+    fetching: false,
+    employees: [],
+    selectedEmployee: null,
   };
 
   componentDidMount() {
@@ -90,11 +92,10 @@ class CustomerEditForm extends Component {
       cellphone: values.cellphone,
       remarks: values.remarks,
       ranking: values.ranking,
+      mgrUid: values.csr.key,
     };
-
+    console.log("form values: ", params);
     if (this.state.isNew) {
-      //验证码
-//      params.smsCode = values.smsCode;
       const result = await reqPostCustomer(params);
       this.setState({
         loading: false,
@@ -128,9 +129,50 @@ class CustomerEditForm extends Component {
       }
     }
   };
+
+  handleChange = (selectedEmployee) => {
+    this.setState({
+      selectedEmployee,
+      employees: [],
+      fetching: false,
+    });
+  };
+
+  fetchEmployees = async (searchTxt) => {
+    this.setState({ 
+      employees: [], 
+      fetching: true 
+    });
+    const params = {
+      sort: ["name"],
+      size: 100,
+      orgUid: storageUtils.getUser().orgUid,
+      searchTxt: searchTxt,
+      status: "ACTIVE",
+    };
+    const result = await reqGetEmployees(params);
+    const data = result && result.data ? result.data.content : [];
+    const employees = data.content.map(e=>({
+      uid: e.uid,
+      name: e.name,
+      code: e.code,
+      cellphone: e.cellphone,
+    }));
+    this.setState({
+      employees,
+      fetching: false
+    });
+  };
+
   render() {
-    const { name, cellphone, ranking, remarks } = this.state.selectedCustomer;
-    let { isNew, visible } = this.props;
+    const {fetching, employees} = this.state;
+    const { isNew, visible } = this.props;
+    const { name, cellphone, ranking, remarks,employee } = this.state.selectedCustomer;
+    const selectedEmployee = {
+      key: employee.uid,
+      label: employee.name,
+      value: employee.uid,
+    }
     return (
       <Drawer
         width={480}
@@ -147,6 +189,7 @@ class CustomerEditForm extends Component {
             cellphone: cellphone,
             ranking: ranking,
             remarks: remarks,
+            csr: selectedEmployee,
           }}
           onFinish={this.onFinish}
           onValuesChange={this.onValuesChange}
@@ -169,51 +212,22 @@ class CustomerEditForm extends Component {
               value={this.state.cellphone}
             />
           </Form.Item>
-{/*           {isNew ? (
-            <Form.Item
-              name="smsCode"
-              label="验证码"
-              type="number"
-              rules={[
-                {
-                  required: true,
-                },
-                {
-                  len: 6,
-                },
-              ]}
+          <Form.Item name="csr" label="客户经理">
+            <Select showSearch labelInValue
+              placeholder="请输入姓名、员工号或手机号"
+              value={selectedEmployee}
+              filterOption={false}
+              notFoundContent={fetching ? <Spin size="small" /> : null}
+              onSearch={this.fetchEmployees}
+              onChange={this.handleChange}
+              disabled={isNew?true:false} 
+              allowClear
             >
-              <Row gutter={8}>
-                <Col span={14}>
-                  <Input
-                    placeholder="请输入验证码"
-                    name="verificationCode"
-                    value={this.state.verificationCode}
-                  />
-                </Col>
-                <Col span={10}>
-                  <Button
-                    className="getCodeBtn"
-                    type="primary"
-                    block
-                    loading={this.state.iconLoading}
-                    onClick={this.enterIconLoading.bind(
-                      this,
-                      this.state.cellphone
-                    )}
-                    disabled={this.state.unableClick}
-                  >
-                    <span className="btnText">
-                      {this.state.unableClick
-                        ? this.state.number + "秒"
-                        : "验证码"}
-                    </span>
-                  </Button>
-                </Col>
-              </Row>
-            </Form.Item>
-          ) : null}
- */}
+              {employees.map(e => (
+                <Option key={e.uid}>{e.name}</Option>
+              ))}     
+            </Select>
+          </Form.Item>
           <Form.Item name="ranking" label="客户等级">
             <Select
               placeholder="请选择客户等级"
