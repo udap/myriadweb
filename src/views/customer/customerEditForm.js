@@ -167,11 +167,11 @@ class CustomerEditForm extends Component {
   render() {
     const {fetching, employees} = this.state;
     const { isNew, visible } = this.props;
-    const { name, cellphone, ranking, remarks,employee } = this.state.selectedCustomer;
+    const { name, cellphone, ranking, remarks, employee } = this.state.selectedCustomer;
     const selectedEmployee = {
-      key: employee.uid,
-      label: employee.name,
-      value: employee.uid,
+      key: isNew?"":employee.uid,
+      label: isNew?"":employee.name,
+      value: isNew?"":employee.uid,
     }
     return (
       <Drawer
