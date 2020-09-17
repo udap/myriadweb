@@ -236,7 +236,7 @@ class CustomerEditForm extends Component {
             >
               {this.state.rankList && this.state.rankList.length > 0
                 ? this.state.rankList.map((item) => (
-                    <Option value={item.uid}>{item.name}</Option>
+                    <Option value={item.name}>{item.name}</Option>
                   ))
                 : null}
             </Select>
