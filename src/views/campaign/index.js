@@ -31,6 +31,7 @@ import {
   reqBatchDistribution,
   reqGetNumber,
   reqGetCampaignById,
+  reqIssueVouchers,
 } from "../../api";
 import ReactFileReader from "react-file-reader";
 import { Loading } from "../../components";
@@ -38,6 +39,8 @@ import "./index.less";
 import "../../css/common.less";
 import CampaignDetail from "./campaignDetail";
 import QueryForm from "./queryForm";
+import IssueForm from "./issueForm";
+import { tsThisType } from "@babel/types";
 const { confirm } = Modal;
 class Campaign extends Component {
   state = {
@@ -45,6 +48,7 @@ class Campaign extends Component {
     campaigns: [],
     addNew: false,
     showCSV: false,
+    showIssuingPanel: false,
     //分配与发放
     action: null,
     customerOnly: true,
@@ -235,6 +239,15 @@ class Campaign extends Component {
           <span>
             <b
               onClick={() => {
+                this.showIssuingDrawer(chooseItem);
+              }}
+              className="ant-blue-link cursor"
+            >
+              增发
+            </b>
+            <Divider type="vertical" />
+            <b
+              onClick={() => {
                 this.showCSV("transfer", chooseItem);
               }}
               className="ant-blue-link cursor"
@@ -374,13 +387,14 @@ class Campaign extends Component {
   handleCancel = () => {
     this.setState({
       showCSV: false,
+      showIssuingPanel: false,
     });
   };
   handleFiles = async (files) => {
     var reader = new FileReader();
     reader.onload = function (e) {
       // Use reader.result
-      console.log(reader.result);
+//      console.log(reader.result);
       //3506005,1   3309005,2
     };
     reader.readAsText(files[0]);
@@ -431,6 +445,39 @@ class Campaign extends Component {
     });
     this.getCampaigns(null, page);
   };
+
+  changeIssuingAmount = (value) => {
+    console.log("issue amount", value);
+  };
+
+  showIssuingDrawer = (item) => {
+    this.setState({
+      showIssuingPanel: true,
+      chooseItem: item,
+    })
+  };
+
+  issueVouchers = async (values) => {
+    console.log("values", values);
+    let params = {
+      count: values.amount,
+      campaignId: this.state.chooseItem.id,
+    };
+    const result = await reqIssueVouchers(this.state.chooseItem.id, params);
+    if (result && result.data && result.data.content) {
+      let str0 =
+        "增发票券" +
+        result.data.content.count +
+        "张，后台正在处理中！";
+      notification.success({
+        message: str0,
+      });
+      // refresh campaign list
+      this.getCampaigns(null, 1);
+    }
+    this.handleCancel();
+  };
+
   //分配发放票券
   showCSVModal = () => {
     const { action } = this.state;
@@ -572,6 +619,10 @@ class Campaign extends Component {
             onClose={this.closeDetail}
             visible={showDetail}
           />
+        ) : null}
+        {this.showIssuingDrawer? (
+          <IssueForm visible={this.state.showIssuingPanel} 
+            onSubmit={this.issueVouchers} onClose={this.handleCancel} />
         ) : null}
       </>
     );

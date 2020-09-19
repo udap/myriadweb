@@ -63,7 +63,9 @@ export const reqGetNumber = (campaignId, owner, action) =>
       "&action=" +
       action.toUpperCase()
   );
-
+//增发票券
+export const reqIssueVouchers = (id, params) =>
+  ajax.post(BASE + "/myriad/campaigns/"+id+"/vouchers", params);
 //批量分配reqTransfer
 export const reqBatchTransfer = (params) =>
   ajax.post(BASE + "/myriad/vouchers/batchTransfer", params, {

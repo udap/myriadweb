@@ -5,12 +5,19 @@ import {
   Input,
   Button,
   Select,
+  Checkbox,
+  Space,
   Spin,
   notification,
 } from "antd";
+import {
+  UploadOutlined,
+} from "@ant-design/icons";
+import ReactFileReader from "react-file-reader";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
   reqPostCustomer,
+  reqBatchImport,
   reqPutCustomer,
   reqGetCustomerRankings,
   reqGetEmployees,
@@ -30,6 +37,7 @@ class CustomerEditForm extends Component {
     fetching: false,
     employees: [],
     selectedEmployee: null,
+    batchImport: false,
   };
 
   componentDidMount() {
@@ -94,7 +102,6 @@ class CustomerEditForm extends Component {
       ranking: values.ranking,
       mgrUid: values.csr.key,
     };
-    console.log("form values: ", params);
     if (this.state.isNew) {
       const result = await reqPostCustomer(params);
       this.setState({
@@ -163,9 +170,46 @@ class CustomerEditForm extends Component {
       fetching: false
     });
   };
+  enableBatchImport=(e)=>{
+    this.setState({
+      batchImport: e.target.checked,
+    })
+  };
+  handleFiles = async (files) => {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      // Use reader.result
+      console.log(reader.result);
+      //3506005,1   3309005,2
+    };
+    reader.readAsText(files[0]);
+
+    let formData = new FormData();
+    formData.append("csvFile", files[0]);
+    let result;
+    //批量导入
+    result = await reqBatchImport(formData);
+    console.log("import customers", result);
+    if (result && result.data && result.data.content.status === "PENDING") {
+      let str0 =
+        "正在导入" + result.data.content.requestedAmount + "个客户！";
+      notification.success({
+        message: str0,
+      });
+    } else {
+      notification.error({
+        message: "导入客户失败",
+      });
+    }
+
+    this.setState({
+      loading: false,
+    });
+    this.backIndex();
+  };
 
   render() {
-    const {fetching, employees} = this.state;
+    const {fetching, batchImport, employees} = this.state;
     const { isNew, visible } = this.props;
     const { name, cellphone, ranking, remarks, employee } = this.state.selectedCustomer;
     const selectedEmployee = {
@@ -190,11 +234,37 @@ class CustomerEditForm extends Component {
             ranking: ranking,
             remarks: remarks,
             csr: selectedEmployee,
+            batchImport: batchImport,
           }}
           onFinish={this.onFinish}
           onValuesChange={this.onValuesChange}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
+          {
+          isNew?(
+          <Form.Item name="batchImport">
+            <Checkbox onChange={this.enableBatchImport}>批量导入</Checkbox>
+          </Form.Item>
+          ):null
+          }
+          {
+          batchImport?(
+          <>
+          <Space direction="vertical">
+          <p>请上传批量导入文件</p>
+          <p className="description">文件格式: CSV</p>
+          <p className="description">文件表头：客户姓名,手机号码,客户等级</p>
+          <p className="description">数据示例：王某,18612345678,普通级</p>
+          </Space>
+          <ReactFileReader
+            handleFiles={this.handleFiles}
+            fileTypes={".csv"}
+          >
+            <Button type="primary" icon={<UploadOutlined />}>选择文件并上传</Button>
+          </ReactFileReader>
+          </>
+          ):(
+          <>
           <Form.Item
             label="客户姓名"
             name="name"
@@ -244,7 +314,6 @@ class CustomerEditForm extends Component {
           <Form.Item label="备注" name="remarks">
             <TextArea rows={4} />
           </Form.Item>
-
           <Form.Item>
             <Button
               type="primary"
@@ -254,6 +323,9 @@ class CustomerEditForm extends Component {
               提交
             </Button>
           </Form.Item>
+          </>
+          )
+          }
         </Form>
       </Drawer>
     );
