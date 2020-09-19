@@ -392,7 +392,7 @@ class Campaign extends Component {
     if (this.state.action === "transfer") {
       //transfer 批量分配
       result = await reqBatchTransfer(formData);
-      if (result && result.data && result.data.status === "IN_PROGRESS") {
+      if (result && result.data && result.data.status === "PENDING") {
         let str0 =
           "申请分配" + result.data.requestedAmount + "张票券，后台正在处理中！";
         notification.success({
@@ -408,7 +408,7 @@ class Campaign extends Component {
       //distributions 批量发券
       // formData.append("customerOnly", this.state.customerOnly);
       result = await reqBatchDistribution(formData);
-      if (result && result.data && result.data.customerCount) {
+      if (result && result.data && result.data.status === 'PENDING') {
         let str0 =
           "申请发放票券给" +
           result.data.customerCount +

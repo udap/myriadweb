@@ -357,12 +357,14 @@ export const reqGetSubsidiaries = (uid, params) =>
   ajax.get(BASE + "/organizations/" + uid + "/subsidiaries", {
     params: params,
   });
-
+ 
 //客户管理
 export const reqGetCustomers = (params) =>
   ajax.get(BASE + "/customers", { params: params });
 export const reqPostCustomer = (params) =>
   ajax.post(BASE + "/customers", params);
+export const reqBatchImport = (params) =>
+  ajax.post(BASE + "/customers/import",params);
 export const reqGetCustomer = (uid) => ajax(BASE + "/customers/" + uid);
 export const reqDelCustomer = (uid) => ajax.delete(BASE + "/customers/" + uid);
 export const reqPutCustomer = (uid, params) =>
