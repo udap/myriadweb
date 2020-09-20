@@ -42,7 +42,7 @@ class TransferStats extends Component {
         responsive: ["lg"],
       },
       {
-        title: "管户人",
+        title: "员工",
         dataIndex: "csrName",
       },
       {
@@ -56,17 +56,17 @@ class TransferStats extends Component {
         key: "csrOrgName",
       },
       {
-        title: "转入数量",
-        dataIndex: "amountIn",
-        key: "amountIn",
-      },
-      {
-        title: "转出数量",
+        title: "配出",
         dataIndex: "amountOut",
         key: "amountOut",
       },
       {
-        title: "净转入数量",
+        title: "配入",
+        dataIndex: "amountIn",
+        key: "amountIn",
+      },
+      {
+        title: "净出",
         dataIndex: "netAmount",
         key: "netAmount",
       },
@@ -137,6 +137,7 @@ class TransferStats extends Component {
     this.getStats(null, 1);
   };
   onPageChange = (page) => {
+    console.log("page",page);
     this.setState({
       currentPage: page,
     });
