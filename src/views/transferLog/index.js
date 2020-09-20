@@ -11,7 +11,7 @@ import { reqGetTransferStats } from "../../api";
 import { Loading } from "../../components";
 import "../../css/common.less";
 
-import QueryForm from "../campaign/queryForm";
+import QueryForm from "./queryForm";
 
 class TransferStats extends Component {
   state = {
@@ -24,24 +24,16 @@ class TransferStats extends Component {
     total: 0,
     visible: false,
     /*搜索框 */
-    searchTxt: "",
+    searchTxt: null,
     beginDate: comEvents.firstDayOfMonth(),
     endDate: null,
     loading: false,
     statsType: "user",
-    hasAuthority: false,
   };
   componentDidMount() {
     this.initColumns();
     this.getStats();
   }
-  initStats = async () => {
-      this.getStats(null, 1);
-      this.setState({
-        hasAuthority: true,
-      });
-  };
-
   initColumns() {
     this.columns = [
       {
@@ -85,15 +77,15 @@ class TransferStats extends Component {
 */
   getStats = async (values, currentPage, size) => {
     //owner 我的
-    let parmas = {
-        page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+    let params = {
+        page: currentPage > 0 ? currentPage - 1 : this.state.currentPage-1,
         size: size ? size : this.state.size,
         beginDate: values ? values.beginDate : this.state.beginDate,
         endDate: values ? values.endDate : this.state.endDate,
         keyword: values ? values.searchTxt : this.state.searchTxt,
       };
-
-    const result = await reqGetTransferStats(parmas);
+    console.log("params", params);
+    const result = await reqGetTransferStats(params);
     console.log("stats",result);
     const cont =
       result && result.data && result.data.content
@@ -135,14 +127,14 @@ class TransferStats extends Component {
       loading: true,
     });
   };
-  submitQuery = (params) => {
+  submitQuery = (values) => {
     this.setState({
       currentPage: 1,
-      beginDate: params['dateRange'][0].format("YYYY-MM-DD"),
-      endDate: params['dateRange'][1].format("YYYY-MM-DD"),
-      searchTxt: params.searchTxt,
+      beginDate: values['dateRange'][0].format("YYYY-MM-DD"),
+      endDate: values['dateRange'][1].format("YYYY-MM-DD"),
+      searchTxt: values.searchTxt,
     });
-    this.getStats(params, 1);
+    this.getStats(null, 1);
   };
   onPageChange = (page) => {
     this.setState({
