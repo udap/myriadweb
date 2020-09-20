@@ -20,7 +20,8 @@ import {
   Groups,
   Profile,
   TagManager,
-  Customer
+  Customer,
+  TransferStats,
 } from "../views";
 
 //公共路由
@@ -73,6 +74,13 @@ const privateRoutes = [
     component: Coupon,
     title: "票券管理",
     icon: "MoneyCollectOutlined",
+    isTop: true, //顶级菜单
+  },
+  {
+    pathname: "/admin/transfer",
+    component: TransferStats,
+    title: "分配统计",
+    icon: "SwapOutlined",
     isTop: true, //顶级菜单
   },
   {

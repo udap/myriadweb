@@ -226,6 +226,10 @@ export const reqPublishDis = (params) =>
 
 //票券管理 END
 
+// 查询分配汇总
+export const reqGetTransferStats = (params) =>
+  ajax.get(BASE + "/myriad/stats/transfer", {params: params});
+
 //结算管理 START
 //  查询结算单reqGetList
 export const reqGetSettlements = (params) =>

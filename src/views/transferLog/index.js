@@ -1,138 +1,117 @@
 import React, { Component } from "react";
 import {
-  Button,
   Table,
   PageHeader,
-  Input,
-  Tag,
-  Radio,
-  Form,
-  Row,
-  Col,
   Pagination,
 } from "antd";
+
 import storageUtils from "../../utils/storageUtils";
-import { reqGetDistributions } from "../../api";
+import comEvents from "../../utils/comEvents";
+import { reqGetTransferStats } from "../../api";
 import { Loading } from "../../components";
-import { distributionStatuses } from "../../utils/constants";
 import "../../css/common.less";
+
 import QueryForm from "../campaign/queryForm";
 
-class TransferListView extends Component {
+class TransferStats extends Component {
   state = {
     inited: false,
-    campaigns: [],
-    publisherId: storageUtils.getUser().orgId,
-    ownerId: storageUtils.getUser().id,
-    hasChoose: false,
-    merchantCode: "",
+    stats: [],
+    orgId: storageUtils.getUser().orgId,
+    userId: storageUtils.getUser().id,
     currentPage: 1,
     size: 20,
     total: 0,
     visible: false,
     /*搜索框 */
     searchTxt: "",
+    beginDate: comEvents.firstDayOfMonth(),
+    endDate: null,
     loading: false,
-    chooseRadio: "owner",
+    statsType: "user",
     hasAuthority: false,
   };
   componentDidMount() {
     this.initColumns();
-    this.getList();
+    this.getStats();
   }
-  getList = async () => {
-      this.getMarkets(null, 1);
+  initStats = async () => {
+      this.getStats(null, 1);
       this.setState({
         hasAuthority: true,
       });
   };
 
   initColumns() {
-    //券号	营销活动	客户	发放时间	状态
     this.columns = [
       {
-        title: "券号",
-        dataIndex: "code",
-        key: "code",
-      },
-      {
-        title: "营销活动",
+        title: "活动名称",
         dataIndex: "campaignName",
-        key: "campaignName",
-        responsive: ['lg'],
+        responsive: ["lg"],
       },
       {
-        title: "发放人",
-        dataIndex: "fromOwnerName",
-        key: "fromOwnerName",
+        title: "管户人",
+        dataIndex: "csrName",
       },
       {
-        title: "客户",
-        dataIndex: "customerName",
-        key: "customerName",
+        title: "员工号",
+        dataIndex: "csrCode",
+        key: "csrCode",
       },
       {
-        title: "发放时间",
-        dataIndex: "updatedAt",
-        key: "updatedAt",
-        responsive: ['md'],
+        title: "所属机构",
+        dataIndex: "csrOrgName",
+        key: "csrOrgName",
       },
       {
-        title: "发放状态",
-        dataIndex: "status",
-        key: "status",
-        width: 100,
-        render: (text) => {
-          return (
-            <Tag color="green" key={text}>
-              {distributionStatuses.map((item, index) => (
-                <span key={index}>{item[text]}</span>
-              ))}
-            </Tag>
-          );
-        },
+        title: "转入数量",
+        dataIndex: "amountIn",
+        key: "amountIn",
+      },
+      {
+        title: "转出数量",
+        dataIndex: "amountOut",
+        key: "amountOut",
+      },
+      {
+        title: "净转入数量",
+        dataIndex: "netAmount",
+        key: "netAmount",
       },
     ];
   }
   /*
 获取列表数据
 */
-  getMarkets = async (values, currentPage, size, chooseRadio) => {
-    let typeStr = chooseRadio ? chooseRadio : this.state.chooseRadio;
+  getStats = async (values, currentPage, size) => {
     //owner 我的
-    let parmas =
-      typeStr === "owner"
-        ? {
-            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-            size: size ? size : this.state.size,
-            ownerId: this.state.ownerId,
-            searchTxt: values ? values : this.state.searchTxt,
-          }
-        : {
-            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-            size: size ? size : this.state.size,
-            issuerId: this.state.publisherId,
-            searchTxt: values ? values : this.state.searchTxt,
-          };
+    let parmas = {
+        page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+        size: size ? size : this.state.size,
+        beginDate: values ? values.beginDate : this.state.beginDate,
+        endDate: values ? values.endDate : this.state.endDate,
+        keyword: values ? values.searchTxt : this.state.searchTxt,
+      };
 
-    const result = await reqGetDistributions(parmas);
+    const result = await reqGetTransferStats(parmas);
+    console.log("stats",result);
     const cont =
       result && result.data && result.data.content
-        ? result.data.content.entries
-        : [];
-    let data = [];
+        ? result.data.content.entries : [];
+    let stats = [];
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
-        data.push({
+        stats.push({
           key: i,
-          id: cont[i].id,
-          code: cont[i].voucher.code,
+          campaignId: cont[i].campaign.id,
           campaignName: cont[i].campaign.name,
-          fromOwnerName: cont[i].fromOwnerName,
-          customerName: cont[i].customerName,
-          updatedAt: cont[i].updatedAt,
-          channel: cont[i].channel,
-          status: cont[i].status,
+          csrName: cont[i].csr.name,
+          csrCode: cont[i].csr.code,
+          csrOrgName: cont[i].csr.org.name,
+          csrOrgCode: cont[i].csr.org.code,
+          amountIn: cont[i].amountIn,
+          amountOut: cont[i].amountOut,
+          netAmount: cont[i].netAmount,
         });
       }
     }
@@ -142,14 +121,13 @@ class TransferListView extends Component {
         : 0;
     this.setState({
       inited: true,
-      campaigns: data,
+      stats: stats,
       total:
         result.data && result.data.content
           ? result.data.content.totalElements
           : 0,
       loading: false,
     });
-    //parseInt((this.receipts.length - 1) / PAGE_SIZE) + 1;//
   };
 
   enterLoading = () => {
@@ -157,52 +135,41 @@ class TransferListView extends Component {
       loading: true,
     });
   };
-  onFinish = (values) => {
+  submitQuery = (params) => {
     this.setState({
       currentPage: 1,
-      searchTxt: values.searchTxt,
+      beginDate: params['dateRange'][0].format("YYYY-MM-DD"),
+      endDate: params['dateRange'][1].format("YYYY-MM-DD"),
+      searchTxt: params.searchTxt,
     });
-    this.getMarkets(values.searchTxt, 1);
+    this.getStats(params, 1);
   };
-  handleTableChange = (page) => {
+  onPageChange = (page) => {
     this.setState({
       currentPage: page,
     });
-    this.getMarkets(null, page);
+    this.getStats(null, page);
   };
 
-  /*radio 切换*/
-  onRadioChange = (e) => {
-    //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
-    this.setState({
-      page: 0,
-      chooseRadio: e.target.value,
-      currentPage: 1,
-    });
-    this.getMarkets(null, 1, null, e.target.value);
-  };
-
-  renderContent = () => {
-    const { campaigns, size, total, currentPage, hasAuthority } = this.state;
+  renderTable = () => {
+    const { stats, size, total, currentPage } = this.state;
 
     return (
       <div>
         <PageHeader
           className="site-page-header-responsive cont"
-          title="发放记录"
-        ></PageHeader>
-        {hasAuthority ? (
-          <QueryForm loading={this.state.loading} 
-            onChangeCategory={this.onRadioChange} 
-            onLoad={this.enterLoading}
-            onSubmit={this.onFinish} />
-        ) : null}
-
+          title="配券记录"
+        />
+        <QueryForm 
+          loading={this.state.loading}
+          dateRange={[this.state.beginDate]}
+          onLoading={this.enterLoading}
+          onSubmit={this.submitQuery} />
         <Table
           rowKey="key"
           size="small"
           bordered
-          dataSource={campaigns}
+          dataSource={stats}
           columns={this.columns}
           pagination={false}
         />
@@ -210,7 +177,7 @@ class TransferListView extends Component {
           <Pagination
             pageSize={size}
             current={currentPage}
-            onChange={this.handleTableChange}
+            onChange={this.onPageChange}
             total={this.totalPages}
             showSizeChanger={false}
             size="small"
@@ -223,10 +190,10 @@ class TransferListView extends Component {
   render() {
     return (
       <div style={{ height: "100%" }}>
-        {this.state.inited ? this.renderContent() : <Loading />}
+        {this.state.inited ? this.renderTable() : <Loading />}
       </div>
     );
   }
 }
 
-export default TransferListView;
+export default TransferStats;

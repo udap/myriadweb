@@ -3,39 +3,42 @@ import {
   Form,
   Row,
   Col,
-  Radio,
+  DatePicker,
   Button,
   Input,
 } from "antd";
-import "../../css/common.less";
+import moment from "moment";
+import "moment/locale/zh-cn";
 
-const QueryForm = (props) => {
+import "../../css/common.less";
+const {RangePicker} = DatePicker;
+
+const QueryForm = ({loading, dateRange, onLoading, onSubmit}) => {
+  let beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date();
+  let endDate = dateRange && dateRange[1] ? dateRange[1] : new Date();
   return (
     <Form
-      onFinish={props.onSubmit}
+      onFinish={onSubmit}
       layout="horizontal"
       name="advanced_search"
       className="ant-advanced-search-form"
       initialValues={{
         searchTxt: "",
-        group: "owner",
+        dateRange: [moment(beginDate,"YYYY-MM-DD"),moment(endDate,"YYYY-MM-DD")]
       }}
     >
       <Row>
-        <Col>
-          <Form.Item name="group" label="查询条件">
-            <Radio.Group onChange={props.onChangeCategory}>
-              <Radio value="owner">我的</Radio>
-              <Radio value="organization">机构</Radio>
-            </Radio.Group>
-          </Form.Item>
-        </Col>
         <Col span={6}>
           <Form.Item name="searchTxt">
             <Input
-              placeholder="请输入活动名、标签或员工号进行搜索"
+              placeholder="请输入活动名或标签进行搜索"
               allowClear
             />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item name="dateRange">
+            <RangePicker format="YYYY-MM-DD" />
           </Form.Item>
         </Col>
         <Col>
@@ -44,8 +47,8 @@ const QueryForm = (props) => {
               type="primary"
               className="cursor searchBtn"
               htmlType="submit"
-              loading={props.loading}
-              onClick={props.onLoad}
+              loading={loading}
+              onClick={onLoading}
             >
               搜索
             </Button>

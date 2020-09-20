@@ -101,6 +101,11 @@ const Customer = Loadable({
   loading: Loading,
 });
 
+const TransferStats = Loadable({
+  loader: () => import("./transferLog"),
+  loading: Loading,
+});
+
 //同时更新routers路由
 export {
   MyOrgs,
@@ -125,4 +130,5 @@ export {
   TagManager,
   Subsidiaries,
   Customer,
+  TransferStats,
 };
