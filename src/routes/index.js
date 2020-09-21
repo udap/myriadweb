@@ -22,9 +22,8 @@ import {
   TagManager,
   Customer,
   TransferStats,
-} from "../views";
+} from "../views";//公共路由
 
-//公共路由
 const commonRoutes = [
   {
     pathname: "/login",
@@ -80,7 +79,7 @@ const privateRoutes = [
     pathname: "/admin/transfer",
     component: TransferStats,
     title: "我的配券",
-    icon: "RightSquareOutlined",
+    icon: "SwapOutlined",
     isTop: true, //顶级菜单
   },
   {
