@@ -4,7 +4,7 @@ import {
   PageHeader,
   Pagination,
 } from "antd";
-
+import NumberFormat from 'react-number-format';
 import storageUtils from "../../utils/storageUtils";
 import comEvents from "../../utils/comEvents";
 import { reqGetTransferStats } from "../../api";
@@ -13,6 +13,13 @@ import "../../css/common.less";
 
 import QueryForm from "./queryForm";
 
+const renderAmount = (value) => {
+  return (
+    <div style={{textAlign: "right"}}>
+    <NumberFormat value={value} displayType={'text'} thousandSeparator={true} />
+    </div>
+  );
+};
 class TransferStats extends Component {
   state = {
     inited: false,
@@ -59,16 +66,19 @@ class TransferStats extends Component {
         title: "配出",
         dataIndex: "amountOut",
         key: "amountOut",
+        render: renderAmount,
       },
       {
         title: "配入",
         dataIndex: "amountIn",
         key: "amountIn",
+        render: renderAmount,
       },
       {
-        title: "净出",
+        title: "净配出",
         dataIndex: "netAmount",
         key: "netAmount",
+        render: renderAmount,
       },
     ];
   }
