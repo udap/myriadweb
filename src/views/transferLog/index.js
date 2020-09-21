@@ -84,9 +84,7 @@ class TransferStats extends Component {
         endDate: values ? values.endDate : this.state.endDate,
         keyword: values ? values.searchTxt : this.state.searchTxt,
       };
-    console.log("params", params);
     const result = await reqGetTransferStats(params);
-    console.log("stats",result);
     const cont =
       result && result.data && result.data.content
         ? result.data.content.entries : [];
@@ -137,7 +135,6 @@ class TransferStats extends Component {
     this.getStats(null, 1);
   };
   onPageChange = (page) => {
-    console.log("page",page);
     this.setState({
       currentPage: page,
     });
@@ -151,7 +148,7 @@ class TransferStats extends Component {
       <div>
         <PageHeader
           className="site-page-header-responsive cont"
-          title="我的配券统计"
+          title="我的配券"
         />
         <QueryForm 
           loading={this.state.loading}
