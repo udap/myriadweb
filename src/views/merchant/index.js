@@ -248,7 +248,7 @@ class Merchant extends Component {
     this.setState({
       currentPage: page,
     });
-    this.getMerchant(page);
+    this.getMerchants(page);
   };
   showDetalConfirm = (item) => {
     let that = this;
