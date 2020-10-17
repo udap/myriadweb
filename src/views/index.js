@@ -106,6 +106,11 @@ const TransferStats = Loadable({
   loading: Loading,
 });
 
+const SummaryReport = Loadable({
+  loader: () => import("./analytics"),
+  loading: Loading,
+});
+
 //同时更新routers路由
 export {
   MyOrgs,
@@ -131,4 +136,5 @@ export {
   Subsidiaries,
   Customer,
   TransferStats,
+  SummaryReport,
 };

@@ -20,6 +20,7 @@ import {
   SolutionOutlined,
   SwapOutlined,
   InfoCircleOutlined,
+  FundOutlined,
 } from "@ant-design/icons";
 
 const IconFont = createFromIconfontCN({
@@ -68,6 +69,8 @@ class AntdIcon extends Component {
         return <SolutionOutlined />;
       case 'SwapOutlined':
         return <SwapOutlined/>;
+      case 'FundOutlined':
+        return <FundOutlined/>;
       default:
         return <InfoCircleOutlined />;
     }

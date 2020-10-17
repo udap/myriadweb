@@ -42,6 +42,8 @@ class FrameOut extends Component {
     "/admin/settlement",
     "/admin/tag",
     "/admin/customer",
+    "/admin/reports/individual",
+    "/admin/reports/organization",
   ];
   state = {
     collapsed: false,
@@ -79,7 +81,7 @@ class FrameOut extends Component {
       });
     } else {
       notification.warning({
-        message: "您尚未加入任何结构！请注册新机构或者退出",
+        message: "您尚未加入任何机构！请注册新机构或者退出",
       });
       this.props.history.push("/admin/dashboard");
     }
@@ -171,7 +173,7 @@ class FrameOut extends Component {
     // //更新title
     // let curTtile = comEvents.getTitle(location.pathname);
     // window.document.title = curTtile;
-    let curTtile = this.getTitle() || "江渝礼享";
+    let curTtile = this.getTitle() || "美意智慧营销平台";
 
     return (
       <ReactDocumentTitle title={curTtile}>

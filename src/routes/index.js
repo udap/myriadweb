@@ -22,6 +22,7 @@ import {
   TagManager,
   Customer,
   TransferStats,
+  SummaryReport,
 } from "../views";//公共路由
 
 const commonRoutes = [
@@ -44,7 +45,6 @@ const privateRoutes = [
     icon: "DashboardOutlined",
     isTop: true, //顶级菜单
   },
-
   {
     pathname: "/admin/campaign",
     component: Campaign,
@@ -95,6 +95,33 @@ const privateRoutes = [
     title: "核销记录",
     icon: "InteractionOutlined",
     isTop: true, //顶级菜单
+  },
+  {
+    pathname: "",
+    component: Empty,
+    title: "运营统计",
+    icon: "FundOutlined",
+    isTop: true, //顶级菜单
+    children: [
+      {
+        pathname: "/admin/reports/individual",
+        component: SummaryReport,
+        title: "按个人统计",
+        icon: "UserOutlined",
+        isTop: false, //顶级菜单
+        //exact: true,
+        isNav: true,
+      },
+      {
+        pathname: "/admin/reports/organization",
+        component: SummaryReport,
+        title: "按机构统计",
+        icon: "BankOutlined",
+        isTop: false, //顶级菜单
+        //exact: true,
+        isNav: true,
+      },
+    ],
   },
   {
     pathname: "/admin/employee",

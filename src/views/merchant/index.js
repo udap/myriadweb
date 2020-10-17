@@ -22,6 +22,7 @@ import {
   reqDelMerchant,
   reqPutMerchantTags,
   reqGetTags,
+  reqPutCampaignParties,
 } from "../../api";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import storageUtils from "../../utils/storageUtils";
@@ -81,7 +82,8 @@ class Merchant extends Component {
     expandedRowKeys: [],
   };
   componentDidMount() {
-    this.getMerchants(1);
+    const { currentPage, size } = this.state;
+    this.getMerchants(currentPage, size);
   }
   showModal = () => {
     this.setState({
@@ -99,10 +101,10 @@ class Merchant extends Component {
   /*
 获取列表数据
 */
-  getMerchants = async (currentPage, value) => {
+  getMerchants = async (currentPage, pageSize, value) => {
     const parmas = {
-      page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-      size: this.state.size,
+      page: currentPage-1,
+      size: pageSize,
       orgUid: storageUtils.getUser().orgUid,
       searchTxt: value ? value : this.state.searchTxt,
     };
@@ -146,7 +148,7 @@ class Merchant extends Component {
       currentPage: 1,
       searchTxt: value.searchTxt,
     });
-    this.getMerchants(1, value.searchTxt);
+    this.getMerchants(1, this.state.pageSize, value.searchTxt);
   };
 
   enterLoading = () => {
@@ -168,11 +170,12 @@ class Merchant extends Component {
     //   notification.info({ message: "对不起，您没有权限！" });
     //   return false;
     // }
+    const {pageSize} = this.state;
     const result = await reqDelMerchant(uid);
     this.setState({
       currentPage: 1,
     });
-    this.getMerchants(1);
+    this.getMerchants(1,pageSize);
   };
   onFinish = async (values) => {
     let params = {
@@ -183,13 +186,13 @@ class Merchant extends Component {
       merchantUid: values.merchantUid,
       orgUid: storageUtils.getUser().orgUid,
     };
-
+    const {pageSize} = this.state;
     const result = await reqAddMerchant(params);
     if (result) {
       this.setState({
         visible: false,
       });
-      this.getMerchants(1);
+      this.getMerchants(1, pageSize);
     }
   };
   //授权码
@@ -244,11 +247,20 @@ class Merchant extends Component {
     );
   };
 
-  handleTableChange = (page) => {
+  handleTableChange = (page, pageSize) => {
     this.setState({
+      size: pageSize,
       currentPage: page,
     });
-    this.getMerchants(page);
+    this.getMerchants(page, pageSize);
+  };
+  changePageSize = (current, pageSize) => {
+    console.log("page size", pageSize);
+    this.setState({
+      currentPage: 1,
+      size: pageSize,
+    })
+    this.getMerchants(1, pageSize);
   };
   showDetalConfirm = (item) => {
     let that = this;
@@ -428,10 +440,11 @@ class Merchant extends Component {
     const result = await reqAddMerchant(params);
     if (result) {
       this.setState({
+        currentPage: 1,
         visible: false,
         addMode: 1,
       });
-      this.getMerchants(1);
+      this.getMerchants(1, this.state.pageSize);
     } else {
       this.setState({
         visible: false,
@@ -608,6 +621,7 @@ class Merchant extends Component {
             pageSize={size}
             current={currentPage}
             onChange={this.handleTableChange}
+            onShowSizeChange={this.changePageSize}
             total={this.totalPages}
             showTotal={(total) => `总共 ${total} 条数据`}
           />

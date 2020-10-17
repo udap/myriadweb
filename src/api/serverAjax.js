@@ -43,6 +43,7 @@ axios.interceptors.response.use(
     }
   },
   function (error) {
+    console.log('error',error);
     if (error.response.status === 504 || error.response.status === 404) {
       //message.error("服务器被吃了⊙﹏⊙∥");
        notification.warning({

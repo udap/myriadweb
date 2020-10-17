@@ -386,5 +386,29 @@ export const reqGetVerificationCode = () =>
 export const reqPutPassword = (params) =>
   ajax.put(BASE + "/accounts/me/password", params);
   //密码登录
-  export const reqLoginByPassword = (params) =>
+export const reqLoginByPassword = (params) =>
   ajax.get(BASE + "/login",{ params: params });
+
+// reports
+export const reqGetCampaignOrgs = () => 
+  ajax(BASE + "/organizations/related");
+export const reqGetRelatedL2Orgs = () =>
+  ajax(BASE + "/organizations/related/L2");
+export const reqGetIndividualSummaryReport = (params) =>
+  ajax.get(BASE + "/myriad/stats/individual/operational", {
+    params: params,
+  });
+export const reqExportIndividualSummaryReport = (params) =>
+  ajax.get(BASE + "/myriad/stats/individual/operational/export", {
+    params: params,
+    responseType: "blob",
+  });
+export const reqGetOrganizationSummaryReport = (params) =>
+  ajax.get(BASE + "/myriad/stats/organization/operational", {
+    params: params,
+  });
+export const reqExportOrganizationSummaryReport = (params) =>
+  ajax.get(BASE + "/myriad/stats/organization/operational/export", {
+    params: params,
+    responseType: "blob",
+  });
