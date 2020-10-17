@@ -186,7 +186,7 @@ class OrganizationReport extends Component {
     if (summaryLevel === 'L2') {
       const l2Cols = [
         {
-          title: "机构名称",
+          title: "分支机构",
           dataIndex: "orgName",
           width: 180,
           fixed: 'left',
@@ -218,7 +218,7 @@ class OrganizationReport extends Component {
     } else {
       const l3Cols = [
         {
-          title: "主管机构",
+          title: "分支机构",
           dataIndex: "parentName",
           width: 180,
           fixed: 'left',
