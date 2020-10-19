@@ -18,7 +18,7 @@ import {
   UploadOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 import storageUtils from "../../utils/storageUtils";
 import { campaignStatuses } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
@@ -67,6 +67,7 @@ class Campaign extends Component {
     showDetail: false,
     //当前列表操作的活动
     listItem: null,
+    effective: "valid",
   };
   componentDidMount() {
     this.initColumns("participant");
@@ -74,7 +75,7 @@ class Campaign extends Component {
   }
 
   initColumns(value) {
-    let btnWidth = value === "participant" ? 230 : 50;
+    let btnWidth = value === "participant" ? 230 : 100;
     this.columns = [
       {
         title: "名称",
@@ -128,8 +129,12 @@ class Campaign extends Component {
         width: 90,
         render: (value) => {
           return (
-            <div style={{textAlign: "right"}}>
-            <NumberFormat value={value} displayType={'text'} thousandSeparator={true} />
+            <div style={{ textAlign: "right" }}>
+              <NumberFormat
+                value={value}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
             </div>
           );
         },
@@ -141,8 +146,12 @@ class Campaign extends Component {
         width: 90,
         render: (value) => {
           return (
-            <div style={{textAlign: "right"}}>
-            <NumberFormat value={value} displayType={'text'} thousandSeparator={true} />
+            <div style={{ textAlign: "right" }}>
+              <NumberFormat
+                value={value}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
             </div>
           );
         },
@@ -311,6 +320,16 @@ class Campaign extends Component {
     this.initColumns(e.target.value);
     this.getCampaigns(null, 1, e.target.value);
   };
+
+  onChangeEffective = (e) => {
+    this.setState({
+      page: 0,
+      currentPage: 1,
+      effective: e.target.value,
+    });
+    this.getCampaigns(null, 1, null, e.target.value);
+  };
+
   searchValue = (value) => {
     this.setState({
       searchTxt: value.searchTxt,
@@ -331,8 +350,8 @@ class Campaign extends Component {
   delItem = async (id) => {
     const result = await reqDelCampaign(id);
     this.setState({
-      currentPage:1
-    })
+      currentPage: 1,
+    });
     this.getCampaigns(null, 1);
   };
   publishItem = async (id) => {
@@ -345,8 +364,9 @@ class Campaign extends Component {
   /*
 获取列表数据
 */
-  getCampaigns = async (value, currentPage, type) => {
-    let typeStr = type ? type : this.state.value;
+  getCampaigns = async (value, currentPage, type, effective) => {
+    const typeStr = type ? type : this.state.value;
+    const typeEff = effective ? effective : this.state.effective;
     //一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
     //都需要传status=NON_EXPIRED
     const parmas =
@@ -355,7 +375,7 @@ class Campaign extends Component {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
             participantId: storageUtils.getUser().id,
-            status: "NEW_OR_EFFECTIVE",
+            status: typeEff !== "all" ? "NEW_OR_EFFECTIVE" : "",
             searchTxt: value ? value : this.state.searchTxt,
             sort: "updatedAt,desc",
           }
@@ -363,7 +383,7 @@ class Campaign extends Component {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: this.state.size,
             partyId: storageUtils.getUser().orgId,
-            status: "NON_EXPIRED",
+            status: typeEff !== "all" ? "NON_EXPIRED" : "",
             searchTxt: value ? value : this.state.searchTxt,
             sort: "updatedAt,desc",
           };
@@ -404,7 +424,7 @@ class Campaign extends Component {
     var reader = new FileReader();
     reader.onload = function (e) {
       // Use reader.result
-//      console.log(reader.result);
+      //      console.log(reader.result);
       //3506005,1   3309005,2
     };
     reader.readAsText(files[0]);
@@ -432,7 +452,7 @@ class Campaign extends Component {
       //distributions 批量发券
       // formData.append("customerOnly", this.state.customerOnly);
       result = await reqBatchDistribution(formData);
-      if (result && result.data && result.data.status === 'PENDING') {
+      if (result && result.data && result.data.status === "PENDING") {
         let str0 =
           "申请发放票券给" +
           result.data.customerCount +
@@ -464,7 +484,7 @@ class Campaign extends Component {
     this.setState({
       showIssuingPanel: true,
       chooseItem: item,
-    })
+    });
   };
 
   issueVouchers = async (values) => {
@@ -476,9 +496,7 @@ class Campaign extends Component {
     const result = await reqIssueVouchers(this.state.chooseItem.id, params);
     if (result && result.data && result.data.content) {
       let str0 =
-        "增发票券" +
-        result.data.content.count +
-        "张，后台正在处理中！";
+        "增发票券" + result.data.content.count + "张，后台正在处理中！";
       notification.success({
         message: str0,
       });
@@ -600,6 +618,7 @@ class Campaign extends Component {
         <QueryForm
           loading={this.state.loading}
           onChangeType={this.onChange}
+          onChangeEffective={this.onChangeEffective}
           enableLoading={this.enterLoading}
           onFinish={this.searchValue}
         />
@@ -630,16 +649,20 @@ class Campaign extends Component {
             visible={showDetail}
           />
         ) : null}
-        {this.showIssuingDrawer? (
-          <IssueForm visible={this.state.showIssuingPanel} 
-            onSubmit={this.issueVouchers} onClose={this.handleCancel} />
+        {this.showIssuingDrawer ? (
+          <IssueForm
+            visible={this.state.showIssuingPanel}
+            onSubmit={this.issueVouchers}
+            onClose={this.handleCancel}
+          />
         ) : null}
       </>
     );
   };
   render() {
     return (
-      <div key="content"
+      <div
+        key="content"
         style={{
           height: "100%",
         }}
