@@ -74,7 +74,7 @@ class Campaign extends Component {
   }
 
   initColumns(value) {
-    let btnWidth = value === "participant" ? 180 : 50;
+    let btnWidth = value === "participant" ? 230 : 50;
     this.columns = [
       {
         title: "名称",
@@ -181,6 +181,16 @@ class Campaign extends Component {
               >
                 查看
               </b>
+              <Divider type="vertical" />
+              <b
+                onClick={() => {
+                  this.props.history.push("/admin/campaign/edit/" + id);
+                }}
+                className="ant-blue-link cursor"
+              >
+                编辑
+              </b>
+
               {value === "participant" ? this.showExtraBtns(chooseItem) : null}
             </span>
           );
@@ -196,7 +206,7 @@ class Campaign extends Component {
         <Divider type="vertical" />
         {status === "INITIATED" ? (
           <span>
-            <b
+            {/* <b
               onClick={() => {
                 this.props.history.push("/admin/campaign/edit/" + id);
               }}
@@ -204,7 +214,7 @@ class Campaign extends Component {
             >
               编辑
             </b>
-            <Divider type="vertical" />
+            <Divider type="vertical" /> */}
             <Popconfirm
               title="确认发布吗?"
               onConfirm={this.publishItem.bind(this, id)}

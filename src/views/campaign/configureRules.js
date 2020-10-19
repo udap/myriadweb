@@ -69,8 +69,8 @@ class ConfigureRules extends Component {
     id: "",
     isNew: true,
     minimum: null,
-    btnLoading:false,
-    loading:false
+    btnLoading: false,
+    loading: false,
   };
   componentDidMount() {
     let id = this.props.id;
@@ -160,7 +160,6 @@ class ConfigureRules extends Component {
     }
   };
   onFinish = async (values) => {
-    
     const { orderStatus, merchantStatus, tagStatus, regionStatus } = this.state;
 
     if (orderStatus && !values.minimum) {
@@ -180,7 +179,7 @@ class ConfigureRules extends Component {
     }
     //显示loading
     this.setState({
-      btnLoading:true
+      btnLoading: true,
     });
 
     // redemption rules
@@ -191,7 +190,7 @@ class ConfigureRules extends Component {
       exps.push("#MinimumValue");
       rules.push({
         name: "MinimumValue",
-        option: parseFloat(values.minimum)*100,
+        option: parseFloat(values.minimum) * 100,
       });
     }
     // 这是商户规则部分
@@ -242,8 +241,8 @@ class ConfigureRules extends Component {
         message: "操作成功！",
       });
       this.setState({
-        btnLoading:false
-      })
+        btnLoading: false,
+      });
       this.backHome();
     }
   };
@@ -269,6 +268,7 @@ class ConfigureRules extends Component {
       regionStatus,
       minimum,
     } = this.state;
+    const { disabled } = this.props;
     let orderRule =
       orderRules && orderRules.name
         ? {
@@ -315,7 +315,7 @@ class ConfigureRules extends Component {
             tagType: tagType,
             regionType: regionType,
             //new
-            minimum: minimum ? (parseFloat(minimum)/100).toFixed(2):"",
+            minimum: minimum ? (parseFloat(minimum) / 100).toFixed(2) : "",
           }}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
@@ -329,6 +329,7 @@ class ConfigureRules extends Component {
               <Form.Item name={["orderRules", "name"]} label="&nbsp;">
                 <Checkbox.Group
                   onChange={this.onCheckboxChange.bind(this, "orderStatus")}
+                  disabled={disabled}
                 >
                   <Row>
                     <Col>
@@ -346,17 +347,17 @@ class ConfigureRules extends Component {
               </Form.Item>
               {orderStatus ? (
                 <Form.Item label="最低消费金额(元)：" name="minimum">
-                  <InputNumber min={0}
+                  <InputNumber
+                    min={0}
                     // defaultValue={
                     //   orderRule && orderRule.option ? (parseFloat(orderRule.option)/100).toFixed(2) : ""
                     // }
+                    disabled={disabled}
                   />
                 </Form.Item>
               ) : null}
             </Panel>
-            <Panel size="small" 
-              header="兑换规则：商户相关规则" 
-              key="2">
+            <Panel size="small" header="兑换规则：商户相关规则" key="2">
               <Form.Item name={["merchantRules", "name"]} label="&nbsp;">
                 <Row>
                   <Col>
@@ -366,6 +367,7 @@ class ConfigureRules extends Component {
                         this,
                         "merchantStatus"
                       )}
+                      disabled={disabled}
                     >
                       <Checkbox
                         defaultChecked={merchantStatus}
@@ -390,7 +392,7 @@ class ConfigureRules extends Component {
                           }
                           color="blue"
                           key={t.id ? t.id : t.partyId}
-                          closable
+                          closable={!disabled}
                         >
                           {t.fullName ? t.fullName : t.partyName}
                         </Tag>
@@ -399,17 +401,19 @@ class ConfigureRules extends Component {
                   </Row>
                 ) : null}
               </Form.Item>
-              {this.state.merchantStatus ? (
-                <div>
-                  <Form.Item label="&nbsp;">
-                    <b
-                      className="ant-green-link cursor"
-                      onClick={this.onClickSelectMerchants}
-                    >
-                      选择商户
-                    </b>
-                  </Form.Item>
-                </div>
+              {!disabled ? (
+                this.state.merchantStatus ? (
+                  <div>
+                    <Form.Item label="&nbsp;">
+                      <b
+                        className="ant-green-link cursor"
+                        onClick={this.onClickSelectMerchants}
+                      >
+                        选择商户
+                      </b>
+                    </Form.Item>
+                  </div>
+                ) : null
               ) : null}
               {/* A. 指定商户 B. 指定商户标签 C. 指定区域。 */}
               <Form.Item name={["tagRules", "name"]} label="&nbsp;">
@@ -418,6 +422,7 @@ class ConfigureRules extends Component {
                     <Checkbox.Group
                       defaultValue={tagStatus ? "SelectedTags" : ""}
                       onChange={this.onCheckboxChange.bind(this, "tagStatus")}
+                      disabled={disabled}
                     >
                       <Checkbox
                         value="SelectedTags"
@@ -464,6 +469,7 @@ class ConfigureRules extends Component {
                 <Checkbox.Group
                   defaultValue={regionStatus ? "SelectedRegions" : ""}
                   onChange={this.onCheckboxChange.bind(this, "regionStatus")}
+                  disabled={disabled}
                 >
                   <Row>
                     <Col>
@@ -635,7 +641,7 @@ class ConfigureRules extends Component {
         showTagForm={showTagForm}
         onSelectCommonTags={this.onSelectCommonTags}
         handleCancel={this.handleCancel}
-        />
+      />
     );
   };
   render() {

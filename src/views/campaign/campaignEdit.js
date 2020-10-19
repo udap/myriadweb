@@ -85,6 +85,10 @@ const formItemLayout = {
     span: 16,
   },
 };
+
+const isDisabled = (val) => {
+  return val !== "INITIATED";
+};
 @withRouter
 class CampaignEdit extends Component {
   state = {
@@ -342,6 +346,7 @@ class CampaignEdit extends Component {
       autoUpdate,
       distLimit,
     } = this.state.basicInfo;
+    const { status } = this.state.curInfo;
     return (
       <Form
         {...layout}
@@ -364,10 +369,14 @@ class CampaignEdit extends Component {
           name="name"
           rules={[{ required: true }, { max: 20 }]}
         >
-          <Input placeholder="请输入最多20个字的活动名称" maxLength="20" />
+          <Input
+            placeholder="请输入最多20个字的活动名称"
+            maxLength="20"
+            disabled={isDisabled(status)}
+          />
         </Form.Item>
         <Form.Item label="活动描述" name="description" rules={[{ max: 255 }]}>
-          <TextArea rows={4} />
+          <TextArea rows={4} disabled={isDisabled(status)} />
         </Form.Item>
         <Form.Item
           label="活动主页"
@@ -376,7 +385,7 @@ class CampaignEdit extends Component {
         >
           <Row>
             <Col span={20}>
-              <Input value={url} />
+              <Input value={url} disabled={isDisabled(status)} />
             </Col>
             <Col>
               <Button
@@ -407,21 +416,31 @@ class CampaignEdit extends Component {
           name="plannedSupply"
           rules={[{ required: true }]}
         >
-          <InputNumber min={0} />
+          <InputNumber min={0} disabled={isDisabled(status)} />
         </Form.Item>
-        <Form.Item name="autoUpdate" label="允许增发" rules={[{ required: true }]}>
-          <Switch defaultChecked={autoUpdate}/>
+        <Form.Item
+          name="autoUpdate"
+          label="允许增发"
+          rules={[{ required: true }]}
+        >
+          <Switch defaultChecked={autoUpdate} disabled={isDisabled(status)} />
         </Form.Item>
-        <Form.Item name="distMethod" label="发放形式" rules={[{ required: true }]}>
-          <Radio.Group>
-          <Radio style={radioStyle} value="CSR_DISTRIBUTE">
-            {distributionMethods.map((item, index) => (
-            <span key={index}>{item['CSR_DISTRIBUTE']}</span>)
-            )}
-          </Radio>
-          <Radio style={radioStyle} value="CUSTOMER_COLLECT">
-            {distributionMethods.map((item, index) => (<span key={index}>{item['CUSTOMER_COLLECT']}</span>))}
-          </Radio>
+        <Form.Item
+          name="distMethod"
+          label="发放形式"
+          rules={[{ required: true }]}
+        >
+          <Radio.Group disabled={isDisabled(status)}>
+            <Radio style={radioStyle} value="CSR_DISTRIBUTE">
+              {distributionMethods.map((item, index) => (
+                <span key={index}>{item["CSR_DISTRIBUTE"]}</span>
+              ))}
+            </Radio>
+            <Radio style={radioStyle} value="CUSTOMER_COLLECT">
+              {distributionMethods.map((item, index) => (
+                <span key={index}>{item["CUSTOMER_COLLECT"]}</span>
+              ))}
+            </Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item
@@ -430,7 +449,7 @@ class CampaignEdit extends Component {
           help="每人最高领取数量"
           rules={[{ required: true }]}
         >
-          <InputNumber min={1} />
+          <InputNumber min={1} disabled={isDisabled(status)} />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button
@@ -611,6 +630,7 @@ class CampaignEdit extends Component {
       effective,
       authorizationRequired,
     } = this.state.settings;
+    const { status } = this.state.curInfo;
     return (
       <div>
         <Form
@@ -652,7 +672,7 @@ class CampaignEdit extends Component {
             name="name"
             rules={[{ required: true }, { max: 10 }]}
           >
-            <Input style={{ width: 200 }} />
+            <Input style={{ width: 200 }} disabled={isDisabled(status)} />
           </Form.Item>
 
           <Form.Item
@@ -667,6 +687,7 @@ class CampaignEdit extends Component {
             <Radio.Group
               onChange={this.onRadioTypeChange}
               value={discountType}
+              disabled={isDisabled(status)}
             >
               <Radio value={"AMOUNT"} checked>
                 代金券
@@ -682,13 +703,13 @@ class CampaignEdit extends Component {
                 name={["discount", "valueOff"]}
                 rules={[{ required: true, message: "折扣比例是必填项" }]}
               >
-                <InputNumber />
+                <InputNumber disabled={isDisabled(status)} />
               </Form.Item>
               <Form.Item
                 label="最高优惠金额(元)"
                 name={["discount", "amountLimit"]}
               >
-                <InputNumber />
+                <InputNumber disabled={isDisabled(status)} />
               </Form.Item>
             </div>
           ) : (
@@ -697,7 +718,7 @@ class CampaignEdit extends Component {
               name={["discount", "valueOff"]}
               rules={[{ required: true, message: "金额是必填项" }]}
             >
-              <InputNumber min={1} />
+              <InputNumber min={1} disabled={isDisabled(status)} />
             </Form.Item>
           )}
           <Form.Item label="有效期" name="timeType">
@@ -705,6 +726,7 @@ class CampaignEdit extends Component {
               className="timeRadio"
               onChange={this.onRadioTimeChange}
               value={this.state.timeType}
+              disabled={isDisabled(status)}
             >
               <Radio name="timeType" style={radioStyle} value="date">
                 <span style={{ marginRight: "8px" }}>固定时间</span>
@@ -719,6 +741,7 @@ class CampaignEdit extends Component {
                     ),
                   ]}
                   onChange={this.changeSetDate}
+                  disabled={isDisabled(status)}
                 />
               </Radio>
               <Radio style={radioStyle} name="timeType" value="day">
@@ -773,8 +796,9 @@ class CampaignEdit extends Component {
             rules={[{ required: true }]}
           >
             <Radio.Group
-//              onChange={this.onCodeTypeChange}
-//              value={this.state.multiple}
+                        //              onChange={this.onCodeTypeChange}
+                        //              value={this.state.multiple}
+              disabled={isDisabled(status)}
             >
               <Radio value={true}>一码一券</Radio>
               {/*<Radio value={false}>通用码券</Radio>*/}
@@ -789,7 +813,7 @@ class CampaignEdit extends Component {
           ) : (
             <div> */}
           <Form.Item name="authorizationRequired" label="领取后需要额外授权">
-            <Switch defaultChecked={authorizationRequired} />
+            <Switch defaultChecked={authorizationRequired} disabled={isDisabled(status)} />
           </Form.Item>
           <Form.Item
             wrapperCol={{
@@ -940,6 +964,7 @@ class CampaignEdit extends Component {
         id={this.state.id}
         rules={rules}
         configRules={configRules}
+        disabled={isDisabled(this.state.curInfo.status)}
       />
       //      </div>
     );
@@ -948,7 +973,7 @@ class CampaignEdit extends Component {
   renderStep5 = () => {
     return (
       <div className="stepCont site-card-wrapper">
-        <CampaignMerchant id={this.state.id} parties={this.state.parties} />
+        <CampaignMerchant id={this.state.id} parties={this.state.parties} disabled={isDisabled(this.state.curInfo.status)} />
       </div>
     );
   };
