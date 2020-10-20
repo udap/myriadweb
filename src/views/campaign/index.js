@@ -75,7 +75,7 @@ class Campaign extends Component {
   }
 
   initColumns(value) {
-    let btnWidth = value === "participant" ? 230 : 100;
+    let btnWidth = value.includes("participant") ? 230 : 100;
     this.columns = [
       {
         title: "名称",
@@ -200,7 +200,9 @@ class Campaign extends Component {
                 编辑
               </b>
 
-              {value === "participant" ? this.showExtraBtns(chooseItem) : null}
+              {value.includes("participant")
+                ? this.showExtraBtns(chooseItem)
+                : null}
             </span>
           );
         },
@@ -369,7 +371,7 @@ class Campaign extends Component {
     const typeEff = effective ? effective : this.state.effective;
     //一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
     //都需要传status=NON_EXPIRED
-    const parmas =
+    let parmas =
       typeStr === "participant"
         ? {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
@@ -387,6 +389,12 @@ class Campaign extends Component {
             searchTxt: value ? value : this.state.searchTxt,
             sort: "updatedAt,desc",
           };
+    if (typeStr === "partyCreate") {
+      parmas = { ...parmas, partyType: "HOST" };
+    }
+    if (typeStr === "participantCreate") {
+      parmas = { ...parmas, participantType: "OWNER" };
+    }
     const result = await reqGetCampaigns(parmas);
     const cont = result && result.data ? result.data.content : [];
     this.totalPages = result && result.data ? result.data.totalElements : 1;
