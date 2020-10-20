@@ -60,7 +60,7 @@ axios.interceptors.response.use(
       storageUtils.removeOrg();
       storageUtils.removeToken();
       //返回登陆页
-      window.location.href = "/login#/login";
+      window.location.href = "#/login";
     } else if (error.response.status === 500) {
      // message.error("服务器开小差了⊙﹏⊙∥");
       notification.warning({
