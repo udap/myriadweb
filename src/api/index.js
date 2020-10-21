@@ -55,6 +55,11 @@ export const reqPublishCampaign = (id) =>
 // 终止活动
 export const reqTerminate = (id) =>
   ajax.put(BASE + `/myriad/campaigns/${id}/terminate`);
+// 模板下载
+export const reqDownloadTemplate = (name) =>
+  ajax.get(BASE + "/documents/" + name, {
+    responseType: "blob",
+  });
 //获取分配数量'/myriad/vouchers/count?campaignId=' + couponuid + '&owner=' + wx.getStorageSync('userId')
 export const reqGetNumber = (campaignId, owner, action) =>
   ajax.get(

@@ -20,6 +20,8 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import NumberFormat from "react-number-format";
+import FileSaver from "file-saver";
+
 import storageUtils from "../../utils/storageUtils";
 import { campaignStatuses } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
@@ -34,6 +36,7 @@ import {
   reqGetCampaignById,
   reqIssueVouchers,
   reqTerminate,
+  reqDownloadTemplate,
 } from "../../api";
 import ReactFileReader from "react-file-reader";
 import { Loading } from "../../components";
@@ -43,7 +46,9 @@ import CampaignDetail from "./campaignDetail";
 import QueryForm from "./queryForm";
 import IssueForm from "./issueForm";
 import { tsThisType } from "@babel/types";
+
 const { confirm } = Modal;
+
 class Campaign extends Component {
   state = {
     inited: false,
@@ -70,6 +75,7 @@ class Campaign extends Component {
     //当前列表操作的活动
     listItem: null,
     effective: "valid",
+    downloading: false,
   };
 
   componentDidMount() {
@@ -550,15 +556,39 @@ class Campaign extends Component {
     this.handleCancel();
   };
 
+  handleDownload = async (event, action) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({
+      downloading: true,
+    });
+    const filename = `${action}Template.csv`;
+    reqDownloadTemplate(filename)
+      .then((response) => {
+        FileSaver.saveAs(response.data, filename);
+        this.setState({
+          downloading: false,
+        });
+      })
+      .catch((e) => {
+        this.setState({
+          downloading: false,
+        });
+        notification.warning({
+          message: "下载失败，请稍后再试",
+        });
+      });
+  };
+
   //分配发放票券
   showCSVModal = () => {
-    const { action } = this.state;
+    const { action, downloading, number, showCSV } = this.state;
     const typeName = action === "transfer" ? "票券分配文件" : "票券发放文件";
     const typeTitle = action === "transfer" ? "分配票券" : "发放票券";
     return (
       <Modal
         title={typeTitle}
-        visible={this.state.showCSV}
+        visible={showCSV}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         footer={[]}
@@ -566,12 +596,12 @@ class Campaign extends Component {
         <div>
           <div class="market-number">
             {typeTitle === "分配票券" ? (
-              <span>当前可分配数量：{this.state.number}</span>
+              <span>当前可分配数量：{number}</span>
             ) : (
-              <span>当前可发放数量：{this.state.number}</span>
+              <span>当前可发放数量：{number}</span>
             )}
           </div>
-          <Descriptions title={"请上传" + `${typeName}`} column={2}>
+          <Descriptions title={`请上传${typeName}`} column={2}>
             <Descriptions.Item label="格式">csv</Descriptions.Item>
             <Descriptions.Item label="表头">
               {action === "transfer" ? "员工号,数量" : "客户手机号 "}
@@ -582,8 +612,18 @@ class Campaign extends Component {
               <Descriptions.Item label=""></Descriptions.Item>
             )}
 
-            <Descriptions.Item label="数据示例">
+            {/* <Descriptions.Item label="数据示例">
               {action === "transfer" ? "001,300" : "18512342534"}
+            </Descriptions.Item> */}
+            <Descriptions.Item label="模板示例">
+              <Button
+                style={{ paddingLeft: 0 }}
+                type="link"
+                loading={downloading}
+                onClick={(e) => this.handleDownload(e, action)}
+              >
+                点击下载
+              </Button>
             </Descriptions.Item>
             {/* {action === "distributions" ? (
                 <Descriptions.Item label="是否只发自己的客户">
