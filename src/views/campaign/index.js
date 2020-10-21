@@ -71,6 +71,7 @@ class Campaign extends Component {
     listItem: null,
     effective: "valid",
   };
+
   componentDidMount() {
     this.initColumns("participant");
     this.getCampaigns(null, 1);
@@ -213,9 +214,9 @@ class Campaign extends Component {
                     ? this.showExtraBtns(chooseItem)
                     : "无"
                 }
-                trigger="click"
+                trigger="hover"
               >
-                <b className="ant-gray-link cursor">更多</b>
+                <b className="ant-blue-link cursor">更多</b>
               </Popover>
             </span>
           );
