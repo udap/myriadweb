@@ -87,7 +87,7 @@ const formItemLayout = {
 };
 
 const isDisabled = (val) => {
-  return val !== "INITIATED";
+  return val === "ACTIVATED";
 };
 @withRouter
 class CampaignEdit extends Component {
@@ -116,6 +116,7 @@ class CampaignEdit extends Component {
     showUrl: false,
     //新增活动的id
     id: null,
+    curInfo: {},
 
     fileList: [],
     //配置信息
@@ -268,7 +269,9 @@ class CampaignEdit extends Component {
             ? voucherConfig.daysAfterDist
             : null,
         timeType: voucherConfig && voucherConfig.daysAfterDist ? "day" : "date",
-        authorizationRequired: voucherConfig ? voucherConfig.authorizationRequired:false,
+        authorizationRequired: voucherConfig
+          ? voucherConfig.authorizationRequired
+          : false,
       },
       current: current ? current : 1,
       hasConfig: cont.voucherConfig ? true : false,
@@ -330,9 +333,9 @@ class CampaignEdit extends Component {
   //第二步
   renderStep2 = () => {
     const radioStyle = {
-      display: 'block',
-      height: '30px',
-      lineHeight: '30px',
+      display: "block",
+      height: "30px",
+      lineHeight: "30px",
     };
     const {
       name,
@@ -584,8 +587,8 @@ class CampaignEdit extends Component {
   };
   //显示活动预览
   urlDrawerCont = () => {
-    const {showUrl} = this.state;
-    const {url} = this.state.basicInfo;
+    const { showUrl } = this.state;
+    const { url } = this.state.basicInfo;
     return (
       <div>
         <Drawer
@@ -796,8 +799,8 @@ class CampaignEdit extends Component {
             rules={[{ required: true }]}
           >
             <Radio.Group
-                        //              onChange={this.onCodeTypeChange}
-                        //              value={this.state.multiple}
+              //              onChange={this.onCodeTypeChange}
+              //              value={this.state.multiple}
               disabled={isDisabled(status)}
             >
               <Radio value={true}>一码一券</Radio>
@@ -813,7 +816,10 @@ class CampaignEdit extends Component {
           ) : (
             <div> */}
           <Form.Item name="authorizationRequired" label="领取后需要额外授权">
-            <Switch defaultChecked={authorizationRequired} disabled={isDisabled(status)} />
+            <Switch
+              defaultChecked={authorizationRequired}
+              disabled={isDisabled(status)}
+            />
           </Form.Item>
           <Form.Item
             wrapperCol={{
@@ -973,7 +979,11 @@ class CampaignEdit extends Component {
   renderStep5 = () => {
     return (
       <div className="stepCont site-card-wrapper">
-        <CampaignMerchant id={this.state.id} parties={this.state.parties} disabled={isDisabled(this.state.curInfo.status)} />
+        <CampaignMerchant
+          id={this.state.id}
+          parties={this.state.parties}
+          disabled={isDisabled(this.state.curInfo.status)}
+        />
       </div>
     );
   };
