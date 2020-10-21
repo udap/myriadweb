@@ -12,6 +12,7 @@ import {
   Pagination,
   Row,
   Col,
+  Popover,
 } from "antd";
 import {
   PlusSquareFilled,
@@ -32,6 +33,7 @@ import {
   reqGetNumber,
   reqGetCampaignById,
   reqIssueVouchers,
+  reqTerminate,
 } from "../../api";
 import ReactFileReader from "react-file-reader";
 import { Loading } from "../../components";
@@ -75,7 +77,7 @@ class Campaign extends Component {
   }
 
   initColumns(value) {
-    let btnWidth = value.includes("participant") ? 230 : 100;
+    let btnWidth = 140;
     this.columns = [
       {
         title: "名称",
@@ -179,7 +181,7 @@ class Campaign extends Component {
         //fixed: "right",
         width: btnWidth,
         render: (chooseItem) => {
-          const { id, status, name } = chooseItem;
+          const { id, status } = chooseItem;
           //INITIATED的时候前端可以查看/修改/发布；ACTIVATED的时候前端可以查看/分配票券
           //value==='participant' 才有按钮
           return (
@@ -190,19 +192,31 @@ class Campaign extends Component {
               >
                 查看
               </b>
+              {status !== "ACTIVATING" ? (
+                <span>
+                  <Divider type="vertical" />
+                  <b
+                    onClick={() => {
+                      this.props.history.push("/admin/campaign/edit/" + id);
+                    }}
+                    className="ant-blue-link cursor"
+                  >
+                    编辑
+                  </b>
+                </span>
+              ) : null}
               <Divider type="vertical" />
-              <b
-                onClick={() => {
-                  this.props.history.push("/admin/campaign/edit/" + id);
-                }}
-                className="ant-blue-link cursor"
+              <Popover
+                placement="topLeft"
+                content={
+                  value.includes("participant")
+                    ? this.showExtraBtns(chooseItem)
+                    : "无"
+                }
+                trigger="click"
               >
-                编辑
-              </b>
-
-              {value.includes("participant")
-                ? this.showExtraBtns(chooseItem)
-                : null}
+                <b className="ant-gray-link cursor">更多</b>
+              </Popover>
             </span>
           );
         },
@@ -214,18 +228,8 @@ class Campaign extends Component {
     const { id, status, name } = chooseItem;
     return (
       <div style={{ display: "inline" }}>
-        <Divider type="vertical" />
         {status === "INITIATED" ? (
           <span>
-            {/* <b
-              onClick={() => {
-                this.props.history.push("/admin/campaign/edit/" + id);
-              }}
-              className="ant-blue-link cursor"
-            >
-              编辑
-            </b>
-            <Divider type="vertical" /> */}
             <Popconfirm
               title="确认发布吗?"
               onConfirm={this.publishItem.bind(this, id)}
@@ -284,11 +288,42 @@ class Campaign extends Component {
             >
               发放
             </b>
+            <Divider type="vertical" />
+            <b
+              onClick={() => {
+                let that = this;
+                confirm({
+                  title: "确认终止【" + name + "】吗?",
+                  icon: <ExclamationCircleOutlined />,
+                  okText: "确认",
+                  okType: "danger",
+                  cancelText: "取消",
+                  onOk() {
+                    that.onTerminate(id);
+                  },
+                });
+              }}
+              className="ant-blue-link cursor"
+            >
+              终止
+            </b>
           </span>
-        ) : null}
+        ) : (
+          "无"
+        )}
       </div>
     );
   };
+
+  // 终止活动
+  onTerminate = async (value) => {
+    await reqTerminate(value);
+    this.setState({
+      currentPage: 1,
+    });
+    this.getCampaigns(null, 1);
+  };
+
   //展示活动详情
   showDetail = (item) => {
     this.reqGetCampaignById(item.id);

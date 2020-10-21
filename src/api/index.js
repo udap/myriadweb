@@ -52,6 +52,9 @@ export const reqDelCampaign = (id) =>
 //发布某个活动
 export const reqPublishCampaign = (id) =>
   ajax.put(BASE + "/myriad/campaigns/" + id + "/activate");
+// 终止活动
+export const reqTerminate = (id) =>
+  ajax.put(BASE + `/myriad/campaigns/${id}/terminate`);
 //获取分配数量'/myriad/vouchers/count?campaignId=' + couponuid + '&owner=' + wx.getStorageSync('userId')
 export const reqGetNumber = (campaignId, owner, action) =>
   ajax.get(
@@ -65,7 +68,7 @@ export const reqGetNumber = (campaignId, owner, action) =>
   );
 //增发票券
 export const reqIssueVouchers = (id, params) =>
-  ajax.post(BASE + "/myriad/campaigns/"+id+"/vouchers", params);
+  ajax.post(BASE + "/myriad/campaigns/" + id + "/vouchers", params);
 //批量分配reqTransfer
 export const reqBatchTransfer = (params) =>
   ajax.post(BASE + "/myriad/vouchers/batchTransfer", params, {
@@ -228,7 +231,7 @@ export const reqPublishDis = (params) =>
 
 // 查询分配汇总
 export const reqGetTransferStats = (params) =>
-  ajax.get(BASE + "/myriad/stats/transfer", {params: params});
+  ajax.get(BASE + "/myriad/stats/transfer", { params: params });
 
 //结算管理 START
 //  查询结算单reqGetList
@@ -347,10 +350,10 @@ export const reqExportRedemption = (params) =>
   });
 
 export const reqExportDistributions = (params) =>
-ajax.get(BASE + "/myriad/distributions/export", {
-  params: params,
-  responseType: "blob",
-});
+  ajax.get(BASE + "/myriad/distributions/export", {
+    params: params,
+    responseType: "blob",
+  });
 
 //公共标签
 export const reqPostTags = (params) => ajax.post(BASE + "/tags", params);
@@ -363,14 +366,14 @@ export const reqGetSubsidiaries = (uid, params) =>
   ajax.get(BASE + "/organizations/" + uid + "/subsidiaries", {
     params: params,
   });
- 
+
 //客户管理
 export const reqGetCustomers = (params) =>
   ajax.get(BASE + "/customers", { params: params });
 export const reqPostCustomer = (params) =>
   ajax.post(BASE + "/customers", params);
 export const reqBatchImport = (params) =>
-  ajax.post(BASE + "/customers/import",params);
+  ajax.post(BASE + "/customers/import", params);
 export const reqGetCustomer = (uid) => ajax(BASE + "/customers/" + uid);
 export const reqDelCustomer = (uid) => ajax.delete(BASE + "/customers/" + uid);
 export const reqPutCustomer = (uid, params) =>
@@ -385,13 +388,12 @@ export const reqGetVerificationCode = () =>
   ajax(BASE + "/phone/verificationCode?action=SET_PASSWORD");
 export const reqPutPassword = (params) =>
   ajax.put(BASE + "/accounts/me/password", params);
-  //密码登录
+//密码登录
 export const reqLoginByPassword = (params) =>
-  ajax.get(BASE + "/login",{ params: params });
+  ajax.get(BASE + "/login", { params: params });
 
 // reports
-export const reqGetCampaignOrgs = () => 
-  ajax(BASE + "/organizations/related");
+export const reqGetCampaignOrgs = () => ajax(BASE + "/organizations/related");
 export const reqGetRelatedL2Orgs = () =>
   ajax(BASE + "/organizations/related/L2");
 export const reqGetIndividualSummaryReport = (params) =>
