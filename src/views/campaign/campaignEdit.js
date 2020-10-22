@@ -25,7 +25,7 @@ import {
   reqPutCampaign,
 } from "../../api";
 import storageUtils from "../../utils/storageUtils";
-import { distributionMethods } from "../../utils/constants";
+import { distributionMethods, stepLists } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
 import { Loading, EditableTagGroup } from "../../components";
 import { withRouter } from "react-router-dom";
@@ -36,6 +36,8 @@ import CampaignTypeSelect from "./campaignTypeSelect";
 import "./index.less";
 import { thisExpression } from "@babel/types";
 import ConfigureRules from "./configureRules";
+import { GiftDeatils } from "./components";
+
 const layout = {
   labelCol: {
     xs: { span: 24 },
@@ -163,6 +165,7 @@ class CampaignEdit extends Component {
       },
     },
     configRules: [],
+    stepLists: [...stepLists],
   };
 
   componentDidMount() {
@@ -276,7 +279,18 @@ class CampaignEdit extends Component {
       current: current ? current : 1,
       hasConfig: cont.voucherConfig ? true : false,
       parties: cont.parties ? cont.parties : [],
+      campaignType: cont.type,
     });
+    if (cont.type === "GIFT") {
+      let tempStepLists = [...stepLists];
+      const index = tempStepLists.indexOf("设置规则");
+      if (index > -1) {
+        tempStepLists.splice(index, 1);
+      }
+      this.setState({ stepLists: [...tempStepLists] });
+    } else {
+      this.setState({ stepLists: [...stepLists] });
+    }
   };
 
   backIndex = () => {
@@ -302,13 +316,27 @@ class CampaignEdit extends Component {
   };
   //第一步
   renderStep1 = () => {
-    return <CampaignTypeSelect onSelect={this.chooseType} />;
+    const { status } = this.state.curInfo;
+    return (
+      <CampaignTypeSelect
+        onSelect={this.chooseType}
+        disabled={isDisabled(status)}
+      />
+    );
   };
   //选择活动类型
   chooseType = (item) => {
-    this.setState({
-      campaignType: item.type,
-    });
+    this.setState({ campaignType: item.type });
+    if (item.type === "GIFT") {
+      let tempStepLists = [...stepLists];
+      const index = tempStepLists.indexOf("设置规则");
+      if (index > -1) {
+        tempStepLists.splice(index, 1);
+      }
+      this.setState({ stepLists: [...tempStepLists] });
+    } else {
+      this.setState({ stepLists: [...stepLists] });
+    }
     //跳转到第二步
     this.nextStep();
   };
@@ -602,6 +630,7 @@ class CampaignEdit extends Component {
       </div>
     );
   };
+
   //选择图片上传
   // selectPic = (e) => {
   //   let imgObj = e.file.originFileObj;
@@ -617,47 +646,54 @@ class CampaignEdit extends Component {
   //     reader.readAsDataURL(imgObj);
   //   }
   // };
-  //第三步
+
+  // 第三步
   renderStep3 = () => {
     let {
-      multiple,
-      coverImg,
-      valueOff,
-      amountLimit,
-      description,
-      //code,
-      timeType,
-      discountType,
-      daysAfterDist,
-      name,
-      effective,
-      authorizationRequired,
-    } = this.state.settings;
-    const { status } = this.state.curInfo;
+      settings: {
+        multiple,
+        coverImg,
+        valueOff,
+        amountLimit,
+        description,
+        //code,
+        timeType,
+        discountType,
+        daysAfterDist,
+        name,
+        effective,
+        authorizationRequired,
+      },
+      curInfo: { status },
+      campaignType,
+    } = this.state;
     return (
-      <div>
-        <Form
-          name="validate_other"
-          {...formItemLayout}
-          onFinish={this.onFinish3}
-          initialValues={{
-            name: name ? name : this.state.basicInfo.name.substr(0, 10),
-            multiple: multiple,
-            discountType: discountType,
-            coverImg: coverImg,
-            description: description,
-            //code: code,
-            timeType: timeType,
-            daysAfterDist: daysAfterDist,
-            discount: {
-              valueOff: valueOff,
-              amountLimit: amountLimit,
-            },
-            authorizationRequired: authorizationRequired,
-          }}
-          validateMessages={defaultValidateMessages.defaultValidateMessages}
-        >
-          {/* 营销活动创建的“详细配置”（不是详情配置）按这样的顺序：
+      <>
+        {campaignType === "GIFT" ? (
+          <GiftDeatils />
+        ) : (
+          <Form
+            name="validate_other"
+            {...formItemLayout}
+            onFinish={this.onFinish3}
+            initialValues={{
+              name: name ? name : this.state.basicInfo.name.substr(0, 10),
+              multiple: multiple,
+              discountType: discountType,
+              coverImg: coverImg,
+              description: description,
+              //code: code,
+              timeType: timeType,
+              daysAfterDist: daysAfterDist,
+              discount: {
+                valueOff: valueOff,
+                amountLimit: amountLimit,
+              },
+              authorizationRequired: authorizationRequired,
+            }}
+            validateMessages={defaultValidateMessages.defaultValidateMessages}
+          >
+            {/* 营销活动创建的“详细配置”（不是详情配置）按这样的顺序：
           1/ 优惠券类型
           （2选1：固定码优惠券，一码一券）2/ 券号
           （只有当优惠券类型为固定码优惠券才需要出现）3/
@@ -667,113 +703,113 @@ class CampaignEdit extends Component {
           成2000或者50的整数）7/
           可用次数（默认为1）8/ 优惠券图片 9/ 备注 
 
-       注意“折扣类型”选择“代金券”是，需要输入“折扣金额”（改为“金额”）；
+          注意“折扣类型”选择“代金券”是，需要输入“折扣金额”（改为“金额”）；
           如果选择“折扣券”，就需要输入“折扣比例”和“最高优惠金额”两个参数
           */}
-          <Form.Item
-            label="优惠券名称"
-            name="name"
-            rules={[{ required: true }, { max: 10 }]}
-          >
-            <Input style={{ width: 200 }} disabled={isDisabled(status)} />
-          </Form.Item>
-
-          <Form.Item
-            name="discountType"
-            label="类型"
-            rules={[
-              {
-                required: false,
-              },
-            ]}
-          >
-            <Radio.Group
-              onChange={this.onRadioTypeChange}
-              value={discountType}
-              disabled={isDisabled(status)}
-            >
-              <Radio value={"AMOUNT"} checked>
-                代金券
-              </Radio>
-              <Radio value={"PERCENT"}>折扣券</Radio>
-            </Radio.Group>
-          </Form.Item>
-
-          {discountType === "PERCENT" ? (
-            <div>
-              <Form.Item
-                label="折扣比例(%)"
-                name={["discount", "valueOff"]}
-                rules={[{ required: true, message: "折扣比例是必填项" }]}
-              >
-                <InputNumber disabled={isDisabled(status)} />
-              </Form.Item>
-              <Form.Item
-                label="最高优惠金额(元)"
-                name={["discount", "amountLimit"]}
-              >
-                <InputNumber disabled={isDisabled(status)} />
-              </Form.Item>
-            </div>
-          ) : (
             <Form.Item
-              label="金额(元)"
-              name={["discount", "valueOff"]}
-              rules={[{ required: true, message: "金额是必填项" }]}
+              label="优惠券名称"
+              name="name"
+              rules={[{ required: true }, { max: 10 }]}
             >
-              <InputNumber min={1} disabled={isDisabled(status)} />
+              <Input style={{ width: 200 }} disabled={isDisabled(status)} />
             </Form.Item>
-          )}
-          <Form.Item label="有效期" name="timeType">
-            <Radio.Group
-              className="timeRadio"
-              onChange={this.onRadioTimeChange}
-              value={this.state.timeType}
-              disabled={isDisabled(status)}
+
+            <Form.Item
+              name="discountType"
+              label="类型"
+              rules={[
+                {
+                  required: false,
+                },
+              ]}
             >
-              <Radio name="timeType" style={radioStyle} value="date">
-                <span style={{ marginRight: "8px" }}>固定时间</span>
-                <RangePicker
-                  defaultValue={[
-                    moment(effective, dateFormat),
-                    moment(
-                      this.state.settings.end
-                        ? this.state.settings.end
-                        : this.state.basicInfo.end,
-                      dateFormat
-                    ),
-                  ]}
-                  onChange={this.changeSetDate}
-                  disabled={isDisabled(status)}
-                />
-              </Radio>
-              <Radio style={radioStyle} name="timeType" value="day">
-                <Row style={{ display: "inline-flex" }}>
-                  <Col>
-                    <span>相对时间</span>
-                  </Col>
-                  <Col>
-                    <span className="radioSpan">发放/领取后</span>
-                  </Col>
-                  <Col>
-                    <Form.Item name="daysAfterDist">
-                      <InputNumber min={1} />
-                    </Form.Item>
-                  </Col>
-                  <Col>
-                    <span className="radioSpan">天内有效</span>
-                  </Col>
-                </Row>
-              </Radio>
-            </Radio.Group>
-          </Form.Item>
-          {/* <Form.Item label="发放领取后多少天有效" name="time">
+              <Radio.Group
+                onChange={this.onRadioTypeChange}
+                value={discountType}
+                disabled={isDisabled(status)}
+              >
+                <Radio value={"AMOUNT"} checked>
+                  代金券
+                </Radio>
+                <Radio value={"PERCENT"}>折扣券</Radio>
+              </Radio.Group>
+            </Form.Item>
+
+            {discountType === "PERCENT" ? (
+              <div>
+                <Form.Item
+                  label="折扣比例(%)"
+                  name={["discount", "valueOff"]}
+                  rules={[{ required: true, message: "折扣比例是必填项" }]}
+                >
+                  <InputNumber disabled={isDisabled(status)} />
+                </Form.Item>
+                <Form.Item
+                  label="最高优惠金额(元)"
+                  name={["discount", "amountLimit"]}
+                >
+                  <InputNumber disabled={isDisabled(status)} />
+                </Form.Item>
+              </div>
+            ) : (
+              <Form.Item
+                label="金额(元)"
+                name={["discount", "valueOff"]}
+                rules={[{ required: true, message: "金额是必填项" }]}
+              >
+                <InputNumber min={1} disabled={isDisabled(status)} />
+              </Form.Item>
+            )}
+            <Form.Item label="有效期" name="timeType">
+              <Radio.Group
+                className="timeRadio"
+                onChange={this.onRadioTimeChange}
+                value={this.state.timeType}
+                disabled={isDisabled(status)}
+              >
+                <Radio name="timeType" style={radioStyle} value="date">
+                  <span style={{ marginRight: "8px" }}>固定时间</span>
+                  <RangePicker
+                    defaultValue={[
+                      moment(effective, dateFormat),
+                      moment(
+                        this.state.settings.end
+                          ? this.state.settings.end
+                          : this.state.basicInfo.end,
+                        dateFormat
+                      ),
+                    ]}
+                    onChange={this.changeSetDate}
+                    disabled={isDisabled(status)}
+                  />
+                </Radio>
+                <Radio style={radioStyle} name="timeType" value="day">
+                  <Row style={{ display: "inline-flex" }}>
+                    <Col>
+                      <span>相对时间</span>
+                    </Col>
+                    <Col>
+                      <span className="radioSpan">发放/领取后</span>
+                    </Col>
+                    <Col>
+                      <Form.Item name="daysAfterDist">
+                        <InputNumber min={1} />
+                      </Form.Item>
+                    </Col>
+                    <Col>
+                      <span className="radioSpan">天内有效</span>
+                    </Col>
+                  </Row>
+                </Radio>
+              </Radio.Group>
+            </Form.Item>
+            {/* <Form.Item label="发放领取后多少天有效" name="time">
             
           </Form.Item> */}
-          {/* <Form.Item label="备注 " name="description">
+            {/* <Form.Item label="备注 " name="description">
             <TextArea rows={4} />
           </Form.Item> */}
-          {/* <Form.Item
+            {/* <Form.Item
             label="优惠券图片"
             //name="coverImg"
             rules={[{ required: false }]}
@@ -793,21 +829,21 @@ class CampaignEdit extends Component {
               </Upload>
             </Form.Item>
           </Form.Item> */}
-          <Form.Item
-            name="multiple"
-            label="券码生成"
-            rules={[{ required: true }]}
-          >
-            <Radio.Group
-              //              onChange={this.onCodeTypeChange}
-              //              value={this.state.multiple}
-              disabled={isDisabled(status)}
+            <Form.Item
+              name="multiple"
+              label="券码生成"
+              rules={[{ required: true }]}
             >
-              <Radio value={true}>一码一券</Radio>
-              {/*<Radio value={false}>通用码券</Radio>*/}
-            </Radio.Group>
-          </Form.Item>
-          {/* {!this.state.multiple ? (
+              <Radio.Group
+                //              onChange={this.onCodeTypeChange}
+                //              value={this.state.multiple}
+                disabled={isDisabled(status)}
+              >
+                <Radio value={true}>一码一券</Radio>
+                {/*<Radio value={false}>通用码券</Radio>*/}
+              </Radio.Group>
+            </Form.Item>
+            {/* {!this.state.multiple ? (
             <div>
               <Form.Item label="券号" name="code" rules={[{ required: true }]}>
                 <Input />
@@ -815,29 +851,25 @@ class CampaignEdit extends Component {
             </div>
           ) : (
             <div> */}
-          <Form.Item name="authorizationRequired" label="领取后需要额外授权">
-            <Switch
-              defaultChecked={authorizationRequired}
-              disabled={isDisabled(status)}
-            />
-          </Form.Item>
-          <Form.Item
-            wrapperCol={{
-              span: 12,
-              offset: 6,
-            }}
-          >
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={this.state.disabledNext}
-              loading={this.state.loading}
-            >
-              下一步
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+            <Form.Item name="authorizationRequired" label="领取后需要额外授权">
+              <Switch
+                defaultChecked={authorizationRequired}
+                disabled={isDisabled(status)}
+              />
+            </Form.Item>
+            <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={this.state.disabledNext}
+                loading={this.state.loading}
+              >
+                下一步
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
+      </>
     );
   };
 
@@ -965,14 +997,12 @@ class CampaignEdit extends Component {
   renderStep4 = () => {
     const { rules, configRules } = this.state;
     return (
-      //      <div className="stepCont">
       <ConfigureRules
         id={this.state.id}
         rules={rules}
         configRules={configRules}
         disabled={isDisabled(this.state.curInfo.status)}
       />
-      //      </div>
     );
   };
   //第四步
@@ -1028,15 +1058,7 @@ class CampaignEdit extends Component {
   //显示创建活动内容
   renderContent = () => {
     //当前所在step 默认0
-    const { current, showUrl } = this.state;
-    //steps标题
-    const stepLists = [
-      "活动类型",
-      "基本信息",
-      "详细配置",
-      "设置规则",
-      //"参与商户",
-    ];
+    const { current, showUrl, stepLists } = this.state;
     return (
       <div>
         <Steps

@@ -5,8 +5,8 @@ const VOUCHER_COLLECT_URL = "/myriad/distributions/collect";
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const distributionMethods = [
-  { CSR_DISTRIBUTE: "手动发放（由营销人员决定发放对象）"},
-  { CUSTOMER_COLLECT: "手动领取（由客户主动领取）"},
+  { CSR_DISTRIBUTE: "手动发放（由营销人员决定发放对象）" },
+  { CUSTOMER_COLLECT: "手动领取（由客户主动领取）" },
 ];
 const campaignStatuses = [
   //INITIATED 草稿, ACTIVATING 券正在生成, ACTIVATED 券已生成, REJECTED 审批拒绝, ARCHIVED 已删除, TERMINATED 已终止;
@@ -40,6 +40,21 @@ const voucherTypes = [
   { GIFT: "礼品卡" },
   { PREPAID_CARD: "储值卡" },
   { MEMBERSHIP_CARD: "会员卡" },
+];
+
+const couponSubTypes = [
+  { COUPON: "优惠券" },
+  { GIFT: "礼品券" },
+  { PREPAID_CARD: "储值卡" },
+  { LOYALTY_CARD: "会员卡" },
+];
+
+const stepLists = [
+  "活动类型",
+  "基本信息",
+  "详细配置",
+  "设置规则",
+  // "参与商户",
 ];
 
 const settlementStatuses = [
@@ -226,4 +241,6 @@ export {
   roleTypes, //员工角色
   orgStatusesList, //机构状态列表
   tagStatuses, //公共标签
+  stepLists,
+  couponSubTypes,
 };
