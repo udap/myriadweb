@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import { Button, Input, Col, Row, Table,Drawer } from "antd";
-import {
-  reqGetMerchants
-} from "../../../api";
+import { Button, Input, Col, Row, Table, Drawer } from "antd";
+import { reqGetMerchants } from "../../../api";
 import storageUtils from "../../../utils/storageUtils";
 import { Loading } from "../../../components";
 import "../../../css/common.less";
@@ -43,8 +41,8 @@ class MerchantSelect extends Component {
   componentDidMount() {
     let id = this.props.id;
     this.setState({
-      id:id
-    })
+      id: id,
+    });
     this.getMerchants(1); //this.state.currentPage
   }
   // obtain authorized merchants of current org
@@ -53,7 +51,7 @@ class MerchantSelect extends Component {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       orgUid: storageUtils.getUser().orgUid,
-//      excludeCampaignId: this.state.id,
+      //      excludeCampaignId: this.state.id,
       searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
     };
     const result = await reqGetMerchants(parmas);
@@ -92,9 +90,9 @@ class MerchantSelect extends Component {
   onSubmitSelection = () => {
     this.setState({ loading: true });
     let selectedMerchants = this.state.selectedMerchants;
-    
+
     this.props.handleSelection(selectedMerchants);
-    return false
+    return false;
     // this.setState({
     //   merchants: [],
     //   selectedRowKeys: [],
@@ -102,6 +100,7 @@ class MerchantSelect extends Component {
     //   loading: false,
     // });
   };
+
   handleOrgChange = (e) => {
     this.setState({
       searchTxt: e.target.value,
@@ -116,6 +115,7 @@ class MerchantSelect extends Component {
     this.getMerchants(1, this.state.searchTxt);
   };
   onSelectChange = (selectedRowKeys, selectedRows) => {
+    const { selectionType } = this.props;
     // let merchants = this.state.merchants || [];
     // let selectedMerchants = [];
     // for (var i = 0; i < selectedRowKeys.length; i++) {
@@ -125,22 +125,35 @@ class MerchantSelect extends Component {
     //   }
     // }
     // merge previous selections
-    let selectedMerchants = comEvents.mergeArrays(this.state.selectedMerchants,selectedRows);
-    let rowKeys = comEvents.mergeArrays(this.state.selectedRowKeys,selectedRowKeys);
+    let selectedMerchants = comEvents.mergeArrays(
+      this.state.selectedMerchants,
+      selectedRows
+    );
+    let rowKeys = comEvents.mergeArrays(
+      this.state.selectedRowKeys,
+      selectedRowKeys
+    );
     this.setState({
-      selectedRowKeys: rowKeys,
-      selectedMerchants: selectedMerchants,
+      selectedRowKeys:
+        selectionType === "radio" ? [...selectedRowKeys] : [...rowKeys],
+      selectedMerchants:
+        selectionType === "radio"
+          ? [...selectedMerchants]
+          : [...selectedMerchants],
     });
   };
   onSelect = (record, selected, selectedRows) => {
     if (!selected) {
-      let {selectedRowKeys} = this.state;
-      selectedRowKeys.splice(selectedRowKeys.findIndex(item => item === record.key), 1);
+      let { selectedRowKeys } = this.state;
+      selectedRowKeys.splice(
+        selectedRowKeys.findIndex((item) => item === record.key),
+        1
+      );
       this.setState({
         selectedRowKeys: selectedRowKeys,
       });
     }
-  }
+  };
   render() {
     const {
       loading,
@@ -150,12 +163,14 @@ class MerchantSelect extends Component {
       currentPage,
       searchTxt,
     } = this.state;
+    const { selectionType = "checkbox" } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange,
       onSelect: this.onSelect,
-//      hideDefaultSelections: true,
-      //selections: [Table.SELECTION_ALL],
+      type: selectionType,
+      // hideDefaultSelections: true,
+      // selections: [Table.SELECTION_ALL],
     };
     const hasSelected = selectedRowKeys.length > 0;
     return (

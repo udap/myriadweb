@@ -670,7 +670,7 @@ class CampaignEdit extends Component {
     return (
       <>
         {campaignType === "GIFT" ? (
-          <GiftDeatils />
+          <GiftDeatils {...this.state} />
         ) : (
           <Form
             name="validate_other"
