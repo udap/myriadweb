@@ -412,6 +412,7 @@ class CampaignEdit extends Component {
               moment(end, dateFormat),
             ]}
             onChange={this.changeDate}
+            disabled={isDisabled(status) ? [true, false] : []}
           />
         </Form.Item>
         <Form.Item
@@ -474,8 +475,13 @@ class CampaignEdit extends Component {
   };
   //第二步提交
   onFinish2 = async (values) => {
-    let { campaignType, basicInfo, tags, isNew } = this.state;
-    if (comEvents.compareToday(basicInfo.effective)) {
+    let {
+      campaignType,
+      basicInfo,
+      isNew,
+      curInfo: { status },
+    } = this.state;
+    if (!isDisabled(status) && comEvents.compareToday(basicInfo.effective)) {
       notification.info({
         message: "活动时间不能小于今天",
       });
