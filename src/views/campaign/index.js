@@ -23,7 +23,7 @@ import NumberFormat from "react-number-format";
 import FileSaver from "file-saver";
 
 import storageUtils from "../../utils/storageUtils";
-import { campaignStatuses } from "../../utils/constants";
+import { campaignStatuses, couponSubTypeMetheds } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
 import {
   reqPermit,
@@ -95,10 +95,16 @@ class Campaign extends Component {
       },
       {
         title: "类型",
-        dataIndex: "type",
-        key: "type",
+        dataIndex: "subType",
+        key: "subType",
         render: (text) => {
-          return <div>优惠券活动</div>;
+          return (
+            <div>
+              {couponSubTypeMetheds.map((item, index) => (
+                <span key={index}>{item[text]}</span>
+              ))}
+            </div>
+          );
         },
         width: 110,
         responsive: ["lg"],

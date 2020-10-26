@@ -4,7 +4,12 @@ import NumberFormat from 'react-number-format';
 import QRCode from 'qrcode.react';
 import saveAs from 'save-svg-as-png';
 import comEvents from "../../utils/comEvents";
-import { distributionMethods, API_BASE_URL, VOUCHER_COLLECT_URL } from "../../utils/constants";
+import {
+  distributionMethods,
+  API_BASE_URL,
+  VOUCHER_COLLECT_URL,
+  couponSubTypeMetheds,
+} from "../../utils/constants";
 import "./index.less";
 
 const { Panel } = Collapse;
@@ -61,10 +66,12 @@ class CampaignDetail extends Component {
         bordered
         column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
       >
-        <Descriptions.Item label="活动类型">优惠券活动</Descriptions.Item>
-        <Descriptions.Item label="活动名称">
-          {campaign.name}
+        <Descriptions.Item label="活动类型">
+          {couponSubTypeMetheds.map((item, index) => (
+            <span key={index}>{item[campaign.subType]}</span>
+          ))}
         </Descriptions.Item>
+        <Descriptions.Item label="活动名称">{campaign.name}</Descriptions.Item>
         <Descriptions.Item label="标签">
           {campaign.category
             ? campaign.category
@@ -76,38 +83,59 @@ class CampaignDetail extends Component {
           {campaign.effective}至{comEvents.formatExpiry(campaign.expiry)}
         </Descriptions.Item>
         <Descriptions.Item label="计划发行">
-          <NumberFormat value={campaign.plannedSupply} displayType={'text'} thousandSeparator={true}/>
+          <NumberFormat
+            value={campaign.plannedSupply}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
         </Descriptions.Item>
         <Descriptions.Item label="实际发行">
-          <NumberFormat value={campaign.totalSupply} displayType={'text'} thousandSeparator={true}/>
+          <NumberFormat
+            value={campaign.totalSupply}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
         </Descriptions.Item>
         <Descriptions.Item label="允许增发?">
-            {campaign.autoUpdate ? "是" : "否"}
+          {campaign.autoUpdate ? "是" : "否"}
         </Descriptions.Item>
         <Descriptions.Item label="发放形式">
-          {distributionMethods.map((item, index) => (<span key={index}>{item[campaign.distMethod]}</span>))}
+          {distributionMethods.map((item, index) => (
+            <span key={index}>{item[campaign.distMethod]}</span>
+          ))}
         </Descriptions.Item>
         <Descriptions.Item label="领取限制">
-          <NumberFormat value={campaign.distLimit} displayType={'text'} suffix={' 张券/账户'}/>    
+          <NumberFormat
+            value={campaign.distLimit}
+            displayType={"text"}
+            suffix={" 张券/账户"}
+          />
         </Descriptions.Item>
-        {
-          campaign.distMethod === "CUSTOMER_COLLECT" ? (<Descriptions.Item label="领取码">
+        {campaign.distMethod === "CUSTOMER_COLLECT" ? (
+          <Descriptions.Item label="领取码">
             <a id="download" title="点我下载">
-            <QRCode id="qrcode" value={API_BASE_URL + VOUCHER_COLLECT_URL+"?campaignId="+campaign.id}
-              renderAs={'svg'}
-              onClick={this.downloadQrCode}
-              size={120}
-              level={'H'}
-              imageSettings={{
-                src:"/images/logo.jpg",
-                height:30,
-                width:30,
-                excavate: true
-              }}/>
+              <QRCode
+                id="qrcode"
+                value={
+                  API_BASE_URL +
+                  VOUCHER_COLLECT_URL +
+                  "?campaignId=" +
+                  campaign.id
+                }
+                renderAs={"svg"}
+                onClick={this.downloadQrCode}
+                size={120}
+                level={"H"}
+                imageSettings={{
+                  src: "/images/logo.jpg",
+                  height: 30,
+                  width: 30,
+                  excavate: true,
+                }}
+              />
             </a>
           </Descriptions.Item>
-          ) : null
-        }
+        ) : null}
         <Descriptions.Item label="活动主页">
           <div className="word-wrap">{campaign.url ? campaign.url : ""}</div>
         </Descriptions.Item>

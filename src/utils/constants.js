@@ -49,6 +49,11 @@ const couponSubTypes = [
   { LOYALTY_CARD: "会员卡" },
 ];
 
+const couponSubTypeMetheds = [
+  { COUPON: "优惠券活动" },
+  { GIFT: "礼品换购活动" },
+];
+
 const stepLists = [
   "活动类型",
   "基本信息",
@@ -243,4 +248,5 @@ export {
   tagStatuses, //公共标签
   stepLists,
   couponSubTypes,
+  couponSubTypeMetheds, // 活动类型
 };
