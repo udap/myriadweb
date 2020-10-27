@@ -413,24 +413,23 @@ class Campaign extends Component {
     const typeEff = effective ? effective : this.state.effective;
     //一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
     //都需要传status=NON_EXPIRED
-    let parmas =
-      typeStr === "participant"
-        ? {
-            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-            size: this.state.size,
-            participantId: storageUtils.getUser().id,
-            status: typeEff !== "all" ? "NEW_OR_EFFECTIVE" : "",
-            searchTxt: value ? value : this.state.searchTxt,
-            sort: "updatedAt,desc",
-          }
-        : {
-            page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-            size: this.state.size,
-            partyId: storageUtils.getUser().orgId,
-            status: typeEff !== "all" ? "NON_EXPIRED" : "",
-            searchTxt: value ? value : this.state.searchTxt,
-            sort: "updatedAt,desc",
-          };
+    let parmas = typeStr.includes("participant")
+      ? {
+          page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+          size: this.state.size,
+          participantId: storageUtils.getUser().id,
+          status: typeEff !== "all" ? "NEW_OR_EFFECTIVE" : "",
+          searchTxt: value ? value : this.state.searchTxt,
+          sort: "updatedAt,desc",
+        }
+      : {
+          page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+          size: this.state.size,
+          partyId: storageUtils.getUser().orgId,
+          status: typeEff !== "all" ? "NON_EXPIRED" : "",
+          searchTxt: value ? value : this.state.searchTxt,
+          sort: "updatedAt,desc",
+        };
     if (typeStr === "partyCreate") {
       parmas = { ...parmas, partyType: "HOST" };
     }
