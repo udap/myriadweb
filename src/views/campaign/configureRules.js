@@ -247,7 +247,7 @@ class ConfigureRules extends Component {
     }
   };
   backHome = () => {
-    this.props.history.push("/admin/campaign");
+    this.props.history.replace("/admin/campaign");
   };
   renderRules = () => {
     const {

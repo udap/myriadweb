@@ -4,6 +4,9 @@ const token = "";
 const VOUCHER_COLLECT_URL = "/myriad/distributions/collect";
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
+const ajaxSuccess = 0;
+const ajaxError = 1;
+
 const distributionMethods = [
   { CSR_DISTRIBUTE: "手动发放（由营销人员决定发放对象）" },
   { CUSTOMER_COLLECT: "手动领取（由客户主动领取）" },
@@ -249,4 +252,6 @@ export {
   stepLists,
   couponSubTypes,
   couponSubTypeMetheds, // 活动类型
+  ajaxSuccess,
+  ajaxError,
 };

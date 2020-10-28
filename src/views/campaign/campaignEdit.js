@@ -91,7 +91,7 @@ const formItemLayout = {
 const isDisabled = (val) => {
   return val === "ACTIVATED";
 };
-@withRouter
+
 class CampaignEdit extends Component {
   state = {
     inited: false,
@@ -100,6 +100,7 @@ class CampaignEdit extends Component {
     current: 0,
     choose: 0,
     campaignType: "VOUCHER",
+    subType: "COUPON",
     //基本信息
     tags: [],
     basicInfo: {
@@ -185,7 +186,7 @@ class CampaignEdit extends Component {
   //获取当前活动详情
   getCampaign = async (id, current) => {
     let curInfo = await reqGetCampaignById(id);
-    let cont = curInfo.data ? curInfo.data : [];
+    let cont = curInfo.data || [];
     let voucherConfig = cont.voucherConfig;
     //处理规则的数据格式
     let configRules = cont.rules;
@@ -280,8 +281,9 @@ class CampaignEdit extends Component {
       hasConfig: cont.voucherConfig ? true : false,
       parties: cont.parties ? cont.parties : [],
       campaignType: cont.type,
+      subType: cont.subType,
     });
-    if (cont.type === "GIFT") {
+    if (cont.subType === "GIFT") {
       let tempStepLists = [...stepLists];
       const index = tempStepLists.indexOf("设置规则");
       if (index > -1) {
@@ -326,8 +328,8 @@ class CampaignEdit extends Component {
   };
   //选择活动类型
   chooseType = (item) => {
-    this.setState({ campaignType: item.type });
-    if (item.type === "GIFT") {
+    this.setState({ campaignType: item.type, subType: item.subType });
+    if (item.subType === "GIFT") {
       let tempStepLists = [...stepLists];
       const index = tempStepLists.indexOf("设置规则");
       if (index > -1) {
@@ -505,6 +507,7 @@ class CampaignEdit extends Component {
   onFinish2 = async (values) => {
     let {
       campaignType,
+      subType,
       basicInfo,
       isNew,
       curInfo: { status },
@@ -544,6 +547,7 @@ class CampaignEdit extends Component {
       name: values.name,
       description: values.description,
       type: campaignType,
+      subType,
       category: values.category.toString(),
       effective: basicInfo.effective,
       expiry: comEvents.getDateStr(1, new Date(basicInfo.end)),
@@ -671,11 +675,11 @@ class CampaignEdit extends Component {
         authorizationRequired,
       },
       curInfo: { status },
-      campaignType,
+      subType,
     } = this.state;
     return (
       <>
-        {campaignType === "GIFT" ? (
+        {subType === "GIFT" ? (
           <GiftDeatils {...this.state} />
         ) : (
           <Form
@@ -1106,4 +1110,4 @@ class CampaignEdit extends Component {
   }
 }
 
-export default CampaignEdit;
+export default withRouter(CampaignEdit);
