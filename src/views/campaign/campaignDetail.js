@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Tag, Descriptions, Drawer, Table, Collapse } from "antd";
-import NumberFormat from 'react-number-format';
-import QRCode from 'qrcode.react';
-import saveAs from 'save-svg-as-png';
+import NumberFormat from "react-number-format";
+import QRCode from "qrcode.react";
+import saveAs from "save-svg-as-png";
 import comEvents from "../../utils/comEvents";
 import {
   distributionMethods,
@@ -16,7 +16,7 @@ const { Panel } = Collapse;
 const imageOptions = {
   scale: 5,
   encoderOptions: 1,
-  backgroundColor: 'white',
+  backgroundColor: "white",
 };
 
 class CampaignDetail extends Component {
@@ -206,6 +206,8 @@ class CampaignDetail extends Component {
     }
 
     if (voucherConfig) {
+      const productMarketPrice = voucherConfig.productMarketPrice / 100;
+      const productExchangePrice = voucherConfig.productExchangePrice / 100;
       return (
         <Descriptions size="small" bordered column={1}>
           <Descriptions.Item label="票券名称">
@@ -225,7 +227,7 @@ class CampaignDetail extends Component {
           <Descriptions.Item label="发行方式">
             {voucherConfig.multiple ? "一码一券" : "通用码"}
           </Descriptions.Item>
-          {subType === 'GIFT' ?(
+          {subType === "GIFT" ? (
             <>
               <Descriptions.Item label="商品名称">
                 {voucherConfig.productName}
@@ -235,23 +237,23 @@ class CampaignDetail extends Component {
               </Descriptions.Item>
               <Descriptions.Item label="商品市场零售价">
                 <NumberFormat
-                    value={voucherConfig.productMarketPrice}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    decimalScale={2}
-                    fixedDecimalScale={true}
-                    prefix={"¥"}
-                  />
+                  value={productMarketPrice}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  prefix={"¥"}
+                />
               </Descriptions.Item>
               <Descriptions.Item label="商品换购价格">
                 <NumberFormat
-                    value={voucherConfig.productExchangePrice}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    decimalScale={2}
-                    fixedDecimalScale={true}
-                    prefix={"¥"}
-                  />
+                  value={productExchangePrice}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  prefix={"¥"}
+                />
               </Descriptions.Item>
             </>
           ) : null}

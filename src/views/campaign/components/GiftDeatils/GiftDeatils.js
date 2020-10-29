@@ -93,11 +93,11 @@ export default withRouter((props) => {
         },
         {
           name: ["productMarketPrice"],
-          value: productMarketPrice,
+          value: productMarketPrice / 100,
         },
         {
           name: ["productExchangePrice"],
-          value: productExchangePrice,
+          value: productExchangePrice / 100,
         },
         {
           name: ["daysAfterDist"],
@@ -120,13 +120,14 @@ export default withRouter((props) => {
 
     setLoading(true);
 
+    // 所有价格精度为百分位
     let params = {
       name: value.giftName,
       type: "GIFT",
       productName: value.productName,
       productCode: value.productCode,
-      productMarketPrice: value.productMarketPrice,
-      productExchangePrice: value.productExchangePrice,
+      productMarketPrice: value.productMarketPrice * 100,
+      productExchangePrice: value.productExchangePrice * 100,
       merchantId: orgList.partyId, // 机构id
     };
     if (timeType === "date") {
@@ -189,7 +190,7 @@ export default withRouter((props) => {
           name="giftName"
           rules={[{ required: true, message: "请输入礼品券名称!" }]}
         >
-          <Input maxLength={20} placeholder="请输入最多20个字的礼品券名称" />
+          <Input maxLength={10} placeholder="请输入最多10个字的礼品券名称" />
         </Form.Item>
         <Form.Item label="参与商户">
           <span>{orgList.fullName}</span>
