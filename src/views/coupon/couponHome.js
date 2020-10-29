@@ -10,21 +10,23 @@ import {
   notification,
   Row,
   Col,
-  Select,
   Pagination,
 } from "antd";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 import storageUtils from "../../utils/storageUtils";
-import { reqGetCoupons, reqGetVoucherById, reqPublishDis, reqGetClients } from "../../api";
+import {
+  reqGetCoupons,
+  reqGetVoucherById,
+  reqPublishDis,
+  reqGetClients,
+} from "../../api";
 import { Loading } from "../../components";
-import { couponStatuses, voucherTypes } from "../../utils/constants";
+import { couponStatuses, couponSubTypes } from "../../utils/constants";
 import comEvents from "../../utils/comEvents";
 import VoucherQueryForm from "./queryForm";
 import CouponDetails from "./couponDetails";
 import "../../css/common.less";
 import "./index.less";
-
-const { Option } = Select;
 
 class CouponHome extends Component {
   state = {
@@ -96,19 +98,19 @@ class CouponHome extends Component {
         title: "券名",
         dataIndex: "name",
         key: "name",
-        responsive: ['lg'],
+        responsive: ["lg"],
         ellipsis: true,
       },
       {
         title: "类型",
-        dataIndex: "type",
-        key: "type",
+        dataIndex: "subType",
+        key: "subType",
         width: 80,
-        responsive: ['lg'],
+        responsive: ["lg"],
         render: (text) => {
           return (
             <Tag color="green" key={text}>
-              {voucherTypes.map((item, index) => (
+              {couponSubTypes.map((item, index) => (
                 <span key={index}>{item[text]}</span>
               ))}
             </Tag>
@@ -118,18 +120,28 @@ class CouponHome extends Component {
       {
         title: "营销活动",
         dataIndex: "campaign",
-        responsive: ['lg'],
+        responsive: ["lg"],
         render: (campaign) => {
-          return <div>{campaign.name}</div>
-        }
+          return <div>{campaign.name}</div>;
+        },
       },
       {
         title: "标签",
         dataIndex: "tags",
         width: 120,
-        responsive: ['lg'],
+        responsive: ["lg"],
         render: (tags) => {
-          return <div>{tags ? tags.split(",").map((t,index)=><Tag color="cyan" key={index}>{t}</Tag>) : ""}</div>
+          return (
+            <div>
+              {tags
+                ? tags.split(",").map((t, index) => (
+                    <Tag color="cyan" key={index}>
+                      {t}
+                    </Tag>
+                  ))
+                : ""}
+            </div>
+          );
         },
       },
       {
@@ -137,33 +149,65 @@ class CouponHome extends Component {
         colSpan: 2,
         dataIndex: "effective",
         width: 110,
-        responsive: ['md'],
+        responsive: ["md"],
       },
       {
         title: "end",
         colSpan: 0,
         dataIndex: "end",
         width: 110,
-        responsive: ['md'],
+        responsive: ["md"],
         render: (text) => {
-          return (
-            <div>{text}</div>
-          );
+          return <div>{text}</div>;
         },
       },
       {
         title: "优惠金额",
         dataIndex: "valueOff",
-        width: 80,
-        render: (value, row, index) => {
-             if (row.type === "AMOUNT")
-                return <div style={{textAlign: "right"}}><NumberFormat value={value/100} displayType={'text'} 
-                  thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} prefix={'¥'}/></div>
-              else if (row.type === "PERCENT")
-                return (<div style={{textAlign: "right"}}>
-                  <NumberFormat value={value} displayType={'text'} prefix={'优惠 '} suffix={'%'}/></div>)
-              else
-                return <div style={{textAlign: "right"}}>{value}</div>
+        width: 100,
+        render: (value, row) => {
+          if (row.subType === "COUPON") {
+            if (row.type === "AMOUNT")
+              return (
+                <div style={{ textAlign: "right" }}>
+                  <NumberFormat
+                    value={value / 100}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    decimalScale={2}
+                    fixedDecimalScale={true}
+                    prefix={"(¥"}
+                    suffix={")"}
+                  />
+                </div>
+              );
+            else if (row.type === "PERCENT")
+              return (
+                <div style={{ textAlign: "right" }}>
+                  <NumberFormat
+                    value={value}
+                    displayType={"text"}
+                    prefix={"优惠 "}
+                    suffix={"%"}
+                  />
+                </div>
+              );
+            else return <div style={{ textAlign: "right" }}>{value}</div>;
+          } else if (row.subType === "GIFT")
+            return (
+              <div style={{ textAlign: "right" }}>
+                <NumberFormat
+                  value={value / 100}
+                  thousandSeparator={true}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  displayType={"text"}
+                  prefix={"(¥"}
+                  suffix={")"}
+                />
+              </div>
+            );
+          else return <div style={{ textAlign: "right" }}>{value}</div>;
         },
       },
       {
@@ -195,21 +239,20 @@ class CouponHome extends Component {
               >
                 查看
               </b>
-              {this.state.typeSelection === "owner" && chooseItem.status === "NEW" ? (
+              {this.state.typeSelection === "owner" &&
+              chooseItem.status === "NEW" ? (
                 <>
-                <Divider type="vertical" />
-                <b
-                  onClick={() => {
-                    this.showList(chooseItem.id);
-                  }}
-                  className="ant-blue-link cursor"
-                >
-                  发放
-                </b>
+                  <Divider type="vertical" />
+                  <b
+                    onClick={() => {
+                      this.showList(chooseItem.id);
+                    }}
+                    className="ant-blue-link cursor"
+                  >
+                    发放
+                  </b>
                 </>
-              ) : (
-                null
-              )}
+              ) : null}
             </div>
           );
         },
@@ -259,25 +302,21 @@ class CouponHome extends Component {
         ? {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: size ? size : this.state.size,
-//            orgUid: storageUtils.getUser().orgUid,
+            //            orgUid: storageUtils.getUser().orgUid,
             ownerId: this.state.ownerId,
-//            codeType: this.state.codeType,
+            //            codeType: this.state.codeType,
             status: "NEW",
-            searchTxt: values
-              ? values.searchTxt
-              : this.state.searchTxt,
+            searchTxt: values ? values.searchTxt : this.state.searchTxt,
           }
         : {
             page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
             size: size ? size : this.state.size,
-//            orgUid: storageUtils.getUser().orgUid,
+            //            orgUid: storageUtils.getUser().orgUid,
             issuerId: this.state.publisherId,
-//            merchantCode: values ? values.merchantCode : "",
-//            codeType: this.state.codeType,
+            //            merchantCode: values ? values.merchantCode : "",
+            //            codeType: this.state.codeType,
             status: "NEW",
-            searchTxt: values
-              ? values.searchTxt
-              : this.state.searchTxt,
+            searchTxt: values ? values.searchTxt : this.state.searchTxt,
           };
 
     const result = await reqGetCoupons(parmas);
@@ -285,16 +324,23 @@ class CouponHome extends Component {
     let data = [];
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
-        let subType = cont[i].config.discount ? cont[i].config.discount.type : cont[i].config.type;
+        let type = cont[i].config.discount ? cont[i].config.discount.type : "";
         data.push({
           key: i,
           id: cont[i].id,
           owner: cont[i].owner,
           code: cont[i].code,
-          type: subType,
+          type,
+          subType: cont[i].config.type,
           tags: cont[i].category,
           name: cont[i].config.name,
-          valueOff: cont[i].config.discount?cont[i].config.discount.valueOff:null,
+          valueOff:
+            cont[i].config.type === "COUPON" && cont[i].config.discount
+              ? cont[i].config.discount.valueOff
+              : cont[i].config.type === "GIFT" &&
+                cont[i].config.productExchangePrice
+              ? cont[i].config.productExchangePrice
+              : null,
           effective: cont[i].effective,
           end: comEvents.formatExpiry(cont[i].expiry),
           status: cont[i].status,
@@ -425,12 +471,11 @@ class CouponHome extends Component {
     this.setState({
       voucher: voucher,
     });
-    console.log("state in getVoucherById",this.state);
   };
 
   showVoucherPanel = (id) => {
     this.setState({
-      showVoucherPanel: true
+      showVoucherPanel: true,
     });
     this.getVoucherById(id);
     console.log("state", this.state);
@@ -447,12 +492,10 @@ class CouponHome extends Component {
     const {
       vouchers,
       size,
-      total,
       currentPage,
       /*客户 */
       current,
       listSize,
-      listTotal,
       listData,
       searchClientTxt,
       showVoucherPanel,
@@ -465,9 +508,9 @@ class CouponHome extends Component {
           className="site-page-header-responsive cont"
           title="票券管理"
         ></PageHeader>
-        <VoucherQueryForm 
+        <VoucherQueryForm
           loading={this.state.loading}
-          onChangeType={this.onRadioChange} 
+          onChangeType={this.onRadioChange}
           enableLoading={this.enterLoading}
           onFinish={this.onFinish}
         />
@@ -490,14 +533,13 @@ class CouponHome extends Component {
             showTotal={(total) => `总共 ${total} 条数据`}
           />
         </div>
-        {
-          showVoucherPanel ? (
+        {showVoucherPanel ? (
           <CouponDetails
             voucher={voucher}
             onClose={this.closeVoucherPanel}
             visible={showVoucherPanel}
-          />) : null
-          }
+          />
+        ) : null}
         <Modal
           title="票券发放"
           visible={this.state.visible}
@@ -527,7 +569,7 @@ class CouponHome extends Component {
             </Row>
             <Table
               size="small"
-              className='tableFont'
+              className="tableFont"
               columns={this.listColumns}
               dataSource={listData}
               pagination={false}
