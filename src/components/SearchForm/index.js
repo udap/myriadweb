@@ -37,14 +37,14 @@ class SearchForm extends Component {
           group: defaultValue,
         }}
       >
-        <Row>
+        <Row gutter={[16, 16]}>
           <Col>
             <Form.Item name="group" label="查询条件">
-              <Radio.Group onChange={this.onChangeType}>
+              <Radio.Group onChange={this.onChangeType} buttonStyle="solid">
                 {props.texts.map((item, index) => (
-                  <Radio key={index} value={item.value}>
+                  <Radio.Button key={index} value={item.value}>
                     {item.name}
-                  </Radio>
+                  </Radio.Button>
                 ))}
               </Radio.Group>
             </Form.Item>

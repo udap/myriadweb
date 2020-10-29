@@ -13,10 +13,7 @@ import {
   Col,
   Radio,
 } from "antd";
-import {
-  PlusSquareFilled,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import storageUtils from "../../utils/storageUtils";
 import { settlementStatuses, settlementTypes } from "../../utils/constants";
 import {
@@ -309,7 +306,8 @@ class SettlementHome extends Component {
           const { id, status } = chooseItem;
           return (
             <span>
-              <b onClick={() => {
+              <b
+                onClick={() => {
                   this.props.history.push({
                     pathname: "/admin/settlement/" + id,
                     state: { chooseItem },
@@ -321,24 +319,23 @@ class SettlementHome extends Component {
               </b>
               {status === "SUBMITTED" ? (
                 <>
-                <Divider type="vertical" />
-                <b
-                  onClick={() => {
-                    let that = this;
-                    that.hasPower(
-                      id,
-                      "确认批准该结算",
-                      "APPROVE_SETTLEMENT",
-                      "approveItem"
-                    );
-                  }}
-                  className="ant-blue-link cursor"
-                >
-                  批准
-                </b>
+                  <Divider type="vertical" />
+                  <b
+                    onClick={() => {
+                      let that = this;
+                      that.hasPower(
+                        id,
+                        "确认批准该结算",
+                        "APPROVE_SETTLEMENT",
+                        "approveItem"
+                      );
+                    }}
+                    className="ant-blue-link cursor"
+                  >
+                    批准
+                  </b>
                 </>
-              ) : null
-              }
+              ) : null}
             </span>
           );
         },
@@ -512,12 +509,12 @@ class SettlementHome extends Component {
             group: "merchant",
           }}
         >
-          <Row>
+          <Row gutter={[16, 16]}>
             <Col>
               <Form.Item name="group" label="查询条件">
-                <Radio.Group onChange={this.onChange}>
-                  <Radio value="merchant">提交</Radio>
-                  <Radio value="marketer">审批</Radio>
+                <Radio.Group onChange={this.onChange} buttonStyle="solid">
+                  <Radio.Button value="merchant">提交</Radio.Button>
+                  <Radio.Button value="marketer">审批</Radio.Button>
                 </Radio.Group>
               </Form.Item>
             </Col>

@@ -1,22 +1,20 @@
 import React, { Component } from "react";
-import {
-  Form,
-  Row,
-  Col,
-  Radio,
-  Button,
-  Input,
-  DatePicker,
-} from "antd";
+import { Form, Row, Col, Radio, Button, Input, DatePicker } from "antd";
 
 import moment from "moment";
 import "moment/locale/zh-cn";
 
 import "../../css/common.less";
 
-const {RangePicker} = DatePicker;
+const { RangePicker } = DatePicker;
 
-const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
+const QueryForm = ({
+  loading,
+  dateRange,
+  onLoading,
+  onSwitchRole,
+  onSubmit,
+}) => {
   let beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date();
   let endDate = dateRange && dateRange[1] ? dateRange[1] : new Date();
   return (
@@ -28,20 +26,21 @@ const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
       initialValues={{
         role: "marketer",
         searchTxt: "",
-        dateRange: [moment(beginDate,"YYYY-MM-DD"),moment(endDate,"YYYY-MM-DD")]
+        dateRange: [
+          moment(beginDate, "YYYY-MM-DD"),
+          moment(endDate, "YYYY-MM-DD"),
+        ],
       }}
     >
-      <Row>
+      <Row gutter={[16, 16]}>
         <Col>
           <Form.Item name="role" label="查询条件">
-            <Radio.Group onChange={onSwitchRole}>
-              <Radio value="marketer">营销机构</Radio>
-              <Radio value="merchant">核销机构</Radio>
+            <Radio.Group onChange={onSwitchRole} buttonStyle="solid">
+              <Radio.Button value="marketer">营销机构</Radio.Button>
+              <Radio.Button value="merchant">核销机构</Radio.Button>
             </Radio.Group>
           </Form.Item>
         </Col>
-      </Row>
-      <Row>
         <Col span={6}>
           <Form.Item name="searchTxt">
             <Input
@@ -52,9 +51,7 @@ const QueryForm = ({loading, dateRange, onLoading, onSwitchRole, onSubmit}) => {
         </Col>
         <Col>
           <Form.Item name="dateRange">
-            <RangePicker
-              format="YYYY-MM-DD"
-            />
+            <RangePicker format="YYYY-MM-DD" />
           </Form.Item>
         </Col>
         <Col>
