@@ -51,10 +51,12 @@ export default withRouter((props) => {
       let merchantObj = props.curInfo.parties.find(
         (ele) => ele.type === "MERCHANT"
       );
-      orgObj = {
-        partyId: merchantObj.partyId,
-        fullName: merchantObj.partyName,
-      };
+      if (merchantObj) {
+        orgObj = {
+          partyId: merchantObj.partyId,
+          fullName: merchantObj.partyName,
+        };
+      }
     }
     setOrgList({ ...orgObj });
 
@@ -134,7 +136,9 @@ export default withRouter((props) => {
       params = {
         ...params,
         effective: dateSelected.effective,
-        expiry: dateSelected.end,
+        expiry: moment(dateSelected.end)
+          .subtract(-1, "days")
+          .format("YYYY-MM-DD"),
       };
     } else if (timeType === "day") {
       params = { ...params, daysAfterDist: value.daysAfterDist };
@@ -190,11 +194,15 @@ export default withRouter((props) => {
           name="giftName"
           rules={[{ required: true, message: "请输入礼品券名称!" }]}
         >
-          <Input maxLength={10} placeholder="请输入最多10个字的礼品券名称" />
+          <Input
+            maxLength={10}
+            placeholder="请输入最多10个字的礼品券名称"
+            disabled={props.disabled}
+          />
         </Form.Item>
         <Form.Item label="参与商户">
           <span>{orgList.fullName}</span>
-          <Button type="link" onClick={onOrgClick}>
+          <Button type="link" onClick={onOrgClick} disabled={props.disabled}>
             选择参与商户
           </Button>
         </Form.Item>
@@ -203,34 +211,43 @@ export default withRouter((props) => {
           name="productName"
           rules={[{ required: true, message: "请输入商品名称!" }]}
         >
-          <Input maxLength={32} placeholder="请输入最多32个字的商品名称" />
+          <Input
+            maxLength={32}
+            placeholder="请输入最多32个字的商品名称"
+            disabled={props.disabled}
+          />
         </Form.Item>
         <Form.Item
           label="SKU"
           name="productCode"
           rules={[{ required: true, message: "请输入SKU!" }]}
         >
-          <Input maxLength={32} placeholder="请输入最多32个字的SKU" />
+          <Input
+            maxLength={32}
+            placeholder="请输入最多32个字的SKU"
+            disabled={props.disabled}
+          />
         </Form.Item>
         <Form.Item
           label="商品市场零售价(元)"
           name="productMarketPrice"
           rules={[{ required: true, message: "请输入商品市场零售价!" }]}
         >
-          <InputNumber min={0} />
+          <InputNumber min={0} disabled={props.disabled} />
         </Form.Item>
         <Form.Item
           label="商品换购价格(元)"
           name="productExchangePrice"
           rules={[{ required: true, message: "请输入商品换购价格!" }]}
         >
-          <InputNumber min={0} />
+          <InputNumber min={0} disabled={props.disabled} />
         </Form.Item>
         <Form.Item label="有效期" name="timeType">
           <Radio.Group
             className="timeRadio"
             onChange={onRadioTimeChange}
             value={timeType}
+            disabled={props.disabled}
           >
             <Radio name="timeType" style={radioStyle} value="date">
               <span style={{ marginRight: "8px" }}>固定时间</span>
@@ -240,6 +257,7 @@ export default withRouter((props) => {
                   moment(dateSelected.end),
                 ]}
                 onChange={changeSetDate}
+                disabled={props.disabled}
               />
             </Radio>
             <Radio style={radioStyle} name="timeType" value="day">
@@ -252,7 +270,7 @@ export default withRouter((props) => {
                 </Col>
                 <Col>
                   <Form.Item name="daysAfterDist">
-                    <InputNumber min={1} />
+                    <InputNumber min={1} disabled={props.disabled} />
                   </Form.Item>
                 </Col>
                 <Col>
@@ -263,7 +281,12 @@ export default withRouter((props) => {
           </Radio.Group>
         </Form.Item>
         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            disabled={props.disabled}
+          >
             提交
           </Button>
         </Form.Item>

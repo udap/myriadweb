@@ -680,7 +680,7 @@ class CampaignEdit extends Component {
     return (
       <>
         {subType === "GIFT" ? (
-          <GiftDeatils {...this.state} />
+          <GiftDeatils {...this.state} disabled={isDisabled(status)} />
         ) : (
           <Form
             name="validate_other"
