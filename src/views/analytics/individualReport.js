@@ -1,21 +1,16 @@
 import React, { Component } from "react";
-import {
-  Table,
-  PageHeader,
-  notification,
-  Button,
-} from "antd";
+import { Table, PageHeader, notification, Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 import moment from "moment";
-import FileSaver from 'file-saver';
+import FileSaver from "file-saver";
 
 import storageUtils from "../../utils/storageUtils";
 import comEvents from "../../utils/comEvents";
-import { 
+import {
   reqExportIndividualSummaryReport,
   reqGetIndividualSummaryReport,
-  reqGetCampaignOrgs, 
+  reqGetCampaignOrgs,
   reqGetRelatedL2Orgs,
   reqGetSubsidiaries,
   reqGetEmployees,
@@ -27,21 +22,30 @@ import QueryForm from "./queryForm";
 
 const renderAmount = (value) => {
   return (
-    <div style={{textAlign: "right"}}>
-    <NumberFormat value={value} displayType={'text'} thousandSeparator={true} />
+    <div style={{ textAlign: "right" }}>
+      <NumberFormat
+        value={value}
+        displayType={"text"}
+        thousandSeparator={true}
+      />
     </div>
   );
 };
 const renderPercent = (value) => {
   return (
-    <div style={{textAlign: "right"}}>
-    <NumberFormat value={value*100} decimalScale={2} displayType={'text'} suffix={'%'}/>
+    <div style={{ textAlign: "right" }}>
+      <NumberFormat
+        value={value * 100}
+        decimalScale={2}
+        displayType={"text"}
+        suffix={"%"}
+      />
     </div>
   );
 };
 const renderEmployee = (value) => {
-  return value ? value : <div class="description">{'离职员工'}</div>
-}
+  return value ? value : <div class="description">{"离职员工"}</div>;
+};
 
 class IndividualReport extends Component {
   state = {
@@ -70,10 +74,13 @@ class IndividualReport extends Component {
 
   initFormData = async () => {
     const result = await reqGetCampaignOrgs();
-    const campaignOrgs = result && result.data && result.data.content
-      ? result.data.content: [];
+    const campaignOrgs =
+      result && result.data && result.data.content ? result.data.content : [];
     const result2 = await reqGetRelatedL2Orgs();
-    const branches = result2 && result2.data && result2.data.content ? result2.data.content:[];
+    const branches =
+      result2 && result2.data && result2.data.content
+        ? result2.data.content
+        : [];
     this.setState({
       inited: true,
       campaignOrgs: campaignOrgs,
@@ -84,32 +91,35 @@ class IndividualReport extends Component {
           ? result.data.content.totalElements
           : 0,
       loading: false,
-    });  
+    });
   };
 
   initSubBranches = async (branchUid) => {
     let subBranches = [];
-    if (branchUid !== '') {
+    if (branchUid !== "") {
       const params = {
         page: 0,
         size: 1000,
         uid: branchUid,
       };
       const result = await reqGetSubsidiaries(branchUid, params);
-      subBranches = result && result.data && result.data.content ? result.data.content.content : [];
+      subBranches =
+        result && result.data && result.data.content
+          ? result.data.content.content
+          : [];
     }
     this.setState({
       branchUid: branchUid,
       subBranches: subBranches,
       subBranchUid: "",
-      employees:[],
-      employeeUid:"",
+      employees: [],
+      employeeUid: "",
     });
   };
 
   initEmployees = async (subBranchUid) => {
     let employees = [];
-    if (subBranchUid !== '') {
+    if (subBranchUid !== "") {
       const params = {
         page: 0,
         sort: ["org", "createTime,desc"],
@@ -136,14 +146,14 @@ class IndividualReport extends Component {
         title: "客户经理",
         dataIndex: "employeeName",
         width: 100,
-        fixed: 'left',
+        fixed: "left",
         render: renderEmployee,
       },
       {
         title: "员工号",
         dataIndex: "employeeCode",
         width: 100,
-        fixed: 'left',
+        fixed: "left",
       },
       {
         title: "机构名称",
@@ -160,10 +170,22 @@ class IndividualReport extends Component {
         dataIndex: "parentName",
         width: 200,
       },
+      // {
+      //   title: "资源总数",
+      //   dataIndex: "netAmount",
+      //   width: 80,
+      //   render: renderAmount,
+      // },
       {
-        title: "资源总数",
-        dataIndex: "netAmount",
-        width: 80,
+        title: "起始资源数",
+        dataIndex: "beginAmount",
+        width: 100,
+        render: renderAmount,
+      },
+      {
+        title: "截止资源数",
+        dataIndex: "endAmount",
+        width: 100,
         render: renderAmount,
       },
       {
@@ -224,14 +246,14 @@ class IndividualReport extends Component {
         title: "发放覆盖率",
         dataIndex: "customerDistributionCoverage",
         width: 100,
-        fixed: 'right',
+        fixed: "right",
         render: renderPercent,
       },
       {
         title: "兑换覆盖率",
         dataIndex: "customerRedemptionCoverage",
         width: 100,
-        fixed: 'right',
+        fixed: "right",
         render: renderPercent,
       },
     ];
@@ -243,21 +265,22 @@ class IndividualReport extends Component {
     //owner 我的
     this.setState({ loading: true });
     let params = {
-        page: currentPage? currentPage - 1 : this.state.currentPage -1,
-        size: size ? size : this.state.pageSize,
-        campaignOrgUid: values.campaignOrgUid,
-        campaignName: values.campaignName,
-        campaignTag: values.campaignTag,
-        beginDate: values['dateRange'][0].format("YYYY-MM-DD"),
-        endDate: values['dateRange'][1].format("YYYY-MM-DD"),  
-        branchUid: values.branchUid,
-        subBranchUid: values.subBranchUid,
-        employeeUid: values.employeeUid,
-      };
+      page: currentPage ? currentPage - 1 : this.state.currentPage - 1,
+      size: size ? size : this.state.pageSize,
+      campaignOrgUid: values.campaignOrgUid,
+      campaignName: values.campaignName,
+      campaignTag: values.campaignTag,
+      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
+      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
+      branchUid: values.branchUid,
+      subBranchUid: values.subBranchUid,
+      employeeUid: values.employeeUid,
+    };
     const result = await reqGetIndividualSummaryReport(params);
     const cont =
       result && result.data && result.data.content
-        ? result.data.content.content : [];
+        ? result.data.content.content
+        : [];
     this.setState({
       inited: true,
       stats: cont,
@@ -277,8 +300,8 @@ class IndividualReport extends Component {
   submitQuery = (values) => {
     this.setState({
       currentPage: 1,
-      beginDate: values['dateRange'][0].format("YYYY-MM-DD"),
-      endDate: values['dateRange'][1].format("YYYY-MM-DD"),
+      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
+      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
       campaignOrgUid: values.campaignOrgUid,
       campaignName: values.campaignName,
       campaignTag: values.campaignTag,
@@ -293,10 +316,21 @@ class IndividualReport extends Component {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
     });
-    const {beginDate, endDate, campaignOrgUid, campaignName, campaignTag, 
-      branchUid, subBranchUid,employeeUid} = this.state;
+    const {
+      beginDate,
+      endDate,
+      campaignOrgUid,
+      campaignName,
+      campaignTag,
+      branchUid,
+      subBranchUid,
+      employeeUid,
+    } = this.state;
     const values = {
-      dateRange:[moment(beginDate,"YYYY-MM-DD"),moment(endDate,"YYYY-MM-DD")],
+      dateRange: [
+        moment(beginDate, "YYYY-MM-DD"),
+        moment(endDate, "YYYY-MM-DD"),
+      ],
       campaignOrgUid: campaignOrgUid,
       campaignName: campaignName,
       campaignTag: campaignTag,
@@ -304,8 +338,8 @@ class IndividualReport extends Component {
       subBranchUid: subBranchUid,
       employeeUid: employeeUid,
     };
-//    console.log("values",values);
-    this.getReport(values, pagination.current,pagination.pageSize);
+    //    console.log("values",values);
+    this.getReport(values, pagination.current, pagination.pageSize);
   };
   selectBranch = (branchUid) => {
     this.initSubBranches(branchUid);
@@ -317,46 +351,65 @@ class IndividualReport extends Component {
     event.preventDefault();
     event.stopPropagation();
     this.setState({
-      downloading: true
+      downloading: true,
     });
-    const filename = 'individualReport.xlsx';
-    const {campaignOrgUid,campaignName,campaignTag,branchUid,subBranchUid,
-      employeeUid,beginDate,endDate} = this.state;
+    const filename = "individualReport.xlsx";
+    const {
+      campaignOrgUid,
+      campaignName,
+      campaignTag,
+      branchUid,
+      subBranchUid,
+      employeeUid,
+      beginDate,
+      endDate,
+    } = this.state;
     let params = {
       campaignOrgUid: campaignOrgUid,
       campaignName: campaignName,
       campaignTag: campaignTag,
       beginDate: beginDate,
-      endDate: endDate,  
+      endDate: endDate,
       branchUid: branchUid,
       subBranchUid: subBranchUid,
       employeeUid: employeeUid,
     };
-    reqExportIndividualSummaryReport(params).then(
-      response => {
+    reqExportIndividualSummaryReport(params)
+      .then((response) => {
         FileSaver.saveAs(response.data, filename);
         this.setState({
-          downloading: false
+          downloading: false,
         });
-      }
-    ).catch((e)=>{
-      this.setState({
-        downloading: false
+      })
+      .catch((e) => {
+        this.setState({
+          downloading: false,
+        });
+        console.log(e);
+        notification.warning({
+          message: "下载失败，请稍后再试",
+        });
       });
-      console.log(e);
-      notification.warning({
-        message: "下载失败，请稍后再试",
-      });
-    });
-  }
+  };
   renderTable = () => {
-    const { stats, pageSize, total, currentPage, loading,
-      campaignOrgs, campaignOrgUid, 
-      campaignName, campaignTag,
-      branches, branchUid,
-      subBranches, subBranchUid,
-      employees, employeeUid,
-      beginDate, endDate,
+    const {
+      stats,
+      pageSize,
+      total,
+      currentPage,
+      loading,
+      campaignOrgs,
+      campaignOrgUid,
+      campaignName,
+      campaignTag,
+      branches,
+      branchUid,
+      subBranches,
+      subBranchUid,
+      employees,
+      employeeUid,
+      beginDate,
+      endDate,
     } = this.state;
 
     return (
@@ -365,20 +418,20 @@ class IndividualReport extends Component {
           className="site-page-header-responsive cont"
           title="按个人统计"
           extra={[
-            <Button type="primary" key="_b"
+            <Button
+              type="primary"
+              key="_b"
               shape="circle"
               loading={this.state.downloading}
-              icon={<DownloadOutlined />} 
-              onClick = {
-                (e) => this.handleDownload(e)
-              } 
-            />
+              icon={<DownloadOutlined />}
+              onClick={(e) => this.handleDownload(e)}
+            />,
           ]}
         />
-        <QueryForm 
+        <QueryForm
           loading={this.state.loading}
           initialData={{
-            campaignOrgs: campaignOrgs, 
+            campaignOrgs: campaignOrgs,
             campaignOrgUid: campaignOrgUid,
             campaignName: campaignName,
             campaignTag: campaignTag,
@@ -393,7 +446,8 @@ class IndividualReport extends Component {
           onSelectBranch={this.selectBranch}
           onSelectSubBranch={this.selectSubBranch}
           onLoading={this.enterLoading}
-          onSubmit={this.submitQuery} />
+          onSubmit={this.submitQuery}
+        />
         <Table
           rowKey="key"
           size="small"
@@ -404,11 +458,11 @@ class IndividualReport extends Component {
           loading={loading}
           onChange={this.onTableChange}
           pagination={{
-            size:"small",
+            size: "small",
             pageSize: pageSize,
             current: currentPage,
             total: total,
-            showTotal: (total)=>`总共 ${total} 条数据`
+            showTotal: (total) => `总共 ${total} 条数据`,
           }}
         />
       </div>

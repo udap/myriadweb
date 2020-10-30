@@ -1,21 +1,16 @@
 import React, { Component } from "react";
-import {
-  Table,
-  PageHeader,
-  notification,
-  Button,
-} from "antd";
+import { Table, PageHeader, notification, Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 import moment from "moment";
-import FileSaver from 'file-saver';
+import FileSaver from "file-saver";
 
 import storageUtils from "../../utils/storageUtils";
 import comEvents from "../../utils/comEvents";
-import { 
+import {
   reqExportOrganizationSummaryReport,
   reqGetOrganizationSummaryReport,
-  reqGetCampaignOrgs, 
+  reqGetCampaignOrgs,
   reqGetRelatedL2Orgs,
   reqGetSubsidiaries,
 } from "../../api";
@@ -26,15 +21,24 @@ import BranchForm from "./branchForm";
 
 const renderAmount = (value) => {
   return (
-    <div style={{textAlign: "right"}}>
-    <NumberFormat value={value} displayType={'text'} thousandSeparator={true} />
+    <div style={{ textAlign: "right" }}>
+      <NumberFormat
+        value={value}
+        displayType={"text"}
+        thousandSeparator={true}
+      />
     </div>
   );
 };
 const renderPercent = (value) => {
   return (
-    <div style={{textAlign: "right"}}>
-    <NumberFormat value={value*100} decimalScale={2} displayType={'text'} suffix={'%'}/>
+    <div style={{ textAlign: "right" }}>
+      <NumberFormat
+        value={value * 100}
+        decimalScale={2}
+        displayType={"text"}
+        suffix={"%"}
+      />
     </div>
   );
 };
@@ -66,10 +70,13 @@ class OrganizationReport extends Component {
 
   initFormData = async () => {
     const result = await reqGetCampaignOrgs();
-    const campaignOrgs = result && result.data && result.data.content
-      ? result.data.content: [];
+    const campaignOrgs =
+      result && result.data && result.data.content ? result.data.content : [];
     const result2 = await reqGetRelatedL2Orgs();
-    const branches = result2 && result2.data && result2.data.content ? result2.data.content:[];
+    const branches =
+      result2 && result2.data && result2.data.content
+        ? result2.data.content
+        : [];
     this.setState({
       inited: true,
       campaignOrgs: campaignOrgs,
@@ -80,19 +87,22 @@ class OrganizationReport extends Component {
           ? result.data.content.totalElements
           : 0,
       loading: false,
-    });  
+    });
   };
 
   initSubBranches = async (branchUid) => {
     let subBranches = [];
-    if (branchUid !== '') {
+    if (branchUid !== "") {
       const params = {
         page: 0,
         size: 1000,
         uid: branchUid,
       };
       const result = await reqGetSubsidiaries(branchUid, params);
-      subBranches = result && result.data && result.data.content ? result.data.content.content : [];
+      subBranches =
+        result && result.data && result.data.content
+          ? result.data.content.content
+          : [];
     }
     this.setState({
       branchUid: branchUid,
@@ -102,15 +112,27 @@ class OrganizationReport extends Component {
   };
 
   componentDidMount() {
-    this.initColumns('L2');
+    this.initColumns("L2");
     this.initFormData();
   }
   initColumns(summaryLevel) {
     let tableCols = [];
     const fixedCols = [
+      // {
+      //   title: "资源数量",
+      //   dataIndex: "netAmount",
+      //   width: 100,
+      //   render: renderAmount,
+      // },
       {
-        title: "资源数量",
-        dataIndex: "netAmount",
+        title: "起始资源数",
+        dataIndex: "beginAmount",
+        width: 100,
+        render: renderAmount,
+      },
+      {
+        title: "截止资源数",
+        dataIndex: "endAmount",
         width: 100,
         render: renderAmount,
       },
@@ -172,24 +194,24 @@ class OrganizationReport extends Component {
         title: "发放覆盖率",
         dataIndex: "customerDistributionCoverage",
         width: 90,
-        fixed: 'right',
+        fixed: "right",
         render: renderPercent,
       },
       {
         title: "兑换覆盖率",
         dataIndex: "customerRedemptionCoverage",
         width: 90,
-        fixed: 'right',
+        fixed: "right",
         render: renderPercent,
       },
     ];
-    if (summaryLevel === 'L2') {
+    if (summaryLevel === "L2") {
       const l2Cols = [
         {
           title: "分支机构",
           dataIndex: "orgName",
           width: 180,
-          fixed: 'left',
+          fixed: "left",
         },
         {
           title: "下属机构数量",
@@ -204,7 +226,7 @@ class OrganizationReport extends Component {
         {
           title: "参与发放机构数量",
           dataIndex: "sitesWithDistribution",
-          width: 120,
+          width: 130,
           render: renderAmount,
         },
         {
@@ -221,13 +243,13 @@ class OrganizationReport extends Component {
           title: "分支机构",
           dataIndex: "parentName",
           width: 180,
-          fixed: 'left',
+          fixed: "left",
         },
         {
           title: "参与机构",
           dataIndex: "orgName",
           width: 180,
-          fixed: 'left',
+          fixed: "left",
         },
         {
           title: "机构编号",
@@ -255,8 +277,8 @@ class OrganizationReport extends Component {
       tableCols = tableCols.concat(l3Cols);
     }
     tableCols = tableCols.concat(fixedCols);
-    console.log('columns',tableCols);
-    this.setState({columns:tableCols});
+    console.log("columns", tableCols);
+    this.setState({ columns: tableCols });
   }
   /*
 获取列表数据
@@ -265,21 +287,22 @@ class OrganizationReport extends Component {
     //owner 我的
     this.setState({ loading: true });
     let params = {
-        page: currentPage? currentPage - 1 : this.state.currentPage -1,
-        size: size ? size : this.state.pageSize,
-        summaryLevel: values.summaryLevel,
-        campaignOrgUid: values.campaignOrgUid,
-        campaignName: values.campaignName,
-        campaignTag: values.campaignTag,
-        beginDate: values['dateRange'][0].format("YYYY-MM-DD"),
-        endDate: values['dateRange'][1].format("YYYY-MM-DD"),  
-        branchUid: values.branchUid,
-        subBranchUid: values.subBranchUid,
-      };
+      page: currentPage ? currentPage - 1 : this.state.currentPage - 1,
+      size: size ? size : this.state.pageSize,
+      summaryLevel: values.summaryLevel,
+      campaignOrgUid: values.campaignOrgUid,
+      campaignName: values.campaignName,
+      campaignTag: values.campaignTag,
+      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
+      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
+      branchUid: values.branchUid,
+      subBranchUid: values.subBranchUid,
+    };
     const result = await reqGetOrganizationSummaryReport(params);
     const cont =
       result && result.data && result.data.content
-        ? result.data.content.content : [];
+        ? result.data.content.content
+        : [];
     this.initColumns(values.summaryLevel);
     this.setState({
       inited: true,
@@ -300,8 +323,8 @@ class OrganizationReport extends Component {
   submitQuery = (values) => {
     this.setState({
       currentPage: 1,
-      beginDate: values['dateRange'][0].format("YYYY-MM-DD"),
-      endDate: values['dateRange'][1].format("YYYY-MM-DD"),
+      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
+      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
       summaryLevel: values.summaryLevel,
       campaignOrgUid: values.campaignOrgUid,
       campaignName: values.campaignName,
@@ -316,10 +339,21 @@ class OrganizationReport extends Component {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
     });
-    const {beginDate, endDate, campaignOrgUid, campaignName, campaignTag, 
-      branchUid, subBranchUid,summaryLevel} = this.state;
+    const {
+      beginDate,
+      endDate,
+      campaignOrgUid,
+      campaignName,
+      campaignTag,
+      branchUid,
+      subBranchUid,
+      summaryLevel,
+    } = this.state;
     const values = {
-      dateRange:[moment(beginDate,"YYYY-MM-DD"),moment(endDate,"YYYY-MM-DD")],
+      dateRange: [
+        moment(beginDate, "YYYY-MM-DD"),
+        moment(endDate, "YYYY-MM-DD"),
+      ],
       campaignOrgUid: campaignOrgUid,
       campaignName: campaignName,
       campaignTag: campaignTag,
@@ -327,7 +361,7 @@ class OrganizationReport extends Component {
       subBranchUid: subBranchUid,
       summaryLevel: summaryLevel,
     };
-    this.getReport(values, pagination.current,pagination.pageSize);
+    this.getReport(values, pagination.current, pagination.pageSize);
   };
   selectBranch = (branchUid) => {
     this.initSubBranches(branchUid);
@@ -339,45 +373,64 @@ class OrganizationReport extends Component {
     event.preventDefault();
     event.stopPropagation();
     this.setState({
-      downloading: true
+      downloading: true,
     });
-    const {campaignOrgUid,campaignName,campaignTag,branchUid,subBranchUid,
-      summaryLevel,beginDate,endDate} = this.state;
+    const {
+      campaignOrgUid,
+      campaignName,
+      campaignTag,
+      branchUid,
+      subBranchUid,
+      summaryLevel,
+      beginDate,
+      endDate,
+    } = this.state;
     let params = {
       campaignOrgUid: campaignOrgUid,
       campaignName: campaignName,
       campaignTag: campaignTag,
       beginDate: beginDate,
-      endDate: endDate,  
+      endDate: endDate,
       branchUid: branchUid,
       subBranchUid: subBranchUid,
       summaryLevel: summaryLevel,
     };
-    const filename = 'organizationReport_'+summaryLevel+".xlsx";
-    reqExportOrganizationSummaryReport(params).then(
-      response => {
+    const filename = "organizationReport_" + summaryLevel + ".xlsx";
+    reqExportOrganizationSummaryReport(params)
+      .then((response) => {
         FileSaver.saveAs(response.data, filename);
         this.setState({
-          downloading: false
+          downloading: false,
         });
-      }
-    ).catch((e)=>{
-      this.setState({
-        downloading: false
+      })
+      .catch((e) => {
+        this.setState({
+          downloading: false,
+        });
+        console.log(e);
+        notification.warning({
+          message: "下载失败，请稍后再试",
+        });
       });
-      console.log(e);
-      notification.warning({
-        message: "下载失败，请稍后再试",
-      });
-    });
-  }
+  };
   renderTable = () => {
-    const { stats, pageSize, total, currentPage, loading,columns,
-      campaignOrgs, campaignOrgUid, 
-      campaignName, campaignTag,
-      branches, branchUid,
-      subBranches, subBranchUid,
-      beginDate, endDate,
+    const {
+      stats,
+      pageSize,
+      total,
+      currentPage,
+      loading,
+      columns,
+      campaignOrgs,
+      campaignOrgUid,
+      campaignName,
+      campaignTag,
+      branches,
+      branchUid,
+      subBranches,
+      subBranchUid,
+      beginDate,
+      endDate,
       summaryLevel,
     } = this.state;
 
@@ -387,21 +440,21 @@ class OrganizationReport extends Component {
           className="site-page-header-responsive cont"
           title="按机构统计"
           extra={[
-            <Button type="primary" key="_b"
+            <Button
+              type="primary"
+              key="_b"
               shape="circle"
               loading={this.state.downloading}
-              icon={<DownloadOutlined />} 
-              onClick = {
-                (e) => this.handleDownload(e)
-              } 
-            />
+              icon={<DownloadOutlined />}
+              onClick={(e) => this.handleDownload(e)}
+            />,
           ]}
         />
-        <BranchForm 
+        <BranchForm
           loading={this.state.loading}
           initialData={{
             summaryLevel: summaryLevel,
-            campaignOrgs: campaignOrgs, 
+            campaignOrgs: campaignOrgs,
             campaignOrgUid: campaignOrgUid,
             campaignName: campaignName,
             campaignTag: campaignTag,
@@ -414,7 +467,8 @@ class OrganizationReport extends Component {
           onSelectSummaryLevel={this.selectSummaryLevel}
           onSelectBranch={this.selectBranch}
           onLoading={this.enterLoading}
-          onSubmit={this.submitQuery} />
+          onSubmit={this.submitQuery}
+        />
         <Table
           rowKey="key"
           size="small"
@@ -425,12 +479,12 @@ class OrganizationReport extends Component {
           loading={loading}
           onChange={this.onTableChange}
           pagination={{
-            size:"small",
+            size: "small",
             pageSize: pageSize,
             current: currentPage,
             total: total,
             showSizeChanger: true,
-            showTotal: (total)=>`总共 ${total} 条数据`
+            showTotal: (total) => `总共 ${total} 条数据`,
           }}
         />
       </div>
