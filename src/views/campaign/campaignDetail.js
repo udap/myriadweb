@@ -1,8 +1,19 @@
 import React, { Component } from "react";
-import { Tag, Descriptions, Drawer, Table, Collapse } from "antd";
+import {
+  Tag,
+  Descriptions,
+  Drawer,
+  Table,
+  Collapse,
+  Button,
+  message,
+} from "antd";
 import NumberFormat from "react-number-format";
 import QRCode from "qrcode.react";
 import saveAs from "save-svg-as-png";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { CopyOutlined } from "@ant-design/icons";
+
 import comEvents from "../../utils/comEvents";
 import {
   distributionMethods,
@@ -74,6 +85,30 @@ class CampaignDetail extends Component {
           {couponSubTypeMetheds.map((item, index) => (
             <span key={index}>{item[campaign.subType]}</span>
           ))}
+        </Descriptions.Item>
+        <Descriptions.Item label="活动类型">优惠券活动</Descriptions.Item>
+        <Descriptions.Item label="活动名称">{campaign.name}</Descriptions.Item>
+        <Descriptions.Item label="id">
+          <div className="idView">
+            <div>{campaign.id}</div>
+            <CopyToClipboard
+              text={campaign.id}
+              onCopy={() =>
+                message.success(
+                  <>
+                    已复制, <b>{campaign.id}</b>
+                  </>
+                )
+              }
+            >
+              <Button
+                type="primary"
+                shape="circle"
+                icon={<CopyOutlined />}
+                size="small"
+              />
+            </CopyToClipboard>
+          </div>
         </Descriptions.Item>
         <Descriptions.Item label="活动名称">{campaign.name}</Descriptions.Item>
         <Descriptions.Item label="标签">
@@ -300,9 +335,12 @@ class CampaignDetail extends Component {
     return (
       <>
         <Descriptions size="small" bordered column={1}>
-          {rules.map((r) => {
-            if (r.name === "MinimumValue") return this._renderRedemptionRule(r);
-          })}
+          <>
+            {rules.map((r) => {
+              if (r.name === "MinimumValue")
+                return this._renderRedemptionRule(r);
+            })}
+          </>
           {rules.map((r) => {
             if (r.name === "SelectedTags" || r.name === "SelectedRegions")
               return this._renderRedemptionRule(r);
