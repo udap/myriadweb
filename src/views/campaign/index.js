@@ -442,6 +442,7 @@ class Campaign extends Component {
     if (typeStr === "participantCreate") {
       parmas = { ...parmas, participantType: "OWNER" };
     }
+    this.setState({ loading: true });
     const result = await reqGetCampaigns(parmas);
     const cont = result && result.data ? result.data.content : [];
     this.totalPages = result && result.data ? result.data.totalElements : 1;
@@ -681,6 +682,7 @@ class Campaign extends Component {
       //活动详情
       showDetail,
       listItem,
+      loading,
     } = this.state;
     return (
       <>
@@ -705,7 +707,7 @@ class Campaign extends Component {
         ></PageHeader>
         {/* --搜索栏-- */}
         <QueryForm
-          loading={this.state.loading}
+          loading={loading}
           onChangeType={this.onChange}
           onChangeEffective={this.onChangeEffective}
           enableLoading={this.enterLoading}
@@ -718,6 +720,7 @@ class Campaign extends Component {
           dataSource={campaigns}
           columns={this.columns}
           pagination={false}
+          loading={loading}
         />
         <div className="pagination">
           <Pagination
@@ -728,6 +731,7 @@ class Campaign extends Component {
             showTotal={(total) => `总共 ${total} 条数据`}
             size="small"
             showSizeChanger={false}
+            disabled={loading}
           />
         </div>
         {showCSV ? this.showCSVModal() : null}

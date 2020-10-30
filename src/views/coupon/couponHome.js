@@ -318,7 +318,7 @@ class CouponHome extends Component {
             status: "NEW",
             searchTxt: values ? values.searchTxt : this.state.searchTxt,
           };
-
+    this.setState({ loading: true });
     const result = await reqGetCoupons(parmas);
     const cont = result && result.data ? result.data.entries : [];
     let data = [];
@@ -500,6 +500,7 @@ class CouponHome extends Component {
       searchClientTxt,
       showVoucherPanel,
       voucher,
+      loading,
     } = this.state;
 
     return (
@@ -509,7 +510,7 @@ class CouponHome extends Component {
           title="票券管理"
         ></PageHeader>
         <VoucherQueryForm
-          loading={this.state.loading}
+          loading={loading}
           onChangeType={this.onRadioChange}
           enableLoading={this.enterLoading}
           onFinish={this.onFinish}
@@ -521,6 +522,7 @@ class CouponHome extends Component {
           dataSource={vouchers}
           columns={this.columns}
           pagination={false}
+          loading={loading}
         />
         <div className="pagination">
           <Pagination
@@ -531,6 +533,7 @@ class CouponHome extends Component {
             showSizeChanger={false}
             size="small"
             showTotal={(total) => `总共 ${total} 条数据`}
+            disabled={loading}
           />
         </div>
         {showVoucherPanel ? (

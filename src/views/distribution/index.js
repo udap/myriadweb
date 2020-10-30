@@ -213,7 +213,7 @@ class Distribution extends Component {
             searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
             sort: "createdAt,desc",
           };
-
+    this.setState({ loading: true });
     const result = await reqGetDistributions(parmas);
     const cont =
       result && result.data && result.data.content
@@ -370,6 +370,7 @@ class Distribution extends Component {
           dataSource={campaigns}
           columns={columns}
           pagination={false}
+          loading={loading}
         />
         <div className="pagination">
           <Pagination
@@ -380,6 +381,7 @@ class Distribution extends Component {
             showSizeChanger={false}
             size="small"
             showTotal={(total) => `总共 ${total} 条数据`}
+            disabled={loading}
           />
         </div>
       </div>

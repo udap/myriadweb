@@ -23,6 +23,7 @@ const VoucherQueryForm = (props) => {
               onChange={props.onChangeType}
               buttonStyle="solid"
               defaultValue="owner"
+              disabled={props.loading}
             >
               <Radio.Button value="owner">我的</Radio.Button>
               <Radio.Button value="publisherId">我的机构的</Radio.Button>

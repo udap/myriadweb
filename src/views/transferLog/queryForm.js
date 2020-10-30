@@ -32,7 +32,7 @@ const QueryForm = ({ loading, dateRange, onLoading, onSubmit }) => {
           </Col>
           <Col>
             <Form.Item name="dateRange">
-              <RangePicker format="YYYY-MM-DD" />
+              <RangePicker format="YYYY-MM-DD" disabled={loading} />
             </Form.Item>
           </Col>
           <Col>

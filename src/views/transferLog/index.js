@@ -1,10 +1,6 @@
 import React, { Component } from "react";
-import {
-  Table,
-  PageHeader,
-  Pagination,
-} from "antd";
-import NumberFormat from 'react-number-format';
+import { Table, PageHeader, Pagination } from "antd";
+import NumberFormat from "react-number-format";
 import storageUtils from "../../utils/storageUtils";
 import comEvents from "../../utils/comEvents";
 import { reqGetTransferStats } from "../../api";
@@ -15,8 +11,12 @@ import QueryForm from "./queryForm";
 
 const renderAmount = (value) => {
   return (
-    <div style={{textAlign: "right"}}>
-    <NumberFormat value={value} displayType={'text'} thousandSeparator={true} />
+    <div style={{ textAlign: "right" }}>
+      <NumberFormat
+        value={value}
+        displayType={"text"}
+        thousandSeparator={true}
+      />
     </div>
   );
 };
@@ -88,16 +88,18 @@ class TransferStats extends Component {
   getStats = async (values, currentPage, size) => {
     //owner 我的
     let params = {
-        page: currentPage > 0 ? currentPage - 1 : this.state.currentPage-1,
-        size: size ? size : this.state.size,
-        beginDate: values ? values.beginDate : this.state.beginDate,
-        endDate: values ? values.endDate : this.state.endDate,
-        keyword: values ? values.searchTxt : this.state.searchTxt,
-      };
+      page: currentPage > 0 ? currentPage - 1 : this.state.currentPage - 1,
+      size: size ? size : this.state.size,
+      beginDate: values ? values.beginDate : this.state.beginDate,
+      endDate: values ? values.endDate : this.state.endDate,
+      keyword: values ? values.searchTxt : this.state.searchTxt,
+    };
+    this.setState({ loading: true });
     const result = await reqGetTransferStats(params);
     const cont =
       result && result.data && result.data.content
-        ? result.data.content.entries : [];
+        ? result.data.content.entries
+        : [];
     let stats = [];
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
@@ -138,8 +140,8 @@ class TransferStats extends Component {
   submitQuery = (values) => {
     this.setState({
       currentPage: 1,
-      beginDate: values['dateRange'][0].format("YYYY-MM-DD"),
-      endDate: values['dateRange'][1].format("YYYY-MM-DD"),
+      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
+      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
       searchTxt: values.searchTxt,
     });
     this.getStats(null, 1);
@@ -152,7 +154,7 @@ class TransferStats extends Component {
   };
 
   renderTable = () => {
-    const { stats, size, total, currentPage } = this.state;
+    const { stats, size, currentPage, loading } = this.state;
 
     return (
       <div>
@@ -160,11 +162,12 @@ class TransferStats extends Component {
           className="site-page-header-responsive cont"
           title="我的配券"
         />
-        <QueryForm 
-          loading={this.state.loading}
+        <QueryForm
+          loading={loading}
           dateRange={[this.state.beginDate]}
           onLoading={this.enterLoading}
-          onSubmit={this.submitQuery} />
+          onSubmit={this.submitQuery}
+        />
         <Table
           rowKey="key"
           size="small"
@@ -172,6 +175,7 @@ class TransferStats extends Component {
           dataSource={stats}
           columns={this.columns}
           pagination={false}
+          loading={loading}
         />
         <div className="pagination">
           <Pagination
@@ -182,6 +186,7 @@ class TransferStats extends Component {
             showSizeChanger={false}
             size="small"
             showTotal={(total) => `总共 ${total} 条数据`}
+            disabled={loading}
           />
         </div>
       </div>

@@ -223,6 +223,7 @@ class Redemption extends Component {
             endDate: endDate ? endDate : this.state.endDate,
             searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
           };
+    this.setState({ loading: true });
     const result = await reqGetRedemptions(parmas);
     const cont =
       result && result.data && result.data.content
@@ -383,6 +384,7 @@ class Redemption extends Component {
           dataSource={campaigns}
           columns={columns}
           pagination={false}
+          loading={loading}
         />
         <div className="pagination">
           <Pagination
@@ -393,6 +395,7 @@ class Redemption extends Component {
             showSizeChanger={false}
             size="small"
             showTotal={(total) => `总共 ${total} 条数据`}
+            disabled={loading}
           />
         </div>
       </div>

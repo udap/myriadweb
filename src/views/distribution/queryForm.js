@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, Row, Col, Radio, Button, Input, DatePicker } from "antd";
-
 import moment from "moment";
 import "moment/locale/zh-cn";
 
@@ -35,7 +34,11 @@ const QueryForm = ({
       <Row gutter={[16, 16]}>
         <Col>
           <Form.Item name="type" label="查询条件">
-            <Radio.Group onChange={onSwitchType} buttonStyle="solid">
+            <Radio.Group
+              onChange={onSwitchType}
+              buttonStyle="solid"
+              disabled={loading}
+            >
               <Radio.Button value="user">我的发放</Radio.Button>
               <Radio.Button value="org">机构发放</Radio.Button>
             </Radio.Group>
@@ -51,7 +54,7 @@ const QueryForm = ({
         </Col>
         <Col>
           <Form.Item name="dateRange">
-            <RangePicker format="YYYY-MM-DD" />
+            <RangePicker format="YYYY-MM-DD" disabled={loading} />
           </Form.Item>
         </Col>
         <Col>

@@ -21,6 +21,7 @@ const QueryForm = (props) => {
               defaultValue="participant"
               onChange={props.onChangeType}
               buttonStyle="solid"
+              disabled={props.loading}
             >
               <Radio.Button value="participant">我参与的</Radio.Button>
               <Radio.Button value="participantCreate">我创建的</Radio.Button>
@@ -34,6 +35,7 @@ const QueryForm = (props) => {
             defaultValue="valid"
             buttonStyle="solid"
             onChange={props.onChangeEffective}
+            disabled={props.loading}
           >
             <Radio.Button value="valid">有效活动</Radio.Button>
             <Radio.Button value="all">全部活动</Radio.Button>
