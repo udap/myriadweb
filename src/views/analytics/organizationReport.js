@@ -277,7 +277,6 @@ class OrganizationReport extends Component {
       tableCols = tableCols.concat(l3Cols);
     }
     tableCols = tableCols.concat(fixedCols);
-    console.log("columns", tableCols);
     this.setState({ columns: tableCols });
   }
   /*
@@ -407,7 +406,6 @@ class OrganizationReport extends Component {
         this.setState({
           downloading: false,
         });
-        console.log(e);
         notification.warning({
           message: "下载失败，请稍后再试",
         });

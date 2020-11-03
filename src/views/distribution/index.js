@@ -68,24 +68,45 @@ class Distribution extends Component {
         title: "优惠金额",
         dataIndex: "discountOff",
         key: "discountOff",
-        width: 80,
-        render: (value, row, index) => {
-          return value ? (
-            <div style={{ textAlign: "right" }}>
-              {row.discountType === "AMOUNT" ? (
+        width: 100,
+        render: (value, row) => {
+          if (!value) return null;
+          if (row.voucherType === "COUPON") {
+            return (
+              <div style={{ textAlign: "right" }}>
+                {row.discountType === "AMOUNT" ? (
+                  <NumberFormat
+                    value={value / 100}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    decimalScale={2}
+                    fixedDecimalScale={true}
+                    prefix={"¥"}
+                  />
+                ) : (
+                  <NumberFormat
+                    value={value}
+                    displayType={"text"}
+                    suffix={"%"}
+                  />
+                )}
+              </div>
+            );
+          } else if (row.voucherType === "GIFT") {
+            return (
+              <div style={{ textAlign: "right" }}>
                 <NumberFormat
                   value={value / 100}
                   displayType={"text"}
                   thousandSeparator={true}
                   decimalScale={2}
                   fixedDecimalScale={true}
-                  prefix={"¥"}
+                  prefix={"(¥"}
+                  suffix={")"}
                 />
-              ) : (
-                <NumberFormat value={value} displayType={"text"} suffix={"%"} />
-              )}
-            </div>
-          ) : null;
+              </div>
+            );
+          }
         },
       },
       {
@@ -142,24 +163,45 @@ class Distribution extends Component {
         title: "优惠金额",
         dataIndex: "discountOff",
         key: "discountOff",
-        width: 80,
-        render: (value, row, index) => {
-          return value ? (
-            <div style={{ textAlign: "right" }}>
-              {row.discountType === "AMOUNT" ? (
+        width: 100,
+        render: (value, row) => {
+          if (!value) return null;
+          if (row.voucherType === "COUPON") {
+            return (
+              <div style={{ textAlign: "right" }}>
+                {row.discountType === "AMOUNT" ? (
+                  <NumberFormat
+                    value={value / 100}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    decimalScale={2}
+                    fixedDecimalScale={true}
+                    prefix={"¥"}
+                  />
+                ) : (
+                  <NumberFormat
+                    value={value}
+                    displayType={"text"}
+                    suffix={"%"}
+                  />
+                )}
+              </div>
+            );
+          } else if (row.voucherType === "GIFT") {
+            return (
+              <div style={{ textAlign: "right" }}>
                 <NumberFormat
                   value={value / 100}
                   displayType={"text"}
                   thousandSeparator={true}
                   decimalScale={2}
                   fixedDecimalScale={true}
-                  prefix={"¥"}
+                  prefix={"(¥"}
+                  suffix={")"}
                 />
-              ) : (
-                <NumberFormat value={value} displayType={"text"} suffix={"%"} />
-              )}
-            </div>
-          ) : null;
+              </div>
+            );
+          }
         },
       },
       {
@@ -222,6 +264,19 @@ class Distribution extends Component {
     let data = [];
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
+        let discountOff;
+        switch (cont[i].voucher.type) {
+          case "COUPON":
+            discountOff = cont[i].discountOff;
+            break;
+          case "GIFT":
+            discountOff = cont[i].productExchangePrice;
+            break;
+
+          default:
+            break;
+        }
+
         data.push({
           key: i,
           id: cont[i].id,
@@ -230,8 +285,9 @@ class Distribution extends Component {
           orgName: cont[i].orgName,
           fromOwnerName: cont[i].fromOwnerName,
           customerName: cont[i].customerName,
-          discountOff: cont[i].discountOff,
+          discountOff,
           discountType: cont[i].discountType,
+          voucherType: cont[i].voucher.type,
           updatedAt: cont[i].updatedAt,
           channel: cont[i].channel,
           status: cont[i].status,

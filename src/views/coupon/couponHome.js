@@ -176,8 +176,7 @@ class CouponHome extends Component {
                     thousandSeparator={true}
                     decimalScale={2}
                     fixedDecimalScale={true}
-                    prefix={"(¥"}
-                    suffix={")"}
+                    prefix={"¥"}
                   />
                 </div>
               );

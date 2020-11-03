@@ -73,20 +73,37 @@ class Redemption extends Component {
         title: "优惠金额",
         dataIndex: "discountOff",
         key: "discountOff",
-        width: 80,
-        render: (value, row, index) => {
-          return value ? (
-            <div style={{ textAlign: "right" }}>
-              <NumberFormat
-                value={value / 100}
-                displayType={"text"}
-                thousandSeparator={true}
-                decimalScale={2}
-                fixedDecimalScale={true}
-                prefix={"¥"}
-              />
-            </div>
-          ) : null;
+        width: 100,
+        render: (value, row) => {
+          if (!value) return null;
+          if (row.voucherType === "COUPON") {
+            return (
+              <div style={{ textAlign: "right" }}>
+                <NumberFormat
+                  value={value / 100}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  prefix={"¥"}
+                />
+              </div>
+            );
+          } else if (row.voucherType === "GIFT") {
+            return (
+              <div style={{ textAlign: "right" }}>
+                <NumberFormat
+                  value={value / 100}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  prefix={"(¥"}
+                  suffix={")"}
+                />
+              </div>
+            );
+          }
         },
       },
       {
@@ -150,20 +167,37 @@ class Redemption extends Component {
         title: "优惠金额",
         dataIndex: "discountOff",
         key: "discountOff",
-        width: 80,
-        render: (value, row, index) => {
-          return value ? (
-            <div style={{ textAlign: "right" }}>
-              <NumberFormat
-                value={value / 100}
-                displayType={"text"}
-                thousandSeparator={true}
-                decimalScale={2}
-                fixedDecimalScale={true}
-                prefix={"¥"}
-              />
-            </div>
-          ) : null;
+        width: 100,
+        render: (value, row) => {
+          if (!value) return null;
+          if (row.voucherType === "COUPON") {
+            return (
+              <div style={{ textAlign: "right" }}>
+                <NumberFormat
+                  value={value / 100}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  prefix={"¥"}
+                />
+              </div>
+            );
+          } else if (row.voucherType === "GIFT") {
+            return (
+              <div style={{ textAlign: "right" }}>
+                <NumberFormat
+                  value={value / 100}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  prefix={"(¥"}
+                  suffix={")"}
+                />
+              </div>
+            );
+          }
         },
       },
       {
@@ -232,6 +266,18 @@ class Redemption extends Component {
     let data = [];
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
+        let discountOff;
+        switch (cont[i].voucher.type) {
+          case "COUPON":
+            discountOff = cont[i].discountOff;
+            break;
+          case "GIFT":
+            discountOff = cont[i].exchangePrice;
+            break;
+
+          default:
+            break;
+        }
         data.push({
           key: i,
           id: cont[i].id,
@@ -243,7 +289,8 @@ class Redemption extends Component {
           status: cont[i].status,
           updatedAt: cont[i].updatedAt,
           orderId: cont[i].orderId,
-          discountOff: cont[i].discountOff,
+          discountOff,
+          voucherType: cont[i].voucher.type,
           settlementStatus:
             cont[i].settlement && cont[i].settlement.status
               ? cont[i].settlement.status
