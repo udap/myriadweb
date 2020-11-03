@@ -86,7 +86,6 @@ class CampaignDetail extends Component {
             <span key={index}>{item[campaign.subType]}</span>
           ))}
         </Descriptions.Item>
-        <Descriptions.Item label="活动类型">优惠券活动</Descriptions.Item>
         <Descriptions.Item label="活动名称">{campaign.name}</Descriptions.Item>
         <Descriptions.Item label="id">
           <div className="idView">
