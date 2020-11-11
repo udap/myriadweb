@@ -562,13 +562,13 @@ class Campaign extends Component {
     this.handleCancel();
   };
 
-  handleDownload = async (event, action) => {
+  handleDownload = async (event, action, type = "") => {
     event.preventDefault();
     event.stopPropagation();
     this.setState({
       downloading: true,
     });
-    const filename = `${action}Template.csv`;
+    const filename = `${action}Template${type}.csv`;
     reqDownloadTemplate(filename)
       .then((response) => {
         FileSaver.saveAs(response.data, filename);
@@ -584,6 +584,26 @@ class Campaign extends Component {
           message: "下载失败，请稍后再试",
         });
       });
+  };
+
+  showDownloadBtns = (action) => {
+    return (
+      <div style={{ display: "inline" }}>
+        <b
+          onClick={(e) => this.handleDownload(e, action, "")}
+          className="ant-blue-link cursor"
+        >
+          模版一
+        </b>
+        <Divider type="vertical" />
+        <b
+          onClick={(e) => this.handleDownload(e, action, 2)}
+          className="ant-blue-link cursor"
+        >
+          模版二
+        </b>
+      </div>
+    );
   };
 
   //分配发放票券
@@ -609,27 +629,39 @@ class Campaign extends Component {
           </div>
           <Descriptions title={`请上传${typeName}`} column={2}>
             <Descriptions.Item label="格式">csv</Descriptions.Item>
-            <Descriptions.Item label="表头">
+            {/* <Descriptions.Item label="表头">
               {action === "transfer" ? "员工号,数量" : "客户手机号 "}
-            </Descriptions.Item>
+            </Descriptions.Item> */}
             {action === "transfer" ? (
               <Descriptions.Item label="最大许可">100个 员工</Descriptions.Item>
-            ) : (
-              <Descriptions.Item label=""></Descriptions.Item>
-            )}
-
+            ) : null}
             {/* <Descriptions.Item label="数据示例">
               {action === "transfer" ? "001,300" : "18512342534"}
             </Descriptions.Item> */}
             <Descriptions.Item label="模板示例">
-              <Button
-                style={{ paddingLeft: 0 }}
-                type="link"
-                loading={downloading}
-                onClick={(e) => this.handleDownload(e, action)}
-              >
-                点击下载
-              </Button>
+              {action === "transfer" ? (
+                <Button
+                  style={{ paddingLeft: 0 }}
+                  type="link"
+                  loading={downloading}
+                  onClick={(e) => this.handleDownload(e, action)}
+                >
+                  点击下载
+                </Button>
+              ) : (
+                <Popover
+                  content={this.showDownloadBtns(action)}
+                  trigger="hover"
+                >
+                  <Button
+                    style={{ paddingLeft: 0 }}
+                    type="link"
+                    loading={downloading}
+                  >
+                    点击下载
+                  </Button>
+                </Popover>
+              )}
             </Descriptions.Item>
             {/* {action === "distributions" ? (
                 <Descriptions.Item label="是否只发自己的客户">
