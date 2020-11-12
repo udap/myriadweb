@@ -509,12 +509,12 @@ class Campaign extends Component {
       // formData.append("customerOnly", this.state.customerOnly);
       result = await reqBatchDistribution(formData);
       if (result && result.data && result.data.status === "PENDING") {
-        let str0 =
-          "申请发放票券给" +
-          result.data.customerCount +
-          "个客户，后台正在处理中！";
+        // let str0 =
+        //   "申请发放票券给" +
+        //   result.data.customerCount +
+        //   "个客户，后台正在处理中！";
         notification.success({
-          message: str0,
+          message: result.data.msg || "",
         });
       }
     }
