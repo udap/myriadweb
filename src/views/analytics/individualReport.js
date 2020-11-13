@@ -56,7 +56,6 @@ class IndividualReport extends Component {
     currentPage: 1,
     pageSize: 20,
     total: 0,
-    beginDate: comEvents.firstDayOfMonth(),
     endDate: null,
     loading: false,
     downloading: false,
@@ -176,14 +175,14 @@ class IndividualReport extends Component {
       //   width: 80,
       //   render: renderAmount,
       // },
+      // {
+      //   title: "起始资源数",
+      //   dataIndex: "beginAmount",
+      //   width: 100,
+      //   render: renderAmount,
+      // },
       {
-        title: "起始资源数",
-        dataIndex: "beginAmount",
-        width: 100,
-        render: renderAmount,
-      },
-      {
-        title: "截止资源数",
+        title: "剩余资源数",
         dataIndex: "endAmount",
         width: 100,
         render: renderAmount,
@@ -270,8 +269,7 @@ class IndividualReport extends Component {
       campaignOrgUid: values.campaignOrgUid,
       campaignName: values.campaignName,
       campaignTag: values.campaignTag,
-      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
-      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
+      endDate: values.endDate.format("YYYY-MM-DD"),
       branchUid: values.branchUid,
       subBranchUid: values.subBranchUid,
       employeeUid: values.employeeUid,
@@ -298,10 +296,10 @@ class IndividualReport extends Component {
     });
   };
   submitQuery = (values) => {
+    console.log(values);
     this.setState({
       currentPage: 1,
-      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
-      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
+      endDate: values.endDate.format("YYYY-MM-DD"),
       campaignOrgUid: values.campaignOrgUid,
       campaignName: values.campaignName,
       campaignTag: values.campaignTag,
@@ -317,7 +315,6 @@ class IndividualReport extends Component {
       pageSize: pagination.pageSize,
     });
     const {
-      beginDate,
       endDate,
       campaignOrgUid,
       campaignName,
@@ -327,10 +324,7 @@ class IndividualReport extends Component {
       employeeUid,
     } = this.state;
     const values = {
-      dateRange: [
-        moment(beginDate, "YYYY-MM-DD"),
-        moment(endDate, "YYYY-MM-DD"),
-      ],
+      endDate: moment(endDate, "YYYY-MM-DD"),
       campaignOrgUid: campaignOrgUid,
       campaignName: campaignName,
       campaignTag: campaignTag,
@@ -361,18 +355,16 @@ class IndividualReport extends Component {
       branchUid,
       subBranchUid,
       employeeUid,
-      beginDate,
       endDate,
     } = this.state;
     let params = {
-      campaignOrgUid: campaignOrgUid,
-      campaignName: campaignName,
-      campaignTag: campaignTag,
-      beginDate: beginDate,
-      endDate: endDate,
-      branchUid: branchUid,
-      subBranchUid: subBranchUid,
-      employeeUid: employeeUid,
+      campaignOrgUid,
+      campaignName,
+      campaignTag,
+      endDate,
+      branchUid,
+      subBranchUid,
+      employeeUid,
     };
     reqExportIndividualSummaryReport(params)
       .then((response) => {
@@ -408,7 +400,6 @@ class IndividualReport extends Component {
       subBranchUid,
       employees,
       employeeUid,
-      beginDate,
       endDate,
     } = this.state;
 
@@ -441,7 +432,7 @@ class IndividualReport extends Component {
             subBranchUid: subBranchUid,
             employees: employees,
             employeeUid: employeeUid,
-            dateRange: [beginDate, endDate],
+            endDate: endDate || new Date(),
           }}
           onSelectBranch={this.selectBranch}
           onSelectSubBranch={this.selectSubBranch}
