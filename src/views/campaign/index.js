@@ -472,7 +472,7 @@ class Campaign extends Component {
     this.setState({ numberLoading: true });
     const result = await reqGetNumber(campaignId, owner, action);
     this.setState({
-      number: result.data,
+      number: result.data || 0,
       numberLoading: false,
     });
   };
