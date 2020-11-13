@@ -744,7 +744,9 @@ class Campaign extends Component {
               </Col>
             </Row>
           )}
-          <div className="tips">上传文件大小限制10M</div>
+          {!numberLoading ? (
+            <div className="tips">上传文件大小限制10M</div>
+          ) : null}
         </div>
       </Modal>
     );
