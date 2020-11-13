@@ -18,6 +18,7 @@ import {
   PlusSquareFilled,
   UploadOutlined,
   ExclamationCircleOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import NumberFormat from "react-number-format";
 import FileSaver from "file-saver";
@@ -76,6 +77,8 @@ class Campaign extends Component {
     listItem: null,
     effective: "valid",
     downloading: false,
+    numberLoading: false,
+    isUpload: false,
   };
 
   componentDidMount() {
@@ -463,13 +466,17 @@ class Campaign extends Component {
       chooseItem: chooseItem,
     });
   };
+
   getNumber = async (campaignId, action) => {
     const owner = storageUtils.getUser().id;
+    this.setState({ numberLoading: true });
     const result = await reqGetNumber(campaignId, owner, action);
     this.setState({
       number: result.data,
+      numberLoading: false,
     });
   };
+
   handleCancel = () => {
     this.setState({
       showCSV: false,
@@ -477,6 +484,12 @@ class Campaign extends Component {
     });
   };
   handleFiles = async (files) => {
+    if (files[0].size > 10 * 1000000) {
+      notification.error({
+        message: "上传文件大小限制10M！",
+      });
+      return;
+    }
     var reader = new FileReader();
     reader.onload = function (e) {
       // Use reader.result
@@ -507,7 +520,9 @@ class Campaign extends Component {
     } else {
       //distributions 批量发券
       // formData.append("customerOnly", this.state.customerOnly);
+      this.setState({ isUpload: true });
       result = await reqBatchDistribution(formData);
+      this.setState({ isUpload: false });
       if (result && result.data && result.data.status === "PENDING") {
         // let str0 =
         //   "申请发放票券给" +
@@ -608,7 +623,15 @@ class Campaign extends Component {
 
   //分配发放票券
   showCSVModal = () => {
-    const { action, downloading, number, showCSV, chooseItem } = this.state;
+    const {
+      action,
+      downloading,
+      number,
+      showCSV,
+      chooseItem,
+      numberLoading,
+      isUpload,
+    } = this.state;
     const typeName = action === "transfer" ? "票券分配文件" : "票券发放文件";
     const typeTitle = action === "transfer" ? "分配票券" : "发放票券";
     return (
@@ -625,8 +648,15 @@ class Campaign extends Component {
               <span>当前可分配数量：{number}</span>
             ) : (
               <span>
-                当前可发放数量：{number}（{chooseItem.autoUpdate ? "" : "不"}
-                允许增发）
+                当前可发放数量：
+                {numberLoading ? (
+                  <LoadingOutlined />
+                ) : (
+                  <span>
+                    {number}（{chooseItem.autoUpdate ? "" : "不"}
+                    允许增发）
+                  </span>
+                )}
               </span>
             )}
           </div>
@@ -674,37 +704,47 @@ class Campaign extends Component {
                 ""
               )} */}
           </Descriptions>
-          <Row>
-            <Col>
-              <ReactFileReader
-                handleFiles={this.handleFiles}
-                fileTypes={".csv"}
-              >
-                <Button
-                  type="primary"
-                  disabled={
-                    number === 0 && !chooseItem.autoUpdate ? true : false
-                  }
+          {numberLoading ? null : (
+            <Row>
+              <Col>
+                <ReactFileReader
+                  handleFiles={this.handleFiles}
+                  fileTypes={".csv"}
                 >
-                  <UploadOutlined />
-                  选择文件并上传
-                </Button>
-              </ReactFileReader>
-            </Col>
-            <Col>
-              {number === 0 && !chooseItem.autoUpdate ? (
-                <Button
-                  type="primary"
-                  style={{
-                    marginLeft: "10px",
-                  }}
-                  onClick={this.handleCancel}
-                >
-                  关闭
-                </Button>
-              ) : null}
-            </Col>
-          </Row>
+                  <Button
+                    type="primary"
+                    disabled={
+                      (number === 0 && !chooseItem.autoUpdate) || isUpload
+                        ? true
+                        : false
+                    }
+                  >
+                    {isUpload ? <LoadingOutlined /> : <UploadOutlined />}
+                    选择文件并上传
+                  </Button>
+                </ReactFileReader>
+              </Col>
+              <Col>
+                {isUpload ? (
+                  <Button type="link" icon={<LoadingOutlined />} />
+                ) : null}
+              </Col>
+              <Col>
+                {number === 0 && !chooseItem.autoUpdate ? (
+                  <Button
+                    type="primary"
+                    style={{
+                      marginLeft: "10px",
+                    }}
+                    onClick={this.handleCancel}
+                  >
+                    关闭
+                  </Button>
+                ) : null}
+              </Col>
+            </Row>
+          )}
+          <div className="tips">上传文件大小限制10M</div>
         </div>
       </Modal>
     );
