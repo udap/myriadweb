@@ -608,7 +608,7 @@ class Campaign extends Component {
 
   //分配发放票券
   showCSVModal = () => {
-    const { action, downloading, number, showCSV } = this.state;
+    const { action, downloading, number, showCSV, chooseItem } = this.state;
     const typeName = action === "transfer" ? "票券分配文件" : "票券发放文件";
     const typeTitle = action === "transfer" ? "分配票券" : "发放票券";
     return (
@@ -624,7 +624,10 @@ class Campaign extends Component {
             {typeTitle === "分配票券" ? (
               <span>当前可分配数量：{number}</span>
             ) : (
-              <span>当前可发放数量：{number}</span>
+              <span>
+                当前可发放数量：{number}（{chooseItem.autoUpdate ? "" : "不"}
+                允许增发）
+              </span>
             )}
           </div>
           <Descriptions title={`请上传${typeName}`} column={2}>
@@ -679,7 +682,9 @@ class Campaign extends Component {
               >
                 <Button
                   type="primary"
-                  disabled={this.state.number === 0 ? true : false}
+                  disabled={
+                    number === 0 && !chooseItem.autoUpdate ? true : false
+                  }
                 >
                   <UploadOutlined />
                   选择文件并上传
@@ -687,7 +692,7 @@ class Campaign extends Component {
               </ReactFileReader>
             </Col>
             <Col>
-              {this.state.number === 0 ? (
+              {number === 0 && !chooseItem.autoUpdate ? (
                 <Button
                   type="primary"
                   style={{
