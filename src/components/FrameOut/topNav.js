@@ -1,37 +1,22 @@
-import React, { Component } from "react";
+import React from "react";
 import { withRouter } from "react-router-dom";
-import { Menu, Row, Col, Modal, notification } from "antd";
-import { AntdIcon, LinkBtn } from "../../components";
-import storageUtils from "../../utils/storageUtils";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-//获取titile
-import comEvents from "../../utils/comEvents";
-import "./index.less";
+import { Menu, Row, Col, Modal, notification, Button, Badge } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
+import { ExclamationCircleOutlined, BellOutlined } from "@ant-design/icons";
 
-const { SubMenu } = Menu;
-const { confirm } = Modal;
+import { AntdIcon } from "../../components";
+import storageUtils from "../../utils/storageUtils";
+import "./index.less";
+import { DrawerView } from "./components";
 
-//右上角导航
-@withRouter
-class TopNav extends Component {
-  state = {
-    current: "mail",
-  };
-  componentDidMount() {}
-
-  handleClick = (e) => {
-    console.log("click ", e);
-    this.setState({
-      current: e.key,
-      selectedKeys: "",
-      authCode: "",
-    });
-  };
+const TopNav = (props) => {
+  const [visible, setVisible] = React.useState(false);
+  const [selectedOpenKeys, setSelectedOpenKeys] = React.useState("");
+  const [message, setMessage] = React.useState([{ title: "Test" }]);
 
   //退出登录
-  logout = () => {
-    confirm({
+  const logout = () => {
+    Modal.confirm({
       title: "确认退出登录吗？",
       icon: <ExclamationCircleOutlined />,
       onOk: () => {
@@ -41,75 +26,99 @@ class TopNav extends Component {
         storageUtils.removeToken();
         //user = {};
         //返回登陆页
-        this.props.history.push("/login");
+        props.history.push("/login");
       },
     });
   };
-  menusHandler = ({ item, key, keyPath, domEvent }) => {
-    console.log(item, key, keyPath, domEvent);
-    this.selectedOpenKeys = item.pathname;
-    if (storageUtils.getUser().orgUid) {
-      this.props.history.push(key);
-      this.setState({
-        selectedKeys: key,
-      });
-    } else {
-      notification.info({
-        message: "您尚未加入任何结构！请注册新机构或者退出",
-      });
-      this.props.history.push("/admin/dashboard");
+
+  const menusHandler = ({ item, key }) => {
+    switch (key) {
+      case "loginOut":
+        logout();
+        break;
+
+      default:
+        setSelectedOpenKeys(item.pathname);
+        if (storageUtils.getUser().orgUid) {
+          props.history.push(key);
+        } else {
+          notification.info({
+            message: "您尚未加入任何结构！请注册新机构或者退出",
+          });
+          props.history.push("/admin/dashboard");
+        }
+        break;
     }
   };
-  render() {
-    //获取当前页面需要默认打开子列表的key值
-    const openKey = this.selectedOpenKeys;
-    //获取当前页面的路径地址
-    const path = openKey;
-    //更新title
-    let curTtile = comEvents.getTitle(path);
-    window.document.title = curTtile;
-    return (
-      <div>
-        <Row>
-          <Col span={10} offset={6}>
-            <Menu
-              mode="horizontal"
-              onClick={this.menusHandler}
-              selectedKeys={[path]}
-              defaultOpenKeys={[openKey]}
-            >
-              <SubMenu
-                title={
-                  <span className="submenu-title-wrapper">
-                    <SettingOutlined />
-                    {storageUtils.getUser().cellphone}
-                  </span>
-                }
+
+  const showDrawer = () => {
+    setVisible(true);
+  };
+
+  const onClose = () => {
+    setVisible(false);
+  };
+
+  return (
+    <>
+      <Row>
+        <Col flex="auto">
+          <></>
+        </Col>
+        <Col flex="none">
+          <Row>
+            <Col>
+              <Menu
+                mode="horizontal"
+                onClick={menusHandler}
+                selectedKeys={[selectedOpenKeys]}
+                defaultOpenKeys={[selectedOpenKeys]}
               >
-                <Menu.Item key="/admin/profile">
-                  <AntdIcon name="UserOutlined" />
-                  我的账户
-                </Menu.Item>
-                <Menu.Item key="/admin/myOrgs">
-                  <AntdIcon name="BankOutlined" />
-                  我的机构
-                </Menu.Item>
-                <Menu.Item key="/admin/merchant">
-                  <AntdIcon name="ApartmentOutlined" />
-                  入驻商户
-                </Menu.Item>
-              </SubMenu>
-            </Menu>
-          </Col>
-          <Col span={8}>
-            <LinkBtn className="title" onClick={this.logout.bind(this)}>
-            <AntdIcon name="LoginOutlined" />
-             <span className="btnText">退出登录</span>
-            </LinkBtn>
-          </Col>
-        </Row>
-      </div>
-    );
-  }
-}
-export default TopNav;
+                <Menu.SubMenu
+                  title={
+                    <span className="submenu-title-wrapper">
+                      <SettingOutlined />
+                      {storageUtils.getUser().cellphone}
+                    </span>
+                  }
+                >
+                  <Menu.Item key="/admin/profile">
+                    <AntdIcon name="UserOutlined" />
+                    我的账户
+                  </Menu.Item>
+                  <Menu.Item key="/admin/myOrgs">
+                    <AntdIcon name="BankOutlined" />
+                    我的机构
+                  </Menu.Item>
+                  <Menu.Item key="/admin/merchant">
+                    <AntdIcon name="ApartmentOutlined" />
+                    入驻商户
+                  </Menu.Item>
+                  <Menu.Item key="loginOut">
+                    <AntdIcon name="LoginOutlined" />
+                    退出登录
+                  </Menu.Item>
+                </Menu.SubMenu>
+              </Menu>
+            </Col>
+            <Col>
+              <Button
+                style={{ marginRight: 40 }}
+                type="link"
+                icon={
+                  <Badge count={message.length} size="small">
+                    <BellOutlined style={{ fontSize: 20, paddingRight: 8 }} />
+                  </Badge>
+                }
+                onClick={showDrawer}
+              />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <DrawerView visible={visible} onClose={onClose} />
+    </>
+  );
+};
+
+export default withRouter(TopNav);
