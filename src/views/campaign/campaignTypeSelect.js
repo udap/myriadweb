@@ -29,7 +29,7 @@ const CampaignTypeSelect = (props) => {
     <div className="site-card-wrapper">
       <List
         dataSource={CampaignTypes}
-        grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 4 }}
+        grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 2, xl: 3, xxl: 4 }}
         renderItem={(item) => (
           <List.Item>
             <Card bordered={false}>
