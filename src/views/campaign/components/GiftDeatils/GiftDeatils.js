@@ -66,10 +66,7 @@ export default withRouter((props) => {
         expiry,
         daysAfterDist,
         name,
-        productName,
-        productCode,
-        productMarketPrice,
-        productExchangePrice,
+        product,
       } = props.curInfo.voucherConfig;
 
       let tempTimeType = "date";
@@ -87,19 +84,19 @@ export default withRouter((props) => {
         },
         {
           name: ["productName"],
-          value: productName,
+          value: product.name,
         },
         {
           name: ["productCode"],
-          value: productCode,
+          value: product.code,
         },
         {
           name: ["productMarketPrice"],
-          value: productMarketPrice / 100,
+          value: product.marketPrice / 100,
         },
         {
           name: ["productExchangePrice"],
-          value: productExchangePrice / 100,
+          value: product.exchangePrice / 100,
         },
         {
           name: ["daysAfterDist"],
@@ -126,10 +123,12 @@ export default withRouter((props) => {
     let params = {
       name: value.giftName,
       type: "GIFT",
-      productName: value.productName,
-      productCode: value.productCode,
-      productMarketPrice: value.productMarketPrice * 100,
-      productExchangePrice: value.productExchangePrice * 100,
+      product: {
+        name: value.productName,
+        code: value.productCode,
+        marketPrice: value.productMarketPrice * 100,
+        exchangePrice: value.productExchangePrice * 100,
+      },
       merchantId: orgList.partyId, // 机构id
     };
     if (timeType === "date") {

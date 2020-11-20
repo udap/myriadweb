@@ -4,7 +4,6 @@
   "homepage": "./",
   "private": true,
   "dependencies": {
-    "@stomp/stompjs": "^6.0.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -35,7 +34,6 @@
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "save-svg-as-png": "^1.4.17",
-    "sockjs-client": "^1.5.0",
     "store": "^2.0.12"
   },
   "scripts": {

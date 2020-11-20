@@ -103,7 +103,7 @@ const TopNav = (props) => {
             </Col>
             <Col>
               <Button
-                style={{ marginRight: 40 }}
+                style={{ marginRight: 18, marginLeft: 10 }}
                 type="link"
                 icon={
                   <Badge count={message.length} size="small">

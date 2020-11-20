@@ -336,9 +336,8 @@ class CouponHome extends Component {
           valueOff:
             cont[i].config.type === "COUPON" && cont[i].config.discount
               ? cont[i].config.discount.valueOff
-              : cont[i].config.type === "GIFT" &&
-                cont[i].config.productExchangePrice
-              ? cont[i].config.productExchangePrice
+              : cont[i].config.type === "GIFT" && cont[i].config.product
+              ? cont[i].config.product.exchangePrice
               : null,
           effective: cont[i].effective,
           end: comEvents.formatExpiry(cont[i].expiry),

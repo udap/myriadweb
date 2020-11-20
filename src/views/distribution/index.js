@@ -270,7 +270,7 @@ class Distribution extends Component {
             discountOff = cont[i].discountOff;
             break;
           case "GIFT":
-            discountOff = cont[i].productExchangePrice;
+            discountOff = cont[i].product.exchangePrice;
             break;
 
           default:
