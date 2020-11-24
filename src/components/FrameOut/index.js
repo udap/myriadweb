@@ -205,19 +205,6 @@ class FrameOut extends Component {
               style={{ padding: "0 16px" }}
             >
               <TopNav />
-              {/* <Row>
-                <Col xs={{ span: 12 }} lg={{ span: 12 }}>
-                  {React.createElement(
-                    this.state.collapsed
-                      ? MenuUnfoldOutlined
-                      : MenuFoldOutlined,
-                    {
-                      className: "trigger",
-                      onClick: this.toggle,
-                    }
-                  )}
-                </Col>
-              </Row> */}
             </Layout.Header>
             <Layout.Content
               className="site-layout-background"

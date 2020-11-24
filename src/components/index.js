@@ -1,14 +1,16 @@
-import FrameOut from './FrameOut';
-import Loading from './Loading';
-import AntdIcon from './AntdIcons';
+import FrameOut from "./FrameOut";
+import Loading from "./Loading";
+import AntdIcon from "./AntdIcons";
 import LinkBtn from "./linkBtn";
 import EmptyPage from "./Empty";
-import ReactDocumentTitle from './SetTitle'
+import ReactDocumentTitle from "./SetTitle";
 import ModalTable from "./ModalTable";
 import TransferComponent from "./Transfer";
 import EditableTagGroup from "./Tags";
 import TreeSelectComponent from "./TableTransfer";
 import SearchForm from "./SearchForm";
+import HeaderDropdown from "./HeaderDropdown";
+import NoticeIcon from "./NoticeIcon";
 
 export {
   FrameOut,
@@ -21,5 +23,7 @@ export {
   TransferComponent,
   EditableTagGroup,
   TreeSelectComponent,
-  SearchForm
+  SearchForm,
+  HeaderDropdown,
+  NoticeIcon,
 };

@@ -1,18 +1,18 @@
-@import '../../css/yc.less';
+@import "../../css/yc.less";
 .logo {
   display: block;
   margin: 16px;
-  color:#fff;
+  color: #fff;
   text-align: center;
-  img{
+  img {
     display: inline;
     width: 40px;
     height: 40px;
     margin-right: 4px;
   }
 }
-.logo:hover{
-  color:#fff;
+.logo:hover {
+  color: #fff;
 }
 .trigger {
   font-size: 18px;
@@ -31,28 +31,72 @@
 }
 //折叠隐藏文字
 .ant-layout-sider-collapsed .ant-menu-inline-collapsed span.title {
-    display: none;
+  display: none;
 }
-.btnText{
+.btnText {
   font-size: 14px;
   margin-left: 12px;
 }
-.authCode{
-  p{
-    margin:0;
+.authCode {
+  p {
+    margin: 0;
   }
-  span{
-    color:@greenColor;
+  span {
+    color: @greenColor;
     font-size: 16px;
     margin: 0 10px;
   }
 }
-.ant-layout-sider-zero-width-trigger{
-  top:11px;
+.ant-layout-sider-zero-width-trigger {
+  top: 11px;
 }
-@media screen and (max-width:500px){
-  .btnText{ display:none; }
-  .collapsedUI{
-    width: 80px!important;
+@media screen and (max-width: 500px) {
+  .btnText {
+    display: none;
   }
+  .collapsedUI {
+    width: 80px !important;
+  }
+}
+
+@import "~antd/es/style/themes/default.less";
+
+@pro-header-hover-bg: rgba(0, 0, 0, 0.025);
+
+.right {
+  display: flex;
+  float: right;
+  margin-left: auto;
+  overflow: hidden;
+  .action {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    > span {
+      vertical-align: middle;
+    }
+    &:hover {
+      background: @pro-header-hover-bg;
+    }
+    &:global(.opened) {
+      background: @pro-header-hover-bg;
+    }
+  }
+  .account {
+    .avatar {
+      margin: ~"calc((@{layout-header-height} - 24px) / 2)" 0;
+      margin-right: 8px;
+      color: @primary-color;
+      vertical-align: top;
+      background: rgba(255, 255, 255, 0.85);
+    }
+  }
+}
+
+.popover {
+  position: relative;
+  width: 336px;
 }
