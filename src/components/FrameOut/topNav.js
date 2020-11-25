@@ -37,25 +37,24 @@ const TopNav = (props) => {
 
   React.useLayoutEffect(() => {
     const token = storageUtils.getToken();
-    // const user = storageUtils.getUser();
-    sse.current = new EventSourcePolyfill(
-      "http://localhost:3000/myriadapi/sse/messages",
-      {
-        headers: {
-          "X-ACCESS-TOKEN": token,
-          // "X-TENANT-ID": user.orgUid,
-        },
-      }
-    );
+
+    sse.current = new EventSourcePolyfill("/myriadapi/sse/messages", {
+      withCredentials: false,
+      headers: {
+        "X-ACCESS-TOKEN": token,
+      },
+      // 结束请求，并重新发起的时间间距
+      heartbeatTimeout: 10000,
+    });
 
     sse.current.onopen = () => {
-      console.log("Conneted");
+      console.log("Conneted", new Date());
     };
 
-    sse.current.onmessage = (e) => console.log("onmessage", e);
+    sse.current.onmessage = (e) => console.log("onmessage", e, new Date());
 
     sse.current.onerror = (err) => {
-      console.log("onerror", err);
+      console.log("onerror", err, new Date());
     };
 
     return () => {
