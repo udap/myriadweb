@@ -23,7 +23,6 @@ const NoticeIcon = (props) => {
     } = props;
     const panes = [];
     React.Children.forEach(children, (child) => {
-      console.log(child);
       const {
         list,
         title,
@@ -32,7 +31,6 @@ const NoticeIcon = (props) => {
         showClear,
         showViewMore,
       } = child.props;
-      console.log(list);
       const len = list && list.length ? list.length : 0;
       const msgCount = count || count === 0 ? count : len;
       const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title;
@@ -61,6 +59,8 @@ const NoticeIcon = (props) => {
       </>
     );
   };
+
+  const { count } = props;
   const notificationBox = getNotificationBox();
   const [visible, setVisible] = useMergeValue(false, {
     value: props.popupVisible,
@@ -68,7 +68,7 @@ const NoticeIcon = (props) => {
   });
   const trigger = (
     <span className="noticeButton">
-      <Badge count={11} style={{ boxShadow: "none" }} className="badge">
+      <Badge count={count} style={{ boxShadow: "none" }} className="badge">
         <BellOutlined className="icon" />
       </Badge>
     </span>

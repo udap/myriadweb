@@ -9,52 +9,69 @@ import {
   ApartmentOutlined,
 } from "@ant-design/icons";
 import { EventSourcePolyfill } from "event-source-polyfill";
+import moment from "moment";
 
 import { HeaderDropdown, NoticeIcon } from "../../components";
 import storageUtils from "../../utils/storageUtils";
+import { host } from "../../utils/config";
 import "./index.less";
-
-let msg = [];
-for (let index = 0; index < 10; index++) {
-  msg.push({
-    avatar:
-      "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png",
-    key: index,
-    title: `你收到了 ${index} 份新周报`,
-    description: "description",
-    extra: "extra",
-    datetime: "2020-11-11 00:00:00",
-  });
-}
 
 const TopNav = (props) => {
   const sse = React.useRef(null);
-  const [currentUser, setCurrentUser] = React.useState({ unreadCount: 11 });
-  const [unreadMsg, setUnreadMsg] = React.useState({ notification: 9 });
-  const [noticeData, setNoticeData] = React.useState({
-    notification: msg,
-  });
+  const [noticeArr, setNoticeArr] = React.useState([]);
 
   React.useLayoutEffect(() => {
+    const localNotifications = JSON.parse(
+      localStorage.getItem("notifications")
+    );
+    if (localNotifications instanceof Array) {
+      setNoticeArr([...localNotifications]);
+    }
+
     const token = storageUtils.getToken();
 
-    sse.current = new EventSourcePolyfill("/myriadapi/sse/messages", {
+    sse.current = new EventSourcePolyfill(`${host}/sse/messages`, {
       withCredentials: false,
-      headers: {
-        "X-ACCESS-TOKEN": token,
-      },
+      headers: { "X-ACCESS-TOKEN": token },
       // 结束请求，并重新发起的时间间距
-      heartbeatTimeout: 10000,
+      heartbeatTimeout: 300000,
     });
 
     sse.current.onopen = () => {
-      console.log("Conneted", new Date());
+      console.log("SSE Conneted", new Date());
     };
 
-    sse.current.onmessage = (e) => console.log("onmessage", e, new Date());
+    sse.current.onmessage = (e) => {
+      const notifications = JSON.parse(localStorage.getItem("notifications"));
+      const notificationData = JSON.parse(e.data);
+      let arr = [];
+
+      if (!(notifications instanceof Array)) {
+        arr.push({
+          ...notificationData,
+          date: moment().valueOf(),
+          isRead: false,
+        });
+      } else {
+        const filterObj = notifications.find(
+          (item) => item.id === notificationData.id
+        );
+        if (!filterObj) {
+          notifications.push({
+            ...notificationData,
+            date: moment().valueOf(),
+            isRead: false,
+          });
+        }
+        arr = [...notifications];
+      }
+
+      setNoticeArr([...arr]);
+      localStorage.setItem("notifications", JSON.stringify(arr));
+    };
 
     sse.current.onerror = (err) => {
-      console.log("onerror", err, new Date());
+      console.log("SSE Error", err, new Date());
     };
 
     return () => {
@@ -121,6 +138,16 @@ const TopNav = (props) => {
 
   const changeReadState = (clickedItem) => {
     console.log("changeReadState", clickedItem);
+    let tempNoticeArr = [];
+    noticeArr.forEach((item) => {
+      if (item.id === clickedItem.id) {
+        item.isRead = true;
+      }
+      tempNoticeArr.push(item);
+    });
+
+    setNoticeArr([...tempNoticeArr]);
+    localStorage.setItem("notifications", JSON.stringify(tempNoticeArr));
   };
 
   const onNoticeVisibleChange = (item) => {
@@ -131,11 +158,13 @@ const TopNav = (props) => {
     console.log("handleNoticeClear", title, key);
   };
 
+  const countOfUnRead = noticeArr.filter((item) => item.isRead === false);
+
   return (
     <div className="right">
       <NoticeIcon
         className="action"
-        count={currentUser && currentUser.unreadCount}
+        count={noticeArr.length}
         onItemClick={(item) => {
           changeReadState(item);
         }}
@@ -148,8 +177,8 @@ const TopNav = (props) => {
       >
         <NoticeIcon.Tab
           tabKey="notification"
-          count={unreadMsg.notification}
-          list={noticeData.notification}
+          count={countOfUnRead.length}
+          list={noticeArr}
           title="通知"
           emptyText="你已查看所有通知"
           showViewMore

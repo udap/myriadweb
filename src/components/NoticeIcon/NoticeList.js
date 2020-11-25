@@ -1,21 +1,22 @@
 import React from "react";
 import { List, Avatar } from "antd";
+import moment from "moment";
+import { DeliveredProcedureOutlined, SettingFilled } from "@ant-design/icons";
 
 import "./NoticeList.less";
 
 const NoticeList = (props) => {
-  console.log(props);
   const {
     data = [],
     emptyText,
     onClick,
-    showClear = true,
-    onClear,
-    clearText,
-    title,
-    showViewMore = false,
-    onViewMore,
-    viewMoreText,
+    // showClear = true,
+    // onClear,
+    // clearText,
+    // title,
+    // showViewMore = false,
+    // onViewMore,
+    // viewMoreText,
   } = props;
   if (!data || data.length === 0) {
     return (
@@ -35,19 +36,26 @@ const NoticeList = (props) => {
         className="list"
         dataSource={data}
         renderItem={(item, i) => {
-          const leftIcon = item.avatar ? (
-            typeof item.avatar === "string" ? (
-              <Avatar className="avatar" src={item.avatar} />
-            ) : (
-              <span className="iconElement">{item.avatar}</span>
-            )
-          ) : null;
+          let leftIcon;
+          switch (item.content.type) {
+            case "BATCH_DISTRIBUTION":
+              leftIcon = (
+                <Avatar
+                  className="avatar"
+                  icon={<DeliveredProcedureOutlined />}
+                />
+              );
+              break;
+
+            default:
+              leftIcon = <Avatar className="avatar" icon={<SettingFilled />} />;
+              break;
+          }
 
           return (
             <List.Item
-              // className="item read"
-              className="item"
-              key={item.key || i}
+              className={`item ${item.isRead ? "read" : ""}`}
+              key={item.id || i}
               onClick={() => onClick && onClick(item)}
             >
               <List.Item.Meta
@@ -55,14 +63,16 @@ const NoticeList = (props) => {
                 avatar={leftIcon}
                 title={
                   <div className="title">
-                    {item.title}
-                    <div className="extra">{item.extra}</div>
+                    {item.content.msg}
+                    {/* <div className="extra">{item.extra}</div> */}
                   </div>
                 }
                 description={
                   <div>
-                    <div className="description">{item.description}</div>
-                    <div className="datetime">{item.datetime}</div>
+                    {/* <div className="description">{item.description}</div> */}
+                    <div className="datetime">
+                      {moment(item.date).format("YYYY/MM/DD hh:mm:ss")}
+                    </div>
                   </div>
                 }
               />
@@ -70,7 +80,7 @@ const NoticeList = (props) => {
           );
         }}
       />
-      <div className="bottomBar">
+      {/* <div className="bottomBar">
         {showClear ? (
           <div onClick={onClear}>
             {clearText} {title}
@@ -87,7 +97,7 @@ const NoticeList = (props) => {
             {viewMoreText}
           </div>
         ) : null}
-      </div>
+      </div> */}
     </div>
   );
 };
