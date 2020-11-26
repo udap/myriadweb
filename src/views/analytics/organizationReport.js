@@ -53,7 +53,6 @@ class OrganizationReport extends Component {
     currentPage: 1,
     pageSize: 20,
     total: 0,
-    beginDate: comEvents.firstDayOfMonth(),
     endDate: null,
     loading: false,
     downloading: false,
@@ -124,14 +123,14 @@ class OrganizationReport extends Component {
       //   width: 100,
       //   render: renderAmount,
       // },
+      // {
+      //   title: "起始资源数",
+      //   dataIndex: "beginAmount",
+      //   width: 100,
+      //   render: renderAmount,
+      // },
       {
-        title: "起始资源数",
-        dataIndex: "beginAmount",
-        width: 100,
-        render: renderAmount,
-      },
-      {
-        title: "截止资源数",
+        title: "剩余资源数",
         dataIndex: "endAmount",
         width: 100,
         render: renderAmount,
@@ -292,8 +291,7 @@ class OrganizationReport extends Component {
       campaignOrgUid: values.campaignOrgUid,
       campaignName: values.campaignName,
       campaignTag: values.campaignTag,
-      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
-      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
+      endDate: values.endDate.format("YYYY-MM-DD"),
       branchUid: values.branchUid,
       subBranchUid: values.subBranchUid,
     };
@@ -322,8 +320,7 @@ class OrganizationReport extends Component {
   submitQuery = (values) => {
     this.setState({
       currentPage: 1,
-      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
-      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
+      endDate: values.endDate.format("YYYY-MM-DD"),
       summaryLevel: values.summaryLevel,
       campaignOrgUid: values.campaignOrgUid,
       campaignName: values.campaignName,
@@ -339,7 +336,6 @@ class OrganizationReport extends Component {
       pageSize: pagination.pageSize,
     });
     const {
-      beginDate,
       endDate,
       campaignOrgUid,
       campaignName,
@@ -349,10 +345,7 @@ class OrganizationReport extends Component {
       summaryLevel,
     } = this.state;
     const values = {
-      dateRange: [
-        moment(beginDate, "YYYY-MM-DD"),
-        moment(endDate, "YYYY-MM-DD"),
-      ],
+      endDate: moment(endDate, "YYYY-MM-DD"),
       campaignOrgUid: campaignOrgUid,
       campaignName: campaignName,
       campaignTag: campaignTag,
@@ -381,18 +374,16 @@ class OrganizationReport extends Component {
       branchUid,
       subBranchUid,
       summaryLevel,
-      beginDate,
       endDate,
     } = this.state;
     let params = {
-      campaignOrgUid: campaignOrgUid,
-      campaignName: campaignName,
-      campaignTag: campaignTag,
-      beginDate: beginDate,
-      endDate: endDate,
-      branchUid: branchUid,
-      subBranchUid: subBranchUid,
-      summaryLevel: summaryLevel,
+      campaignOrgUid,
+      campaignName,
+      campaignTag,
+      endDate,
+      branchUid,
+      subBranchUid,
+      summaryLevel,
     };
     const filename = "organizationReport_" + summaryLevel + ".xlsx";
     reqExportOrganizationSummaryReport(params)
@@ -427,7 +418,6 @@ class OrganizationReport extends Component {
       branchUid,
       subBranches,
       subBranchUid,
-      beginDate,
       endDate,
       summaryLevel,
     } = this.state;
@@ -451,16 +441,16 @@ class OrganizationReport extends Component {
         <BranchForm
           loading={this.state.loading}
           initialData={{
-            summaryLevel: summaryLevel,
-            campaignOrgs: campaignOrgs,
-            campaignOrgUid: campaignOrgUid,
-            campaignName: campaignName,
-            campaignTag: campaignTag,
-            branches: branches,
-            branchUid: branchUid,
-            subBranches: subBranches,
-            subBranchUid: subBranchUid,
-            dateRange: [beginDate, endDate],
+            summaryLevel,
+            campaignOrgs,
+            campaignOrgUid,
+            campaignName,
+            campaignTag,
+            branches,
+            branchUid,
+            subBranches,
+            subBranchUid,
+            endDate: endDate || new Date(),
           }}
           onSelectSummaryLevel={this.selectSummaryLevel}
           onSelectBranch={this.selectBranch}

@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Button, Table, PageHeader, Tag, Pagination, notification } from "antd";
+import {
+  Button,
+  Table,
+  PageHeader,
+  Tag,
+  Pagination,
+  notification,
+  Tooltip,
+} from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import FileSaver from "file-saver";
 import NumberFormat from "react-number-format";
@@ -63,6 +71,14 @@ class Distribution extends Component {
         title: "客户",
         dataIndex: "customerName",
         key: "customerName",
+        ellipsis: {
+          showTitle: false,
+        },
+        render: (cusName) => (
+          <Tooltip placement="topLeft" title={cusName}>
+            {cusName}
+          </Tooltip>
+        ),
       },
       {
         title: "优惠金额",
@@ -158,6 +174,14 @@ class Distribution extends Component {
         title: "客户",
         dataIndex: "customerName",
         key: "customerName",
+        ellipsis: {
+          showTitle: false,
+        },
+        render: (cusName) => (
+          <Tooltip placement="topLeft" title={cusName}>
+            {cusName}
+          </Tooltip>
+        ),
       },
       {
         title: "优惠金额",

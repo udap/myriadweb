@@ -43,29 +43,38 @@ axios.interceptors.response.use(
     }
   },
   function (error) {
-    console.log('error',error);
-    if (error.response.status === 504 || error.response.status === 404) {
-      //message.error("服务器被吃了⊙﹏⊙∥");
-       notification.warning({
-         message: "服务器被吃了⊙﹏⊙∥",
-       });
-    } else if (error.response.status === 401) {
+    console.log("error", error);
+    switch (error.response.status) {
+      case 504:
+      case 404:
+      case 502:
+        //message.error("服务器被吃了⊙﹏⊙∥");
+        notification.warning({
+          message: "服务器被吃了⊙﹏⊙∥",
+        });
 
-      //message.error("登录信息失效⊙﹏⊙∥");
-       notification.warning({
-         message: error.response.data.msg||"登录信息失效⊙﹏⊙∥",
-       });
-      //清空缓存localStorage
-      storageUtils.removeUser();
-      storageUtils.removeOrg();
-      storageUtils.removeToken();
-      //返回登陆页
-      window.location.href = "#/login";
-    } else if (error.response.status === 500) {
-     // message.error("服务器开小差了⊙﹏⊙∥");
-      notification.warning({
-        message: "服务器开小差了⊙﹏⊙∥",
-      });
+        break;
+      case 401:
+        //message.error("登录信息失效⊙﹏⊙∥");
+        notification.warning({
+          message: error.response.data.msg || "登录信息失效⊙﹏⊙∥",
+        });
+        //清空缓存localStorage
+        storageUtils.removeUser();
+        storageUtils.removeOrg();
+        storageUtils.removeToken();
+        //返回登陆页
+        window.location.href = "#/login";
+        break;
+      case 500:
+        // message.error("服务器开小差了⊙﹏⊙∥");
+        notification.warning({
+          message: "服务器开小差了⊙﹏⊙∥",
+        });
+        break;
+
+      default:
+        break;
     }
     return Promise.reject(error);
     // 中断promise返回一个pending的promise
