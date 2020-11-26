@@ -1,9 +1,10 @@
 import React from "react";
 import { List, Avatar } from "antd";
 import moment from "moment";
-import { DeliveredProcedureOutlined, SettingFilled } from "@ant-design/icons";
 
 import "./NoticeList.less";
+import { notice, noNotice } from "../../assets/images";
+import { noticeType } from "../../utils/constants";
 
 const NoticeList = (props) => {
   const {
@@ -21,10 +22,7 @@ const NoticeList = (props) => {
   if (!data || data.length === 0) {
     return (
       <div className="notFound">
-        <img
-          src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
-          alt="not found"
-        />
+        <img src={noNotice} alt="not found" />
         <div>{emptyText}</div>
       </div>
     );
@@ -39,16 +37,10 @@ const NoticeList = (props) => {
           let leftIcon;
           switch (item.content.type) {
             case "BATCH_DISTRIBUTION":
-              leftIcon = (
-                <Avatar
-                  className="avatar"
-                  icon={<DeliveredProcedureOutlined />}
-                />
-              );
+              leftIcon = notice;
               break;
 
             default:
-              leftIcon = <Avatar className="avatar" icon={<SettingFilled />} />;
               break;
           }
 
@@ -60,16 +52,16 @@ const NoticeList = (props) => {
             >
               <List.Item.Meta
                 className="meta"
-                avatar={leftIcon}
+                avatar={<Avatar className="avatar" src={leftIcon} />}
                 title={
                   <div className="title">
-                    {item.content.msg}
+                    {noticeType[item.content.type]}
                     {/* <div className="extra">{item.extra}</div> */}
                   </div>
                 }
                 description={
                   <div>
-                    {/* <div className="description">{item.description}</div> */}
+                    <div className="description">{item.content.msg}</div>
                     <div className="datetime">
                       {moment(item.date).format("YYYY/MM/DD hh:mm:ss")}
                     </div>

@@ -20,13 +20,18 @@ const TopNav = (props) => {
   const sse = React.useRef(null);
   const [noticeArr, setNoticeArr] = React.useState([]);
 
+  const filterLocalUserNotice = (arr = []) => {
+    const user = storageUtils.getUser();
+    return arr.filter((item) => item.recipient === String(user.id));
+  };
+
   React.useLayoutEffect(() => {
     const localNotifications = JSON.parse(
       localStorage.getItem("notifications")
     );
-    if (localNotifications instanceof Array) {
-      setNoticeArr([...localNotifications]);
-    }
+
+    const tempArr = filterLocalUserNotice(localNotifications);
+    setNoticeArr([...tempArr]);
 
     const token = storageUtils.getToken();
 
@@ -63,10 +68,12 @@ const TopNav = (props) => {
             isRead: false,
           });
         }
+
         arr = [...notifications];
       }
 
-      setNoticeArr([...arr]);
+      const tempFilterArr = filterLocalUserNotice(arr);
+      setNoticeArr([...tempFilterArr]);
       localStorage.setItem("notifications", JSON.stringify(arr));
     };
 
@@ -146,7 +153,8 @@ const TopNav = (props) => {
       tempNoticeArr.push(item);
     });
 
-    setNoticeArr([...tempNoticeArr]);
+    const tempFilterArr = filterLocalUserNotice(tempNoticeArr);
+    setNoticeArr([...tempFilterArr]);
     localStorage.setItem("notifications", JSON.stringify(tempNoticeArr));
   };
 
@@ -164,7 +172,7 @@ const TopNav = (props) => {
     <div className="right">
       <NoticeIcon
         className="action"
-        count={noticeArr.length}
+        count={countOfUnRead.length}
         onItemClick={(item) => {
           changeReadState(item);
         }}
@@ -177,7 +185,7 @@ const TopNav = (props) => {
       >
         <NoticeIcon.Tab
           tabKey="notification"
-          count={countOfUnRead.length}
+          count={noticeArr.length}
           list={noticeArr}
           title="通知"
           emptyText="你已查看所有通知"

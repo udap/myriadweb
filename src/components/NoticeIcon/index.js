@@ -87,11 +87,6 @@ const NoticeIcon = (props) => {
   );
 };
 
-NoticeIcon.defaultProps = {
-  emptyImage:
-    "https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg",
-};
-
 NoticeIcon.Tab = NoticeList;
 
 export default NoticeIcon;

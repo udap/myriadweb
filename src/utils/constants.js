@@ -218,6 +218,7 @@ var Operations = {
   VIEW_REDEMPTION: "核销记录",
   VIEW_DISTRIBUTION: "发放记录",
 };
+
 const tagStatuses = [
   {
     value: "CUSTOMER",
@@ -232,6 +233,11 @@ const tagStatuses = [
     name: "活动",
   },
 ];
+
+const noticeType = {
+  BATCH_DISTRIBUTION: "批量发券",
+};
+
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
@@ -256,4 +262,5 @@ export {
   couponSubTypeMetheds, // 活动类型
   ajaxSuccess,
   ajaxError,
+  noticeType,
 };
