@@ -33,8 +33,8 @@ const CampaignTypeSelect = (props) => {
         renderItem={(item) => (
           <List.Item>
             <Card bordered={false}>
-              <div style={{ display: "flex" }}>
-                <div>
+              <div className="cardView">
+                <div className="viewleft">
                   <List.Item.Meta title={item.name} description={item.desc} />
                   <Button
                     style={{ paddingLeft: "0" }}
