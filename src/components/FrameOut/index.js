@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Layout, Menu, notification } from "antd";
 import { withRouter, Link } from "react-router-dom";
+import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 
 import "./index.less";
 //动态渲染导航栏
@@ -41,16 +42,19 @@ class FrameOut extends Component {
     "/admin/reports/individual",
     "/admin/reports/organization",
   ];
+  
   state = {
     collapsed: false,
     current: "mail",
     selectedKeys: "/admin/dashboard",
     openKey: [],
   };
+
   componentDidMount() {
     //渲染前调用一次 为render数据做准备
     this.getNavMap(navsLeft);
   }
+
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -177,8 +181,9 @@ class FrameOut extends Component {
           <Layout.Sider
             breakpoint="lg"
             collapsedWidth="0"
-            collapsible={true}
-            trigger={true}
+            collapsible
+            collapsed={this.state.collapsed}
+            trigger={null}
           >
             <Link
               to="/admin/dashboard"
@@ -199,11 +204,18 @@ class FrameOut extends Component {
               {this.getNavMap(navsLeft)}
             </Menu>
           </Layout.Sider>
-          <Layout className="site-layout" style={{ padding: 0 }}>
+          <Layout className="site-layout">
             <Layout.Header
               className="site-layout-background"
-              style={{ padding: "0 16px" }}
+              style={{ padding: 0 }}
             >
+              {React.createElement(
+                this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+                {
+                  className: "trigger",
+                  onClick: this.toggle,
+                }
+              )}
               <TopNav />
             </Layout.Header>
             <Layout.Content
