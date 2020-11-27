@@ -236,6 +236,9 @@ const tagStatuses = [
 
 const noticeType = {
   BATCH_DISTRIBUTION: "批量发券",
+  CAMPAIGN_ACTIVATION: "活动发布",
+  BATCH_TRANSFER: "批量配券",
+  VOUCHER_ISSUANCE: "增发券",
 };
 
 export {
