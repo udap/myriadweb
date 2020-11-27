@@ -1,4 +1,15 @@
 import noNotice from "./noNotice.png";
-import notice from "./notice.png";
+import defaultNotice from "./defaultNotice.png";
+import eventRelease from "./eventRelease.png";
+import additionalCoupons from "./additionalCoupons.png";
+import batchIssuing from "./batchIssuing.png";
+import bulkCoupons from "./bulkCoupons.png";
 
-export { noNotice, notice };
+export {
+  noNotice,
+  defaultNotice,
+  eventRelease,
+  additionalCoupons,
+  batchIssuing,
+  bulkCoupons,
+};

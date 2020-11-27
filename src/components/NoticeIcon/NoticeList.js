@@ -3,7 +3,14 @@ import { List, Avatar } from "antd";
 import moment from "moment";
 
 import "./NoticeList.less";
-import { notice, noNotice } from "../../assets/images";
+import {
+  noNotice,
+  defaultNotice,
+  eventRelease,
+  additionalCoupons,
+  batchIssuing,
+  bulkCoupons,
+} from "../../assets/images";
 import { noticeType } from "../../utils/constants";
 
 const NoticeList = (props) => {
@@ -34,10 +41,19 @@ const NoticeList = (props) => {
         className="list"
         dataSource={data}
         renderItem={(item, i) => {
-          let leftIcon;
+          let leftIcon = defaultNotice;
           switch (item.content.type) {
             case "BATCH_DISTRIBUTION":
-              leftIcon = notice;
+              leftIcon = batchIssuing;
+              break;
+            case "CAMPAIGN_ACTIVATION":
+              leftIcon = eventRelease;
+              break;
+            case "BATCH_TRANSFER":
+              leftIcon = bulkCoupons;
+              break;
+            case "VOUCHER_ISSUANCE":
+              leftIcon = additionalCoupons;
               break;
 
             default:

@@ -199,7 +199,7 @@ const TopNav = (props) => {
           count={noticeArr.length}
           list={noticeArr}
           title="通知"
-          emptyText="你已查看所有通知"
+          emptyText="暂无通知"
           showViewMore
         />
         {/* <NoticeIcon.Tab
