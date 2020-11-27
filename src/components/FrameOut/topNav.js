@@ -22,22 +22,33 @@ const TopNav = (props) => {
 
   const filterLocalUserNotice = (arr = []) => {
     const user = storageUtils.getUser();
+    // 当前登录用户
     return arr.filter((item) => item.recipient === String(user.id));
   };
 
   React.useLayoutEffect(() => {
-    const localNotifications = JSON.parse(
-      localStorage.getItem("notifications")
-    );
+    const localNotifications =
+      JSON.parse(localStorage.getItem("notifications")) || [];
 
-    const tempArr = filterLocalUserNotice(localNotifications);
+    const hoursAgoArr = localNotifications.filter((item) => {
+      // 一天的毫秒数
+      const compareDate = 24 * 3600 * 1000;
+
+      return moment().valueOf() - item.date <= compareDate;
+    });
+
+    // 清除24 Hours之前的消息
+    localStorage.setItem("notifications", JSON.stringify(hoursAgoArr));
+
+    const tempArr = filterLocalUserNotice(hoursAgoArr);
     setNoticeArr([...tempArr]);
 
     const token = storageUtils.getToken();
+    const user = storageUtils.getUser();
 
     sse.current = new EventSourcePolyfill(`${host}/sse/messages`, {
       withCredentials: false,
-      headers: { "X-ACCESS-TOKEN": token },
+      headers: { "X-ACCESS-TOKEN": token, "CLIENT-ID": user.guid },
       // 结束请求，并重新发起的时间间距
       heartbeatTimeout: 300000,
     });

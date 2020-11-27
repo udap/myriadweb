@@ -87,7 +87,9 @@ const compareTwoArrayEqual = (arr1, arr2) => {
 };
 
 const mergeArrays = (arr1, arr2) => {
-  return arr1.concat(arr2.filter((item) => item!==undefined&&arr1.indexOf(item) < 0));
+  return arr1.concat(
+    arr2.filter((item) => item !== undefined && arr1.indexOf(item) < 0)
+  );
 };
 
 const formatExpression = (ruleExpressions) => {
@@ -183,10 +185,8 @@ const formatCity = (data, type) => {
     if (!obj[elem]) {
       obj[elem] = [];
     }
-    if (elemValue) 
-      obj[elem].push(elemValue);
-    else
-      obj[elem] = [];
+    if (elemValue) obj[elem].push(elemValue);
+    else obj[elem] = [];
   });
   for (let key in obj) {
     if (obj[key].length > 0) {
@@ -209,7 +209,10 @@ const formatProvince = (data, type) => {
   let result = [];
   data.forEach((element, index) => {
     let elem = element.split(",")[0];
-    let elemValue = element.indexOf(",") !== -1?element.substring(element.indexOf(",") + 1):null;
+    let elemValue =
+      element.indexOf(",") !== -1
+        ? element.substring(element.indexOf(",") + 1)
+        : null;
     if (!provs[elem]) {
       provs[elem] = [];
     }
@@ -217,35 +220,35 @@ const formatProvince = (data, type) => {
     else provs[elem] = [];
   });
   for (let key in provs) {
-     if (provs[key].length > 0) {
-       result.push({
-         type: type,
-         name: key,
-         children: formatCity(provs[key], "C"),
-       });
-     } else {
-       result.push({
-         type: type,
-         name: key,
-       });
-     }
+    if (provs[key].length > 0) {
+      result.push({
+        type: type,
+        name: key,
+        children: formatCity(provs[key], "C"),
+      });
+    } else {
+      result.push({
+        type: type,
+        name: key,
+      });
+    }
   }
   return result;
 };
 const formatRegions = (selectedRegion) => {
-  let resultArr = selectedRegion? formatProvince(selectedRegion, "P"):[];
+  let resultArr = selectedRegion ? formatProvince(selectedRegion, "P") : [];
   let strifyArr = JSON.stringify(resultArr);
   return strifyArr;
 };
 
 const flatRegions = (regions) => {
   let out = [];
-  for (let i=0; i<regions.length; i++) {
+  for (let i = 0; i < regions.length; i++) {
     let regionPath = [];
     traverseTree(regions[i], [], regionPath);
     out = out.concat(regionPath);
   }
-  return out;  
+  return out;
 };
 
 const traverseTree = (root, path, result) => {
@@ -254,10 +257,30 @@ const traverseTree = (root, path, result) => {
     let leaf = path.toString();
     result.push(leaf);
   } else {
-    for (let i=0; i<root.children.length; i++) {
+    for (let i = 0; i < root.children.length; i++) {
       traverseTree(root.children[i], path.concat(), result);
     }
   }
+};
+
+function guid() {
+  function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
+  return (
+    S4() +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    S4() +
+    S4()
+  );
 }
 
 export default {
@@ -274,4 +297,5 @@ export default {
   siftRegion,
   formatRegions,
   flatRegions,
+  guid,
 };

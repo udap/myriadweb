@@ -10,14 +10,13 @@ import {
   message,
   notification,
   Cascader,
-  Modal,
   Space,
 } from "antd";
 import {
   UserOutlined,
   LockOutlined,
   PoweroffOutlined,
-  KeyOutlined
+  KeyOutlined,
 } from "@ant-design/icons";
 import "./index.less";
 import {
@@ -33,7 +32,9 @@ import storageUtils from "../../utils/storageUtils";
 import { Redirect } from "react-router-dom";
 import linkBtn from "../../components/linkBtn";
 import "../../css/common.less";
-import md5 from 'blueimp-md5';
+import md5 from "blueimp-md5";
+import comEvents from "../../utils/comEvents";
+
 const { Text } = Typography;
 const layout = {
   labelCol: {
@@ -98,7 +99,7 @@ class Login extends Component {
     const result = await reqGetAccounts();
     //请求成功
     if (result && result.data.retcode === 0) {
-      const data = result.data.content;
+      const data = { ...result.data.content, guid: comEvents.guid() };
       storageUtils.saveUser(data); //保存到localStorage中
       //等录后要立即检测1/有没有机构 2/是不是机构的“在职”员工(Active），
       //如果状态是NEW，提示“您的员工账号尚未生效，请联系机构管理员激活账号”；
@@ -145,7 +146,6 @@ class Login extends Component {
   };
   //async await 以同步编码方式实现promise的异步流程
   onFinish = async (values) => {
-
     let result;
     if (this.state.showPassword) {
       let params = {
@@ -157,7 +157,7 @@ class Login extends Component {
       result = await reqLogin(values);
     }
     //登录成功
-    if (result.data.retcode === 0) {      
+    if (result.data.retcode === 0) {
       //登录成功 保存用户信息到相应位置
       const user = result.data.content;
       const token =
@@ -345,7 +345,7 @@ class Login extends Component {
           </Button>
         </Form.Item>
         <Space className="margin-top right">
-          <a key='login' className="cursor" onClick={this.showLoginByCellphone}>
+          <a key="login" className="cursor" onClick={this.showLoginByCellphone}>
             {showPassword ? "手机登录" : "密码登录"}
           </a>
           <a key="reg" className="cursor" onClick={this.showRegOrg}>
