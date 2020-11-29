@@ -3694,7 +3694,7 @@ cosmiconfig@^7.0.0:
 
 craco-less@^1.17.1:
   version "1.17.1"
-  resolved "https://registry.npm.taobao.org/craco-less/download/craco-less-1.17.1.tgz?cache=0&sync_timestamp=1606457932562&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcraco-less%2Fdownload%2Fcraco-less-1.17.1.tgz#aa23cf10d09f0f99657bed977788cc9b501add70"
+  resolved "https://registry.npm.taobao.org/craco-less/download/craco-less-1.17.1.tgz#aa23cf10d09f0f99657bed977788cc9b501add70"
   integrity sha1-qiPPENCfD5lle+2Xd4jMm1Aa3XA=
   dependencies:
     less "^3.11.1"

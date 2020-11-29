@@ -1,5 +1,6 @@
 import React from "react";
-import { List, Avatar } from "antd";
+import { List, Avatar, Popover, Button } from "antd";
+import { EllipsisOutlined, DownloadOutlined } from "@ant-design/icons";
 import moment from "moment";
 
 import "./NoticeList.less";
@@ -18,6 +19,8 @@ const NoticeList = (props) => {
     data = [],
     emptyText,
     onClick,
+    extraClick,
+    downloading,
     // showClear = true,
     // onClear,
     // clearText,
@@ -72,7 +75,30 @@ const NoticeList = (props) => {
                 title={
                   <div className="title">
                     {noticeType[item.content.type]}
-                    {/* <div className="extra">{item.extra}</div> */}
+                    {item.content.attachments &&
+                    item.content.attachments.length ? (
+                      <div className="extra">
+                        <Popover
+                          content={
+                            <Button
+                              type="link"
+                              icon={<DownloadOutlined />}
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                extraClick(item);
+                              }}
+                              loading={downloading}
+                            >
+                              附件
+                            </Button>
+                          }
+                          trigger="hover"
+                        >
+                          <EllipsisOutlined />
+                        </Popover>
+                      </div>
+                    ) : null}
                   </div>
                 }
                 description={

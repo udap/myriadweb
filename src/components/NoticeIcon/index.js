@@ -20,6 +20,7 @@ const NoticeIcon = (props) => {
       onClear,
       onItemClick,
       onViewMore,
+      extraClick,
     } = props;
     const panes = [];
     React.Children.forEach(children, (child) => {
@@ -43,6 +44,7 @@ const NoticeIcon = (props) => {
             data={list}
             onClear={() => onClear && onClear(title, tabKey)}
             onClick={(item) => onItemClick && onItemClick(item, child.props)}
+            extraClick={extraClick}
             onViewMore={(event) => onViewMore && onViewMore(child.props, event)}
             showClear={showClear}
             showViewMore={showViewMore}

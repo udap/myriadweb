@@ -76,7 +76,6 @@ class Campaign extends Component {
     //当前列表操作的活动
     listItem: null,
     effective: "valid",
-    downloading: false,
     numberLoading: false,
     isUpload: false,
   };
@@ -580,21 +579,12 @@ class Campaign extends Component {
   handleDownload = async (event, action, type = "") => {
     event.preventDefault();
     event.stopPropagation();
-    this.setState({
-      downloading: true,
-    });
     const filename = `${action}Template${type}.csv`;
     reqDownloadTemplate(filename)
       .then((response) => {
         FileSaver.saveAs(response.data, filename);
-        this.setState({
-          downloading: false,
-        });
       })
-      .catch((e) => {
-        this.setState({
-          downloading: false,
-        });
+      .catch(() => {
         notification.warning({
           message: "下载失败，请稍后再试",
         });
@@ -625,7 +615,6 @@ class Campaign extends Component {
   showCSVModal = () => {
     const {
       action,
-      downloading,
       number,
       showCSV,
       chooseItem,
@@ -673,26 +662,13 @@ class Campaign extends Component {
             </Descriptions.Item> */}
             <Descriptions.Item label="模板示例">
               {action === "transfer" ? (
-                <Button
-                  style={{ paddingLeft: 0 }}
-                  type="link"
-                  loading={downloading}
-                  onClick={(e) => this.handleDownload(e, action)}
-                >
-                  点击下载
-                </Button>
+                <b className="template-text cursor">点击下载</b>
               ) : (
                 <Popover
                   content={this.showDownloadBtns(action)}
                   trigger="hover"
                 >
-                  <Button
-                    style={{ paddingLeft: 0 }}
-                    type="link"
-                    loading={downloading}
-                  >
-                    点击下载
-                  </Button>
+                  <b className="template-text cursor">点击下载</b>
                 </Popover>
               )}
             </Descriptions.Item>

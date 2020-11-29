@@ -10,15 +10,18 @@ import {
 } from "@ant-design/icons";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import moment from "moment";
+import FileSaver from "file-saver";
 
-import { HeaderDropdown, NoticeIcon } from "../../components";
-import storageUtils from "../../utils/storageUtils";
-import { host } from "../../utils/config";
+import { HeaderDropdown, NoticeIcon } from "@components";
+import storageUtils from "@utils/storageUtils";
+import { host } from "@utils/config";
 import "./index.less";
+import { reqDownloadTemplate } from "@api";
 
 const TopNav = (props) => {
   const sse = React.useRef(null);
   const [noticeArr, setNoticeArr] = React.useState([]);
+  const [downloading, setDownloading] = React.useState(false);
 
   const filterLocalUserNotice = (arr = []) => {
     const user = storageUtils.getUser();
@@ -155,7 +158,6 @@ const TopNav = (props) => {
   );
 
   const changeReadState = (clickedItem) => {
-    console.log("changeReadState", clickedItem);
     let tempNoticeArr = [];
     noticeArr.forEach((item) => {
       if (item.id === clickedItem.id) {
@@ -179,6 +181,27 @@ const TopNav = (props) => {
 
   const countOfUnRead = noticeArr.filter((item) => item.isRead === false);
 
+  const extraClick = (item) => {
+    changeReadState(item);
+
+    item.content.attachments.forEach((element) => {
+      if (!element) return;
+      setDownloading(true);
+      const filename = `${element}.txt`;
+      reqDownloadTemplate(filename)
+        .then((response) => {
+          FileSaver.saveAs(response.data, filename);
+          setDownloading(false);
+        })
+        .catch(() => {
+          setDownloading(false);
+          notification.warning({
+            message: "下载失败，请稍后再试",
+          });
+        });
+    });
+  };
+
   return (
     <div className="right">
       <NoticeIcon
@@ -193,6 +216,7 @@ const TopNav = (props) => {
         onPopupVisibleChange={onNoticeVisibleChange}
         onViewMore={() => message.info("Click on view more")}
         clearClose
+        extraClick={extraClick}
       >
         <NoticeIcon.Tab
           tabKey="notification"
@@ -201,6 +225,7 @@ const TopNav = (props) => {
           title="通知"
           emptyText="暂无通知"
           showViewMore
+          downloading={downloading}
         />
         {/* <NoticeIcon.Tab
           tabKey="message"
