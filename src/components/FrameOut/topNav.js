@@ -17,6 +17,7 @@ import storageUtils from "@utils/storageUtils";
 import { host } from "@utils/config";
 import "./index.less";
 import { reqDownloadTemplate } from "@api";
+import { defaultUser } from "@/assets/images";
 
 const TopNav = (props) => {
   const sse = React.useRef(null);
@@ -202,6 +203,8 @@ const TopNav = (props) => {
     });
   };
 
+  const userData = storageUtils.getUser();
+
   return (
     <div className="right">
       <NoticeIcon
@@ -250,10 +253,10 @@ const TopNav = (props) => {
             <Avatar
               size="small"
               className="avatar"
-              src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png"
+              src={defaultUser}
               alt="avatar"
             />
-            <span className="name">{storageUtils.getUser().cellphone}</span>
+            <span className="name">{userData && userData.cellphone}</span>
           </span>
         </HeaderDropdown>
       </div>

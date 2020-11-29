@@ -4,6 +4,7 @@ import eventRelease from "./eventRelease.png";
 import additionalCoupons from "./additionalCoupons.png";
 import batchIssuing from "./batchIssuing.png";
 import bulkCoupons from "./bulkCoupons.png";
+import defaultUser from "./defaultUser.png";
 
 export {
   noNotice,
@@ -12,4 +13,5 @@ export {
   additionalCoupons,
   batchIssuing,
   bulkCoupons,
+  defaultUser,
 };
