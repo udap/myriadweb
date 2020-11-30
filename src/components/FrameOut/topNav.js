@@ -188,7 +188,8 @@ const TopNav = (props) => {
     item.content.attachments.forEach((element) => {
       if (!element) return;
       setDownloading(true);
-      const filename = `${element}.txt`;
+      // 后端返回下载文件名及文件后缀名
+      const filename = `${element}`;
       reqDownloadTemplate(filename)
         .then((response) => {
           FileSaver.saveAs(response.data, filename);
