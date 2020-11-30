@@ -662,7 +662,12 @@ class Campaign extends Component {
             </Descriptions.Item> */}
             <Descriptions.Item label="模板示例">
               {action === "transfer" ? (
-                <b className="template-text cursor">点击下载</b>
+                <b
+                  className="template-text cursor"
+                  onClick={(e) => this.handleDownload(e, action)}
+                >
+                  点击下载
+                </b>
               ) : (
                 <Popover
                   content={this.showDownloadBtns(action)}
