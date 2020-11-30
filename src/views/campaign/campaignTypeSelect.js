@@ -35,7 +35,8 @@ const CampaignTypeSelect = (props) => {
             <Card bordered={false}>
               <div className="cardView">
                 <div className="viewleft">
-                  <List.Item.Meta title={item.name} description={item.desc} />
+                  <h4 className="cardTitile">{item.name}</h4>
+                  <div className="desc">{item.desc}</div>
                   <Button
                     style={{ paddingLeft: "0" }}
                     type="link"
