@@ -18,6 +18,7 @@ import storageUtils from "../../../../utils/storageUtils";
 import { MerchantSelect } from "../../rule/index";
 import { reqPostConfig, reqPutConfig } from "../../../../api/index";
 import { ajaxError } from "../../../../utils/constants";
+import comEvents from "../../../../utils/comEvents";
 
 const layout = {
   labelCol: { span: 6 },
@@ -128,8 +129,8 @@ export default withRouter((props) => {
       type: "GIFT",
       productName: value.productName,
       productCode: value.productCode,
-      productMarketPrice: value.productMarketPrice * 100,
-      productExchangePrice: value.productExchangePrice * 100,
+      productMarketPrice: comEvents.floatMul(value.productMarketPrice, 100),
+      productExchangePrice: comEvents.floatMul(value.productExchangePrice, 100),
       merchantId: orgList.partyId, // 机构id
     };
     if (timeType === "date") {
