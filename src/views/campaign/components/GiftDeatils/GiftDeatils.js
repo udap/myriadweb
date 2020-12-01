@@ -30,6 +30,11 @@ const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 12 },
 };
+
+const tailFormItemLayout = {
+  wrapperCol: { xs: { span: 4 }, sm: { span: 6 } },
+};
+
 //垂直的单选
 const radioStyle = {
   display: "block",
@@ -258,6 +263,7 @@ export default withRouter((props) => {
           label="商品名称"
           name="productName"
           rules={[{ required: true, message: "请输入商品名称!" }]}
+          {...tailFormItemLayout}
         >
           <Input
             maxLength={32}
@@ -269,10 +275,11 @@ export default withRouter((props) => {
           label="SKU"
           name="productCode"
           rules={[{ required: true, message: "请输入SKU!" }]}
+          {...tailFormItemLayout}
         >
           <Input
             maxLength={32}
-            placeholder="请输入最多32个字的SKU"
+            placeholder="参与商户需要使用相同的SKU码"
             disabled={props.disabled}
           />
         </Form.Item>
