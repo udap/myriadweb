@@ -940,13 +940,13 @@ class CampaignEdit extends Component {
               values.discountType === "AMOUNT"
                 ? {
                     type: values.discountType,
-                    valueOff: values.discount.valueOff * 100,
+                    valueOff: comEvents.floatMul(values.discount.valueOff, 100),
                   }
                 : {
                     type: values.discountType,
                     valueOff: values.discount.valueOff,
                     amountLimit: values.discount.amountLimit
-                      ? values.discount.amountLimit * 100
+                      ? comEvents.floatMul(values.discount.amountLimit, 100)
                       : null,
                   },
             type: "COUPON",
@@ -965,13 +965,13 @@ class CampaignEdit extends Component {
               values.discountType === "AMOUNT"
                 ? {
                     type: values.discountType,
-                    valueOff: values.discount.valueOff * 100,
+                    valueOff: comEvents.floatMul(values.discount.valueOff, 100),
                   }
                 : {
                     type: values.discountType,
                     valueOff: values.discount.valueOff,
                     amountLimit: values.discount.amountLimit
-                      ? values.discount.amountLimit * 100
+                      ? comEvents.floatMul(values.discount.amountLimit, 100)
                       : null,
                   },
             type: "COUPON",

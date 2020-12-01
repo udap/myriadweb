@@ -18,6 +18,7 @@ import storageUtils from "../../../../utils/storageUtils";
 import { MerchantSelect } from "../../rule/index";
 import { reqPostConfig, reqPutConfig } from "../../../../api/index";
 import { ajaxError } from "../../../../utils/constants";
+import comEvents from "../../../../utils/comEvents";
 
 const layout = {
   labelCol: { span: 6 },
@@ -126,8 +127,8 @@ export default withRouter((props) => {
       product: {
         name: value.productName,
         code: value.productCode,
-        marketPrice: value.productMarketPrice * 100,
-        exchangePrice: value.productExchangePrice * 100,
+        marketPrice: comEvents.floatMul(value.productMarketPrice, 100),
+        exchangePrice: comEvents.floatMul(value.productExchangePrice, 100),
       },
       merchantId: orgList.partyId, // 机构id
     };

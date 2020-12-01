@@ -190,7 +190,7 @@ class ConfigureRules extends Component {
       exps.push("#MinimumValue");
       rules.push({
         name: "MinimumValue",
-        option: parseFloat(values.minimum) * 100,
+        option: comEvents.floatMul(parseFloat(values.minimum), 100),
       });
     }
     // 这是商户规则部分

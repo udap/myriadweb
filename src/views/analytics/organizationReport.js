@@ -34,7 +34,7 @@ const renderPercent = (value) => {
   return (
     <div style={{ textAlign: "right" }}>
       <NumberFormat
-        value={value * 100}
+        value={comEvents.floatMul(value, 100)}
         decimalScale={2}
         displayType={"text"}
         suffix={"%"}

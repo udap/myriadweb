@@ -1,7 +1,8 @@
 import { privateRoutes } from "../routes";
 import { ChinaRegions } from "./china-regions";
-import { traverse } from "@babel/types";
-import { rootCertificates } from "tls";
+// import { traverse } from "@babel/types";
+// import { rootCertificates } from "tls";
+
 //获取当前页面的title
 const getTitle = (pathname) => {
   let title;
@@ -17,6 +18,7 @@ const getTitle = (pathname) => {
   });
   return title;
 };
+
 const formatNumber = (n) => {
   n = n.toString();
   return n[1] ? n : "0" + n;
@@ -27,6 +29,7 @@ const compareToday = (dateValue) => {
     new Date().getTime() >= new Date(dateValue).getTime() + 3600 * 1000 * 24
   );
 };
+
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -92,10 +95,10 @@ const mergeArrays = (arr1, arr2) => {
   );
 };
 
-const formatExpression = (ruleExpressions) => {
-  let expr = ruleExpressions.toString();
-  return expr.replace(/,/, " and ");
-};
+// const formatExpression = (ruleExpressions) => {
+//   let expr = ruleExpressions.toString();
+//   return expr.replace(/,/, " and ");
+// };
 
 const siftRegion = (p, c) => {
   //province, city, district
@@ -119,43 +122,46 @@ const siftRegion = (p, c) => {
   }
   return newArr;
 };
-const distinct = (arr) => {
-  let map = new Map();
-  let newArr = [];
-  for (let i = 0; i < arr.length; i++) {
-    if (!map.has(arr[i])) {
-      map.set(arr[i]);
-      newArr.push(arr[i]);
-    }
-  }
-  return newArr;
-};
-const trans = (arr, keys) => {
-  let result = [];
-  let keyToRef = {};
-  let len = keys.length;
-  arr.forEach((cur) => {
-    let obj;
-    let cacheKey = "";
-    for (let i = 0; i < len; i++) {
-      let key = keys[i];
-      cacheKey += key + cur[key];
-      let ref = keyToRef[cacheKey];
-      if (ref) {
-        obj = ref;
-      } else {
-        ref =
-          i === 0 ? result : obj.children ? obj.children : (obj.children = []);
-        obj = {
-          [key]: cur[key],
-        };
-        keyToRef[cacheKey] = obj;
-        ref.push(obj);
-      }
-    }
-  });
-  return result;
-};
+
+// const distinct = (arr) => {
+//   let map = new Map();
+//   let newArr = [];
+//   for (let i = 0; i < arr.length; i++) {
+//     if (!map.has(arr[i])) {
+//       map.set(arr[i]);
+//       newArr.push(arr[i]);
+//     }
+//   }
+//   return newArr;
+// };
+
+// const trans = (arr, keys) => {
+//   let result = [];
+//   let keyToRef = {};
+//   let len = keys.length;
+//   arr.forEach((cur) => {
+//     let obj;
+//     let cacheKey = "";
+//     for (let i = 0; i < len; i++) {
+//       let key = keys[i];
+//       cacheKey += key + cur[key];
+//       let ref = keyToRef[cacheKey];
+//       if (ref) {
+//         obj = ref;
+//       } else {
+//         ref =
+//           i === 0 ? result : obj.children ? obj.children : (obj.children = []);
+//         obj = {
+//           [key]: cur[key],
+//         };
+//         keyToRef[cacheKey] = obj;
+//         ref.push(obj);
+//       }
+//     }
+//   });
+//   return result;
+// };
+
 const formatDistrict = (data, type) => {
   let obj = {};
   let result = [];
@@ -173,6 +179,7 @@ const formatDistrict = (data, type) => {
   }
   return result;
 };
+
 const formatCity = (data, type) => {
   let obj = {};
   let result = [];
@@ -204,6 +211,7 @@ const formatCity = (data, type) => {
   }
   return result;
 };
+
 const formatProvince = (data, type) => {
   let provs = {};
   let result = [];
@@ -235,6 +243,7 @@ const formatProvince = (data, type) => {
   }
   return result;
 };
+
 const formatRegions = (selectedRegion) => {
   let resultArr = selectedRegion ? formatProvince(selectedRegion, "P") : [];
   let strifyArr = JSON.stringify(resultArr);
@@ -283,6 +292,23 @@ function guid() {
   );
 }
 
+const floatMul = (arg1, arg2) => {
+  let m = 0,
+    s1 = arg1.toString(),
+    s2 = arg2.toString();
+  try {
+    m += s1.split(".")[1].length;
+  } catch (e) {}
+  try {
+    m += s2.split(".")[1].length;
+  } catch (e) {}
+  return (
+    (Number(s1.replace(".", "")) * Number(s2.replace(".", ""))) /
+    Math.pow(10, m)
+  );
+};
+
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getTitle,
   formatDate,
@@ -298,4 +324,5 @@ export default {
   formatRegions,
   flatRegions,
   guid,
+  floatMul,
 };
