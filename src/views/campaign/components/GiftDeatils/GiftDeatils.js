@@ -9,16 +9,22 @@ import {
   Col,
   DatePicker,
   notification,
+  Tag,
 } from "antd";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 
 import "../../index.less";
-import storageUtils from "../../../../utils/storageUtils";
+import storageUtils from "@utils/storageUtils";
 import { MerchantSelect } from "../../rule/index";
-import { reqPostConfig, reqPutConfig } from "../../../../api/index";
-import { ajaxError } from "../../../../utils/constants";
-import comEvents from "../../../../utils/comEvents";
+import {
+  reqPostConfig,
+  reqPutConfig,
+  reqAddCampaignRules,
+  reqUpdateCampaignRules,
+} from "@api/index";
+import { ajaxError } from "@utils/constants";
+import comEvents from "@utils/comEvents";
 
 const layout = {
   labelCol: { span: 6 },
@@ -37,7 +43,7 @@ export default withRouter((props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = React.useState(false);
   const [showMerchantSelect, setShowMerchantSelect] = React.useState(false);
-  const [orgList, setOrgList] = React.useState({});
+  const [orgList, setOrgList] = React.useState([]);
   const [timeType, setTimeType] = React.useState("date");
   const [dateSelected, setDateSelected] = React.useState({
     effective: basicInfo.effective,
@@ -48,18 +54,17 @@ export default withRouter((props) => {
   React.useEffect(() => {
     const user = storageUtils.getUser();
     let orgObj = { partyId: user.id, fullName: user.orgName };
+    let merchantArr = [];
     if (props.curInfo && props.curInfo.parties) {
-      let merchantObj = props.curInfo.parties.find(
+      merchantArr = props.curInfo.parties.filter(
         (ele) => ele.type === "MERCHANT"
       );
-      if (merchantObj) {
-        orgObj = {
-          partyId: merchantObj.partyId,
-          fullName: merchantObj.partyName,
-        };
-      }
     }
-    setOrgList({ ...orgObj });
+    if (merchantArr.length) {
+      setOrgList([...merchantArr]);
+    } else {
+      setOrgList([orgObj]);
+    }
 
     if (props.curInfo && props.curInfo.voucherConfig) {
       const {
@@ -130,7 +135,7 @@ export default withRouter((props) => {
         marketPrice: comEvents.floatMul(value.productMarketPrice, 100),
         exchangePrice: comEvents.floatMul(value.productExchangePrice, 100),
       },
-      merchantId: orgList.partyId, // 机构id
+      // merchantId: orgList.partyId, // 机构id
     };
     if (timeType === "date") {
       params = {
@@ -151,9 +156,38 @@ export default withRouter((props) => {
       result = await reqPostConfig(props.id, params);
     }
 
+    let rulesParams = [];
+    let partyIdArr = [];
+
+    orgList.forEach((item) => {
+      partyIdArr.push(item.partyId);
+    });
+
+    let obj = {
+      namespace: "REDEMPTION",
+      expression: "#SelectedMerchants",
+      rules: [
+        {
+          name: "SelectedMerchants",
+          option: partyIdArr.toString(),
+        },
+      ],
+    };
+    rulesParams.push(obj);
+
+    let rulesRes;
+    if (props.isNew) {
+      rulesRes = await reqAddCampaignRules(props.id, rulesParams);
+    } else {
+      rulesRes = await reqUpdateCampaignRules(props.id, rulesParams);
+    }
+
     setLoading(false);
 
-    if (result.data.retcode !== ajaxError) {
+    if (
+      result.data.retcode !== ajaxError &&
+      rulesRes.data.retcode !== ajaxError
+    ) {
       props.history.replace("/admin/campaign");
     }
   };
@@ -167,7 +201,7 @@ export default withRouter((props) => {
   };
 
   const handleMerchantSelection = (val) => {
-    setOrgList({ ...val[0] });
+    setOrgList([...val]);
     setShowMerchantSelect(false);
   };
 
@@ -178,6 +212,11 @@ export default withRouter((props) => {
   const changeSetDate = (date, dateString) => {
     let newDate = { effective: dateString[0], end: dateString[1] };
     setDateSelected(newDate);
+  };
+
+  const orgListChange = (item) => {
+    const arr = orgList.filter((ele) => ele.partyId !== item.partyId);
+    setOrgList([...arr]);
   };
 
   return (
@@ -201,7 +240,16 @@ export default withRouter((props) => {
           />
         </Form.Item>
         <Form.Item label="参与商户">
-          <span>{orgList.fullName}</span>
+          {orgList.map((item, index) => (
+            <Tag
+              onClose={() => orgListChange(item)}
+              color="blue"
+              key={item.id ? item.id : item.partyId}
+              closable={!props.disabled}
+            >
+              {item.fullName ? item.fullName : item.partyName}
+            </Tag>
+          ))}
           <Button type="link" onClick={onOrgClick} disabled={props.disabled}>
             选择参与商户
           </Button>
@@ -295,7 +343,7 @@ export default withRouter((props) => {
         <MerchantSelect
           id={props.id}
           visible={showMerchantSelect}
-          selectionType="radio"
+          // selectionType="radio"
           handleCancel={handleCancel}
           handleSelection={handleMerchantSelection}
         />
