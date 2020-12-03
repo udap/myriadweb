@@ -14,6 +14,9 @@ const QueryForm = ({
   onLoading,
   onSwitchRole,
   onSubmit,
+  onIncluding,
+  role,
+  includingSubsidiaries,
 }) => {
   let beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date();
   let endDate = dateRange && dateRange[1] ? dateRange[1] : new Date();
@@ -22,19 +25,20 @@ const QueryForm = ({
       onFinish={onSubmit}
       layout="horizontal"
       name="advanced_search"
-      className="search-form"
+      className="ant-advanced-search-form"
       initialValues={{
-        role: "marketer",
+        role,
         searchTxt: "",
         dateRange: [
           moment(beginDate, "YYYY-MM-DD"),
           moment(endDate, "YYYY-MM-DD"),
         ],
+        includingSubsidiaries,
       }}
     >
       <Row gutter={[16, 16]}>
         <Col>
-          <Form.Item name="role" label="查询条件">
+          <Form.Item name="role" label="机构类型">
             <Radio.Group
               onChange={onSwitchRole}
               buttonStyle="solid"
@@ -45,7 +49,19 @@ const QueryForm = ({
             </Radio.Group>
           </Form.Item>
         </Col>
-        <Col span={6}>
+        <Col>
+          <Form.Item name="includingSubsidiaries" label="下属机构">
+            <Radio.Group
+              onChange={onIncluding}
+              buttonStyle="solid"
+              disabled={loading}
+            >
+              <Radio.Button value={true}>包含</Radio.Button>
+              <Radio.Button value={false}>不包含</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+        <Col span={4}>
           <Form.Item name="searchTxt">
             <Input
               placeholder="请输入券号、活动名、订单号进行搜索"

@@ -24,13 +24,14 @@ class Redemption extends Component {
     size: 20,
     total: 0,
     visible: false,
-    /*搜索框 */
     loading: false,
     beginDate: comEvents.firstDayOfMonth(),
     endDate: null,
     downloading: false,
     role: "marketer",
+    includingSubsidiaries: true,
   };
+
   componentDidMount() {
     this.initColumns();
     this.getRedemptions(
@@ -40,6 +41,7 @@ class Redemption extends Component {
       this.state.endDate
     );
   }
+
   initColumns() {
     //显示券号，活动，发券机构，核销机构，核销时间，核销状态以及结算状态
     this.marketColumns = [
@@ -233,30 +235,42 @@ class Redemption extends Component {
     ];
   }
 
-  /*
-获取列表数据
-*/
-  getRedemptions = async (currentPage, searchTxt, beginDate, endDate) => {
+  // 获取列表数据
+  getRedemptions = async (
+    currentPage,
+    tempSearchTxt,
+    tempBeginDate,
+    tempEndDate
+  ) => {
     //owner Li:显示要有两个选择：营销机构，核销机构   前者传入issuerid，后者传入merchant id
-    let roleStr = this.state.role;
-    let parmas =
-      roleStr === "marketer"
-        ? {
-            page: currentPage - 1,
-            size: this.state.size,
-            issuerId: storageUtils.getUser().orgId,
-            beginDate: beginDate ? beginDate : this.state.beginDate,
-            endDate: endDate ? endDate : this.state.endDate,
-            searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-          }
-        : {
-            page: currentPage - 1,
-            size: this.state.size,
-            merchantId: storageUtils.getUser().orgId,
-            beginDate: beginDate ? beginDate : this.state.beginDate,
-            endDate: endDate ? endDate : this.state.endDate,
-            searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-          };
+    const {
+      role,
+      size,
+      searchTxt,
+      endDate,
+      beginDate,
+      includingSubsidiaries,
+    } = this.state;
+    console.log(typeof includingSubsidiaries);
+    let parmas = {
+      page: currentPage - 1,
+      size: size,
+      beginDate: tempBeginDate || beginDate,
+      endDate: tempEndDate || endDate,
+      searchTxt: tempSearchTxt || searchTxt,
+      includingSubsidiaries,
+    };
+    switch (role) {
+      case "marketer":
+        parmas.issuerId = storageUtils.getUser().orgId;
+        break;
+      case "merchant":
+        parmas.merchantId = storageUtils.getUser().orgId;
+        break;
+
+      default:
+        break;
+    }
     this.setState({ loading: true });
     const result = await reqGetRedemptions(parmas);
     const cont =
@@ -346,8 +360,9 @@ class Redemption extends Component {
     );
   };
 
-  /*radio 切换*/
+  // 机构类型切换
   onSwitchRole = (e) => {
+    const { beginDate, endDate } = this.state;
     //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
     this.setState(
       {
@@ -356,7 +371,23 @@ class Redemption extends Component {
         currentPage: 1,
       },
       () => {
-        this.getRedemptions(1, null, this.state.beginDate, this.state.endDate);
+        this.getRedemptions(1, null, beginDate, endDate);
+      }
+    );
+  };
+
+  // 下属机构切换
+  onIncluding = (e) => {
+    const { beginDate, endDate } = this.state;
+    //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
+    this.setState(
+      {
+        page: 0,
+        includingSubsidiaries: e.target.value,
+        currentPage: 1,
+      },
+      () => {
+        this.getRedemptions(1, null, beginDate, endDate);
       }
     );
   };
@@ -364,24 +395,35 @@ class Redemption extends Component {
   handleDownload = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    this.setState({
-      downloading: true,
-    });
-    let params =
-      this.state.role === "marketer"
-        ? {
-            issuerId: storageUtils.getUser().orgId,
-            beginDate: this.state.beginDate,
-            endDate: this.state.endDate,
-            searchTxt: this.state.searchTxt,
-          }
-        : {
-            merchantId: storageUtils.getUser().orgId,
-            beginDate: this.state.beginDate,
-            endDate: this.state.endDate,
-            searchTxt: this.state.searchTxt,
-          };
+    const {
+      role,
+      beginDate,
+      endDate,
+      searchTxt,
+      includingSubsidiaries,
+    } = this.state;
+
+    this.setState({ downloading: true });
+
+    let params = {
+      beginDate,
+      endDate,
+      searchTxt,
+      includingSubsidiaries,
+    };
+    switch (role) {
+      case "marketer":
+        params.issuerId = storageUtils.getUser().orgId;
+        break;
+      case "merchant":
+        params.merchantId = storageUtils.getUser().orgId;
+        break;
+
+      default:
+        break;
+    }
     const filename = "redemptions.xlsx";
+
     reqExportRedemption(params)
       .then((response) => {
         FileSaver.saveAs(response.data, filename);
@@ -400,10 +442,18 @@ class Redemption extends Component {
   };
 
   renderContent = () => {
-    const { campaigns, size, currentPage, chooseRadio, loading } = this.state;
-    let columns = chooseRadio === "owner" ? this.marketColumns : this.columns;
+    const {
+      campaigns,
+      size,
+      currentPage,
+      chooseRadio,
+      loading,
+      role,
+      includingSubsidiaries,
+    } = this.state;
+    const columns = chooseRadio === "owner" ? this.marketColumns : this.columns;
     return (
-      <div>
+      <>
         <PageHeader
           className="site-page-header-responsive cont"
           title="核销记录"
@@ -423,6 +473,9 @@ class Redemption extends Component {
           onLoading={this.enterLoading}
           onSwitchRole={this.onSwitchRole}
           onSubmit={this.submitQuery}
+          onIncluding={this.onIncluding}
+          role={role}
+          includingSubsidiaries={includingSubsidiaries}
         />
         <Table
           rowKey="key"
@@ -445,7 +498,7 @@ class Redemption extends Component {
             disabled={loading}
           />
         </div>
-      </div>
+      </>
     );
   };
   render() {
