@@ -241,6 +241,9 @@ const noticeType = {
   VOUCHER_ISSUANCE: "增发券",
 };
 
+const autoUpdateTooltip =
+  "自动增发：允许当前机构的员工，在活动实际发行数量达到计划发行数量后，请求系统自动增加发行数量，并按要求发放卡券";
+
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
@@ -266,4 +269,5 @@ export {
   ajaxSuccess,
   ajaxError,
   noticeType,
+  autoUpdateTooltip,
 };

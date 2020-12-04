@@ -22,10 +22,11 @@ import {
 } from "@ant-design/icons";
 import NumberFormat from "react-number-format";
 import FileSaver from "file-saver";
+import ReactFileReader from "react-file-reader";
 
-import storageUtils from "../../utils/storageUtils";
-import { campaignStatuses, couponSubTypeMetheds } from "../../utils/constants";
-import comEvents from "../../utils/comEvents";
+import storageUtils from "@utils/storageUtils";
+import { campaignStatuses, couponSubTypeMetheds } from "@utils/constants";
+import comEvents from "@utils/comEvents";
 import {
   reqPermit,
   reqGetCampaigns,
@@ -38,47 +39,48 @@ import {
   reqIssueVouchers,
   reqTerminate,
   reqDownloadTemplate,
-} from "../../api";
-import ReactFileReader from "react-file-reader";
-import { Loading } from "../../components";
+} from "@api";
+import { Loading } from "@components";
 import "./index.less";
-import "../../css/common.less";
+import "@css/common.less";
 import CampaignDetail from "./campaignDetail";
 import QueryForm from "./queryForm";
 import IssueForm from "./issueForm";
-import { tsThisType } from "@babel/types";
 
 const { confirm } = Modal;
 
 class Campaign extends Component {
-  state = {
-    inited: false,
-    campaigns: [],
-    addNew: false,
-    showCSV: false,
-    showIssuingPanel: false,
-    //分配与发放
-    action: null,
-    customerOnly: true,
-    chooseItem: {
-      name: "活动",
-    },
-    currentPage: 1,
-    size: 20,
-    total: 1,
-    /*搜索框 */
-    searchTxt: "",
-    loading: false,
-    number: 0,
-    //我参与的与机构参与的
-    value: "participant",
-    showDetail: false,
-    //当前列表操作的活动
-    listItem: null,
-    effective: "valid",
-    numberLoading: false,
-    isUpload: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      inited: false,
+      campaigns: [],
+      addNew: false,
+      showCSV: false,
+      showIssuingPanel: false,
+      //分配与发放
+      action: null,
+      customerOnly: true,
+      chooseItem: {
+        name: "活动",
+      },
+      currentPage: 1,
+      size: 20,
+      total: 1,
+      /*搜索框 */
+      searchTxt: "",
+      loading: false,
+      number: 0,
+      //我参与的与机构参与的
+      value: "participant",
+      showDetail: false,
+      //当前列表操作的活动
+      listItem: null,
+      effective: "valid",
+      numberLoading: false,
+      isUpload: false,
+    };
+  }
 
   componentDidMount() {
     this.initColumns("participant");
@@ -238,6 +240,7 @@ class Campaign extends Component {
       },
     ];
   }
+
   //展示按钮
   showExtraBtns = (chooseItem) => {
     const { id, status, name } = chooseItem;
@@ -339,11 +342,11 @@ class Campaign extends Component {
     this.getCampaigns(null, 1);
   };
 
-  //展示活动详情
+  // 展示活动详情
   showDetail = (item) => {
     this.reqGetCampaignById(item.id);
   };
-  //获取活动详情
+  // 获取活动详情
   reqGetCampaignById = async (id) => {
     let curInfo = await reqGetCampaignById(id);
     let cont = curInfo && curInfo.data ? curInfo.data : [];
@@ -353,14 +356,15 @@ class Campaign extends Component {
       listItem: cont,
     });
   };
-  //关闭活动详情
+  // 关闭活动详情
   closeDetail = () => {
     this.setState({
       showDetail: false,
       listItem: null,
     });
   };
-  /*radio 切换*/
+
+  // radio 切换
   onChange = (e) => {
     //提交机构（participant，只显示在机构审批类)，审批机构（party，只显示在机构提交)
     this.setState({
@@ -382,43 +386,46 @@ class Campaign extends Component {
     this.getCampaigns(null, 1, null, e.target.value);
   };
 
-  searchValue = (value) => {
+  searchValue = (elements) => {
+    const { value } = this.state;
     this.setState({
-      searchTxt: value.searchTxt,
-      value: value.group,
+      searchTxt: elements.searchTxt,
+      value: elements.group,
       currentPage: 1,
     });
-    this.getCampaigns(value.searchTxt, 1, this.state.value);
+    this.getCampaigns(elements.searchTxt, 1, value);
   };
+
   enterLoading = () => {
     this.setState({
       loading: true,
     });
   };
+
   addItem = async () => {
     this.props.history.push("/admin/campaign/edit/new");
   };
 
   delItem = async (id) => {
-    const result = await reqDelCampaign(id);
+    await reqDelCampaign(id);
     this.setState({
       currentPage: 1,
     });
     this.getCampaigns(null, 1);
   };
+
   publishItem = async (id) => {
-    const result = await reqPublishCampaign(id);
+    await reqPublishCampaign(id);
     this.setState({
       currentPage: 1,
     });
     this.getCampaigns("", 1, "participant");
   };
-  /*
-获取列表数据
-*/
+
+  // 获取列表数据
   getCampaigns = async (value, currentPage, type, effective) => {
-    const typeStr = type ? type : this.state.value;
-    const typeEff = effective ? effective : this.state.effective;
+    const typeStr = type || this.state.value;
+    const typeEff = effective || this.state.effective;
     //一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
     //都需要传status=NON_EXPIRED
     let parmas = typeStr.includes("participant")
@@ -457,6 +464,7 @@ class Campaign extends Component {
       loading: false,
     });
   };
+
   showCSV = (action, chooseItem) => {
     this.getNumber(chooseItem.id, action);
     this.setState({
@@ -482,6 +490,7 @@ class Campaign extends Component {
       showIssuingPanel: false,
     });
   };
+
   handleFiles = async (files) => {
     if (files[0].size > 10 * 1000000) {
       notification.error({
@@ -501,9 +510,14 @@ class Campaign extends Component {
     formData.append("csvFile", files[0]);
     formData.append("campaignId", this.state.chooseItem.id);
     let result;
+    /**
+     * transfer 批量分配
+     * distributions 批量发券
+     */
     if (this.state.action === "transfer") {
-      //transfer 批量分配
+      this.setState({ isUpload: true });
       result = await reqBatchTransfer(formData);
+      this.setState({ isUpload: false });
       if (result && result.data && result.data.status === "PENDING") {
         let str0 =
           "申请分配" + result.data.requestedAmount + "张票券，后台正在处理中！";
@@ -517,7 +531,6 @@ class Campaign extends Component {
         });
       }
     } else {
-      //distributions 批量发券
       // formData.append("customerOnly", this.state.customerOnly);
       this.setState({ isUpload: true });
       result = await reqBatchDistribution(formData);
@@ -623,6 +636,13 @@ class Campaign extends Component {
     } = this.state;
     const typeName = action === "transfer" ? "票券分配文件" : "票券发放文件";
     const typeTitle = action === "transfer" ? "分配票券" : "发放票券";
+    /**
+     * 1，分配票券，当前可分配数量为0时，不能分配
+     * 2，分发票券，当前可发放数量为0，且不允许增发时，不能分发 */
+    const isAction =
+      action === "transfer"
+        ? number === 0
+        : number === 0 && !chooseItem.autoUpdate;
     return (
       <Modal
         title={typeTitle}
@@ -692,26 +712,14 @@ class Campaign extends Component {
                   handleFiles={this.handleFiles}
                   fileTypes={".csv"}
                 >
-                  <Button
-                    type="primary"
-                    disabled={
-                      (number === 0 && !chooseItem.autoUpdate) || isUpload
-                        ? true
-                        : false
-                    }
-                  >
+                  <Button type="primary" disabled={isAction || isUpload}>
                     {isUpload ? <LoadingOutlined /> : <UploadOutlined />}
                     选择文件并上传
                   </Button>
                 </ReactFileReader>
               </Col>
               <Col>
-                {isUpload ? (
-                  <Button type="link" icon={<LoadingOutlined />} />
-                ) : null}
-              </Col>
-              <Col>
-                {number === 0 && !chooseItem.autoUpdate ? (
+                {isAction ? (
                   <Button
                     type="primary"
                     style={{
@@ -743,6 +751,7 @@ class Campaign extends Component {
       showDetail,
       listItem,
       loading,
+      showIssuingPanel,
     } = this.state;
     return (
       <>
@@ -765,7 +774,6 @@ class Campaign extends Component {
             />,
           ]}
         ></PageHeader>
-        {/* --搜索栏-- */}
         <QueryForm
           loading={loading}
           onChangeType={this.onChange}
@@ -804,7 +812,7 @@ class Campaign extends Component {
         ) : null}
         {this.showIssuingDrawer ? (
           <IssueForm
-            visible={this.state.showIssuingPanel}
+            visible={showIssuingPanel}
             onSubmit={this.issueVouchers}
             onClose={this.handleCancel}
           />
@@ -812,17 +820,10 @@ class Campaign extends Component {
       </>
     );
   };
+
   render() {
-    return (
-      <div
-        key="content"
-        style={{
-          height: "100%",
-        }}
-      >
-        {this.state.inited ? this.renderContent() : <Loading />}
-      </div>
-    );
+    const { inited } = this.state;
+    return inited ? this.renderContent() : <Loading />;
   }
 }
 

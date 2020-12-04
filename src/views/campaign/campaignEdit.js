@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-//加载中
 import {
   Button,
   Form,
@@ -14,27 +13,32 @@ import {
   InputNumber,
   Drawer,
   notification,
+  Tooltip,
 } from "antd";
-import defaultValidateMessages from "../../utils/comFormErrorAlert";
+import moment from "moment";
+import "moment/locale/zh-cn";
+import { withRouter } from "react-router-dom";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+
+import defaultValidateMessages from "@utils/comFormErrorAlert";
 import {
   reqGetCampaignById,
   reqAddCampaign,
   reqPutConfig,
   reqPostConfig,
-  //reqPostConfigImg,
   reqPutCampaign,
-} from "../../api";
-import storageUtils from "../../utils/storageUtils";
-import { distributionMethods, stepLists } from "../../utils/constants";
-import comEvents from "../../utils/comEvents";
-import { Loading, EditableTagGroup } from "../../components";
-import { withRouter } from "react-router-dom";
-import moment from "moment";
-import "moment/locale/zh-cn";
+} from "@api";
+import storageUtils from "@utils/storageUtils";
+import {
+  distributionMethods,
+  stepLists,
+  autoUpdateTooltip,
+} from "@utils/constants";
+import comEvents from "@utils/comEvents";
+import { Loading, EditableTagGroup } from "@components";
 import CampaignMerchant from "./campaignMerchant";
 import CampaignTypeSelect from "./campaignTypeSelect";
 import "./index.less";
-import { thisExpression } from "@babel/types";
 import ConfigureRules from "./configureRules";
 import { GiftDeatils } from "./components";
 
@@ -454,10 +458,13 @@ class CampaignEdit extends Component {
         </Form.Item>
         <Form.Item
           name="autoUpdate"
-          label="允许增发"
+          label="允许自动增发"
           rules={[{ required: true }]}
         >
           <Switch defaultChecked={autoUpdate} disabled={isDisabled(status)} />
+          <Tooltip placement="right" title={autoUpdateTooltip}>
+            <Button type="link" icon={<QuestionCircleOutlined />} />
+          </Tooltip>
         </Form.Item>
         <Form.Item
           name="distMethod"
