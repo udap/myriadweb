@@ -57,7 +57,7 @@ const firstDayOfMonth = () => {
   var dd = new Date();
   const year = dd.getFullYear();
   const month = dd.getMonth() + 1;
-  const day = dd.getDate();
+  // const day = dd.getDate();
   return [year, month, 1].map(formatNumber).join("-");
 };
 
@@ -82,7 +82,7 @@ const hasPower = async (self, reqPermit, str, handleName, id, type) => {
 const compareTwoArrayEqual = (arr1, arr2) => {
   let newArr = [];
   for (let j = 0; j < arr1.length; j++) {
-    arr2.map((item) => {
+    arr2.forEach((item) => {
       if (item.key === arr1[j]) newArr.push(item.title);
     });
   }
@@ -292,7 +292,7 @@ function guid() {
   );
 }
 
-const floatMul = (arg1, arg2) => {
+const floatMul = (arg1 = 0, arg2 = 0) => {
   let m = 0,
     s1 = arg1.toString(),
     s2 = arg2.toString();

@@ -58,7 +58,7 @@ export default withRouter((props) => {
 
   React.useEffect(() => {
     const user = storageUtils.getUser();
-    let orgObj = { partyId: user.id, fullName: user.orgName };
+    let orgObj = { partyId: user.orgId, fullName: user.orgName };
     let merchantArr = [];
     if (props.curInfo && props.curInfo.parties) {
       merchantArr = props.curInfo.parties.filter(

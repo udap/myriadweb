@@ -30,7 +30,7 @@
     "start": "craco start",
     "build": "dotenv -e .env.production craco build",
     "build:support": "dotenv -e .env.support craco build",
-    "build:dev": "dotenv -e .env.development craco build",
+    "build:test": "dotenv -e .env.development craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
   },
