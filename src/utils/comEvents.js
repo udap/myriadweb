@@ -1,7 +1,8 @@
 import { privateRoutes } from "../routes";
 import { ChinaRegions } from "./china-regions";
-import { traverse } from "@babel/types";
-import { rootCertificates } from "tls";
+// import { traverse } from "@babel/types";
+// import { rootCertificates } from "tls";
+
 //获取当前页面的title
 const getTitle = (pathname) => {
   let title;
@@ -17,6 +18,7 @@ const getTitle = (pathname) => {
   });
   return title;
 };
+
 const formatNumber = (n) => {
   n = n.toString();
   return n[1] ? n : "0" + n;
@@ -27,6 +29,7 @@ const compareToday = (dateValue) => {
     new Date().getTime() >= new Date(dateValue).getTime() + 3600 * 1000 * 24
   );
 };
+
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -87,13 +90,15 @@ const compareTwoArrayEqual = (arr1, arr2) => {
 };
 
 const mergeArrays = (arr1, arr2) => {
-  return arr1.concat(arr2.filter((item) => item!==undefined&&arr1.indexOf(item) < 0));
+  return arr1.concat(
+    arr2.filter((item) => item !== undefined && arr1.indexOf(item) < 0)
+  );
 };
 
-const formatExpression = (ruleExpressions) => {
-  let expr = ruleExpressions.toString();
-  return expr.replace(/,/, " and ");
-};
+// const formatExpression = (ruleExpressions) => {
+//   let expr = ruleExpressions.toString();
+//   return expr.replace(/,/, " and ");
+// };
 
 const siftRegion = (p, c) => {
   //province, city, district
@@ -117,43 +122,46 @@ const siftRegion = (p, c) => {
   }
   return newArr;
 };
-const distinct = (arr) => {
-  let map = new Map();
-  let newArr = [];
-  for (let i = 0; i < arr.length; i++) {
-    if (!map.has(arr[i])) {
-      map.set(arr[i]);
-      newArr.push(arr[i]);
-    }
-  }
-  return newArr;
-};
-const trans = (arr, keys) => {
-  let result = [];
-  let keyToRef = {};
-  let len = keys.length;
-  arr.forEach((cur) => {
-    let obj;
-    let cacheKey = "";
-    for (let i = 0; i < len; i++) {
-      let key = keys[i];
-      cacheKey += key + cur[key];
-      let ref = keyToRef[cacheKey];
-      if (ref) {
-        obj = ref;
-      } else {
-        ref =
-          i === 0 ? result : obj.children ? obj.children : (obj.children = []);
-        obj = {
-          [key]: cur[key],
-        };
-        keyToRef[cacheKey] = obj;
-        ref.push(obj);
-      }
-    }
-  });
-  return result;
-};
+
+// const distinct = (arr) => {
+//   let map = new Map();
+//   let newArr = [];
+//   for (let i = 0; i < arr.length; i++) {
+//     if (!map.has(arr[i])) {
+//       map.set(arr[i]);
+//       newArr.push(arr[i]);
+//     }
+//   }
+//   return newArr;
+// };
+
+// const trans = (arr, keys) => {
+//   let result = [];
+//   let keyToRef = {};
+//   let len = keys.length;
+//   arr.forEach((cur) => {
+//     let obj;
+//     let cacheKey = "";
+//     for (let i = 0; i < len; i++) {
+//       let key = keys[i];
+//       cacheKey += key + cur[key];
+//       let ref = keyToRef[cacheKey];
+//       if (ref) {
+//         obj = ref;
+//       } else {
+//         ref =
+//           i === 0 ? result : obj.children ? obj.children : (obj.children = []);
+//         obj = {
+//           [key]: cur[key],
+//         };
+//         keyToRef[cacheKey] = obj;
+//         ref.push(obj);
+//       }
+//     }
+//   });
+//   return result;
+// };
+
 const formatDistrict = (data, type) => {
   let obj = {};
   let result = [];
@@ -171,6 +179,7 @@ const formatDistrict = (data, type) => {
   }
   return result;
 };
+
 const formatCity = (data, type) => {
   let obj = {};
   let result = [];
@@ -183,10 +192,8 @@ const formatCity = (data, type) => {
     if (!obj[elem]) {
       obj[elem] = [];
     }
-    if (elemValue) 
-      obj[elem].push(elemValue);
-    else
-      obj[elem] = [];
+    if (elemValue) obj[elem].push(elemValue);
+    else obj[elem] = [];
   });
   for (let key in obj) {
     if (obj[key].length > 0) {
@@ -204,12 +211,16 @@ const formatCity = (data, type) => {
   }
   return result;
 };
+
 const formatProvince = (data, type) => {
   let provs = {};
   let result = [];
   data.forEach((element, index) => {
     let elem = element.split(",")[0];
-    let elemValue = element.indexOf(",") !== -1?element.substring(element.indexOf(",") + 1):null;
+    let elemValue =
+      element.indexOf(",") !== -1
+        ? element.substring(element.indexOf(",") + 1)
+        : null;
     if (!provs[elem]) {
       provs[elem] = [];
     }
@@ -217,35 +228,36 @@ const formatProvince = (data, type) => {
     else provs[elem] = [];
   });
   for (let key in provs) {
-     if (provs[key].length > 0) {
-       result.push({
-         type: type,
-         name: key,
-         children: formatCity(provs[key], "C"),
-       });
-     } else {
-       result.push({
-         type: type,
-         name: key,
-       });
-     }
+    if (provs[key].length > 0) {
+      result.push({
+        type: type,
+        name: key,
+        children: formatCity(provs[key], "C"),
+      });
+    } else {
+      result.push({
+        type: type,
+        name: key,
+      });
+    }
   }
   return result;
 };
+
 const formatRegions = (selectedRegion) => {
-  let resultArr = selectedRegion? formatProvince(selectedRegion, "P"):[];
+  let resultArr = selectedRegion ? formatProvince(selectedRegion, "P") : [];
   let strifyArr = JSON.stringify(resultArr);
   return strifyArr;
 };
 
 const flatRegions = (regions) => {
   let out = [];
-  for (let i=0; i<regions.length; i++) {
+  for (let i = 0; i < regions.length; i++) {
     let regionPath = [];
     traverseTree(regions[i], [], regionPath);
     out = out.concat(regionPath);
   }
-  return out;  
+  return out;
 };
 
 const traverseTree = (root, path, result) => {
@@ -254,10 +266,30 @@ const traverseTree = (root, path, result) => {
     let leaf = path.toString();
     result.push(leaf);
   } else {
-    for (let i=0; i<root.children.length; i++) {
+    for (let i = 0; i < root.children.length; i++) {
       traverseTree(root.children[i], path.concat(), result);
     }
   }
+};
+
+function guid() {
+  function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
+  return (
+    S4() +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    S4() +
+    S4()
+  );
 }
 
 const floatMul = (arg1, arg2) => {
@@ -276,6 +308,7 @@ const floatMul = (arg1, arg2) => {
   );
 };
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getTitle,
   formatDate,
@@ -290,5 +323,6 @@ export default {
   siftRegion,
   formatRegions,
   flatRegions,
+  guid,
   floatMul,
 };

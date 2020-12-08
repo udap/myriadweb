@@ -147,14 +147,14 @@ const _renderValueOff = (config) => {
       ) : config.type === "GIFT" ? (
         <>
           <Descriptions.Item label="商品名称">
-            {config.productName}
+            {config.product.name}
           </Descriptions.Item>
           <Descriptions.Item label="SKU">
-            {config.productCode}
+            {config.product.code}
           </Descriptions.Item>
           <Descriptions.Item label="商品市场零售价">
             <NumberFormat
-              value={config.productMarketPrice / 100}
+              value={config.product.marketPrice / 100}
               displayType={"text"}
               thousandSeparator={true}
               decimalScale={2}
@@ -164,7 +164,7 @@ const _renderValueOff = (config) => {
           </Descriptions.Item>
           <Descriptions.Item label="商品换购价格">
             <NumberFormat
-              value={config.productExchangePrice / 100}
+              value={config.product.exchangePrice / 100}
               displayType={"text"}
               thousandSeparator={true}
               decimalScale={2}

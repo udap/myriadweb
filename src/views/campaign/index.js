@@ -24,9 +24,9 @@ import NumberFormat from "react-number-format";
 import FileSaver from "file-saver";
 import ReactFileReader from "react-file-reader";
 
-import storageUtils from "../../utils/storageUtils";
-import { campaignStatuses, couponSubTypeMetheds } from "../../utils/constants";
-import comEvents from "../../utils/comEvents";
+import storageUtils from "@utils/storageUtils";
+import { campaignStatuses, couponSubTypeMetheds } from "@utils/constants";
+import comEvents from "@utils/comEvents";
 import {
   reqPermit,
   reqGetCampaigns,
@@ -39,10 +39,10 @@ import {
   reqIssueVouchers,
   reqTerminate,
   reqDownloadTemplate,
-} from "../../api";
-import { Loading } from "../../components";
+} from "@api";
+import { Loading } from "@components";
 import "./index.less";
-import "../../css/common.less";
+import "@css/common.less";
 import CampaignDetail from "./campaignDetail";
 import QueryForm from "./queryForm";
 import IssueForm from "./issueForm";
@@ -50,34 +50,37 @@ import IssueForm from "./issueForm";
 const { confirm } = Modal;
 
 class Campaign extends Component {
-  state = {
-    inited: false,
-    campaigns: [],
-    addNew: false,
-    showCSV: false,
-    showIssuingPanel: false,
-    //分配与发放
-    action: null,
-    customerOnly: true,
-    chooseItem: {
-      name: "活动",
-    },
-    currentPage: 1,
-    size: 20,
-    total: 1,
-    /*搜索框 */
-    searchTxt: "",
-    loading: false,
-    number: 0,
-    //我参与的与机构参与的
-    value: "participant",
-    showDetail: false,
-    //当前列表操作的活动
-    listItem: null,
-    effective: "valid",
-    numberLoading: false,
-    isUpload: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      inited: false,
+      campaigns: [],
+      addNew: false,
+      showCSV: false,
+      showIssuingPanel: false,
+      //分配与发放
+      action: null,
+      customerOnly: true,
+      chooseItem: {
+        name: "活动",
+      },
+      currentPage: 1,
+      size: 20,
+      total: 1,
+      /*搜索框 */
+      searchTxt: "",
+      loading: false,
+      number: 0,
+      //我参与的与机构参与的
+      value: "participant",
+      showDetail: false,
+      //当前列表操作的活动
+      listItem: null,
+      effective: "valid",
+      numberLoading: false,
+      isUpload: false,
+    };
+  }
 
   componentDidMount() {
     this.initColumns("participant");

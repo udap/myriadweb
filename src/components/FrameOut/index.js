@@ -1,20 +1,18 @@
 import React, { Component } from "react";
-import { Layout, Menu, Row, Col, Modal, notification } from "antd";
+import { Layout, Menu, notification } from "antd";
+import { withRouter, Link } from "react-router-dom";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+
 import "./index.less";
 //动态渲染导航栏
 import { privateRoutes } from "../../routes";
-//引入装饰器 因为FrameOut没有Route
-import { withRouter, Link } from "react-router-dom";
 //引入图标
 import { AntdIcon, ReactDocumentTitle } from "../../components";
-import comEvents from "../../utils/comEvents";
+// import comEvents from "../../utils/comEvents";
 import storageUtils from "../../utils/storageUtils";
 import logo from "../../assets/images/logo.jpg";
 import TopNav from "./topNav";
 
-const { SubMenu } = Menu;
-const { Header, Content, Sider } = Layout;
 //过滤filter导航栏  左侧导航栏
 const navsLeft = privateRoutes.filter((item) => {
   return item.isTop === true;
@@ -32,7 +30,6 @@ withRouter 是一个高阶组件 用来包装非路由组件，返回一个新�
 新的组件向非路由组件传递3个属性 history\location\match
 */
 
-@withRouter
 class FrameOut extends Component {
   rootSubmenuKeys = ["/admin/settlement"];
   rootSubmenuChildKeys = [
@@ -45,16 +42,19 @@ class FrameOut extends Component {
     "/admin/reports/individual",
     "/admin/reports/organization",
   ];
+  
   state = {
     collapsed: false,
     current: "mail",
     selectedKeys: "/admin/dashboard",
     openKey: [],
   };
+
   componentDidMount() {
     //渲染前调用一次 为render数据做准备
     this.getNavMap(navsLeft);
   }
+
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -125,7 +125,7 @@ class FrameOut extends Component {
         // const cItem = item.children.find((cItem) => cItem.pathname === path);
         const cItem = item.children.filter((cItem) => cItem.isNav === true);
         return (
-          <SubMenu
+          <Menu.SubMenu
             key={item.pathname}
             title={
               <span className="submenu-title-wrapper">
@@ -135,7 +135,7 @@ class FrameOut extends Component {
             }
           >
             {this.getNavMap(cItem)}
-          </SubMenu>
+          </Menu.SubMenu>
         );
       }
     });
@@ -177,16 +177,13 @@ class FrameOut extends Component {
 
     return (
       <ReactDocumentTitle title={curTtile}>
-        <Layout
-          style={{
-            minHeight: "100%",
-          }}
-        >
-          <Sider
+        <Layout style={{ minHeight: "100%" }}>
+          <Layout.Sider
             breakpoint="lg"
             collapsedWidth="0"
-            collapsible={true}
-            trigger={true}
+            collapsible
+            collapsed={this.state.collapsed}
+            trigger={null}
           >
             <Link
               to="/admin/dashboard"
@@ -206,37 +203,22 @@ class FrameOut extends Component {
             >
               {this.getNavMap(navsLeft)}
             </Menu>
-          </Sider>
-          <Layout
-            className="site-layout"
-            style={{
-              padding: 0,
-            }}
-          >
-            <Header
+          </Layout.Sider>
+          <Layout className="site-layout">
+            <Layout.Header
               className="site-layout-background"
-              style={{
-                padding: 0,
-              }}
+              style={{ padding: 0 }}
             >
-              <Row>
-                <Col xs={{ span: 12 }} lg={{ span: 12 }}>
-                  {/* {React.createElement(
-                      this.state.collapsed
-                        ? MenuUnfoldOutlined
-                        : MenuFoldOutlined,
-                      {
-                        className: "trigger",
-                        onClick: this.toggle,
-                      }
-                    )} */}
-                </Col>
-                <Col xs={{ span: 12 }} lg={{ span: 8, offset: 4 }}>
-                  <TopNav />
-                </Col>
-              </Row>
-            </Header>
-            <Content
+              {React.createElement(
+                this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+                {
+                  className: "trigger",
+                  onClick: this.toggle,
+                }
+              )}
+              <TopNav />
+            </Layout.Header>
+            <Layout.Content
               className="site-layout-background"
               style={{
                 margin: "24px 16px",
@@ -245,11 +227,12 @@ class FrameOut extends Component {
               }}
             >
               {this.props.children}
-            </Content>
+            </Layout.Content>
           </Layout>
         </Layout>
       </ReactDocumentTitle>
     );
   }
 }
-export default FrameOut;
+
+export default withRouter(FrameOut);

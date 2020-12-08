@@ -20,22 +20,22 @@ import "moment/locale/zh-cn";
 import { withRouter } from "react-router-dom";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
-import defaultValidateMessages from "../../utils/comFormErrorAlert";
+import defaultValidateMessages from "@utils/comFormErrorAlert";
 import {
   reqGetCampaignById,
   reqAddCampaign,
   reqPutConfig,
   reqPostConfig,
   reqPutCampaign,
-} from "../../api";
-import storageUtils from "../../utils/storageUtils";
+} from "@api";
+import storageUtils from "@utils/storageUtils";
 import {
   distributionMethods,
   stepLists,
   autoUpdateTooltip,
-} from "../../utils/constants";
-import comEvents from "../../utils/comEvents";
-import { Loading, EditableTagGroup } from "../../components";
+} from "@utils/constants";
+import comEvents from "@utils/comEvents";
+import { Loading, EditableTagGroup } from "@components";
 import CampaignMerchant from "./campaignMerchant";
 import CampaignTypeSelect from "./campaignTypeSelect";
 import "./index.less";

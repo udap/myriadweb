@@ -240,8 +240,6 @@ class CampaignDetail extends Component {
     }
 
     if (voucherConfig) {
-      const productMarketPrice = voucherConfig.productMarketPrice / 100;
-      const productExchangePrice = voucherConfig.productExchangePrice / 100;
       return (
         <Descriptions size="small" bordered column={1}>
           <Descriptions.Item label="票券名称">
@@ -264,14 +262,14 @@ class CampaignDetail extends Component {
           {subType === "GIFT" ? (
             <>
               <Descriptions.Item label="商品名称">
-                {voucherConfig.productName}
+                {voucherConfig.product.name}
               </Descriptions.Item>
               <Descriptions.Item label="SKU">
-                {voucherConfig.productCode}
+                {voucherConfig.product.code}
               </Descriptions.Item>
               <Descriptions.Item label="商品市场零售价">
                 <NumberFormat
-                  value={productMarketPrice}
+                  value={voucherConfig.product.marketPrice / 100}
                   displayType={"text"}
                   thousandSeparator={true}
                   decimalScale={2}
@@ -281,7 +279,7 @@ class CampaignDetail extends Component {
               </Descriptions.Item>
               <Descriptions.Item label="商品换购价格">
                 <NumberFormat
-                  value={productExchangePrice}
+                  value={voucherConfig.product.exchangePrice / 100}
                   displayType={"text"}
                   thousandSeparator={true}
                   decimalScale={2}

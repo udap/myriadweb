@@ -21,7 +21,6 @@ const removeUser = () => {
   localStore.removeItem(USER_KEY);
 };
 
-
 const ORG_KEY = "org";
 /*保存user*/
 const saveOrg = (user) => {
@@ -36,7 +35,6 @@ const getOrg = () => {
 const removeOrg = () => {
   localStore.removeItem(ORG_KEY);
 };
-
 
 const TOKEN = "token";
 

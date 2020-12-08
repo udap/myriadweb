@@ -9,21 +9,32 @@ import {
   Col,
   DatePicker,
   notification,
+  Tag,
 } from "antd";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 
 import "../../index.less";
-import storageUtils from "../../../../utils/storageUtils";
+import storageUtils from "@utils/storageUtils";
 import { MerchantSelect } from "../../rule/index";
-import { reqPostConfig, reqPutConfig } from "../../../../api/index";
-import { ajaxError } from "../../../../utils/constants";
-import comEvents from "../../../../utils/comEvents";
+import {
+  reqPostConfig,
+  reqPutConfig,
+  reqAddCampaignRules,
+  reqUpdateCampaignRules,
+} from "@api/index";
+import { ajaxError } from "@utils/constants";
+import comEvents from "@utils/comEvents";
 
 const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 12 },
 };
+
+const tailFormItemLayout = {
+  wrapperCol: { xs: { span: 4 }, sm: { span: 6 } },
+};
+
 //垂直的单选
 const radioStyle = {
   display: "block",
@@ -37,7 +48,7 @@ export default withRouter((props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = React.useState(false);
   const [showMerchantSelect, setShowMerchantSelect] = React.useState(false);
-  const [orgList, setOrgList] = React.useState({});
+  const [orgList, setOrgList] = React.useState([]);
   const [timeType, setTimeType] = React.useState("date");
   const [dateSelected, setDateSelected] = React.useState({
     effective: basicInfo.effective,
@@ -48,18 +59,17 @@ export default withRouter((props) => {
   React.useEffect(() => {
     const user = storageUtils.getUser();
     let orgObj = { partyId: user.id, fullName: user.orgName };
+    let merchantArr = [];
     if (props.curInfo && props.curInfo.parties) {
-      let merchantObj = props.curInfo.parties.find(
+      merchantArr = props.curInfo.parties.filter(
         (ele) => ele.type === "MERCHANT"
       );
-      if (merchantObj) {
-        orgObj = {
-          partyId: merchantObj.partyId,
-          fullName: merchantObj.partyName,
-        };
-      }
     }
-    setOrgList({ ...orgObj });
+    if (merchantArr.length) {
+      setOrgList([...merchantArr]);
+    } else {
+      setOrgList([orgObj]);
+    }
 
     if (props.curInfo && props.curInfo.voucherConfig) {
       const {
@@ -67,10 +77,7 @@ export default withRouter((props) => {
         expiry,
         daysAfterDist,
         name,
-        productName,
-        productCode,
-        productMarketPrice,
-        productExchangePrice,
+        product,
       } = props.curInfo.voucherConfig;
 
       let tempTimeType = "date";
@@ -88,19 +95,19 @@ export default withRouter((props) => {
         },
         {
           name: ["productName"],
-          value: productName,
+          value: product.name,
         },
         {
           name: ["productCode"],
-          value: productCode,
+          value: product.code,
         },
         {
           name: ["productMarketPrice"],
-          value: productMarketPrice / 100,
+          value: product.marketPrice / 100,
         },
         {
           name: ["productExchangePrice"],
-          value: productExchangePrice / 100,
+          value: product.exchangePrice / 100,
         },
         {
           name: ["daysAfterDist"],
@@ -127,11 +134,13 @@ export default withRouter((props) => {
     let params = {
       name: value.giftName,
       type: "GIFT",
-      productName: value.productName,
-      productCode: value.productCode,
-      productMarketPrice: comEvents.floatMul(value.productMarketPrice, 100),
-      productExchangePrice: comEvents.floatMul(value.productExchangePrice, 100),
-      merchantId: orgList.partyId, // 机构id
+      product: {
+        name: value.productName,
+        code: value.productCode,
+        marketPrice: comEvents.floatMul(value.productMarketPrice, 100),
+        exchangePrice: comEvents.floatMul(value.productExchangePrice, 100),
+      },
+      // merchantId: orgList.partyId, // 机构id
     };
     if (timeType === "date") {
       params = {
@@ -152,9 +161,38 @@ export default withRouter((props) => {
       result = await reqPostConfig(props.id, params);
     }
 
+    let rulesParams = [];
+    let partyIdArr = [];
+
+    orgList.forEach((item) => {
+      partyIdArr.push(item.partyId);
+    });
+
+    let obj = {
+      namespace: "REDEMPTION",
+      expression: "#SelectedMerchants",
+      rules: [
+        {
+          name: "SelectedMerchants",
+          option: partyIdArr.toString(),
+        },
+      ],
+    };
+    rulesParams.push(obj);
+
+    let rulesRes;
+    if (props.isNew) {
+      rulesRes = await reqAddCampaignRules(props.id, rulesParams);
+    } else {
+      rulesRes = await reqUpdateCampaignRules(props.id, rulesParams);
+    }
+
     setLoading(false);
 
-    if (result.data.retcode !== ajaxError) {
+    if (
+      result.data.retcode !== ajaxError &&
+      rulesRes.data.retcode !== ajaxError
+    ) {
       props.history.replace("/admin/campaign");
     }
   };
@@ -168,7 +206,7 @@ export default withRouter((props) => {
   };
 
   const handleMerchantSelection = (val) => {
-    setOrgList({ ...val[0] });
+    setOrgList([...val]);
     setShowMerchantSelect(false);
   };
 
@@ -179,6 +217,11 @@ export default withRouter((props) => {
   const changeSetDate = (date, dateString) => {
     let newDate = { effective: dateString[0], end: dateString[1] };
     setDateSelected(newDate);
+  };
+
+  const orgListChange = (item) => {
+    const arr = orgList.filter((ele) => ele.partyId !== item.partyId);
+    setOrgList([...arr]);
   };
 
   return (
@@ -202,7 +245,16 @@ export default withRouter((props) => {
           />
         </Form.Item>
         <Form.Item label="参与商户">
-          <span>{orgList.fullName}</span>
+          {orgList.map((item, index) => (
+            <Tag
+              onClose={() => orgListChange(item)}
+              color="blue"
+              key={item.id ? item.id : item.partyId}
+              closable={!props.disabled}
+            >
+              {item.fullName ? item.fullName : item.partyName}
+            </Tag>
+          ))}
           <Button type="link" onClick={onOrgClick} disabled={props.disabled}>
             选择参与商户
           </Button>
@@ -211,6 +263,7 @@ export default withRouter((props) => {
           label="商品名称"
           name="productName"
           rules={[{ required: true, message: "请输入商品名称!" }]}
+          {...tailFormItemLayout}
         >
           <Input
             maxLength={32}
@@ -222,10 +275,11 @@ export default withRouter((props) => {
           label="SKU"
           name="productCode"
           rules={[{ required: true, message: "请输入SKU!" }]}
+          {...tailFormItemLayout}
         >
           <Input
             maxLength={32}
-            placeholder="请输入最多32个字的SKU"
+            placeholder="参与商户需要使用相同的SKU码"
             disabled={props.disabled}
           />
         </Form.Item>
@@ -296,7 +350,7 @@ export default withRouter((props) => {
         <MerchantSelect
           id={props.id}
           visible={showMerchantSelect}
-          selectionType="radio"
+          // selectionType="radio"
           handleCancel={handleCancel}
           handleSelection={handleMerchantSelection}
         />
