@@ -10,12 +10,12 @@ import {
   DatePicker,
   notification,
   Tag,
+  message,
 } from "antd";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 
 import "../../index.less";
-import storageUtils from "@utils/storageUtils";
 import { MerchantSelect } from "../../rule/index";
 import {
   reqPostConfig,
@@ -26,10 +26,7 @@ import {
 import { ajaxError } from "@utils/constants";
 import comEvents from "@utils/comEvents";
 
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 12 },
-};
+const layout = { labelCol: { span: 6 }, wrapperCol: { span: 12 } };
 
 const tailFormItemLayout = {
   wrapperCol: { xs: { span: 4 }, sm: { span: 6 } },
@@ -48,7 +45,6 @@ export default withRouter((props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = React.useState(false);
   const [showMerchantSelect, setShowMerchantSelect] = React.useState(false);
-  const [orgList, setOrgList] = React.useState([]);
   const [timeType, setTimeType] = React.useState("date");
   const [dateSelected, setDateSelected] = React.useState({
     effective: basicInfo.effective,
@@ -57,8 +53,6 @@ export default withRouter((props) => {
   const [fields, setFields] = React.useState([]);
 
   React.useEffect(() => {
-    const user = storageUtils.getUser();
-    let orgObj = { partyId: user.orgId, fullName: user.orgName };
     let merchantArr = [];
     if (props.curInfo && props.curInfo.parties) {
       merchantArr = props.curInfo.parties.filter(
@@ -66,9 +60,7 @@ export default withRouter((props) => {
       );
     }
     if (merchantArr.length) {
-      setOrgList([...merchantArr]);
-    } else {
-      setOrgList([orgObj]);
+      form.setFieldsValue({ orgList: [...merchantArr] });
     }
 
     if (props.curInfo && props.curInfo.voucherConfig) {
@@ -92,6 +84,10 @@ export default withRouter((props) => {
         {
           name: ["giftName"],
           value: name,
+        },
+        {
+          name: ["orgList"],
+          value: merchantArr,
         },
         {
           name: ["productName"],
@@ -120,15 +116,13 @@ export default withRouter((props) => {
       ];
       setFields(arr);
     }
-  }, [props.curInfo]);
+  }, [form, props.curInfo]);
 
   const onFinish = async (value) => {
     if (!props.id) {
       notification.warning({ message: "请先填写基本信息" });
       return;
     }
-
-    setLoading(true);
 
     // 所有价格精度为百分位
     let params = {
@@ -151,10 +145,18 @@ export default withRouter((props) => {
           .format("YYYY-MM-DD"),
       };
     } else if (timeType === "day") {
+      if (!value.daysAfterDist) {
+        message.error({
+          content: "请填写，有效期 => 相对时间 的有效期！",
+          style: { marginTop: "20vh" },
+        });
+        return;
+      }
       params = { ...params, daysAfterDist: value.daysAfterDist };
     }
 
     let result;
+    setLoading(true);
     if (props.hasConfig) {
       result = await reqPutConfig(props.id, params);
     } else {
@@ -164,7 +166,7 @@ export default withRouter((props) => {
     let rulesParams = [];
     let partyIdArr = [];
 
-    orgList.forEach((item) => {
+    value.orgList.forEach((item) => {
       partyIdArr.push(item.partyId);
     });
 
@@ -206,7 +208,7 @@ export default withRouter((props) => {
   };
 
   const handleMerchantSelection = (val) => {
-    setOrgList([...val]);
+    form.setFieldsValue({ orgList: [...val] });
     setShowMerchantSelect(false);
   };
 
@@ -220,8 +222,9 @@ export default withRouter((props) => {
   };
 
   const orgListChange = (item) => {
+    const orgList = form.getFieldValue("orgList");
     const arr = orgList.filter((ele) => ele.partyId !== item.partyId);
-    setOrgList([...arr]);
+    form.setFieldsValue({ orgList: [...arr] });
   };
 
   return (
@@ -230,7 +233,7 @@ export default withRouter((props) => {
         {...layout}
         form={form}
         fields={fields}
-        initialValues={{ timeType }}
+        initialValues={{ timeType, orgList: [] }}
         onFinish={onFinish}
       >
         <Form.Item
@@ -244,17 +247,22 @@ export default withRouter((props) => {
             disabled={props.disabled}
           />
         </Form.Item>
-        <Form.Item label="参与商户">
-          {orgList.map((item, index) => (
-            <Tag
-              onClose={() => orgListChange(item)}
-              color="blue"
-              key={item.id ? item.id : item.partyId}
-              closable={!props.disabled}
-            >
-              {item.fullName ? item.fullName : item.partyName}
-            </Tag>
-          ))}
+        <Form.Item
+          label="参与商户"
+          name="orgList"
+          rules={[{ required: true, message: "请选择参与商户!" }]}
+        >
+          {form.getFieldValue("orgList") &&
+            form.getFieldValue("orgList").map((item) => (
+              <Tag
+                onClose={() => orgListChange(item)}
+                color="blue"
+                key={item.id ? item.id : item.partyId}
+                closable={!props.disabled}
+              >
+                {item.fullName ? item.fullName : item.partyName}
+              </Tag>
+            ))}
           <Button type="link" onClick={onOrgClick} disabled={props.disabled}>
             选择参与商户
           </Button>
@@ -297,7 +305,7 @@ export default withRouter((props) => {
         >
           <InputNumber min={0} disabled={props.disabled} />
         </Form.Item>
-        <Form.Item label="有效期" name="timeType">
+        <Form.Item label="有效期" name="timeType" rules={[{ required: true }]}>
           <Radio.Group
             className="timeRadio"
             onChange={onRadioTimeChange}
