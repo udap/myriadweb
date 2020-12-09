@@ -195,9 +195,9 @@ class CampaignEdit extends Component {
     //处理规则的数据格式
     let configRules = cont.rules;
     if (configRules && configRules.length > 0) {
-      configRules.map((item) => {
+      configRules.forEach((item) => {
         let rules = item.rules;
-        rules.map((elem) => {
+        rules.forEach((elem) => {
           if (elem.name === "NumberLimit") {
             this.state.rules.distLimit = elem;
           } else if (elem.name === "MinimumValue") {
@@ -364,6 +364,12 @@ class CampaignEdit extends Component {
     }
     //this.jumpStep(this.state.current);
   };
+
+  urlChange = (event) => {
+    let { basicInfo } = this.state;
+    this.setState({ basicInfo: { ...basicInfo, url: event.target.value } });
+  };
+
   //第二步
   renderStep2 = () => {
     const radioStyle = {
@@ -389,14 +395,14 @@ class CampaignEdit extends Component {
         {...layout}
         name="basic"
         initialValues={{
-          name: name,
-          category: category,
-          plannedSupply: plannedSupply,
-          autoUpdate: autoUpdate,
-          distLimit: distLimit,
-          distMethod: distMethod,
-          description: description,
-          url: url,
+          name,
+          category,
+          plannedSupply,
+          autoUpdate,
+          distLimit,
+          distMethod,
+          description,
+          url,
         }}
         onFinish={this.onFinish2}
         validateMessages={defaultValidateMessages.defaultValidateMessages}
@@ -412,23 +418,31 @@ class CampaignEdit extends Component {
             disabled={isDisabled(status)}
           />
         </Form.Item>
-        <Form.Item label="活动描述" name="description" rules={[{ max: 255 }]}>
-          <TextArea rows={4} disabled={isDisabled(status)} />
+        <Form.Item label="活动描述" name="description">
+          <TextArea
+            rows={4}
+            disabled={isDisabled(status)}
+            allowClear
+            maxLength={255}
+            placeholder="活动描述不超过255位字符"
+          />
         </Form.Item>
-        <Form.Item
-          label="活动主页"
-          name="url"
-          rules={[{ type: "url" }, { min: 0, max: 255 }]}
-        >
-          <Row>
+        <Form.Item label="活动主页">
+          <Row gutter={8}>
             <Col span={20}>
-              <Input value={url} disabled={isDisabled(status)} />
+              <Input
+                onChange={this.urlChange}
+                value={url}
+                disabled={isDisabled(status)}
+                placeholder="https://www.xxxxxx.com"
+              />
             </Col>
             <Col>
               <Button
                 style={{ display: "inline" }}
                 type="link"
                 onClick={this.showURLDrawer}
+                disabled={!url}
               >
                 预览
               </Button>
@@ -436,7 +450,6 @@ class CampaignEdit extends Component {
           </Row>
         </Form.Item>
         <Form.Item label="标签" name="category">
-          {/* <Input /> */}
           <EditableTagGroup tags={category} onChange={this.onChangeTags} />
         </Form.Item>
         <Form.Item label="活动时间">
@@ -562,7 +575,7 @@ class CampaignEdit extends Component {
       distLimit: values.distLimit,
       plannedSupply: values.plannedSupply,
       autoUpdate: values.autoUpdate,
-      url: values.url,
+      url: basicInfo.url,
       metadata: {},
     };
     let result;
@@ -642,7 +655,12 @@ class CampaignEdit extends Component {
           onClose={this.closeURLDrawer}
           footer={null}
         >
-          <iframe src={url} height="100%" width="100%"></iframe>
+          <iframe
+            title="navigation"
+            src={url}
+            height="100%"
+            width="100%"
+          ></iframe>
         </Drawer>
       </div>
     );
