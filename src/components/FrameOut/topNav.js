@@ -45,7 +45,7 @@ const TopNav = (props) => {
     localStorage.setItem("notifications", JSON.stringify(hoursAgoArr));
 
     const tempArr = filterLocalUserNotice(hoursAgoArr);
-    setNoticeArr([...tempArr]);
+    setNoticeArr([...tempArr.reverse()]);
 
     const token = storageUtils.getToken();
     const user = storageUtils.getUser();
@@ -88,7 +88,7 @@ const TopNav = (props) => {
       }
 
       const tempFilterArr = filterLocalUserNotice(arr);
-      setNoticeArr([...tempFilterArr]);
+      setNoticeArr([...tempFilterArr.reverse()]);
       localStorage.setItem("notifications", JSON.stringify(arr));
     };
 
@@ -168,16 +168,16 @@ const TopNav = (props) => {
     });
 
     const tempFilterArr = filterLocalUserNotice(tempNoticeArr);
-    setNoticeArr([...tempFilterArr]);
+    setNoticeArr([...tempFilterArr.reverse()]);
     localStorage.setItem("notifications", JSON.stringify(tempNoticeArr));
   };
 
   const onNoticeVisibleChange = (item) => {
-    console.log("onNoticeVisibleChange", item);
+    // console.log("onNoticeVisibleChange", item);
   };
 
   const handleNoticeClear = (title, key) => {
-    console.log("handleNoticeClear", title, key);
+    // console.log("handleNoticeClear", title, key);
   };
 
   const countOfUnRead = noticeArr.filter((item) => item.isRead === false);
