@@ -208,7 +208,15 @@ export default withRouter((props) => {
   };
 
   const handleMerchantSelection = (val) => {
-    form.setFieldsValue({ orgList: [...val] });
+    const orgList = form.getFieldValue("orgList");
+    let arr = [];
+    val.forEach((ele) => {
+      const isExist = orgList.some((item) => item.partyId === ele.partyId);
+      if (!isExist) {
+        arr.push(ele);
+      }
+    });
+    form.setFieldsValue({ orgList: orgList.concat(arr) });
     setShowMerchantSelect(false);
   };
 

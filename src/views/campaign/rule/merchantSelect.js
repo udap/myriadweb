@@ -89,7 +89,7 @@ class MerchantSelect extends Component {
 
   onSubmitSelection = () => {
     this.setState({ loading: true });
-    let selectedMerchants = this.state.selectedMerchants;
+    const { selectedMerchants } = this.state;
 
     this.props.handleSelection(selectedMerchants);
     return false;
@@ -111,6 +111,7 @@ class MerchantSelect extends Component {
     this.setState({
       currentPage: 1,
       selectedRowKeys: [],
+      selectedMerchants: [],
     });
     this.getMerchants(1, this.state.searchTxt);
   };
