@@ -13,12 +13,11 @@ import {
   InputNumber,
   Drawer,
   notification,
-  Tooltip,
+  message,
 } from "antd";
 import moment from "moment";
 import "moment/locale/zh-cn";
 import { withRouter } from "react-router-dom";
-import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import defaultValidateMessages from "@utils/comFormErrorAlert";
 import {
@@ -793,7 +792,11 @@ class CampaignEdit extends Component {
                 <InputNumber min={1} disabled={isDisabled(status)} />
               </Form.Item>
             )}
-            <Form.Item label="有效期" name="timeType">
+            <Form.Item
+              label="有效期"
+              name="timeType"
+              rules={[{ required: true }]}
+            >
               <Radio.Group
                 className="timeRadio"
                 onChange={this.onRadioTimeChange}
@@ -826,7 +829,7 @@ class CampaignEdit extends Component {
                     </Col>
                     <Col>
                       <Form.Item name="daysAfterDist">
-                        <InputNumber min={1} />
+                        <InputNumber min={1} disabled={isDisabled(status)} />
                       </Form.Item>
                     </Col>
                     <Col>
@@ -947,6 +950,13 @@ class CampaignEdit extends Component {
 
   //提交数据
   onFinish3 = async (values) => {
+    if (values.timeType === "day" && !values.daysAfterDist) {
+      message.error({
+        content: "请填写，有效期 => 相对时间 的有效期！",
+        style: { marginTop: "20vh" },
+      });
+      return;
+    }
     this.setState({
       disabledNext: true,
       loading: true,
