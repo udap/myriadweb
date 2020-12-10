@@ -58,10 +58,12 @@ class CouponHome extends Component {
     showVoucherPanel: false,
     voucher: null,
   };
+
   componentDidMount() {
     this.initColumns();
     this.getVouchers(null, 1);
   }
+
   publishItem = async (clientId) => {
     const parmas = {
       voucherId: this.state.partyId,
@@ -79,13 +81,15 @@ class CouponHome extends Component {
       notification.success({
         message: "票券发放成功",
       });
-    } else {
-      notification.error({
-        message: "票券发放失败",
-        onClick: () => {},
-      });
     }
+    //  else {
+    //   notification.error({
+    //     message: "票券发放失败",
+    //     onClick: () => {},
+    //   });
+    // }
   };
+
   initColumns() {
     //券号，关联的活动名称，券的类型，有效期，状态，拥有者
     this.columns = [
