@@ -45,7 +45,7 @@ const TopNav = (props) => {
     localStorage.setItem("notifications", JSON.stringify(hoursAgoArr));
 
     const tempArr = filterLocalUserNotice(hoursAgoArr);
-    setNoticeArr([...tempArr.reverse()]);
+    setNoticeArr([...tempArr]);
 
     const token = storageUtils.getToken();
     const user = storageUtils.getUser();
@@ -67,17 +67,17 @@ const TopNav = (props) => {
       let arr = [];
 
       if (!(notifications instanceof Array)) {
-        arr.push({
+        arr.unshift({
           ...notificationData,
           date: moment().valueOf(),
           isRead: false,
         });
       } else {
-        const filterObj = notifications.find(
+        const isExist = notifications.some(
           (item) => item.id === notificationData.id
         );
-        if (!filterObj) {
-          notifications.push({
+        if (!isExist) {
+          notifications.unshift({
             ...notificationData,
             date: moment().valueOf(),
             isRead: false,
@@ -88,7 +88,7 @@ const TopNav = (props) => {
       }
 
       const tempFilterArr = filterLocalUserNotice(arr);
-      setNoticeArr([...tempFilterArr.reverse()]);
+      setNoticeArr([...tempFilterArr]);
       localStorage.setItem("notifications", JSON.stringify(arr));
     };
 
@@ -168,7 +168,7 @@ const TopNav = (props) => {
     });
 
     const tempFilterArr = filterLocalUserNotice(tempNoticeArr);
-    setNoticeArr([...tempFilterArr.reverse()]);
+    setNoticeArr([...tempFilterArr]);
     localStorage.setItem("notifications", JSON.stringify(tempNoticeArr));
   };
 
