@@ -473,11 +473,9 @@ class CampaignEdit extends Component {
           name="autoUpdate"
           label="允许自动增发"
           rules={[{ required: true }]}
+          tooltip={autoUpdateTooltip}
         >
           <Switch defaultChecked={autoUpdate} disabled={isDisabled(status)} />
-          <Tooltip placement="right" title={autoUpdateTooltip}>
-            <Button type="link" icon={<QuestionCircleOutlined />} />
-          </Tooltip>
         </Form.Item>
         <Form.Item
           name="distMethod"
