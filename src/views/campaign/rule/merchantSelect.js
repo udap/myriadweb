@@ -61,7 +61,7 @@ class MerchantSelect extends Component {
       for (let i = 0; i < cont.content.length; i++) {
         data.push({
           key: cont.content[i].merchant.id.toString(),
-          partyId: cont.content[i].merchant.id,
+          partyId: cont.content[i].merchant.id.toString(),
           uid: cont.content[i].merchant.uid,
           name: cont.content[i].merchant.name,
           fullName: cont.content[i].merchant.fullName,
