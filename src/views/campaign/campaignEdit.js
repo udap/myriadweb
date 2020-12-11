@@ -321,11 +321,15 @@ class CampaignEdit extends Component {
   };
   //第一步
   renderStep1 = () => {
-    const { status } = this.state.curInfo;
+    const {
+      curInfo: { status },
+      id,
+    } = this.state;
     return (
       <CampaignTypeSelect
         onSelect={this.chooseType}
         disabled={isDisabled(status)}
+        isExistId={Boolean(id)}
       />
     );
   };

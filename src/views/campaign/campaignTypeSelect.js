@@ -25,6 +25,7 @@ const CampaignTypes = [
 ];
 
 const CampaignTypeSelect = (props) => {
+  const { disabled, isExistId, onSelect } = props;
   return (
     <div className="site-card-wrapper">
       <List
@@ -43,8 +44,8 @@ const CampaignTypeSelect = (props) => {
                     size="large"
                     icon={<PlusCircleOutlined />}
                     danger
-                    disabled={props.disabled}
-                    onClick={props.onSelect.bind(this, item)}
+                    disabled={disabled || isExistId}
+                    onClick={onSelect.bind(this, item)}
                   >
                     选择
                   </Button>
