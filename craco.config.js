@@ -65,8 +65,11 @@ module.exports = {
     compress: false,
     proxy: {
       "/myriadapi": {
+        // support
         // target: "https://myriad-support.xinongtech.com/",
-        target: "https://myriad-test.xinongtech.com/",
+        // test
+        // target: "https://myriad-test.xinongtech.com/",
+        target: "https://myriadweb-test.chainmind.xyz",
         changeOrigin: true,
       },
     },
