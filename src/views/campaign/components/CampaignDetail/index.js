@@ -14,13 +14,13 @@ import saveAs from "save-svg-as-png";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CopyOutlined } from "@ant-design/icons";
 
-import comEvents from "../../utils/comEvents";
+import comEvents from "@utils/comEvents";
 import {
   distributionMethods,
   API_BASE_URL,
   VOUCHER_COLLECT_URL,
-  couponSubTypeMetheds,
-} from "../../utils/constants";
+  couponSubTypeMethods,
+} from "@utils/constants";
 import "./index.less";
 
 const { Panel } = Collapse;
@@ -82,7 +82,7 @@ class CampaignDetail extends Component {
         column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
       >
         <Descriptions.Item label="活动类型">
-          {couponSubTypeMetheds.map((item, index) => (
+          {couponSubTypeMethods.map((item, index) => (
             <span key={index}>{item[campaign.subType]}</span>
           ))}
         </Descriptions.Item>

@@ -15,14 +15,14 @@ import {
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 
-import "../../index.less";
+import "./index.less";
 import { MerchantSelect } from "../../rule/index";
 import {
   reqPostConfig,
   reqPutConfig,
   reqAddCampaignRules,
   reqUpdateCampaignRules,
-} from "@api/index";
+} from "@api";
 import { ajaxError } from "@utils/constants";
 import comEvents from "@utils/comEvents";
 

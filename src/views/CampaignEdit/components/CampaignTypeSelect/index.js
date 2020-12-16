@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, List, Button } from "antd";
-import { AntdIcon } from "../../components";
 import { PlusCircleOutlined } from "@ant-design/icons";
 
 import "./index.less";
+import { AntdIcon } from "@components";
 
 const CampaignTypes = [
   {
@@ -35,8 +35,8 @@ const CampaignTypeSelect = (props) => {
           <List.Item>
             <Card bordered={false}>
               <div className="cardView">
-                <div className="viewleft">
-                  <h4 className="cardTitile">{item.name}</h4>
+                <div className="viewLeft">
+                  <h4 className="cardTitle">{item.name}</h4>
                   <div className="desc">{item.desc}</div>
                   <Button
                     style={{ paddingLeft: "0" }}

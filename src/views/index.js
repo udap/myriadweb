@@ -1,4 +1,4 @@
-//inedx导出全部页面 其它时候按需导出
+//index导出全部页面 其它时候按需导出
 //懒加载
 import Loadable from "react-loadable";
 import Loading from "../components/Loading";
@@ -27,15 +27,11 @@ const Employee = Loadable({
 });
 
 const Campaign = Loadable({
-  loader: () => import("./campaign"),
+  loader: () => import("./Campaign"),
   loading: Loading,
 });
 const CampaignEdit = Loadable({
-  loader: () => import("./campaign/campaignEdit"),
-  loading: Loading,
-});
-const CampaignDetail = Loadable({
-  loader: () => import("./campaign/campaignDetail"),
+  loader: () => import("./CampaignEdit"),
   loading: Loading,
 });
 const Coupon = Loadable({
@@ -121,7 +117,6 @@ export {
   Empty,
   Campaign,
   CampaignEdit,
-  CampaignDetail,
   Coupon,
   CouponHome,
   Distribution,

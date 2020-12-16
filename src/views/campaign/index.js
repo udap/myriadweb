@@ -25,7 +25,7 @@ import FileSaver from "file-saver";
 import ReactFileReader from "react-file-reader";
 
 import storageUtils from "@utils/storageUtils";
-import { campaignStatuses, couponSubTypeMetheds } from "@utils/constants";
+import { campaignStatuses, couponSubTypeMethods } from "@utils/constants";
 import comEvents from "@utils/comEvents";
 import {
   reqPermit,
@@ -43,17 +43,13 @@ import {
 import { Loading } from "@components";
 import "./index.less";
 import "@css/common.less";
-import CampaignDetail from "./campaignDetail";
-import QueryForm from "./queryForm";
-import IssueForm from "./issueForm";
-
-const { confirm } = Modal;
+import { CampaignDetail, IssueForm, QueryForm } from "./components";
 
 class Campaign extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inited: false,
+      initd: false,
       campaigns: [],
       addNew: false,
       showCSV: false,
@@ -104,7 +100,7 @@ class Campaign extends Component {
         render: (text) => {
           return (
             <div>
-              {couponSubTypeMetheds.map((item, index) => (
+              {couponSubTypeMethods.map((item, index) => (
                 <span key={index}>{item[text]}</span>
               ))}
             </div>
@@ -262,7 +258,7 @@ class Campaign extends Component {
             <b
               onClick={() => {
                 let that = this;
-                confirm({
+                Modal.confirm({
                   title: "确认删除【" + name + "】?",
                   icon: <ExclamationCircleOutlined />,
                   okText: "确认",
@@ -310,7 +306,7 @@ class Campaign extends Component {
             <b
               onClick={() => {
                 let that = this;
-                confirm({
+                Modal.confirm({
                   title: "确认终止【" + name + "】吗?",
                   icon: <ExclamationCircleOutlined />,
                   okText: "确认",
@@ -346,6 +342,7 @@ class Campaign extends Component {
   showDetail = (item) => {
     this.reqGetCampaignById(item.id);
   };
+
   // 获取活动详情
   reqGetCampaignById = async (id) => {
     let curInfo = await reqGetCampaignById(id);
@@ -356,6 +353,7 @@ class Campaign extends Component {
       listItem: cont,
     });
   };
+
   // 关闭活动详情
   closeDetail = () => {
     this.setState({
@@ -428,7 +426,7 @@ class Campaign extends Component {
     const typeEff = effective || this.state.effective;
     //一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
     //都需要传status=NON_EXPIRED
-    let parmas = typeStr.includes("participant")
+    let params = typeStr.includes("participant")
       ? {
           page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
           size: this.state.size,
@@ -446,18 +444,18 @@ class Campaign extends Component {
           sort: "updatedAt,desc",
         };
     if (typeStr === "partyCreate") {
-      parmas = { ...parmas, partyType: "HOST" };
+      params = { ...params, partyType: "HOST" };
     }
     if (typeStr === "participantCreate") {
-      parmas = { ...parmas, participantType: "OWNER" };
+      params = { ...params, participantType: "OWNER" };
     }
     this.setState({ loading: true });
-    const result = await reqGetCampaigns(parmas);
+    const result = await reqGetCampaigns(params);
     const cont = result && result.data ? result.data.content : [];
     this.totalPages = result && result.data ? result.data.totalElements : 1;
 
     this.setState({
-      inited: true,
+      initd: true,
       campaigns: cont,
       total: result && result.data ? result.data.totalElements : 1,
       //searchTxt: "",
@@ -822,8 +820,8 @@ class Campaign extends Component {
   };
 
   render() {
-    const { inited } = this.state;
-    return inited ? this.renderContent() : <Loading />;
+    const { initd } = this.state;
+    return initd ? this.renderContent() : <Loading />;
   }
 }
 

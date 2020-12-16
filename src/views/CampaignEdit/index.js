@@ -19,6 +19,7 @@ import moment from "moment";
 import "moment/locale/zh-cn";
 import { withRouter } from "react-router-dom";
 
+import "./index.less";
 import defaultValidateMessages from "@utils/comFormErrorAlert";
 import {
   reqGetCampaignById,
@@ -35,11 +36,12 @@ import {
 } from "@utils/constants";
 import comEvents from "@utils/comEvents";
 import { Loading, EditableTagGroup } from "@components";
-import CampaignMerchant from "./campaignMerchant";
-import CampaignTypeSelect from "./campaignTypeSelect";
-import "./index.less";
-import ConfigureRules from "./configureRules";
-import { GiftDeatils } from "./components";
+import {
+  GiftDetails,
+  CampaignMerchant,
+  CampaignTypeSelect,
+  ConfigureRules,
+} from "./components";
 
 const layout = {
   labelCol: {
@@ -53,6 +55,7 @@ const layout = {
     lg: { span: 12 },
   },
 };
+
 const tailLayout = {
   wrapperCol: {
     xs: {
@@ -69,6 +72,7 @@ const tailLayout = {
     },
   },
 };
+
 const { Step } = Steps;
 
 const { TextArea } = Input;
@@ -81,7 +85,7 @@ const radioStyle = {
   lineHeight: "30px",
   marginBottom: "15px",
 };
-//teps3样式
+//tips3样式
 const formItemLayout = {
   labelCol: {
     span: 6,
@@ -97,7 +101,7 @@ const isDisabled = (val) => {
 
 class CampaignEdit extends Component {
   state = {
-    inited: false,
+    initd: false,
     isNew: true,
     //导航step
     current: 0,
@@ -176,7 +180,7 @@ class CampaignEdit extends Component {
     let id = this.props.match.params.id;
     this.setState({
       isNew: id === "new" ? true : false,
-      inited: true,
+      initd: true,
     });
     if (id !== "new") {
       //获取当前ID的活动详情
@@ -186,6 +190,7 @@ class CampaignEdit extends Component {
       this.getCampaign(id);
     }
   }
+
   //获取当前活动详情
   getCampaign = async (id, current) => {
     let curInfo = await reqGetCampaignById(id);
@@ -212,7 +217,7 @@ class CampaignEdit extends Component {
       });
     }
     this.setState({
-      inited: true,
+      initd: true,
       curInfo: cont,
       rules: this.state.rules,
       basicInfo: {
@@ -319,6 +324,7 @@ class CampaignEdit extends Component {
     //return current && current < moment().endOf("day");
     return current < moment().endOf("day");
   };
+
   //第一步
   renderStep1 = () => {
     const {
@@ -333,6 +339,7 @@ class CampaignEdit extends Component {
       />
     );
   };
+
   //选择活动类型
   chooseType = (item) => {
     this.setState({ campaignType: item.type, subType: item.subType });
@@ -349,6 +356,7 @@ class CampaignEdit extends Component {
     //跳转到第二步
     this.nextStep();
   };
+
   //跳转到下一步
   nextStep = (id) => {
     let { choose, current } = this.state;
@@ -519,11 +527,13 @@ class CampaignEdit extends Component {
       </Form>
     );
   };
+
   onChangeTags = (newTags) => {
     this.setState({
       tags: newTags,
     });
   };
+
   //第二步提交
   onFinish2 = async (values) => {
     let {
@@ -615,12 +625,14 @@ class CampaignEdit extends Component {
       this.nextStep(this.state.id);
     }
   };
+
   //保存URL显示预栏用
   handleInputChange = (e) => {
     this.setState({
       url: e.target.value,
     });
   };
+
   //日期切换
   changeDate = (data, dataStr) => {
     let { basicInfo } = this.state;
@@ -632,18 +644,21 @@ class CampaignEdit extends Component {
       basicInfo: newData,
     });
   };
+
   //显示预览
   showURLDrawer = () => {
     this.setState({
       showUrl: true,
     });
   };
+
   //隐藏活动预览
   closeURLDrawer = () => {
     this.setState({
       showUrl: false,
     });
   };
+
   //显示活动预览
   urlDrawerCont = () => {
     const { showUrl } = this.state;
@@ -706,7 +721,7 @@ class CampaignEdit extends Component {
     return (
       <>
         {subType === "GIFT" ? (
-          <GiftDeatils {...this.state} disabled={isDisabled(status)} />
+          <GiftDetails {...this.state} disabled={isDisabled(status)} />
         ) : (
           <Form
             name="validate_other"
@@ -737,7 +752,7 @@ class CampaignEdit extends Component {
           是否允许增发 5/ 折扣类型 （只保留按价格抵扣） AMOUNT, PERCENT, UNIT;6/
           折扣数量（前端输入20.00或者0.5，传回到后台前需要转换
           成2000或者50的整数）7/
-          可用次数（默认为1）8/ 优惠券图片 9/ 备注 
+          可用次数（默认为1）8/ 优惠券图片 9/ 备注
 
           注意“折扣类型”选择“代金券”是，需要输入“折扣金额”（改为“金额”）；
           如果选择“折扣券”，就需要输入“折扣比例”和“最高优惠金额”两个参数
@@ -844,7 +859,7 @@ class CampaignEdit extends Component {
               </Radio.Group>
             </Form.Item>
             {/* <Form.Item label="发放领取后多少天有效" name="time">
-            
+
           </Form.Item> */}
             {/* <Form.Item label="备注 " name="description">
             <TextArea rows={4} />
@@ -854,14 +869,14 @@ class CampaignEdit extends Component {
             //name="coverImg"
             rules={[{ required: false }]}
           >
-            
+
             <Form.Item
               //name="coverImg"
               valuePropName="fileList"
               //getValueFromEvent={normFile}
               noStyle
             >
-             
+
               <Upload onChange={this.selectPic}>
                 <Button>
                   <UploadOutlined /> 选择文件
@@ -934,12 +949,14 @@ class CampaignEdit extends Component {
       settings: newData,
     });
   };
+
   //有效期切换
   onRadioTimeChange = (e) => {
     this.setState({
       timeType: e.target.value,
     });
   };
+
   //切换固定有效时间日期
   changeSetDate = (data, dataStr) => {
     let { settings } = this.state;
@@ -1040,6 +1057,7 @@ class CampaignEdit extends Component {
     }
     //  }
   };
+
   //第四步
   renderStep4 = () => {
     const { rules, configRules } = this.state;
@@ -1052,6 +1070,7 @@ class CampaignEdit extends Component {
       />
     );
   };
+
   //第四步
   renderStep5 = () => {
     return (
@@ -1072,6 +1091,7 @@ class CampaignEdit extends Component {
       current,
     });
   };
+
   //显示对应的renderStep
   showCont = (current) => {
     if (current === 1) {
@@ -1102,6 +1122,7 @@ class CampaignEdit extends Component {
       return "wait";
     }
   };
+
   //显示创建活动内容
   renderContent = () => {
     //当前所在step 默认0
@@ -1131,9 +1152,10 @@ class CampaignEdit extends Component {
       </div>
     );
   };
+
   //页头
   render() {
-    const { isNew, inited } = this.state;
+    const { isNew, initd } = this.state;
     return (
       <div>
         <PageHeader
@@ -1141,7 +1163,7 @@ class CampaignEdit extends Component {
           title={isNew ? "创建活动" : "活动详情"}
           onBack={this.backIndex}
         ></PageHeader>
-        {inited ? this.renderContent() : <Loading />}
+        {initd ? this.renderContent() : <Loading />}
       </div>
     );
   }
