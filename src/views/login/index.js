@@ -123,6 +123,8 @@ class Login extends Component {
         notification.info({
           message:
             "您新注册的机构正在等待审批，请耐心等候。预计审批时间1个工作日",
+          description: `机构注册码：${data.merchantAuthCode}`,
+          duration: 9,
         });
         return false;
       }
@@ -419,6 +421,8 @@ class Login extends Component {
     ) {
       notification.info({
         message: "您已成功提交机构注册，请耐心等待审批！",
+        description: `机构注册码：${result.data.content.merchantAuthCode}`,
+        duration: 9,
       });
       this.hideRegOrg();
     }
