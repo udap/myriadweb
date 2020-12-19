@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Row, Col, Radio, Button, Input } from "antd";
-import "../../css/common.less";
+
+import "@css/common.less";
 
 const QueryForm = (props) => {
   return (

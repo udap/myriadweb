@@ -7,7 +7,6 @@ import {
   Empty,
   Campaign,
   CampaignEdit,
-  CampaignDetail,
   Coupon,
   Distribution,
   Redemption,
@@ -23,7 +22,7 @@ import {
   Customer,
   TransferStats,
   SummaryReport,
-} from "../views";//公共路由
+} from "@views"; //公共路由
 
 const commonRoutes = [
   {
@@ -52,14 +51,6 @@ const privateRoutes = [
     icon: "GiftOutlined",
     isTop: true, //顶级菜单
     exact: true,
-  },
-  //动态路由
-  {
-    pathname: "/admin/campaign/detail/:id",
-    component: CampaignDetail,
-    title: "活动详情",
-    icon: "",
-    isTop: false, //顶级菜单
   },
   {
     pathname: "/admin/campaign/edit/:id",

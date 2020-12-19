@@ -5,21 +5,19 @@ import {
   PlusOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import { withRouter } from "react-router-dom";
 
 import {
   reqPostParties,
   reqDelParty,
   reqGetMerchants,
   reqGetCampaignMerchants,
-} from "../../api";
-import storageUtils from "../../utils/storageUtils";
-import { withRouter } from "react-router-dom";
-import { Loading } from "../../components";
-import "../../css/common.less";
+} from "@api";
+import storageUtils from "@utils/storageUtils";
+import { Loading } from "@components";
+import "@css/common.less";
 import "./index.less";
 
-const { confirm } = Modal;
-@withRouter
 //没有数据组件
 class CampaignMerchant extends Component {
   state = {
@@ -77,7 +75,7 @@ class CampaignMerchant extends Component {
               <b
                 onClick={() => {
                   let that = this;
-                  confirm({
+                  Modal.confirm({
                     title: "确认删除该商户?",
                     icon: <ExclamationCircleOutlined />,
                     okText: "确认",
@@ -262,7 +260,7 @@ class CampaignMerchant extends Component {
       currentListPage: page,
     });
   };
-  
+
   handleOrgChange = (e) => {
     this.setState({
       searchTxt: e.target.value,
@@ -322,19 +320,18 @@ class CampaignMerchant extends Component {
           />
         </div>
         <div>
-          {
-            this.props.showBtn?<Button
-            className="step-marginTop"
-            type="primary"
-            onClick={this.backHome}
-          >
-            提交
-          </Button>:null
-          }
-          
+          {this.props.showBtn ? (
+            <Button
+              className="step-marginTop"
+              type="primary"
+              onClick={this.backHome}
+            >
+              提交
+            </Button>
+          ) : null}
         </div>
         <Modal
-          className="markrt"
+          className="market"
           title="入驻商户"
           visible={this.state.visible}
           onOk={this.handleOk}
@@ -403,4 +400,4 @@ class CampaignMerchant extends Component {
     );
   }
 }
-export default CampaignMerchant;
+export default withRouter(CampaignMerchant);

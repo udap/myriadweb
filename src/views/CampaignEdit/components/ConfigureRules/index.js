@@ -11,22 +11,21 @@ import {
   Tag,
   Collapse,
 } from "antd";
-import defaultValidateMessages from "../../utils/comFormErrorAlert";
-import MerchantSelect from "./rule/merchantSelect";
-import MerchantRegion from "./rule/merchantRegion";
-import MerchantTag from "./rule/merchantTag";
+
+import defaultValidateMessages from "@utils/comFormErrorAlert";
+import { MerchantSelect, MerchantRegion, MerchantTag } from "../../rule/index";
 import {
   reqAddCampaignRules,
   reqUpdateCampaignRules,
   reqGetCampaignMerchants,
-} from "../../api";
-import { Loading } from "../../components";
-import comEvents from "../../utils/comEvents";
-import "../../css/common.less";
+} from "@api";
+import { Loading } from "@components";
+import comEvents from "@utils/comEvents";
+import "@css/common.less";
 import "./index.less";
 const { Panel } = Collapse;
 
-//teps3样式
+//steps3样式
 const formItemLayout = {
   labelCol: {
     span: 6,
