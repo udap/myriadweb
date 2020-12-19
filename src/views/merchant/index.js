@@ -103,7 +103,7 @@ class Merchant extends Component {
 */
   getMerchants = async (currentPage, pageSize, value) => {
     const parmas = {
-      page: currentPage-1,
+      page: currentPage - 1,
       size: pageSize,
       orgUid: storageUtils.getUser().orgUid,
       searchTxt: value ? value : this.state.searchTxt,
@@ -170,12 +170,12 @@ class Merchant extends Component {
     //   notification.info({ message: "对不起，您没有权限！" });
     //   return false;
     // }
-    const {pageSize} = this.state;
+    const { pageSize } = this.state;
     const result = await reqDelMerchant(uid);
     this.setState({
       currentPage: 1,
     });
-    this.getMerchants(1,pageSize);
+    this.getMerchants(1, pageSize);
   };
   onFinish = async (values) => {
     let params = {
@@ -186,7 +186,7 @@ class Merchant extends Component {
       merchantUid: values.merchantUid,
       orgUid: storageUtils.getUser().orgUid,
     };
-    const {pageSize} = this.state;
+    const { pageSize } = this.state;
     const result = await reqAddMerchant(params);
     if (result) {
       this.setState({
@@ -259,7 +259,7 @@ class Merchant extends Component {
     this.setState({
       currentPage: 1,
       size: pageSize,
-    })
+    });
     this.getMerchants(1, pageSize);
   };
   showDetalConfirm = (item) => {
@@ -281,7 +281,7 @@ class Merchant extends Component {
     let result = await reqPutMerchantTags(chooseItem.uid, newTags);
     if (result.data.retcode !== 1) {
       //刷新列表数据
-      this.getMerchant(this.state.currentPage);
+      this.getMerchants(this.state.currentPage);
       notification.success({ message: "标签设置成功" });
     }
   };
@@ -296,7 +296,7 @@ class Merchant extends Component {
     result = await reqPutMerchantTags(chooseItem.uid, targetKeys);
     if (result.data.retcode !== 1) {
       //刷新列表数据
-      this.getMerchant(this.state.currentPage);
+      this.getMerchants(this.state.currentPage);
       notification.success({ message: "标签设置成功" });
       this.setState({
         showTagForm: false,
@@ -448,14 +448,13 @@ class Merchant extends Component {
     } else {
       this.setState({
         visible: false,
-      })
+      });
     }
   };
 
-
   renderMerchantSelect = () => {
-    return  <MerchantSelect onSelectMerchant={this.onSelectMerchant} />
-  }
+    return <MerchantSelect onSelectMerchant={this.onSelectMerchant} />;
+  };
 
   renderContent = () => {
     const {
@@ -633,11 +632,16 @@ class Merchant extends Component {
           onClose={this.handleCancel}
           footer={null}
         >
-          <Radio.Group onChange={this.onChangeAddMode} value={this.state.addMode}>
+          <Radio.Group
+            onChange={this.onChangeAddMode}
+            value={this.state.addMode}
+          >
             <Radio value={1}>使用商户授权码添加</Radio>
             <Radio value={2}>选择上级机构的入驻商户</Radio>
           </Radio.Group>
-          { this.state.addMode == 1 ? this.renderAddForm() : this.renderMerchantSelect()}
+          {this.state.addMode == 1
+            ? this.renderAddForm()
+            : this.renderMerchantSelect()}
         </Drawer>
 
         {showTagForm ? this.renderTagForm() : null}
