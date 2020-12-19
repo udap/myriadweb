@@ -27,7 +27,7 @@ const Employee = Loadable({
 });
 
 const Campaign = Loadable({
-  loader: () => import("./Campaign"),
+  loader: () => import("./campaign"),
   loading: Loading,
 });
 const CampaignEdit = Loadable({
