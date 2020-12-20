@@ -553,39 +553,26 @@ class ConfigureRules extends Component {
     });
   };
 
-  handleMerchantSelection = (selectedMerchants) => {
-    let merchants = comEvents.mergeArrays(
-      this.state.merchants,
-      selectedMerchants
-    );
-    // remove duplicate merchant
-    for (let i = 0; i < merchants.length; i++)
-      for (let j = i + 1; j < merchants.length; j++)
-        if (merchants[i].partyId === merchants[j].partyId)
-          merchants.splice(j, 1);
-    // selected merchant keys
-    let selectedMerchantKeys = [];
-    merchants.forEach((m) => selectedMerchantKeys.push(m.key));
-    let keys = comEvents.mergeArrays(
-      this.state.selectedMerchantKeys,
-      selectedMerchantKeys
-    );
+  handleMerchantSelection = (selectedMerchants = []) => {
+    let arr = [];
+    selectedMerchants.forEach((item) => arr.push(item.partyId));
+
     this.setState({
-      merchants: merchants,
-      selectedMerchantKeys: keys,
+      merchants: selectedMerchants,
+      selectedMerchantKeys: arr,
       showMerchantSelect: false,
-      merchantStatus: merchants.length > 0,
+      merchantStatus: selectedMerchants.length > 0,
     });
   };
 
   renderMerchantSelect = () => {
-    const { showMerchantSelect, id } = this.state;
+    const { showMerchantSelect, merchants } = this.state;
     return (
       <MerchantSelect
-        id={id}
         visible={showMerchantSelect}
         handleCancel={this.handleCancel}
         handleSelection={this.handleMerchantSelection}
+        selectOrgList={merchants}
       />
     );
   };

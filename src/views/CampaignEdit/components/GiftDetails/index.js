@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Form,
@@ -43,16 +43,16 @@ const radioStyle = {
 export default withRouter((props) => {
   const { basicInfo } = props;
   const [form] = Form.useForm();
-  const [loading, setLoading] = React.useState(false);
-  const [showMerchantSelect, setShowMerchantSelect] = React.useState(false);
-  const [timeType, setTimeType] = React.useState("date");
-  const [dateSelected, setDateSelected] = React.useState({
+  const [loading, setLoading] = useState(false);
+  const [showMerchantSelect, setShowMerchantSelect] = useState(false);
+  const [timeType, setTimeType] = useState("date");
+  const [dateSelected, setDateSelected] = useState({
     effective: basicInfo.effective,
     end: basicInfo.end,
   });
-  const [fields, setFields] = React.useState([]);
+  const [fields, setFields] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let merchantArr = [];
     if (props.curInfo && props.curInfo.parties) {
       merchantArr = props.curInfo.parties.filter(
@@ -207,16 +207,8 @@ export default withRouter((props) => {
     setShowMerchantSelect(false);
   };
 
-  const handleMerchantSelection = (val) => {
-    const orgList = form.getFieldValue("orgList");
-    let arr = [];
-    val.forEach((ele) => {
-      const isExist = orgList.some((item) => item.partyId === ele.partyId);
-      if (!isExist) {
-        arr.push(ele);
-      }
-    });
-    form.setFieldsValue({ orgList: orgList.concat(arr) });
+  const handleMerchantSelection = (val = []) => {
+    form.setFieldsValue({ orgList: val });
     setShowMerchantSelect(false);
   };
 
@@ -364,11 +356,10 @@ export default withRouter((props) => {
       </Form>
       {showMerchantSelect ? (
         <MerchantSelect
-          id={props.id}
           visible={showMerchantSelect}
-          // selectionType="radio"
           handleCancel={handleCancel}
           handleSelection={handleMerchantSelection}
+          selectOrgList={form.getFieldValue("orgList")}
         />
       ) : null}
     </>
