@@ -13,25 +13,23 @@ import {
   Input,
   Button,
   Cascader,
+  message,
 } from "antd";
-import { withRouter } from "react-router-dom";
-import storageUtils from "../../utils/storageUtils";
-import { Loading } from "../../components";
-import {
-  reqPermit,
-  reqGetOrg,
-  reqGetAuthCode,
-  reqPutOrg,
-} from "../../api";
-import OrgFormDialog from "./orgFormDialog";
-import { orgStatusesList } from "../../utils/constants";
 import { EyeOutlined, PictureOutlined, EditOutlined } from "@ant-design/icons";
+import { withRouter } from "react-router-dom";
+
+import storageUtils from "@utils/storageUtils";
+import { Loading } from "@components";
+import { reqPermit, reqGetOrg, reqGetAuthCode, reqPutOrg } from "@api";
+import OrgFormDialog from "./orgFormDialog";
+import { orgStatusesList } from "@utils/constants";
 //注册机构ChinaRegions
-import { ChinaRegions } from "../../utils/china-regions";
-import defaultValidateMessages from "../../utils/comFormErrorAlert";
-import comEvents from "../../utils/comEvents";
+import { ChinaRegions } from "@utils/china-regions";
+import defaultValidateMessages from "@utils/comFormErrorAlert";
+import comEvents from "@utils/comEvents";
 import "./index.less";
-import "../../css/common.less";
+import "@css/common.less";
+
 const { Meta } = Card;
 
 @withRouter
@@ -71,6 +69,7 @@ class MyOrgs extends Component {
       organization: cont,
     });
   };
+
   //切换机构卡片和注册机构表单
   //新用户展示注册机构表单
   closeEditing = (changed, uid) => {
@@ -81,6 +80,7 @@ class MyOrgs extends Component {
     });
     if (changed) this.regGetCurOrg(uid);
   };
+
   //获取授权码;
   getAuthCode = async () => {
     let orgUid = storageUtils.getUser().orgUid;
@@ -98,6 +98,7 @@ class MyOrgs extends Component {
       });
     }
   };
+
   //关闭抽屉
   onClose = () => {
     this.setState({
@@ -106,11 +107,13 @@ class MyOrgs extends Component {
       showView: false,
     });
   };
+
   showEdit = () => {
     this.setState({
       showEdit: true,
     });
   };
+
   //机构卡片信息
   renderOrgCard = () => {
     const { fullName, phone, address } = this.state.organization;
@@ -137,7 +140,7 @@ class MyOrgs extends Component {
               下属机构
             </b>
             <Divider type="vertical" />
-            
+
             <b
               onClick={() => {
                 this.props.history.push("/admin/employee");
@@ -218,6 +221,7 @@ class MyOrgs extends Component {
       </div>
     );
   };
+
   //机构详情
   renderOrgDetailDrawer = () => {
     const DescriptionItem = ({ title, content }) => (
@@ -280,6 +284,7 @@ class MyOrgs extends Component {
       </div>
     );
   };
+
   //动态授权码
   renderAuthCodeDrawer = () => {
     return (
@@ -303,6 +308,7 @@ class MyOrgs extends Component {
       </Drawer>
     );
   };
+
   //编辑机构表单
   renderOrgEditDrawer = () => {
     return (
@@ -316,25 +322,29 @@ class MyOrgs extends Component {
       </Drawer>
     );
   };
+
   displayRender = (label) => {
     return label[label.length - 1];
   };
+
   //机构编辑表单
   _renderFormCont = () => {
     const {
-      province,
-      city,
-      district,
-      fullName,
-      name,
-      licenseNo,
-      phone,
-      postalCode,
-      street,
-      address,
-      code,
-      upCode,
-    } = this.state.organization;
+      organization: {
+        province,
+        city,
+        district,
+        fullName,
+        name,
+        licenseNo,
+        phone,
+        postalCode,
+        street,
+        address,
+        code,
+        upCode,
+      },
+    } = this.state;
     return (
       <div className="OrgFormDialog">
         <Form
@@ -410,13 +420,8 @@ class MyOrgs extends Component {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="银联商户码" name="upCode" rules={[
-                  {
-                    message: "银联商户码格式不正确",
-                    pattern: /^[0-9a-zA-Z]*$/g,
-                  },
-                ]}>
-                <Input />
+              <Form.Item label="银联商户码" name="upCode">
+                <Input maxLength={15} placeholder="请输入15位银联商户码" />
               </Form.Item>
             </Col>
           </Row>
@@ -469,12 +474,16 @@ class MyOrgs extends Component {
       </div>
     );
   };
+
   //提交更新请求
   onFinish = async (values) => {
-    this.setState({
-      inited: false,
-    });
-    let that = this;
+    if (values.upCode && values.upCode.length !== 15) {
+      message.error({
+        content: "请输入15位银联商户码！",
+      });
+      return;
+    }
+
     let params = {
       fullName: values.fullName,
       name: values.name,
@@ -486,8 +495,11 @@ class MyOrgs extends Component {
       city: values.residence[1],
       district: values.residence[2],
       parentOrgUid: "",
-      upCode: values.upCode,
     };
+    if (values.upCode) {
+      params.upCode = values.upCode;
+    }
+
     const result = await reqPutOrg(this.state.organization.uid, params);
     console.log("MyOrgs -> onFinish -> result", result);
     if (result.data.retcode === 0) {
@@ -499,6 +511,7 @@ class MyOrgs extends Component {
     this.regGetCurOrg();
     this.onClose();
   };
+
   render() {
     let {
       organization,
