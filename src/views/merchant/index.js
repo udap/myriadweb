@@ -215,7 +215,11 @@ class Merchant extends Component {
         <p class="description">
           添加入驻商户需要获得相关商户授权。请向相关商户索取授权码及银联商户码。
         </p>
-        <Form.Item label="授权码" name="authCode" rules={[{ required: true }]}>
+        <Form.Item
+          label="授权码/机构注册码"
+          name="authCode"
+          rules={[{ required: true }]}
+        >
           <Input disabled={this.state.isNew ? false : true} />
         </Form.Item>
         <Form.Item

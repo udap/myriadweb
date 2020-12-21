@@ -28,8 +28,8 @@ const MerchantSelect = (props) => {
       key: "upCode",
     },
   ];
-  const [pageIndex, setPageIndex] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [totalElements, setTotalElements] = useState(10);
   const [pageSize, setPageSize] = useState(10);
   const [rowKeys, setRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -56,9 +56,9 @@ const MerchantSelect = (props) => {
       }
     }
 
-    setTotalPages(cont.totalElements);
+    setTotalElements(cont.totalElements);
     setMerchants(data);
-    setPageIndex(elements.page);
+    setPageIndex(elements.page + 1);
     setPageSize(elements.size);
     setLoading(false);
     setInitd(true);
@@ -66,7 +66,7 @@ const MerchantSelect = (props) => {
 
   useEffect(() => {
     const params = {
-      page: 1,
+      page: 0,
       size: 10,
       orgUid: storageUtils.getUser().orgUid,
       searchTxt: "",
@@ -82,7 +82,7 @@ const MerchantSelect = (props) => {
 
   const onPageChange = (page, pageSize) => {
     const params = {
-      page: page,
+      page: page - 1,
       size: pageSize,
       orgUid: storageUtils.getUser().orgUid,
       searchTxt,
@@ -98,7 +98,7 @@ const MerchantSelect = (props) => {
   const handleSearchChange = (e) => {
     if (!e.target.value) {
       const params = {
-        page: 1,
+        page: 0,
         size: pageSize,
         orgUid: storageUtils.getUser().orgUid,
         searchTxt: "",
@@ -111,7 +111,7 @@ const MerchantSelect = (props) => {
 
   const onSearch = async () => {
     const params = {
-      page: 1,
+      page: 0,
       size: pageSize,
       orgUid: storageUtils.getUser().orgUid,
       searchTxt,
@@ -186,7 +186,7 @@ const MerchantSelect = (props) => {
 
   const onSwitchChange = async (isChecked) => {
     const params = {
-      page: 1,
+      page: 0,
       size: pageSize,
       orgUid: storageUtils.getUser().orgUid,
       searchTxt,
@@ -214,17 +214,6 @@ const MerchantSelect = (props) => {
       {initd ? (
         <div>
           <Row style={{ marginBottom: "24px" }}>
-            <Col span={14}>包括下属机构的入驻商户：</Col>
-            <Col offset={1}>
-              <Switch
-                checkedChildren="包括"
-                unCheckedChildren="不包括"
-                defaultChecked={false}
-                onChange={onSwitchChange}
-              />
-            </Col>
-          </Row>
-          <Row style={{ marginBottom: "24px" }}>
             <Col span={14}>
               <Input
                 name="searchTxt"
@@ -241,6 +230,12 @@ const MerchantSelect = (props) => {
               </Button>
             </Col>
           </Row>
+          <Row style={{ marginBottom: "24px" }}>
+            <Col span={8}>包括下属机构的入驻商户</Col>
+            <Col>
+              <Switch defaultChecked={false} onChange={onSwitchChange} />
+            </Col>
+          </Row>
 
           <Table
             size="small"
@@ -254,7 +249,7 @@ const MerchantSelect = (props) => {
             pagination={{
               current: pageIndex,
               pageSize: pageSize,
-              total: totalPages,
+              total: totalElements,
               onChange: onPageChange,
               showTotal: (total) => `总共 ${total} 条数据`,
             }}

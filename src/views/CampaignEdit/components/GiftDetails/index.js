@@ -26,11 +26,7 @@ import {
 import { ajaxError } from "@utils/constants";
 import comEvents from "@utils/comEvents";
 
-const layout = { labelCol: { span: 6 }, wrapperCol: { span: 12 } };
-
-const tailFormItemLayout = {
-  wrapperCol: { xs: { span: 4 }, sm: { span: 6 } },
-};
+const layout = { labelCol: { span: 8 }, wrapperCol: { span: 8 } };
 
 //垂直的单选
 const radioStyle = {
@@ -271,7 +267,6 @@ export default withRouter((props) => {
           label="商品名称"
           name="productName"
           rules={[{ required: true, message: "请输入商品名称!" }]}
-          {...tailFormItemLayout}
         >
           <Input
             maxLength={32}
@@ -283,7 +278,6 @@ export default withRouter((props) => {
           label="SKU"
           name="productCode"
           rules={[{ required: true, message: "请输入SKU!" }]}
-          {...tailFormItemLayout}
         >
           <Input
             maxLength={32}
@@ -343,7 +337,7 @@ export default withRouter((props) => {
             </Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+        <Form.Item wrapperCol={{ span: 8, offset: 8 }}>
           <Button
             type="primary"
             htmlType="submit"
