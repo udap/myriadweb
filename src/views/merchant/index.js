@@ -13,28 +13,26 @@ import {
   notification,
   Divider,
   Radio,
+  message,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
-import comEvents from "../../utils/comEvents";
+
+import comEvents from "@utils/comEvents";
 import {
   reqPermit,
   reqAddMerchant,
   reqDelMerchant,
   reqPutMerchantTags,
   reqGetTags,
-  reqPutCampaignParties,
-} from "../../api";
-import defaultValidateMessages from "../../utils/comFormErrorAlert";
-import storageUtils from "../../utils/storageUtils";
-import { reqGetMerchants } from "../../api";
-import {
-  Loading,
-  EditableTagGroup,
-  TreeSelectComponent,
-} from "../../components";
+} from "@api";
+import defaultValidateMessages from "@utils/comFormErrorAlert";
+import storageUtils from "@utils/storageUtils";
+import { reqGetMerchants } from "@api";
+import { Loading, EditableTagGroup, TreeSelectComponent } from "@components";
 import MerchantSelect from "./merchantSelect";
-import "../../css/common.less";
+import "@css/common.less";
 import "./index.less";
+
 const { confirm } = Modal;
 
 const leftTableColumns = [
@@ -48,6 +46,7 @@ const leftTableColumns = [
   //   render: (tag) => <Tag>{tag}</Tag>,
   // },
 ];
+
 const rightTableColumns = [
   {
     dataIndex: "title",
@@ -81,10 +80,12 @@ class Merchant extends Component {
     currentTagPage: 1,
     expandedRowKeys: [],
   };
+
   componentDidMount() {
     const { currentPage, size } = this.state;
     this.getMerchants(currentPage, size);
   }
+
   showModal = () => {
     this.setState({
       visible: true,
@@ -98,6 +99,7 @@ class Merchant extends Component {
       radio: "common",
     });
   };
+
   /*
 获取列表数据
 */
@@ -143,6 +145,7 @@ class Merchant extends Component {
       loading: false,
     });
   };
+
   searchValue = (value) => {
     this.setState({
       currentPage: 1,
@@ -156,6 +159,7 @@ class Merchant extends Component {
       loading: true,
     });
   };
+
   addItem = () => {
     // let isAdmin = storageUtils.getUser().admin;
     // if (!isAdmin) {
@@ -164,6 +168,7 @@ class Merchant extends Component {
     // }
     this.props.history.push("/admin/merchant/edit/new");
   };
+
   delItem = async (uid) => {
     // let isAdmin = storageUtils.getUser().admin;
     // if (!isAdmin) {
@@ -177,16 +182,25 @@ class Merchant extends Component {
     });
     this.getMerchants(1, pageSize);
   };
+
   onFinish = async (values) => {
+    const { pageSize } = this.state;
+    if (values.upCode && values.upCode.length !== 15) {
+      message.error({
+        content: "请输入15位银联商户码！",
+      });
+      return;
+    }
     let params = {
       apCode: values.apCode,
       wpCode: values.wpCode,
-      upCode: values.upCode,
       authCode: values.authCode,
       merchantUid: values.merchantUid,
       orgUid: storageUtils.getUser().orgUid,
     };
-    const { pageSize } = this.state;
+    if (values.upCode) {
+      params.upCode = values.upCode;
+    }
     const result = await reqAddMerchant(params);
     if (result) {
       this.setState({
@@ -195,6 +209,7 @@ class Merchant extends Component {
       this.getMerchants(1, pageSize);
     }
   };
+
   //授权码
   renderAddForm = () => {
     const { apCode, wpCode, upCode, authCode } = this.state;
@@ -220,20 +235,17 @@ class Merchant extends Component {
           name="authCode"
           rules={[{ required: true }]}
         >
-          <Input disabled={this.state.isNew ? false : true} />
+          <Input
+            disabled={this.state.isNew ? false : true}
+            placeholder="请输入授权码/机构注册码"
+          />
         </Form.Item>
-        <Form.Item
-          label="银联商户码"
-          name="upCode"
-          rules={[
-            { max: 45 },
-            {
-              message: "银联商户码格式不正确",
-              pattern: /^[0-9a-zA-Z]*$/g,
-            },
-          ]}
-        >
-          <Input disabled={this.state.isNew ? false : true} />
+        <Form.Item label="银联商户码" name="upCode">
+          <Input
+            disabled={this.state.isNew ? false : true}
+            maxLength={15}
+            placeholder="请输入15位银联商户码"
+          />
         </Form.Item>
 
         {this.state.isNew ? (
@@ -258,6 +270,7 @@ class Merchant extends Component {
     });
     this.getMerchants(page, pageSize);
   };
+
   changePageSize = (current, pageSize) => {
     console.log("page size", pageSize);
     this.setState({
@@ -266,6 +279,7 @@ class Merchant extends Component {
     });
     this.getMerchants(1, pageSize);
   };
+
   showDetalConfirm = (item) => {
     let that = this;
     return confirm({
@@ -310,6 +324,7 @@ class Merchant extends Component {
       });
     }
   };
+
   //添加展示抽屉
   showTagsDrawer = (item) => {
     this.setState({
@@ -319,6 +334,7 @@ class Merchant extends Component {
     });
     this.reqGetTags(1);
   };
+
   //树控件的数据
   tree = (cont) => {
     const list = [];
@@ -334,6 +350,7 @@ class Merchant extends Component {
     }
     return list;
   };
+
   //获取公共标签
   reqGetTags = async (currentPage) => {
     let { size } = this.state;
@@ -357,17 +374,20 @@ class Merchant extends Component {
       //totalTagPages:
     });
   };
+
   onRadioChange = (e) => {
     this.setState({
       radio: e.target.value,
     });
   };
+
   choosehandle = (value, arr) => {
     this.setState({
       targetKeys: value,
       targetTitles: arr,
     });
   };
+
   /*分页 */
   handleTagTableChange = (page) => {
     this.setState({
@@ -375,6 +395,7 @@ class Merchant extends Component {
     });
     this.getTags(page);
   };
+
   renderTagForm = () => {
     const {
       showTagForm,
@@ -652,6 +673,7 @@ class Merchant extends Component {
       </div>
     );
   };
+
   render() {
     return (
       <div style={{ height: "100%" }}>

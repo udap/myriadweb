@@ -14,11 +14,13 @@ import {
   Divider,
   Cascader,
   Descriptions,
+  message,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
-import comEvents from "../../../utils/comEvents";
-import { ChinaRegions } from "../../../utils/china-regions";
-import { orgStatusesList } from "../../../utils/constants";
+
+import comEvents from "@utils/comEvents";
+import { ChinaRegions } from "@utils/china-regions";
+import { orgStatusesList } from "@utils/constants";
 import {
   reqPermit,
   reqGetSubsidiaries,
@@ -26,13 +28,11 @@ import {
   reqDelOrg,
   reqPutOrg,
   reqGetOrg,
-} from "../../../api";
-import defaultValidateMessages from "../../../utils/comFormErrorAlert";
-import storageUtils from "../../../utils/storageUtils";
-import {
-  Loading,
-} from "../../../components";
-import "../../../css/common.less";
+} from "@api";
+import defaultValidateMessages from "@utils/comFormErrorAlert";
+import storageUtils from "@utils/storageUtils";
+import { Loading } from "@components";
+import "@css/common.less";
 const { confirm } = Modal;
 
 class Subsidiaries extends Component {
@@ -53,9 +53,11 @@ class Subsidiaries extends Component {
     organization: {},
     showView: false,
   };
+
   componentDidMount() {
     this.getChildOrg(1);
   }
+
   showModal = () => {
     this.setState({
       visible: true,
@@ -70,6 +72,7 @@ class Subsidiaries extends Component {
       showView: false,
     });
   };
+
   /*
 获取列表数据
 */
@@ -80,7 +83,10 @@ class Subsidiaries extends Component {
       uid: storageUtils.getUser().orgUid,
       searchTxt: value ? value : this.state.searchTxt,
     };
-    const result = await reqGetSubsidiaries(storageUtils.getUser().orgUid, parmas);
+    const result = await reqGetSubsidiaries(
+      storageUtils.getUser().orgUid,
+      parmas
+    );
     const cont = result && result.data ? result.data.content : [];
     let list = [];
     if (cont && cont.content && cont.content.length !== 0) {
@@ -114,6 +120,7 @@ class Subsidiaries extends Component {
       loading: false,
     });
   };
+
   searchValue = (value) => {
     this.setState({
       currentPage: 1,
@@ -127,6 +134,7 @@ class Subsidiaries extends Component {
       loading: true,
     });
   };
+
   delItem = async (uid) => {
     const result = await reqDelOrg(uid);
     this.setState({
@@ -134,6 +142,7 @@ class Subsidiaries extends Component {
     });
     this.getChildOrg(1);
   };
+
   //机构详情
   renderOrgDetailDrawer = () => {
     const DescriptionItem = ({ title, content }) => (
@@ -196,12 +205,14 @@ class Subsidiaries extends Component {
       </div>
     );
   };
+
   handleTableChange = (page) => {
     this.setState({
       currentPage: page,
     });
     this.getChildOrg(page);
   };
+
   showDetalConfirm = (item) => {
     let that = this;
     return confirm({
@@ -221,6 +232,7 @@ class Subsidiaries extends Component {
   showDetailDrawer = (uid) => {
     this.getCurrentItemDetail(uid, "showView");
   };
+
   //获取详情
   getCurrentItemDetail = async (uid, name) => {
     let curInfo = await reqGetOrg(uid);
@@ -230,10 +242,11 @@ class Subsidiaries extends Component {
       [name]: true,
     });
   };
-  
+
   backIndex = () => {
     this.props.history.push("/admin/myOrgs");
   };
+
   renderContent = () => {
     const {
       merchants,
@@ -402,9 +415,7 @@ class Subsidiaries extends Component {
           pagination={false}
           expandable={{
             expandedRowRender: (record) => (
-              <div style={{ margin: 0 }}>
-                {record.address}
-              </div>
+              <div style={{ margin: 0 }}>{record.address}</div>
             ),
             onExpand: (expanded, record) => {
               if (expanded) {
@@ -433,18 +444,21 @@ class Subsidiaries extends Component {
       </div>
     );
   };
+
   addItem = () => {
     this.setState({
       showEdit: true,
       organization: {},
     });
   };
+
   showEdit = (item) => {
     this.setState({
       isNew: false,
     });
     this.getCurrentItemDetail(item.uid, "showEdit");
   };
+
   //编辑机构表单
   renderOrgEditDrawer = () => {
     return (
@@ -475,12 +489,14 @@ class Subsidiaries extends Component {
       code,
       upCode,
     } = this.state.organization;
-    const orgName = storageUtils.getUser().orgName
+    const orgName = storageUtils.getUser().orgName;
     return (
       <div className="OrgFormDialog">
         <div class="grey-block">
-        {this.state.isNew?`${'您正在为'+orgName+'创建下属机构'}`:`${'您正在编辑'+fullName+'的信息'}`}
-          </div>
+          {this.state.isNew
+            ? `${"您正在为" + orgName + "创建下属机构"}`
+            : `${"您正在编辑" + fullName + "的信息"}`}
+        </div>
         <Form
           layout="vertical"
           name="basic"
@@ -527,7 +543,7 @@ class Subsidiaries extends Component {
               <Form.Item
                 label="联系电话"
                 name="phone"
-                rules={[{ required: true },{min:8}]}
+                rules={[{ required: true }, { min: 8 }]}
               >
                 <Input />
               </Form.Item>
@@ -546,7 +562,7 @@ class Subsidiaries extends Component {
             </Col>
             <Col span={12}>
               <Form.Item label="银联商户码" name="upCode">
-                <Input />
+                <Input maxLength={15} placeholder="请输入15位银联商户码" />
               </Form.Item>
             </Col>
           </Row>
@@ -599,9 +615,15 @@ class Subsidiaries extends Component {
       </div>
     );
   };
+
   //提交更新请求
   onFinish = async (values) => {
-    let that = this;
+    if (values.upCode && values.upCode.length !== 15) {
+      message.error({
+        content: "请输入15位银联商户码！",
+      });
+      return;
+    }
     let params = {
       fullName: values.fullName,
       name: values.name,
@@ -613,9 +635,11 @@ class Subsidiaries extends Component {
       city: values.residence[1],
       district: values.residence[2],
       code: values.code,
-      upCode: values.upCode,
       parentOrgUid: storageUtils.getUser().orgUid,
     };
+    if (values.upCode) {
+      params.upCode = values.upCode;
+    }
     let result;
     if (this.state.isNew) {
       result = await reqAddOrg(params);
@@ -630,7 +654,6 @@ class Subsidiaries extends Component {
       this.getChildOrg(1);
       this.handleCancel();
     }
-    
   };
 
   render() {
