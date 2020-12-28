@@ -55,8 +55,8 @@ const couponSubTypes = [
 const couponSubTypeMethods = [
   { COUPON: "优惠券活动" },
   { GIFT: "礼品换购活动" },
-  { OFFLINE_CHECKIN: "线下签到" },
-  { ONLINE_CHECKIN: "线上签到" },
+  { SELF_CHECKIN: "自助签到" },
+  { MANUAL_CHECKIN: "人工签到" },
 ];
 
 const stepLists = [
