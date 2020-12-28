@@ -246,6 +246,12 @@ const noticeType = {
 const autoUpdateTooltip =
   "自动增发：允许当前机构的员工，在活动实际发行数量达到计划发行数量后，请求系统自动增加发行数量，并按要求发放卡券";
 
+const rulesOfUse = {
+  MinimumValue: "满减规则",
+  SelectedTags: "商户标签",
+  SelectedRegions: "所在区域",
+};
+
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
@@ -272,4 +278,5 @@ export {
   ajaxError,
   noticeType,
   autoUpdateTooltip,
+  rulesOfUse,
 };
