@@ -11,8 +11,8 @@ import {
   additionalCoupons,
   batchIssuing,
   bulkCoupons,
-} from "../../assets/images";
-import { noticeType } from "../../utils/constants";
+} from "@assets/images";
+import { noticeType } from "@utils/constants";
 
 const NoticeList = (props) => {
   const {
@@ -104,7 +104,7 @@ const NoticeList = (props) => {
                 description={
                   <div>
                     <div className="description">{item.content.msg}</div>
-                    <div className="datetime">
+                    <div className="dateline">
                       {moment(item.date).format("YYYY/MM/DD hh:mm:ss")}
                     </div>
                   </div>
