@@ -1,52 +1,30 @@
 import React, { Component } from "react";
-import {
-  Drawer,
-  Form,
-  Input,
-  Button,
-  Select,
-  Row,
-  Col,
-  notification,
-} from "antd";
-import defaultValidateMessages from "../../utils/comFormErrorAlert";
-import {
-  reqGetVerificationCode, //获取验证码
-  reqPutPassword,
-} from "../../api";
-import storageUtils from "../../utils/storageUtils";
-import md5 from 'blueimp-md5';
+import { Drawer, Form, Input, Button, Row, Col, notification } from "antd";
+import md5 from "blueimp-md5";
 
-const { TextArea } = Input;
-const { Option } = Select;
+import defaultValidateMessages from "@utils/comFormErrorAlert";
+import { reqGetVerificationCode, reqPutPassword } from "@api";
+
 class PasswordDrawer extends Component {
-  state = {
-    isNew: true,
-    iconLoading: false,
-    unableClick: false, //不允许再次获取验证码
-    number: 60,
-    selectedAccount: this.props.selectedAccount,
-    cellphone: "",
-    password: "",
-  };
-
-  componentDidMount() {
-    this.setState({
-      isNew: this.props.isNew,
-      cellphone: this.props.selectedAccount.loginId,
-    });
+  constructor() {
+    super();
+    this.state = {
+      iconLoading: false,
+      unableClick: false, //不允许再次获取验证码
+      number: 60,
+      password: "",
+      loading: false,
+    };
+    this.enterIconLoading = this.enterIconLoading.bind(this);
   }
-  enterLoading = () => {
-    this.setState({
-      loading: true,
-    });
-  };
+
   //获取验证码 倒计时60s
   countdown = () => {
-    const intetval = setInterval(() => {
+    const { number } = this.state;
+    const interval = setInterval(() => {
       //倒计时结束，清空倒计时并恢复初始状态
-      if (this.state.number === 0) {
-        clearInterval(intetval);
+      if (number === 0) {
+        clearInterval(interval);
         this.setState({
           unableClick: false,
           iconLoading: false,
@@ -54,15 +32,12 @@ class PasswordDrawer extends Component {
         });
       }
       this.setState({
-        number: this.state.number - 1,
+        number: number - 1,
       });
     }, 1000);
   };
-  enterIconLoading = async (value) => {
-    if (!value) {
-      notification.error({ message: "请输入手机号码！" });
-      return false;
-    }
+
+  enterIconLoading = async () => {
     const result = await reqGetVerificationCode();
     if (result.data.retcode === 0) {
       this.setState({
@@ -72,40 +47,37 @@ class PasswordDrawer extends Component {
       this.countdown();
     }
   };
+
   onFinish = async (values) => {
-    this.setState({
-      loading: true,
-    });
+    this.setState({ loading: true });
     let params = {
       password: md5(values.password),
       verificationCode: values.verificationCode,
     };
 
     const result = await reqPutPassword(params);
-    this.setState({
-      loading: false,
-    });
+    this.setState({ loading: false });
     if (result.data.retcode === 0) {
       notification.success({ message: "更新成功" });
       this.backIndex();
     }
   };
+
   //返回上一页
   backIndex = () => {
     this.props.onClose();
   };
-  onValuesChange = (changedValues, allValues) => {
-    for (let key in changedValues) {
-      if (key === "cellphone") {
-        this.setState({
-          cellphone: changedValues[key],
-        });
-      }
-    }
-  };
+
   render() {
-    const { cellphone, password } = this.state;
-    let { isNew, visible } = this.props;
+    const {
+      password,
+      verificationCode,
+      iconLoading,
+      unableClick,
+      number,
+      loading,
+    } = this.state;
+    let { visible, selectedAccount } = this.props;
     return (
       <Drawer
         width={480}
@@ -119,10 +91,9 @@ class PasswordDrawer extends Component {
           layout="vertical"
           initialValues={{
             password: password,
-            cellphone: cellphone,
+            cellphone: selectedAccount.cellphone,
           }}
           onFinish={this.onFinish}
-          onValuesChange={this.onValuesChange}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
           <Form.Item
@@ -130,7 +101,7 @@ class PasswordDrawer extends Component {
             name="cellphone"
             rules={[{ required: true }, { max: 11 }]}
           >
-            <Input disabled={true} value={this.state.cellphone} />
+            <Input disabled={true} />
           </Form.Item>
           <Form.Item
             name="verificationCode"
@@ -150,7 +121,7 @@ class PasswordDrawer extends Component {
                 <Input
                   placeholder="请输入验证码"
                   name="verificationCode"
-                  value={this.state.verificationCode}
+                  value={verificationCode}
                 />
               </Col>
               <Col span={10}>
@@ -158,17 +129,12 @@ class PasswordDrawer extends Component {
                   className="getCodeBtn"
                   type="primary"
                   block
-                  loading={this.state.iconLoading}
-                  onClick={this.enterIconLoading.bind(
-                    this,
-                    this.state.cellphone
-                  )}
-                  disabled={this.state.unableClick}
+                  loading={iconLoading}
+                  onClick={this.enterIconLoading}
+                  disabled={unableClick}
                 >
                   <span className="btnText">
-                    {this.state.unableClick
-                      ? this.state.number + "秒"
-                      : "验证码"}
+                    {unableClick ? number + "秒" : "验证码"}
                   </span>
                 </Button>
               </Col>
@@ -184,11 +150,7 @@ class PasswordDrawer extends Component {
           </Form.Item>
 
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={this.state.loading}
-            >
+            <Button type="primary" htmlType="submit" loading={loading}>
               提交
             </Button>
           </Form.Item>
