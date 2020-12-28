@@ -138,37 +138,31 @@ class Campaign extends Component {
         },
       },
       {
-        title: "计划发行",
-        dataIndex: "plannedSupply",
-        key: "plannedSupply",
+        title: "标签",
+        dataIndex: "category",
+        key: "category",
         width: 90,
         render: (value) => {
           return (
-            <div style={{ textAlign: "right" }}>
-              <NumberFormat
-                value={value}
-                displayType={"text"}
-                thousandSeparator={true}
-              />
-            </div>
+            <>
+              {value
+                ? value.split(",").map((item, index) => (
+                    <Tag key={index} color="cyan">
+                      {item}
+                    </Tag>
+                  ))
+                : ""}
+            </>
           );
         },
       },
       {
-        title: "实际发行",
-        dataIndex: "totalSupply",
-        key: "totalSupply",
-        width: 90,
+        title: "发布时间",
+        dataIndex: "activationTime",
+        key: "activationTime",
+        width: 100,
         render: (value) => {
-          return (
-            <div style={{ textAlign: "right" }}>
-              <NumberFormat
-                value={value}
-                displayType={"text"}
-                thousandSeparator={true}
-              />
-            </div>
-          );
+          return <div style={{ textAlign: "right" }}>{value}</div>;
         },
       },
       {
