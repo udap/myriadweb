@@ -20,7 +20,6 @@ import {
   ExclamationCircleOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import NumberFormat from "react-number-format";
 import FileSaver from "file-saver";
 import ReactFileReader from "react-file-reader";
 

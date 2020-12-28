@@ -46,14 +46,16 @@ class CampaignDetail extends Component {
               <ConfigPanel {...campaign.voucherConfig} />
             </Panel>
           ) : null}
-          <Panel header="使用规则" key="3">
-            {campaign.rules && campaign.rules.length !== 0 ? (
-              <RedemptionRules
-                rulesArr={campaign.rules}
-                parties={campaign.parties}
-              />
-            ) : null}
-          </Panel>
+          {campaign.rules && campaign.rules.length !== 0 ? (
+            <Panel header="使用规则" key="3">
+              {campaign.rules.length !== 0 ? (
+                <RedemptionRules
+                  rulesArr={campaign.rules}
+                  parties={campaign.parties}
+                />
+              ) : null}
+            </Panel>
+          ) : null}
         </Collapse>
       </Drawer>
     );
