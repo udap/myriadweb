@@ -4,6 +4,25 @@ const SimpleProgressWebpackPlugin = require("simple-progress-webpack-plugin");
 
 module.exports = {
   webpack: {
+    module: {
+      rules: [
+        {
+          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          use: [
+            {
+              loader: "babel-loader",
+            },
+            {
+              loader: "@svgr/webpack",
+              options: {
+                babel: false,
+                icon: true,
+              },
+            },
+          ],
+        },
+      ],
+    },
     // 别名
     alias: {
       "@": path.resolve("src"),

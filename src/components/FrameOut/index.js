@@ -5,16 +5,16 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 
 import "./index.less";
 //动态渲染导航栏
-import { privateRoutes } from "../../routes";
+import { privateRoutes } from "@routes";
 //引入图标
-import { AntdIcon, ReactDocumentTitle } from "../../components";
-// import comEvents from "../../utils/comEvents";
-import storageUtils from "../../utils/storageUtils";
-import logo from "../../assets/images/logo.jpg";
+import { AntdIcon, ReactDocumentTitle } from "@components";
+// import comEvents from "@utils/comEvents";
+import storageUtils from "@utils/storageUtils";
+import logo from "@assets/images/logo.jpg";
 import TopNav from "./topNav";
 
 //过滤filter导航栏  左侧导航栏
-const navsLeft = privateRoutes.filter((item) => {
+const navLeft = privateRoutes.filter((item) => {
   return item.isTop === true;
 });
 
@@ -42,7 +42,7 @@ class FrameOut extends Component {
     "/admin/reports/individual",
     "/admin/reports/organization",
   ];
-  
+
   state = {
     collapsed: false,
     current: "mail",
@@ -52,7 +52,7 @@ class FrameOut extends Component {
 
   componentDidMount() {
     //渲染前调用一次 为render数据做准备
-    this.getNavMap(navsLeft);
+    this.getNavMap(navLeft);
   }
 
   toggle = () => {
@@ -108,13 +108,12 @@ class FrameOut extends Component {
 
   //getNavMap 利用map遍历左侧导航
   getNavMap = (routes) => {
-    const path = this.props.location.pathname; //获取当前页面的路径名
+    // const path = this.props.location.pathname; //获取当前页面的路径名
     return routes.map((item) => {
       if (!item.children) {
         //没下级菜单
         return (
-          <Menu.Item key={item.pathname}>
-            <AntdIcon name={item.icon} />
+          <Menu.Item key={item.pathname} icon={<AntdIcon name={item.icon} />}>
             <span className="title">{item.title}</span>
           </Menu.Item>
         );
@@ -128,8 +127,10 @@ class FrameOut extends Component {
           <Menu.SubMenu
             key={item.pathname}
             title={
-              <span className="submenu-title-wrapper">
-                <AntdIcon name={item.icon} />
+              <span
+                className="submenu-title-wrapper"
+                icon={<AntdIcon name={item.icon} />}
+              >
                 <span className="title">{item.title}</span>
               </span>
             }
@@ -171,12 +172,12 @@ class FrameOut extends Component {
     // //获取当前页面需要默认打开子列表的key值
     const selectedOpenKeys = this.selectedOpenKeys;
     // //更新title
-    // let curTtile = comEvents.getTitle(location.pathname);
-    // window.document.title = curTtile;
-    let curTtile = this.getTitle() || "美意智慧营销平台";
+    // let curTitle = comEvents.getTitle(location.pathname);
+    // window.document.title = curTitle;
+    let curTitle = this.getTitle() || "美意智慧营销平台";
 
     return (
-      <ReactDocumentTitle title={curTtile}>
+      <ReactDocumentTitle title={curTitle}>
         <Layout style={{ minHeight: "100%" }}>
           <Layout.Sider
             breakpoint="lg"
@@ -201,7 +202,7 @@ class FrameOut extends Component {
               onOpenChange={this.onOpenChange}
               defaultOpenKeys={[openKey]}
             >
-              {this.getNavMap(navsLeft)}
+              {this.getNavMap(navLeft)}
             </Menu>
           </Layout.Sider>
           <Layout className="site-layout">

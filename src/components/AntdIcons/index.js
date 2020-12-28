@@ -15,7 +15,6 @@ import {
   ApartmentOutlined,
   InteractionOutlined,
   TransactionOutlined,
-  createFromIconfontCN,
   TagOutlined,
   SolutionOutlined,
   SwapOutlined,
@@ -23,9 +22,10 @@ import {
   FundOutlined,
 } from "@ant-design/icons";
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
-});
+// 自定义 SVG 图标
+import Icon from "@ant-design/icons";
+import { ReactComponent as CampaignSvg } from "@assets/images/campaign.svg";
+import { ReactComponent as DistributionSvg } from "@assets/images/distribution.svg";
 
 //显示antd图标组件
 class AntdIcon extends Component {
@@ -57,20 +57,22 @@ class AntdIcon extends Component {
         return <PlusCircleOutlined />;
       case "ApartmentOutlined":
         return <ApartmentOutlined />;
-      case "MoneyCollectOutlined":
-        return <MoneyCollectOutlined />;
       case "InteractionOutlined":
         return <InteractionOutlined />;
       case "TransactionOutlined":
         return <TransactionOutlined />;
       case "TagOutlined":
         return <TagOutlined />;
-      case 'SolutionOutlined':
+      case "SolutionOutlined":
         return <SolutionOutlined />;
-      case 'SwapOutlined':
-        return <SwapOutlined/>;
-      case 'FundOutlined':
-        return <FundOutlined/>;
+      case "SwapOutlined":
+        return <SwapOutlined />;
+      case "FundOutlined":
+        return <FundOutlined />;
+      case "CampaignSvg":
+        return <Icon component={CampaignSvg} />;
+      case "DistributionSvg":
+        return <Icon component={DistributionSvg} />;
       default:
         return <InfoCircleOutlined />;
     }

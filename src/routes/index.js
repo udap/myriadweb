@@ -48,7 +48,7 @@ const privateRoutes = [
     pathname: "/admin/campaign",
     component: Campaign,
     title: "营销活动",
-    icon: "GiftOutlined",
+    icon: "CampaignSvg",
     isTop: true, //顶级菜单
     exact: true,
   },
@@ -77,7 +77,7 @@ const privateRoutes = [
     pathname: "/admin/distribution",
     component: Distribution,
     title: "发放记录",
-    icon: "BarChartOutlined",
+    icon: "DistributionSvg",
     isTop: true, //顶级菜单
   },
   {
