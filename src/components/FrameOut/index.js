@@ -108,7 +108,7 @@ class FrameOut extends Component {
     this.setState({ selectedKeys: key });
   }
 
-  //getNavMap 利用map遍历左侧导航
+  // 利用map遍历左侧导航
   getNavMap = (routes) => {
     // const path = this.props.location.pathname; //获取当前页面的路径名
     return routes.map((item) => {
@@ -116,26 +116,19 @@ class FrameOut extends Component {
         //没下级菜单
         return (
           <Menu.Item key={item.pathname} icon={<AntdIcon name={item.icon} />}>
-            <span className="title">{item.title}</span>
+            {item.title}
           </Menu.Item>
         );
       } else {
         //有下级菜单
         //默认打开当前子列表
         //找到当前路径的菜单
-        // const cItem = item.children.find((cItem) => cItem.pathname === path);
         const cItem = item.children.filter((cItem) => cItem.isNav === true);
         return (
           <Menu.SubMenu
             key={item.pathname}
-            title={
-              <span
-                className="submenu-title-wrapper"
-                icon={<AntdIcon name={item.icon} />}
-              >
-                <span className="title">{item.title}</span>
-              </span>
-            }
+            icon={<AntdIcon name={item.icon} />}
+            title={item.title}
           >
             {this.getNavMap(cItem)}
           </Menu.SubMenu>
@@ -143,6 +136,7 @@ class FrameOut extends Component {
       }
     });
   };
+
   getTitle = () => {
     // 得到当前请求路径
     const path = this.props.location.pathname;
@@ -166,6 +160,7 @@ class FrameOut extends Component {
     });
     return title;
   };
+
   render() {
     const { openKey, collapsed } = this.state;
     const { location } = this.props;
