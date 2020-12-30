@@ -160,7 +160,7 @@ class TransferStats extends Component {
       <div>
         <PageHeader
           className="site-page-header-responsive cont"
-          title="我的配券"
+          title="配券记录"
         />
         <QueryForm
           loading={loading}

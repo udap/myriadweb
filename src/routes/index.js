@@ -69,7 +69,7 @@ const privateRoutes = [
   {
     pathname: "/admin/transfer",
     component: TransferStats,
-    title: "我的配券",
+    title: "配券记录",
     icon: "SwapOutlined",
     isTop: true, //顶级菜单
   },
