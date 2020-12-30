@@ -6,7 +6,7 @@ import {
   UserOutlined,
   LogoutOutlined,
   BankOutlined,
-  ApartmentOutlined,
+  SolutionOutlined,
 } from "@ant-design/icons";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import moment from "moment";
@@ -58,7 +58,7 @@ const TopNav = (props) => {
     });
 
     sse.current.onopen = () => {
-      console.log("SSE Conneted", new Date());
+      console.log("SSE Connected", new Date());
     };
 
     sse.current.onmessage = (e) => {
@@ -146,9 +146,9 @@ const TopNav = (props) => {
         <BankOutlined />
         我的机构
       </Menu.Item>
-      <Menu.Item key="/admin/merchant">
-        <ApartmentOutlined />
-        入驻商户
+      <Menu.Item key="/admin/customer">
+        <SolutionOutlined />
+        我的客户
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="logout">
