@@ -1,10 +1,9 @@
 import React from "react";
 import { Form, Row, Col, Radio, Button, Input, DatePicker } from "antd";
-
 import moment from "moment";
 import "moment/locale/zh-cn";
 
-import "../../css/common.less";
+import "@css/common.less";
 
 const { RangePicker } = DatePicker;
 

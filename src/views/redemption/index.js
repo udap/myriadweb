@@ -4,235 +4,139 @@ import { DownloadOutlined } from "@ant-design/icons";
 import FileSaver from "file-saver";
 import NumberFormat from "react-number-format";
 
-import QueryForm from "./queryForm";
-import storageUtils from "../../utils/storageUtils";
-import comEvents from "../../utils/comEvents";
+import "@css/common.less";
+import storageUtils from "@utils/storageUtils";
+import comEvents from "@utils/comEvents";
+import { reqGetRedemptions, reqExportRedemption } from "@api";
+import { Loading } from "@components";
+import { QueryForm } from "./components";
+import { redemptionStatuses, settlementStatuses } from "@utils/constants";
 
-import { reqGetRedemptions, reqExportRedemption } from "../../api";
-import { Loading } from "../../components";
-
-import { redemptionStatuses, settlementStatuses } from "../../utils/constants";
-import "../../css/common.less";
+const columns = [
+  {
+    title: "券号",
+    dataIndex: "voucher",
+    key: "voucher",
+    fixed: "left",
+    width: 160,
+  },
+  {
+    title: "营销活动",
+    dataIndex: "campaignName",
+    key: "campaignName",
+    responsive: ["lg"],
+    ellipsis: true,
+  },
+  {
+    title: "发行机构",
+    dataIndex: "issuerName",
+    key: "issuerName",
+    responsive: ["md"],
+    ellipsis: true,
+  },
+  {
+    title: "订单号",
+    dataIndex: "orderId",
+    key: "orderId",
+    responsive: ["lg"],
+  },
+  {
+    title: "优惠金额",
+    dataIndex: "discountOff",
+    key: "discountOff",
+    width: 100,
+    render: (value, row) => {
+      if (!value) return null;
+      if (row.voucherType === "COUPON") {
+        return (
+          <div style={{ textAlign: "right" }}>
+            <NumberFormat
+              value={value / 100}
+              displayType={"text"}
+              thousandSeparator={true}
+              decimalScale={2}
+              fixedDecimalScale={true}
+              prefix={"¥"}
+            />
+          </div>
+        );
+      } else if (row.voucherType === "GIFT") {
+        return (
+          <div style={{ textAlign: "right" }}>
+            <NumberFormat
+              value={value / 100}
+              displayType={"text"}
+              thousandSeparator={true}
+              decimalScale={2}
+              fixedDecimalScale={true}
+              prefix={"(¥"}
+              suffix={")"}
+            />
+          </div>
+        );
+      }
+    },
+  },
+  {
+    title: "核销机构",
+    dataIndex: "merchantName",
+    key: "merchantName",
+    responsive: ["md"],
+    ellipsis: true,
+  },
+  {
+    title: "核销时间",
+    dataIndex: "updatedAt",
+    key: "updatedAt",
+    width: 180,
+  },
+  {
+    title: "状态",
+    width: 80,
+    fixed: "right",
+    render: (chooseItem) => {
+      const { status, settlementStatus } = chooseItem;
+      //show settlementStatus 结算状态
+      return (
+        <>
+          <Tag color={status === "SUCCESS" ? "green" : "red"}>
+            {redemptionStatuses[status]}
+          </Tag>
+          {settlementStatus ? (
+            <Tag color="blue">
+              {settlementStatuses.map((item) => item[settlementStatus])}
+            </Tag>
+          ) : null}
+        </>
+      );
+    },
+  },
+];
 
 class Redemption extends Component {
-  state = {
-    inited: false,
-    campaigns: [],
-    ownerId: storageUtils.getUser().id,
-    hasChoose: false,
-    currentPage: 1,
-    size: 20,
-    total: 0,
-    visible: false,
-    loading: false,
-    beginDate: comEvents.firstDayOfMonth(),
-    endDate: null,
-    downloading: false,
-    role: "marketer",
-    includingSubsidiaries: true,
-  };
-
-  componentDidMount() {
-    this.initColumns();
-    this.getRedemptions(
-      1,
-      this.state.searchTxt,
-      this.state.beginDate,
-      this.state.endDate
-    );
+  constructor(props) {
+    super(props);
+    this.state = {
+      initd: false,
+      campaigns: [],
+      ownerId: storageUtils.getUser().id,
+      hasChoose: false,
+      currentPage: 1,
+      size: 20,
+      total: 0,
+      visible: false,
+      loading: false,
+      beginDate: comEvents.firstDayOfMonth(),
+      endDate: null,
+      downloading: false,
+      role: "marketer",
+      includingSubsidiaries: true,
+    };
   }
 
-  initColumns() {
-    //显示券号，活动，发券机构，核销机构，核销时间，核销状态以及结算状态
-    this.marketColumns = [
-      {
-        title: "券号",
-        dataIndex: "voucher",
-        key: "voucher",
-        width: 160,
-      },
-      {
-        title: "营销活动",
-        dataIndex: "campaignName",
-        key: "campaignName",
-        responsive: ["lg"],
-        ellipsis: true,
-      },
-      {
-        title: "订单号",
-        dataIndex: "orderId",
-        key: "orderId",
-        responsive: ["lg"],
-      },
-      {
-        title: "核销机构",
-        dataIndex: "merchantName",
-        key: "merchantName",
-        responsive: ["md"],
-        ellipsis: true,
-      },
-      {
-        title: "优惠金额",
-        dataIndex: "discountOff",
-        key: "discountOff",
-        width: 100,
-        render: (value, row) => {
-          if (!value) return null;
-          if (row.voucherType === "COUPON") {
-            return (
-              <div style={{ textAlign: "right" }}>
-                <NumberFormat
-                  value={value / 100}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                  prefix={"¥"}
-                />
-              </div>
-            );
-          } else if (row.voucherType === "GIFT") {
-            return (
-              <div style={{ textAlign: "right" }}>
-                <NumberFormat
-                  value={value / 100}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                  prefix={"(¥"}
-                  suffix={")"}
-                />
-              </div>
-            );
-          }
-        },
-      },
-      {
-        title: "核销时间",
-        dataIndex: "updatedAt",
-        key: "updatedAt",
-        width: 180,
-      },
-      {
-        title: "状态",
-        width: 80,
-        render: (chooseItem) => {
-          const { status, settlementStatus } = chooseItem;
-          return (
-            <div>
-              <Tag color="green" key={status}>
-                {redemptionStatuses.map((item, index) => (
-                  <span key={index}>{item[status]}</span>
-                ))}
-              </Tag>
-              {settlementStatus ? (
-                <Tag color="blue" key={settlementStatus}>
-                  {settlementStatuses.map((item, index) => (
-                    <span key={index}>{item[settlementStatus]}</span>
-                  ))}
-                </Tag>
-              ) : null}
-            </div>
-          );
-        },
-      },
-    ];
-    this.columns = [
-      {
-        title: "券号",
-        dataIndex: "voucher",
-        key: "voucher",
-        width: 160,
-      },
-      {
-        title: "营销活动",
-        dataIndex: "campaignName",
-        key: "campaignName",
-        responsive: ["lg"],
-        ellipsis: true,
-      },
-      {
-        title: "订单号",
-        dataIndex: "orderId",
-        key: "orderId",
-        responsive: ["lg"],
-      },
-      {
-        title: "发行机构",
-        dataIndex: "issuerName",
-        key: "issuerName",
-        responsive: ["md"],
-        ellipsis: true,
-      },
-      {
-        title: "优惠金额",
-        dataIndex: "discountOff",
-        key: "discountOff",
-        width: 100,
-        render: (value, row) => {
-          if (!value) return null;
-          if (row.voucherType === "COUPON") {
-            return (
-              <div style={{ textAlign: "right" }}>
-                <NumberFormat
-                  value={value / 100}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                  prefix={"¥"}
-                />
-              </div>
-            );
-          } else if (row.voucherType === "GIFT") {
-            return (
-              <div style={{ textAlign: "right" }}>
-                <NumberFormat
-                  value={value / 100}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                  prefix={"(¥"}
-                  suffix={")"}
-                />
-              </div>
-            );
-          }
-        },
-      },
-      {
-        title: "核销时间",
-        dataIndex: "updatedAt",
-        key: "updatedAt",
-        width: 180,
-      },
-      {
-        title: "状态",
-        width: 80,
-        render: (chooseItem) => {
-          const { status, settlementStatus } = chooseItem;
-          //show settlementStatus 结算状态
-          return (
-            <div>
-              <Tag color="green" key={status}>
-                {redemptionStatuses.map((item, index) => (
-                  <span key={index}>{item[status]}</span>
-                ))}
-              </Tag>
-              {settlementStatus ? (
-                <Tag color="blue" key={settlementStatus}>
-                  {settlementStatuses.map(
-                    (item, index) => item[settlementStatus]
-                  )}
-                </Tag>
-              ) : null}
-            </div>
-          );
-        },
-      },
-    ];
+  componentDidMount() {
+    const { searchTxt, beginDate, endDate } = this.state;
+    this.getRedemptions(1, searchTxt, beginDate, endDate);
   }
 
   // 获取列表数据
@@ -251,8 +155,7 @@ class Redemption extends Component {
       beginDate,
       includingSubsidiaries,
     } = this.state;
-    console.log(typeof includingSubsidiaries);
-    let parmas = {
+    let params = {
       page: currentPage - 1,
       size: size,
       beginDate: tempBeginDate || beginDate,
@@ -262,17 +165,17 @@ class Redemption extends Component {
     };
     switch (role) {
       case "marketer":
-        parmas.issuerId = storageUtils.getUser().orgId;
+        params.issuerId = storageUtils.getUser().orgId;
         break;
       case "merchant":
-        parmas.merchantId = storageUtils.getUser().orgId;
+        params.merchantId = storageUtils.getUser().orgId;
         break;
 
       default:
         break;
     }
     this.setState({ loading: true });
-    const result = await reqGetRedemptions(parmas);
+    const result = await reqGetRedemptions(params);
     const cont =
       result && result.data && result.data.content
         ? result.data.content.entries
@@ -312,12 +215,8 @@ class Redemption extends Component {
         });
       }
     }
-    this.totalPages =
-      result && result.data && result.data.content
-        ? result.data.content.totalElements
-        : 0;
     this.setState({
-      inited: true,
+      initd: true,
       campaigns: data,
       total:
         result && result.data && result.data.content
@@ -325,7 +224,6 @@ class Redemption extends Component {
           : 0,
       loading: false,
     });
-    //parseInt((this.receipts.length - 1) / PAGE_SIZE) + 1;//
   };
 
   enterLoading = () => {
@@ -446,12 +344,11 @@ class Redemption extends Component {
       campaigns,
       size,
       currentPage,
-      chooseRadio,
       loading,
       role,
       includingSubsidiaries,
+      total,
     } = this.state;
-    const columns = chooseRadio === "owner" ? this.marketColumns : this.columns;
     return (
       <>
         <PageHeader
@@ -480,6 +377,7 @@ class Redemption extends Component {
         <Table
           rowKey="key"
           size="small"
+          scroll={{ x: 2000 }}
           bordered
           dataSource={campaigns}
           columns={columns}
@@ -491,10 +389,10 @@ class Redemption extends Component {
             pageSize={size}
             current={currentPage}
             onChange={this.handlePageChange}
-            total={this.totalPages}
+            total={total}
             showSizeChanger={false}
             size="small"
-            showTotal={(total) => `总共 ${total} 条数据`}
+            showTotal={(val) => `总共 ${val} 条数据`}
             disabled={loading}
           />
         </div>
@@ -502,11 +400,8 @@ class Redemption extends Component {
     );
   };
   render() {
-    return (
-      <div style={{ height: "100%" }}>
-        {this.state.inited ? this.renderContent() : <Loading />}
-      </div>
-    );
+    const { initd } = this.state;
+    return <>{initd ? this.renderContent() : <Loading />}</>;
   }
 }
 

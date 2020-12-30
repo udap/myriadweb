@@ -1,125 +1,115 @@
 import React, { Component } from "react";
 import {
-  //表头
   PageHeader,
   Tag,
   Button,
-  //表格
   Table,
   Pagination,
   Descriptions,
   notification,
 } from "antd";
-//import storageUtils from "../../utils/storageUtils";
-import Loading from "../../components/Loading";
-import { reqGetSettlementDetail, reqDownloadSettlement } from "../../api";
 import { DownloadOutlined } from "@ant-design/icons";
-import FileSaver from 'file-saver';
+import FileSaver from "file-saver";
+
+import "./index.less";
+import Loading from "@components/Loading";
+import { reqGetSettlementDetail, reqDownloadSettlement } from "@api";
 import {
   settlementStatuses,
   settlementTypes,
   redemptionStatuses,
-} from "../../utils/constants";
-import "../../css/common.less";
-import "./index.less";
+} from "@utils/constants";
+import "@css/common.less";
+
+const columns = [
+  {
+    title: "券号",
+    dataIndex: "voucher",
+    key: "voucher",
+  },
+  {
+    title: "营销活动",
+    dataIndex: "campaignName",
+    key: "campaignName",
+  },
+  {
+    title: "订单号",
+    dataIndex: "orderId",
+    key: "orderId",
+  },
+  // {
+  //   title: "发行机构",
+  //   dataIndex: "issuerName",
+  //   key: "issuerName",
+  // },
+  {
+    title: "核销时间",
+    dataIndex: "updatedAt",
+    key: "updatedAt",
+  },
+  {
+    title: "状态",
+    render: (chooseItem) => {
+      const { status, settlementStatus } = chooseItem;
+      //show settlementStatus 结算状态
+      return (
+        <>
+          <Tag color={status === "SUCCESS" ? "green" : "red"}>
+            {redemptionStatuses[status]}
+          </Tag>
+          <Tag color="green" key={settlementStatus}>
+            {settlementStatuses.map((item, index) => (
+              <span key={index}>{item[settlementStatus]}</span>
+            ))}
+          </Tag>
+        </>
+      );
+    },
+  },
+  // {
+  //   title: "操作",
+  //   render: (chooseItem) => {
+  //     return (
+  //       <b
+  //         onClick={this.downloadSettlement}
+  //         className="ant-green-link cursor"
+  //       >
+  //         下载
+  //       </b>
+  //     );
+  //   },
+  // },
+];
 
 class SettlementDetail extends Component {
-  state = {
-    //表格数据
-    inited: false,
-    listData: [],
-    //分页
-    page: 1,
-    size: 20,
-    currentPage: 1,
-    //搜索
-    // searchTxt: "",
-    downloading: false,
-    //上页信息
-    item: {},
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      initd: false,
+      listData: [],
+      page: 1,
+      size: 20,
+      currentPage: 1,
+      searchTxt: "",
+      downloading: false,
+      //上页信息
+      item: props.location.state.chooseItem || {},
+    };
+  }
+
   componentDidMount() {
-    let item = this.props.location.state.chooseItem;
-    this.setState({
-      item: item,
-    });
-    this.initColumns();
     this.getLists(null, 1);
   }
-  //初始化表头
-  initColumns() {
-    this.columns = [
-      {
-        title: "券号",
-        dataIndex: "voucher",
-        key: "voucher",
-      },
-      {
-        title: "营销活动",
-        dataIndex: "campaignName",
-        key: "campaignName",
-      },
-      {
-        title: "订单号",
-        dataIndex: "orderId",
-        key: "orderId",
-      },
-      // {
-      //   title: "发行机构",
-      //   dataIndex: "issuerName",
-      //   key: "issuerName",
-      // },
-      {
-        title: "核销时间",
-        dataIndex: "updatedAt",
-        key: "updatedAt",
-      },
-      {
-        title: "状态",
-        render: (chooseItem) => {
-          const { status, settlementStatus } = chooseItem;
-          //show settlementStatus 结算状态
-          return (
-            <div>
-              <Tag color="green" key={status}>
-                {redemptionStatuses.map((item, index) => (
-                  <span key={index}>{item[status]}</span>
-                ))}
-              </Tag>
-              <Tag color="green" key={settlementStatus}>
-                {settlementStatuses.map((item, index) => (
-                  <span key={index}>{item[settlementStatus]}</span>
-                ))}
-              </Tag>
-            </div>
-          );
-        },
-      },
-      // {
-      //   title:"操作",
-      //   render:(chooseItem)=>{
-      //     return (
-      //           <b
-      //           onClick={this.downloadSettlement}
-      //           className="ant-green-link cursor"
-      //           >
-      //             下载
-      //           </b>
-      //     )
-      //   }
-      // }
-    ];
-  }
+
   //请求当前列表数据
   getLists = async (currentPage) => {
     let id = this.props.match.params.id;
-    const parmas = {
+    const params = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       searchTxt: this.state.searchTxt,
     };
-    const result = await reqGetSettlementDetail(id, parmas);
-    console.log("getLists -> result", result);
+    const result = await reqGetSettlementDetail(id, params);
     const cont =
       result && result.data && result.data.content
         ? result.data.content.entries
@@ -149,7 +139,7 @@ class SettlementDetail extends Component {
       }
     }
     this.setState({
-      inited: true,
+      initd: true,
       listData: data,
       totalPages:
         result && result.data && result.data.content
@@ -158,10 +148,12 @@ class SettlementDetail extends Component {
       loading: false,
     });
   };
+
   //返回上一页
   backIndex = () => {
     this.props.history.push("/admin/settlement");
   };
+
   //查询
   // searchValue = (value) => {
   //   this.setState({
@@ -170,12 +162,14 @@ class SettlementDetail extends Component {
   //   });
   //   this.getLists(value.searchTxt, 1, this.state.value);
   // };
+
   //搜索加载
   // enterLoading = () => {
   //   this.setState({
   //     loading: true,
   //   });
   // };
+
   //分页切换
   handleTableChange = (page) => {
     this.setState({
@@ -183,15 +177,10 @@ class SettlementDetail extends Component {
     });
     this.getLists(null, page);
   };
+
   //表格数据
   renderTableList = () => {
-    let {
-      //表格数据
-      listData,
-      //分页
-      size,
-      currentPage,
-    } = this.state;
+    let { listData, size, currentPage } = this.state;
     return (
       <div>
         <Table
@@ -199,7 +188,7 @@ class SettlementDetail extends Component {
           size="small"
           bordered
           dataSource={listData}
-          columns={this.columns}
+          columns={columns}
           pagination={false}
         />
         <div className="pagination">
@@ -221,27 +210,19 @@ class SettlementDetail extends Component {
   handleDownload = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    this.setState({
-      downloading: true
-    });
+    this.setState({ downloading: true });
     let id = this.props.match.params.id;
-    const filename = 'settlement.xlsx';
-    reqDownloadSettlement(id).then(
-      response => {
+    const filename = "settlement.xlsx";
+    reqDownloadSettlement(id)
+      .then((response) => {
         FileSaver.saveAs(response.data, filename);
-        this.setState({
-          downloading: false
-        });
-      }
-    ).catch((e)=>{
-      this.setState({
-        downloading: false
+        this.setState({ downloading: false });
+      })
+      .catch((e) => {
+        this.setState({ downloading: false });
+        notification.warning({ message: "下载失败，请稍后再试" });
       });
-      notification.warning({
-        message: "下载失败，请稍后再试",
-      });
-    });
-  }
+  };
 
   //明细
   renderDetail = () => {
@@ -258,19 +239,17 @@ class SettlementDetail extends Component {
     } = this.state.item;
     return (
       <div>
-        {/* 页表头 */}
         <PageHeader
           className="site-page-header-responsive cont"
           title="结算详情"
           onBack={this.backIndex}
           extra={[
-            <Button type="primary" 
+            <Button
+              type="primary"
               shape="circle"
               loading={this.state.downloading}
-              icon={<DownloadOutlined />} 
-              onClick = {
-                (e) => this.handleDownload(e)
-              } 
+              icon={<DownloadOutlined />}
+              onClick={(e) => this.handleDownload(e)}
             />,
           ]}
         ></PageHeader>
@@ -311,15 +290,8 @@ class SettlementDetail extends Component {
     );
   };
   render() {
-    return (
-      <div
-        style={{
-          height: "100%",
-        }}
-      >
-        {this.state.inited ? this.renderDetail() : <Loading />}
-      </div>
-    );
+    const { initd } = this.state;
+    return <>{initd ? this.renderDetail() : <Loading />}</>;
   }
 }
 

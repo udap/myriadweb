@@ -112,12 +112,12 @@ const distributionStatuses = [
   { FAILED: "发放失败" },
 ];
 
-const redemptionStatuses = [
-  { PENDING: "核销中" },
-  { SUCCESS: "核销成功" },
-  { FAILED: "核销失败" },
-  { REVOKED: "核销撤销" },
-];
+const redemptionStatuses = {
+  PENDING: "核销中",
+  SUCCESS: "核销成功",
+  FAILED: "核销失败",
+  REVOKED: "核销撤销",
+};
 
 const orgStatusesList = [
   { NEW: "新建" },
