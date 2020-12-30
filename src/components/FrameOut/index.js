@@ -10,7 +10,7 @@ import { privateRoutes } from "@routes";
 import { AntdIcon, ReactDocumentTitle } from "@components";
 // import comEvents from "@utils/comEvents";
 import storageUtils from "@utils/storageUtils";
-import logo from "@assets/images/logo.jpg";
+import { logo } from "@assets/images";
 import TopNav from "./topNav";
 
 //过滤filter导航栏  左侧导航栏
@@ -43,12 +43,16 @@ class FrameOut extends Component {
     "/admin/reports/organization",
   ];
 
-  state = {
-    collapsed: false,
-    current: "mail",
-    selectedKeys: "/admin/dashboard",
-    openKey: [],
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: false,
+      current: "mail",
+      selectedKeys: "/admin/dashboard",
+      openKey: [],
+    };
+    this.updateSelected = this.updateSelected.bind(this);
+  }
 
   componentDidMount() {
     //渲染前调用一次 为render数据做准备
@@ -56,8 +60,9 @@ class FrameOut extends Component {
   }
 
   toggle = () => {
+    const { collapsed } = this.state;
     this.setState({
-      collapsed: !this.state.collapsed,
+      collapsed: !collapsed,
       openKey: [],
     });
   };
@@ -87,12 +92,11 @@ class FrameOut extends Component {
     }
   };
 
-  onOpenChange = (openKey) => {
-    const latestOpenKey = openKey.find(
-      (key) => this.state.openKey.indexOf(key) === -1
-    );
+  onOpenChange = (openKeys) => {
+    const { openKey } = this.state;
+    const latestOpenKey = openKeys.find((key) => openKey.indexOf(key) === -1);
     if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-      this.setState({ openKey });
+      this.setState({ openKey: openKeys });
     } else {
       this.setState({
         openKey: latestOpenKey ? [latestOpenKey] : [],
@@ -101,9 +105,7 @@ class FrameOut extends Component {
   };
 
   updateSelected(key) {
-    this.setState({
-      selectedKeys: key,
-    });
+    this.setState({ selectedKeys: key });
   }
 
   //getNavMap 利用map遍历左侧导航
@@ -165,7 +167,7 @@ class FrameOut extends Component {
     return title;
   };
   render() {
-    const { openKey } = this.state;
+    const { openKey, collapsed } = this.state;
     const { location } = this.props;
     // //获取当前页面的路径地址
     const path = location.pathname;
@@ -175,6 +177,7 @@ class FrameOut extends Component {
     // let curTitle = comEvents.getTitle(location.pathname);
     // window.document.title = curTitle;
     let curTitle = this.getTitle() || "美意智慧营销平台";
+    const user = storageUtils.getUser();
 
     return (
       <ReactDocumentTitle title={curTitle}>
@@ -183,15 +186,15 @@ class FrameOut extends Component {
             breakpoint="lg"
             collapsedWidth="0"
             collapsible
-            collapsed={this.state.collapsed}
+            collapsed={collapsed}
             trigger={null}
           >
             <Link
               to="/admin/dashboard"
               className="logo"
-              onClick={this.updateSelected.bind(this, "/admin/dashboard")}
+              onClick={() => this.updateSelected("/admin/dashboard")}
             >
-              <img alt="江渝礼享" src={logo} />
+              <img alt="江渝礼享" src={user.logo || logo} />
             </Link>
             <Menu
               onClick={this.menusHandler}
@@ -211,12 +214,13 @@ class FrameOut extends Component {
               style={{ padding: 0 }}
             >
               {React.createElement(
-                this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+                collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
                 {
                   className: "trigger",
                   onClick: this.toggle,
                 }
               )}
+              <span>{user.orgName || ""}</span>
               <TopNav />
             </Layout.Header>
             <Layout.Content

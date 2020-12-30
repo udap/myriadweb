@@ -5,6 +5,7 @@ import additionalCoupons from "./additionalCoupons.png";
 import batchIssuing from "./batchIssuing.png";
 import bulkCoupons from "./bulkCoupons.png";
 import defaultUser from "./defaultUser.png";
+import logo from "./logo.png";
 
 export {
   noNotice,
@@ -14,4 +15,5 @@ export {
   batchIssuing,
   bulkCoupons,
   defaultUser,
+  logo,
 };
