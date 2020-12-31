@@ -10,9 +10,7 @@ import {
   Spin,
   notification,
 } from "antd";
-import {
-  UploadOutlined,
-} from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import ReactFileReader from "react-file-reader";
 import defaultValidateMessages from "../../utils/comFormErrorAlert";
 import {
@@ -146,9 +144,9 @@ class CustomerEditForm extends Component {
   };
 
   fetchEmployees = async (searchTxt) => {
-    this.setState({ 
-      employees: [], 
-      fetching: true 
+    this.setState({
+      employees: [],
+      fetching: true,
     });
     const params = {
       sort: ["name"],
@@ -159,7 +157,7 @@ class CustomerEditForm extends Component {
     };
     const result = await reqGetEmployees(params);
     const data = result && result.data ? result.data.content : [];
-    const employees = data.content.map(e=>({
+    const employees = data.content.map((e) => ({
       uid: e.uid,
       name: e.name,
       code: e.code,
@@ -167,13 +165,13 @@ class CustomerEditForm extends Component {
     }));
     this.setState({
       employees,
-      fetching: false
+      fetching: false,
     });
   };
-  enableBatchImport=(e)=>{
+  enableBatchImport = (e) => {
     this.setState({
       batchImport: e.target.checked,
-    })
+    });
   };
   handleFiles = async (files) => {
     var reader = new FileReader();
@@ -191,8 +189,7 @@ class CustomerEditForm extends Component {
     result = await reqBatchImport(formData);
     console.log("import customers", result);
     if (result && result.data && result.data.content.status === "PENDING") {
-      let str0 =
-        "正在导入" + result.data.content.requestedAmount + "个客户！";
+      let str0 = "正在导入" + result.data.content.requestedAmount + "个客户！";
       notification.success({
         message: str0,
       });
@@ -209,14 +206,20 @@ class CustomerEditForm extends Component {
   };
 
   render() {
-    const {fetching, batchImport, employees} = this.state;
+    const { fetching, batchImport, employees } = this.state;
     const { isNew, visible } = this.props;
-    const { name, cellphone, ranking, remarks, employee } = this.state.selectedCustomer;
+    const {
+      name,
+      cellphone,
+      ranking,
+      remarks,
+      employee,
+    } = this.state.selectedCustomer;
     const selectedEmployee = {
-      key: isNew?"":employee.uid,
-      label: isNew?"":employee.name,
-      value: isNew?"":employee.uid,
-    }
+      key: isNew ? "" : employee.uid,
+      label: isNew ? "" : employee.name,
+      value: isNew ? "" : employee.uid,
+    };
     return (
       <Drawer
         width={480}
@@ -240,92 +243,96 @@ class CustomerEditForm extends Component {
           onValuesChange={this.onValuesChange}
           validateMessages={defaultValidateMessages.defaultValidateMessages}
         >
-          {
-          isNew?(
-          <Form.Item name="batchImport">
-            <Checkbox onChange={this.enableBatchImport}>批量导入</Checkbox>
-          </Form.Item>
-          ):null
-          }
-          {
-          batchImport?(
-          <>
-          <Space direction="vertical">
-          <p>请上传批量导入文件</p>
-          <p className="description">文件格式: CSV</p>
-          <p className="description">文件表头：客户姓名,手机号码,客户等级</p>
-          <p className="description">数据示例：王某,18612345678,普通级</p>
-          </Space>
-          <ReactFileReader
-            handleFiles={this.handleFiles}
-            fileTypes={".csv"}
-          >
-            <Button type="primary" icon={<UploadOutlined />}>选择文件并上传</Button>
-          </ReactFileReader>
-          </>
-          ):(
-          <>
-          <Form.Item
-            label="客户姓名"
-            name="name"
-            rules={[{ required: true }, { max: 32 }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="手机号码"
-            name="cellphone"
-            rules={[{ required: true }, { max: 11 }]}
-          >
-            <Input
-              disabled={isNew ? false : true}
-              value={this.state.cellphone}
-            />
-          </Form.Item>
-          <Form.Item name="csr" label="客户经理">
-            <Select showSearch labelInValue
-              placeholder="请输入姓名、员工号或手机号"
-              value={selectedEmployee}
-              filterOption={false}
-              notFoundContent={fetching ? <Spin size="small" /> : null}
-              onSearch={this.fetchEmployees}
-              onChange={this.handleChange}
-              disabled={isNew?true:false} 
-              allowClear
-            >
-              {employees.map(e => (
-                <Option key={e.uid}>{e.name}</Option>
-              ))}     
-            </Select>
-          </Form.Item>
-          <Form.Item name="ranking" label="客户等级">
-            <Select
-              placeholder="请选择客户等级"
-              onChange={this.onGenderChange}
-              allowClear
-            >
-              {this.state.rankList && this.state.rankList.length > 0
-                ? this.state.rankList.map((item) => (
-                    <Option value={item.name}>{item.name}</Option>
-                  ))
-                : null}
-            </Select>
-          </Form.Item>
-          <Form.Item label="备注" name="remarks">
-            <TextArea rows={4} />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={this.state.loading}
-            >
-              提交
-            </Button>
-          </Form.Item>
-          </>
-          )
-          }
+          {isNew ? (
+            <Form.Item name="batchImport">
+              <Checkbox onChange={this.enableBatchImport}>批量导入</Checkbox>
+            </Form.Item>
+          ) : null}
+          {batchImport ? (
+            <>
+              <Space direction="vertical">
+                <p>请上传批量导入文件</p>
+                <p className="description">文件格式: CSV</p>
+                <p className="description">
+                  文件表头：客户姓名,手机号码,客户等级
+                </p>
+                <p className="description">数据示例：王某,18612345678,普通级</p>
+              </Space>
+              <ReactFileReader
+                handleFiles={this.handleFiles}
+                fileTypes={".csv"}
+              >
+                <Button type="primary" icon={<UploadOutlined />}>
+                  选择文件并上传
+                </Button>
+              </ReactFileReader>
+            </>
+          ) : (
+            <>
+              <Form.Item
+                label="客户姓名"
+                name="name"
+                rules={[{ required: true }, { max: 32 }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="手机号码"
+                name="cellphone"
+                rules={[{ required: true }, { max: 11 }]}
+              >
+                <Input
+                  disabled={isNew ? false : true}
+                  value={this.state.cellphone}
+                />
+              </Form.Item>
+              {!isNew ? (
+                <Form.Item name="csr" label="客户经理">
+                  <Select
+                    showSearch
+                    labelInValue
+                    placeholder="请输入姓名、员工号或手机号"
+                    value={selectedEmployee}
+                    filterOption={false}
+                    notFoundContent={fetching ? <Spin size="small" /> : null}
+                    onSearch={this.fetchEmployees}
+                    onChange={this.handleChange}
+                    disabled={isNew ? true : false}
+                    allowClear
+                  >
+                    {employees.map((e) => (
+                      <Option key={e.uid}>{e.name}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              ) : null}
+              <Form.Item name="ranking" label="客户等级">
+                <Select
+                  placeholder="请选择客户等级"
+                  onChange={this.onGenderChange}
+                  allowClear
+                >
+                  {this.state.rankList && this.state.rankList.length > 0
+                    ? this.state.rankList.map((item) => (
+                        <Option value={item.name}>{item.name}</Option>
+                      ))
+                    : null}
+                </Select>
+              </Form.Item>
+              <Form.Item label="备注" name="remarks">
+                <TextArea rows={4} />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={this.state.loading}
+                >
+                  提交
+                </Button>
+              </Form.Item>
+            </>
+          )}
         </Form>
       </Drawer>
     );

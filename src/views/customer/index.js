@@ -63,7 +63,7 @@ class Customer extends Component {
         title: "客户经理",
         key: "employee",
         dataIndex: "employee",
-        render: (employee) => <div>{employee?employee.name:''}</div>,
+        render: (employee) => <div>{employee ? employee.name : ""}</div>,
       },
       {
         title: "客户所在机构",
@@ -75,7 +75,7 @@ class Customer extends Component {
         title: "客户等级",
         key: "ranking",
         dataIndex: "ranking",
-        render: (ranking) => <div>{ranking?ranking:'-'}</div>,
+        render: (ranking) => <div>{ranking ? ranking : "-"}</div>,
       },
       {
         title: "操作",
@@ -91,7 +91,7 @@ class Customer extends Component {
             >
               <EyeOutlined title="查看" />
             </b>
-            {this.state.restricted ? (
+            {this.state.restricted || storageUtils.getUser().admin ? (
               <b>
                 <Divider type="vertical" />
                 <b
@@ -172,7 +172,6 @@ class Customer extends Component {
     this.getCustomerList(page, this.state.searchTxt, this.state.restricted);
   };
   showDetailDrawer = (customer) => {
-    console.log("selected",customer);
     this.setState({
       isNew: false,
       showDetail: true,
@@ -198,14 +197,13 @@ class Customer extends Component {
 
   editCustomer = (customer) => {
     const result = this.isAuthorized("UPDATE_CUSTOMER");
-    console.log("editCustomer:",result);
-     if (result) {
+    if (result) {
       this.setState({
         isNew: false,
         showForm: true,
         selectedCustomer: customer,
       });
-//      this.getCustomerDetail(customer, "showForm");
+      //      this.getCustomerDetail(customer, "showForm");
     }
   };
   deleteCustomer = async (chooseItem) => {
