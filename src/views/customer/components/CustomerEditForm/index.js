@@ -12,18 +12,19 @@ import {
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import ReactFileReader from "react-file-reader";
-import defaultValidateMessages from "../../utils/comFormErrorAlert";
+
+import defaultValidateMessages from "@utils/comFormErrorAlert";
 import {
   reqPostCustomer,
   reqBatchImport,
   reqPutCustomer,
   reqGetCustomerRankings,
   reqGetEmployees,
-} from "../../api";
-import storageUtils from "../../utils/storageUtils";
+} from "@api";
+import storageUtils from "@utils/storageUtils";
 
-const { TextArea } = Input;
 const { Option } = Select;
+
 class CustomerEditForm extends Component {
   state = {
     isNew: true,
@@ -53,11 +54,13 @@ class CustomerEditForm extends Component {
       rankList: cont,
     });
   };
+
   enterLoading = () => {
     this.setState({
       loading: true,
     });
   };
+
   //获取验证码 倒计时60s
   countdown = () => {
     const intetval = setInterval(() => {
@@ -75,6 +78,7 @@ class CustomerEditForm extends Component {
       });
     }, 1000);
   };
+
   enterIconLoading = (value) => {
     if (!value) {
       notification.error({ message: "请输入手机号码！" });
@@ -89,6 +93,7 @@ class CustomerEditForm extends Component {
     //   this.countdown();
     // });
   };
+
   onFinish = async (values) => {
     this.setState({
       loading: true,
@@ -121,10 +126,11 @@ class CustomerEditForm extends Component {
       }
     }
   };
-  //返回上一页
+
   backIndex = () => {
-    this.props.onClose();
+    this.props.onFinishClose();
   };
+
   onValuesChange = (changedValues, allValues) => {
     for (let key in changedValues) {
       if (key === "cellphone") {
@@ -168,16 +174,17 @@ class CustomerEditForm extends Component {
       fetching: false,
     });
   };
+
   enableBatchImport = (e) => {
     this.setState({
       batchImport: e.target.checked,
     });
   };
+
   handleFiles = async (files) => {
     var reader = new FileReader();
     reader.onload = function (e) {
       // Use reader.result
-      console.log(reader.result);
       //3506005,1   3309005,2
     };
     reader.readAsText(files[0]);
@@ -187,7 +194,6 @@ class CustomerEditForm extends Component {
     let result;
     //批量导入
     result = await reqBatchImport(formData);
-    console.log("import customers", result);
     if (result && result.data && result.data.content.status === "PENDING") {
       let str0 = "正在导入" + result.data.content.requestedAmount + "个客户！";
       notification.success({
@@ -320,7 +326,7 @@ class CustomerEditForm extends Component {
                 </Select>
               </Form.Item>
               <Form.Item label="备注" name="remarks">
-                <TextArea rows={4} />
+                <Input.TextArea rows={4} />
               </Form.Item>
               <Form.Item>
                 <Button

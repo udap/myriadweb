@@ -8,7 +8,6 @@ import ModalTable from "./ModalTable";
 import TransferComponent from "./Transfer";
 import EditableTagGroup from "./Tags";
 import TreeSelectComponent from "./TableTransfer";
-import SearchForm from "./SearchForm";
 import HeaderDropdown from "./HeaderDropdown";
 import NoticeIcon from "./NoticeIcon";
 
@@ -23,7 +22,6 @@ export {
   TransferComponent,
   EditableTagGroup,
   TreeSelectComponent,
-  SearchForm,
   HeaderDropdown,
   NoticeIcon,
 };

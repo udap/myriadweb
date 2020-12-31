@@ -15,38 +15,48 @@ import {
   PlusSquareFilled,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
+
 import {
   reqGetCustomers,
   reqDelCustomer,
   reqGetCustomer,
   reqPermit,
-} from "../../api";
-import "../../css/common.less";
-import { Loading, SearchForm } from "../../components";
-import storageUtils from "../../utils/storageUtils";
-import CustomerView from "./customerView";
-import CustomerEditForm from "./customerEditForm";
-const { confirm } = Modal;
+} from "@api";
+import "@css/common.less";
+import { Loading } from "@components";
+import storageUtils from "@utils/storageUtils";
+import { SearchForm, CustomerView, CustomerEditForm } from "./components";
 
-@withRouter
+//搜索栏要展示的字段
+const text = [
+  { name: "我的客户", value: true },
+  { name: "机构客户", value: false },
+];
+
 class Customer extends Component {
-  state = {
-    currentPage: 1,
-    size: 20,
-    searchTxt: null,
-    inited: false,
-    restricted: true,
-    loading: false,
-    showDetail: false,
-    selectedCustomer: null,
-    isNew: true,
-    showForm: false,
-    tableLoading: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: [],
+      totalPages: 1,
+      initd: false,
+      pageIndex: 1,
+      pageSize: 20,
+      searchTxt: "",
+      restricted: true,
+      loading: false,
+      showDetail: false,
+      selectedCustomer: {},
+      isNew: true,
+      showForm: false,
+    };
+  }
+
   componentDidMount() {
-    this.getCustomerList(1);
+    this.getCustomerList();
     this.initColumns();
   }
+
   initColumns = () => {
     this.columns = [
       {
@@ -118,35 +128,42 @@ class Customer extends Component {
       },
     ];
   };
-  refresh = (searchTxt, restricted) => {
-    this.setState({
-      tableLoading: true,
-      currentPage: 1,
-      restricted: restricted,
-    });
-    this.getCustomerList(1, searchTxt, restricted);
+
+  refresh = (restricted) => {
+    this.setState({ restricted });
+    this.getCustomerList({ pageIndex: 1, restricted });
   };
-  getCustomerList = async (currentPage, searchTxt, restricted) => {
-    const { size } = this.state;
-    let orgUid = storageUtils.getUser().orgUid;
-    let params = {
-      page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-      size: size,
-      orgUid: orgUid,
-      searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-      restricted: restricted,
+
+  onSearchClear = (searchTxt) => {
+    this.setState({ searchTxt });
+    this.getCustomerList({ pageIndex: 1, searchTxt });
+  };
+
+  getCustomerList = async (elements = {}) => {
+    const { pageIndex, pageSize, searchTxt, restricted } = this.state;
+    const user = storageUtils.getUser();
+    const params = {
+      page: (elements.pageIndex || pageIndex) - 1,
+      size: elements.pageSize || pageSize,
+      orgUid: user.orgUid,
+      searchTxt: elements.searchTxt || searchTxt,
+      restricted:
+        typeof elements.restricted === "boolean"
+          ? elements.restricted
+          : restricted,
     };
-    let result = await reqGetCustomers(params);
+    this.setState({ loading: true });
+    const result = await reqGetCustomers(params);
     const cont =
       result && result.data && result.data.content ? result.data.content : [];
-    this.data = cont.content;
-    this.totalPages = cont ? cont.totalElements : 1;
     this.setState({
       loading: false,
-      inited: true,
-      tableLoading: false,
+      initd: true,
+      dataSource: cont.content,
+      totalPages: cont ? cont.totalElements : 1,
     });
   };
+
   getCustomerDetail = async (customer, name) => {
     let result = await reqGetCustomer(customer.uid);
     if (result && result.data && result.data.retcode === 0) {
@@ -157,31 +174,31 @@ class Customer extends Component {
       });
     }
   };
-  searchValue = (searchTxt, restricted) => {
+
+  searchValue = (e) => {
     this.setState({
-      currentPage: 1,
-      loading: true,
-      tableLoading: true,
+      pageIndex: 1,
+      searchTxt: e.searchTxt,
+      restricted: e.group,
     });
-    this.getCustomerList(1, searchTxt, restricted);
-  };
-  handleTableChange = (page) => {
-    this.setState({
-      currentPage: page,
+    this.getCustomerList({
+      pageIndex: 1,
+      searchTxt: e.searchTxt,
+      restricted: e.group,
     });
-    this.getCustomerList(page, this.state.searchTxt, this.state.restricted);
   };
+
+  handlePaginationChange = (page) => {
+    this.setState({ pageIndex: page });
+    this.getCustomerList({ pageIndex: page });
+  };
+
   showDetailDrawer = (customer) => {
     this.setState({
       isNew: false,
       showDetail: true,
       selectedCustomer: customer,
     });
-  };
-
-  isAuthorized = async (operation) => {
-    const result = await reqPermit(operation);
-    return result;
   };
 
   addCustomer = async () => {
@@ -195,22 +212,22 @@ class Customer extends Component {
     }
   };
 
-  editCustomer = (customer) => {
-    const result = this.isAuthorized("UPDATE_CUSTOMER");
+  editCustomer = async (customer) => {
+    const result = await reqPermit("UPDATE_CUSTOMER");
     if (result) {
       this.setState({
         isNew: false,
         showForm: true,
         selectedCustomer: customer,
       });
-      //      this.getCustomerDetail(customer, "showForm");
     }
   };
+
   deleteCustomer = async (chooseItem) => {
     let that = this;
     const result = await reqPermit("DELETE_CUSTOMER");
     if (result) {
-      confirm({
+      Modal.confirm({
         title: "确认删除客户【" + chooseItem.name + "】吗?",
         icon: <ExclamationCircleOutlined />,
         okText: "确认",
@@ -222,44 +239,41 @@ class Customer extends Component {
       });
     }
   };
+
   deleteItem = async (uid) => {
-    let resultDel = await reqDelCustomer(uid);
-    this.setState({
-      tableLoading: true,
-      currentPage: 1,
-    });
-    if (resultDel.data.retcode === 0) {
+    const result = await reqDelCustomer(uid);
+    if (result.data.retcode === 0) {
       notification.success({ message: "删除成功" });
-      this.getCustomerList(1);
+      this.getCustomerList();
     }
   };
+
   onDetailClose = () => {
-    this.setState({
-      showDetail: false,
-    });
+    this.setState({ showDetail: false });
   };
+
   onClose = () => {
-    this.setState({
-      tableLoading: true,
-      showForm: false,
-    });
-    this.getCustomerList(1);
+    this.setState({ showForm: false });
+  };
+
+  onFinishClose = () => {
+    this.setState({ showForm: false });
+    this.getCustomerList();
   };
 
   renderContent = () => {
-    //搜索栏要展示的字段
-    const text = [
-      { name: "我的客户", value: true },
-      { name: "机构客户", value: false },
-    ];
-    let {
-      size,
-      currentPage,
+    const {
+      dataSource,
+      totalPages,
+      pageSize,
+      pageIndex,
       showDetail,
       selectedCustomer,
       isNew,
       showForm,
-      tableLoading,
+      loading,
+      searchTxt,
+      restricted,
     } = this.state;
     return (
       <>
@@ -274,37 +288,37 @@ class Customer extends Component {
             />,
           ]}
         ></PageHeader>
-        {/* --搜索栏-- */}
         <SearchForm
-          searchTxt={this.state.searchTxt}
-          loading={this.state.loading}
+          searchTxt={searchTxt}
+          loading={loading}
           searchValue={this.searchValue}
-          defaultValue={true} //true->默认选中我的客户
           texts={text}
           placeholder="请输入客户名称或手机号码查询"
           refresh={this.refresh}
+          restricted={restricted}
+          onSearchClear={this.onSearchClear}
         />
         <Table
           rowKey="uid"
           columns={this.columns}
-          dataSource={this.data}
+          dataSource={dataSource}
           bordered
           size="small"
           pagination={false}
-          loading={tableLoading}
+          loading={loading}
         />
         <div className="pagination">
           <Pagination
-            pageSize={size}
-            current={currentPage}
-            onChange={this.handleTableChange}
-            total={this.totalPages}
+            pageSize={pageSize}
+            current={pageIndex}
+            onChange={this.handlePaginationChange}
+            total={totalPages}
             showTotal={(total) => `总共 ${total} 条数据`}
             size="small"
             showSizeChanger={false}
+            disabled={loading}
           />
         </div>
-
         {showDetail ? (
           <CustomerView
             visible={showDetail}
@@ -316,6 +330,7 @@ class Customer extends Component {
           <CustomerEditForm
             visible={showForm}
             onClose={this.onClose}
+            onFinishClose={this.onFinishClose}
             isNew={isNew}
             selectedCustomer={selectedCustomer}
           />
@@ -323,10 +338,11 @@ class Customer extends Component {
       </>
     );
   };
+
   render() {
-    const { inited } = this.state;
-    return <>{inited ? this.renderContent() : <Loading />}</>;
+    const { initd } = this.state;
+    return <>{initd ? this.renderContent() : <Loading />}</>;
   }
 }
 
-export default Customer;
+export default withRouter(Customer);
