@@ -1,35 +1,24 @@
-	.loginContent{
-		height:100%;
-		background: #f0f2f5 url(images/bg.svg);
-		background-size: 100% 100%;
-		.login,.OrgFormDialog{
-			min-width: 360px;
-			padding:10px;
-			color:#fff;
-			position:absolute;
-			top:50%;
-			left:50%;
-			-webkit-transform: translate(-50%,-50%);
-			-moz-transform: translate(-50%,-50%);
-			transform:translate(-50%,-50%);
-			.login-form-button{
-				width: 100%;
-			}
-		}
-		.getCodeBtn{
-			font-size: 1.2rem;
-		}
-	}
-.orgForm .ant-form-item{
-	margin-bottom: 0!important;
+@import "~antd/es/style/themes/default.less";
+
+.primary-color {
+  color: @primary-color;
 }
-.orgForm .marginBtm{
-	margin-bottom: 10px!important;
-}
-.right{
-	display: flex;
-	justify-content: flex-end;
-}
-@media screen and (max-width:500px){
-.getCodeBtn .btnText{ display: none;}
+
+.loginContent {
+  height: 100%;
+  background: #f0f2f5 url(../../assets/images/bg.svg);
+  background-size: 100% 100%;
+  .login {
+    width: 380px;
+    padding: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    .login-form-button {
+      width: 100%;
+    }
+  }
 }

@@ -1,9 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App'
-import { ConfigProvider } from 'antd'
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { ConfigProvider } from "antd";
 // 配置中文
-import zhCN from 'antd/es/locale/zh_CN'
+import zhCN from "antd/es/locale/zh_CN";
 // 开启路由操作
 //HashRouter的原因, 如果是BrowserRouter
 import {
@@ -12,16 +12,16 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import { commonRoutes } from './routes'
-import './css/index.less'
+
+import { commonRoutes } from "./routes";
+import "./css/index.less";
 
 ReactDOM.render(
   <ConfigProvider locale={zhCN}>
     <Router>
       <Switch>
-        {/*2.公共可以访问*/}
-
-        {commonRoutes.map((item, index) => {
+        {/* 2.公共可以访问 */}
+        {commonRoutes.map((item) => {
           return (
             <Route
               key={item.pathname}
@@ -30,7 +30,7 @@ ReactDOM.render(
             />
           );
         })}
-        {/* 1.私有操作，登陆后访问 //rootProps授权检测 */}
+        {/* 1.私有操作，登陆后访问 rootProps授权检测 */}
         <Route
           path="/admin"
           render={(rootProps) => {

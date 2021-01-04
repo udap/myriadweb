@@ -76,7 +76,7 @@ axios.interceptors.response.use(
       default:
         break;
     }
-    return Promise.reject(error);
+    return Promise.resolve(error);
     // 中断promise返回一个pending的promise
     //return new Promise.reject(() => {});
   }
