@@ -308,6 +308,22 @@ const floatMul = (arg1 = 0, arg2 = 0) => {
   );
 };
 
+// 遍历递归对象，去除为空的属性
+const removeProperty = (obj = {}) => {
+  for (let prop in obj) {
+    if (Object.hasOwnProperty.call(obj, prop)) {
+      if (typeof obj[prop] === "object") {
+        removeProperty(obj[prop]);
+      } else {
+        if (obj[prop] === "") {
+          delete obj[prop];
+        }
+      }
+    }
+  }
+  return obj;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getTitle,
@@ -325,4 +341,5 @@ export default {
   flatRegions,
   guid,
   floatMul,
+  removeProperty,
 };

@@ -196,20 +196,29 @@ const Login = (props) => {
   };
 
   const getRegistrar = async (values) => {
+    const {
+      fullName,
+      name,
+      phone,
+      street,
+      residence,
+      upCode,
+      licenseNo,
+    } = values;
     let params = {
-      fullName: values.fullName,
-      name: values.abbreviation,
-      phone: values.phone,
-      street: values.street,
-      province: values.residence[0],
-      city: values.residence[1],
-      district: values.residence[2],
-      parentOrgUid: "",
-      upCode: values.upCode,
-      licenseNo: values.licenseNo,
+      fullName,
+      name,
+      phone,
+      street,
+      province: residence[0],
+      city: residence[1],
+      district: residence[2],
+      upCode,
+      licenseNo,
     };
+    const paramsEdit = comEvents.removeProperty({ ...params });
     setRegistrarLoading(true);
-    const result = await reqAddOrg(params);
+    const result = await reqAddOrg(paramsEdit);
     setRegistrarLoading(false);
     if (
       result &&

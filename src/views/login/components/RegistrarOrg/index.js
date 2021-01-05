@@ -28,7 +28,7 @@ const RegistrarOrg = (props) => {
         name="basic"
         initialValues={{
           fullName: "",
-          abbreviation: "",
+          name: "",
           residence: [province, city, district],
           phone: "",
           street: "",
@@ -46,7 +46,7 @@ const RegistrarOrg = (props) => {
         </Form.Item>
         <Form.Item
           label="机构简称"
-          name="abbreviation"
+          name="name"
           rules={[{ required: true, message: "请输入机构简称!" }, { max: 20 }]}
         >
           <Input placeholder="请输入机构简称" />
