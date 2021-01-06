@@ -90,7 +90,7 @@ const RegistrarOrg = (props) => {
           name="street"
           rules={[{ required: true, message: "请输入详细地址!" }, { max: 45 }]}
         >
-          <Input placeholder="请输入详细地址" />
+          <Input placeholder="请输入详细地址（例如：**街**号**）" />
         </Form.Item>
         <Form.Item label="营业执照号码" name="licenseNo">
           <Input placeholder="请输入营业执照号码" />
