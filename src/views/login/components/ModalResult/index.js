@@ -17,6 +17,9 @@ const ModalResult = (props) => {
         {props.resultData.merchantAuthCode ? (
           <Paragraph>机构注册码：{props.resultData.merchantAuthCode}</Paragraph>
         ) : null}
+        {props.resultData.reason && (
+          <Paragraph>审批拒绝理由：{props.resultData.reason}</Paragraph>
+        )}
         {!props.resultData.orgUid ? (
           <div style={{ textAlign: "center" }}>
             <Button type="primary" onClick={props.handleRegistrar}>

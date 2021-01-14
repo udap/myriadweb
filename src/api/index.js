@@ -10,7 +10,7 @@ let BASE = host;
 // "proxy": "https://points.xinongtech.com/dev",
 //"proxy": "https://myriad-test.xinongtech.com"
 //https://gift-test.xinongtech.com
-var env = process.env.NODE_ENV;
+// var env = process.env.NODE_ENV;
 
 // if (env === "development") {
 //   BASE = `https://gift-test.xinongtech.com`; // 开发环境
@@ -148,6 +148,9 @@ export const reqDelOrg = (uid) => ajax.delete(BASE + "/organizations/" + uid);
 
 //获取机构列表
 export const reqGetOrgs = (params) => ajax(BASE + "/organizations");
+// 获取机构审批，被拒绝的理由
+export const regApprovals = (orgId) =>
+  ajax(`${BASE}/regApprovals?q=reason&orgId=${orgId}`);
 
 //权限判断
 export const reqPermit = (str) =>

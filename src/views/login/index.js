@@ -11,6 +11,7 @@ import {
   reqLogin,
   reqGetAccounts,
   reqNewAddOrg,
+  regApprovals,
 } from "@api";
 import storageUtils from "@utils/storageUtils";
 import comEvents from "@utils/comEvents";
@@ -86,23 +87,41 @@ const Login = (props) => {
     let msg = "";
     if (!elements.orgUid) {
       msg = "您尚未加入任何机构。请联系您的机构管理员或注册您的机构。";
-    }
-    if (elements.orgUid && elements.orgStatus === "NEW") {
-      msg = "您新注册的机构正在等待审批，请耐心等候。预计审批时间1个工作日";
-    }
-    if (elements.employmentStatus) {
-      if (
-        elements.employmentStatus === "NEW" &&
-        elements.orgStatus === "ACTIVE"
-      ) {
-        msg = "您的员工账号尚未生效，请联系您的机构管理员";
-      } else if (
-        elements.employmentStatus === "SUSPENDED" &&
-        elements.orgStatus === "ACTIVE"
-      ) {
-        msg = "您的账号暂时被冻结，请联系您的机构管理员";
+    } else {
+      switch (elements.orgStatus) {
+        case "NEW":
+          msg = "您新注册的机构正在等待审批，请耐心等候。预计审批时间1个工作日";
+          break;
+        case "SUSPENDED":
+          msg = "您的账号暂时被冻结，请联系您的机构管理员激活账号";
+          break;
+        case "TERMINATED":
+          msg = "您尚未加入机构，请联系您的机构管理员或注册机构";
+          break;
+        case "ACTIVE":
+          if (elements.employmentStatus) {
+            switch (elements.employmentStatus) {
+              case "NEW":
+                msg = "您的员工账号尚未生效，请联系您的机构管理员";
+                break;
+              case "SUSPENDED":
+                msg = "您的账号暂时被冻结，请联系您的机构管理员";
+                break;
+
+              default:
+                msg = `员工状态为：${elements.employmentStatus}`;
+                break;
+            }
+          }
+
+          break;
+
+        default:
+          msg = `机构状态为：${elements.orgStatus}`;
+          break;
       }
     }
+
     return msg;
   };
 
@@ -140,11 +159,20 @@ const Login = (props) => {
       } else {
         setVisible(true);
         const valid = await validation(data);
+        const tempStatus = data.orgStatus === "SUSPENDED" ? "error" : "success";
+        let reason = "";
+        if (data.orgStatus === "SUSPENDED") {
+          const result = await regApprovals(data.orgId);
+          if (result.data && result.data.msg === "OK") {
+            reason = result.data.content;
+          }
+        }
         setResultData({
           ...data,
           valid,
-          status: "success",
+          status: tempStatus,
           title: "",
+          reason,
         });
       }
     }
