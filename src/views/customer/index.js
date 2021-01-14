@@ -134,6 +134,10 @@ class Customer extends Component {
     this.getCustomerList({ pageIndex: 1, restricted });
   };
 
+  refreshSearchTxt = (txt) => {
+    this.setState({ searchTxt: txt });
+  };
+
   onSearchClear = (searchTxt) => {
     this.setState({ searchTxt });
     this.getCustomerList({ pageIndex: 1, searchTxt });
@@ -295,6 +299,7 @@ class Customer extends Component {
           texts={text}
           placeholder="请输入客户名称或手机号码查询"
           refresh={this.refresh}
+          refreshSearchTxt={this.refreshSearchTxt}
           restricted={restricted}
           onSearchClear={this.onSearchClear}
         />

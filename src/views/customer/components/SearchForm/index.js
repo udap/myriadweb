@@ -12,6 +12,12 @@ const SearchForm = (props) => {
     props.refresh(e.target.value);
   };
 
+  const onValuesChange = ({ searchTxt }) => {
+    if (searchTxt !== undefined) {
+      props.refreshSearchTxt(searchTxt);
+    }
+  };
+
   return (
     <Form
       onFinish={onFinish}
@@ -22,6 +28,7 @@ const SearchForm = (props) => {
         searchTxt: props.searchTxt,
         group: props.restricted,
       }}
+      onValuesChange={onValuesChange}
     >
       <Row gutter={[16, 16]}>
         <Col>
