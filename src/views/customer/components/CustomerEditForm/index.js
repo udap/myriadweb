@@ -103,7 +103,7 @@ class CustomerEditForm extends Component {
       cellphone: values.cellphone,
       remarks: values.remarks,
       ranking: values.ranking,
-      mgrUid: values.csr.key,
+      mgrUid: values.csr && values.csr.key,
     };
     if (this.state.isNew) {
       const result = await reqPostCustomer(params);
@@ -222,9 +222,9 @@ class CustomerEditForm extends Component {
       employee,
     } = this.state.selectedCustomer;
     const selectedEmployee = {
-      key: isNew ? "" : employee.uid,
-      label: isNew ? "" : employee.name,
-      value: isNew ? "" : employee.uid,
+      key: isNew ? "" : employee && employee.uid,
+      label: isNew ? "" : employee && employee.name,
+      value: isNew ? "" : employee && employee.uid,
     };
     return (
       <Drawer

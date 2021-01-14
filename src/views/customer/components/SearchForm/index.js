@@ -12,13 +12,6 @@ const SearchForm = (props) => {
     props.refresh(e.target.value);
   };
 
-  const onSearchChange = (e) => {
-    const { value } = e.target;
-    if (value === "") {
-      props.onSearchClear(value);
-    }
-  };
-
   return (
     <Form
       onFinish={onFinish}
@@ -51,7 +44,6 @@ const SearchForm = (props) => {
             <Input
               placeholder={props.placeholder}
               allowClear
-              onChange={onSearchChange}
               disabled={props.loading}
             />
           </Form.Item>
