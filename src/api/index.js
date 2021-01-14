@@ -135,6 +135,9 @@ export const reqUpdateCampaignRules = (id, params) =>
 //一.注册机构 START
 //注册机构
 export const reqAddOrg = (params) => ajax.post(BASE + "/organizations", params);
+// 注册机构(new)
+export const reqNewAddOrg = (params) =>
+  ajax.post(BASE + "/organizations/register", params);
 //查看当前机构
 export const reqGetOrg = (uid) => ajax.get(BASE + "/organizations/" + uid);
 //修改机构信息

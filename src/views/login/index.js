@@ -10,7 +10,7 @@ import {
   reqLoginByPassword,
   reqLogin,
   reqGetAccounts,
-  reqAddOrg,
+  reqNewAddOrg,
 } from "@api";
 import storageUtils from "@utils/storageUtils";
 import comEvents from "@utils/comEvents";
@@ -218,7 +218,7 @@ const Login = (props) => {
     };
     const paramsEdit = comEvents.removeProperty({ ...params });
     setRegistrarLoading(true);
-    const result = await reqAddOrg(paramsEdit);
+    const result = await reqNewAddOrg(paramsEdit);
     setRegistrarLoading(false);
     if (
       result &&
