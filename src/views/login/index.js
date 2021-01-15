@@ -33,10 +33,7 @@ const Login = (props) => {
   const [registrarLoading, setRegistrarLoading] = useState(false);
 
   const enterIconLoading = async (value) => {
-    if (!value) {
-      message.error("请输入手机号码！");
-      return false;
-    }
+    if (!isPwd && value.length !== 11) return;
 
     setLoading(true);
     const result = await reqVerify(value);
