@@ -16,7 +16,8 @@ const campaignStatuses = [
   { INITIATED: "草稿" },
   { ACTIVATING: "发布中" },
   { ACTIVATED: "已发布" },
-  { TERMINATED: "已撤销" },
+  { TERMINATED: "已终止" },
+  { ARCHIVED: "已终止" },
 ];
 const couponStatuses = [
   { NEW: "新券" }, // 可发布
