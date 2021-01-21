@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Transfer, Tree } from "antd";
-import './index.less'
+import "./index.less";
 const { TreeNode } = Tree;
 
 // Customize Table Transfer
@@ -30,8 +30,7 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
   }
   flatten(dataSource);
 
- function handleScroll (direction, e){
- };
+  function handleScroll(direction, e) {}
   return (
     <Transfer
       {...restProps}
@@ -47,6 +46,7 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
           const checkedKeys = [...selectedKeys, ...targetKeys];
           return (
             <Tree
+              height={258}
               blockNode
               checkable
               checkStrictly
@@ -94,11 +94,11 @@ class TransferComponent extends Component {
 
   render() {
     const { targetKeys } = this.state;
-    const { treeData,titles } = this.props;
+    const { treeData, titles } = this.props;
     return (
       <div>
         <TreeTransfer
-          titles={titles?titles:["可设置权限", "分组权限"]}
+          titles={titles ? titles : ["可设置权限", "分组权限"]}
           dataSource={treeData}
           targetKeys={targetKeys}
           onChange={this.onChange}
