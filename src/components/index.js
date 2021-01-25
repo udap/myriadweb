@@ -10,6 +10,7 @@ import EditableTagGroup from "./Tags";
 import TreeSelectComponent from "./TableTransfer";
 import HeaderDropdown from "./HeaderDropdown";
 import NoticeIcon from "./NoticeIcon";
+import BranchSelect from "./BranchSelect";
 
 export {
   FrameOut,
@@ -24,4 +25,5 @@ export {
   TreeSelectComponent,
   HeaderDropdown,
   NoticeIcon,
+  BranchSelect,
 };

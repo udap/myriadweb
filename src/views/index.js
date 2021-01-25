@@ -89,7 +89,7 @@ const TagManager = Loadable({
 });
 
 const Subsidiaries = Loadable({
-  loader: () => import("./myOrgs/subsidiaries"),
+  loader: () => import("./Subsidiaries"),
   loading: Loading,
 });
 const Customer = Loadable({

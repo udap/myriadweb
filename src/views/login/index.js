@@ -90,7 +90,8 @@ const Login = (props) => {
           msg = "您新注册的机构正在等待审批，请耐心等候。预计审批时间1个工作日";
           break;
         case "SUSPENDED":
-          msg = "您的账号暂时被冻结，请联系您的机构管理员激活账号";
+          msg =
+            "您的机构暂时被停用，请联系您的机构管理员或myriadadmin@chainmind.xyz";
           break;
         case "TERMINATED":
           msg = "您尚未加入机构，请联系您的机构管理员或注册机构";
@@ -168,7 +169,7 @@ const Login = (props) => {
           ...data,
           valid,
           status: tempStatus,
-          title: "",
+          title: data.orgFullName,
           reason,
         });
       }
