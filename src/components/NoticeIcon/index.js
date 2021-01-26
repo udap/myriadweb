@@ -17,21 +17,15 @@ const NoticeIcon = (props) => {
       children,
       clearText,
       viewMoreText,
-      onClear,
       onItemClick,
       onViewMore,
       extraClick,
+      readAllText,
+      onReadAllClick,
     } = props;
     const panes = [];
     React.Children.forEach(children, (child) => {
-      const {
-        list,
-        title,
-        count,
-        tabKey,
-        showClear,
-        showViewMore,
-      } = child.props;
+      const { list, title, count, tabKey } = child.props;
       const len = list && list.length ? list.length : 0;
       const msgCount = count || count === 0 ? count : len;
       const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title;
@@ -42,13 +36,11 @@ const NoticeIcon = (props) => {
             clearText={clearText}
             viewMoreText={viewMoreText}
             data={list}
-            onClear={() => onClear && onClear(title, tabKey)}
             onClick={(item) => onItemClick && onItemClick(item, child.props)}
             extraClick={extraClick}
             onViewMore={(event) => onViewMore && onViewMore(child.props, event)}
-            showClear={showClear}
-            showViewMore={showViewMore}
-            title={title}
+            readAllText={readAllText}
+            onReadAllClick={onReadAllClick}
           />
         </TabPane>
       );

@@ -1,7 +1,6 @@
 import React from "react";
 import { List, Avatar, Popover, Button } from "antd";
 import { EllipsisOutlined, DownloadOutlined } from "@ant-design/icons";
-import moment from "moment";
 
 import "./NoticeList.less";
 import {
@@ -21,13 +20,16 @@ const NoticeList = (props) => {
     onClick,
     extraClick,
     downloading,
-    // showClear = true,
+    showClear,
     // onClear,
     // clearText,
     // title,
-    // showViewMore = false,
+    showViewMore,
     // onViewMore,
     // viewMoreText,
+    showReadAll,
+    readAllText,
+    onReadAllClick,
   } = props;
   if (!data || data.length === 0) {
     return (
@@ -104,9 +106,7 @@ const NoticeList = (props) => {
                 description={
                   <div>
                     <div className="description">{item.content.msg}</div>
-                    <div className="dateline">
-                      {moment(item.date).format("YYYY/MM/DD hh:mm:ss")}
-                    </div>
+                    <div className="dateline">{item.createTime}</div>
                   </div>
                 }
               />
@@ -114,13 +114,15 @@ const NoticeList = (props) => {
           );
         }}
       />
-      {/* <div className="bottomBar">
-        {showClear ? (
+      {(showReadAll || showClear || showViewMore) && (
+        <div className="bottomBar">
+          {showReadAll && <div onClick={onReadAllClick}>{readAllText}</div>}
+          {/* {showClear ? (
           <div onClick={onClear}>
             {clearText} {title}
           </div>
-        ) : null}
-        {showViewMore ? (
+        ) : null} */}
+          {/* {showViewMore ? (
           <div
             onClick={(e) => {
               if (onViewMore) {
@@ -130,8 +132,9 @@ const NoticeList = (props) => {
           >
             {viewMoreText}
           </div>
-        ) : null}
-      </div> */}
+        ) : null} */}
+        </div>
+      )}
     </div>
   );
 };

@@ -34,17 +34,20 @@ const TopNav = (props) => {
     const localNotifications =
       JSON.parse(localStorage.getItem("notifications")) || [];
 
-    const hoursAgoArr = localNotifications.filter((item) => {
-      // 一天的毫秒数
-      const compareDate = 24 * 3600 * 1000;
+    // 得到 createTime 相较于当前时间小于一天的数组
+    const daysAgoArr = localNotifications.filter((item) => {
+      const numOfDays = moment()
+        .locale("zh-cn")
+        .diff(moment(item.createTime), "days");
 
-      return moment().valueOf() - item.date <= compareDate;
+      return numOfDays === 0;
     });
 
-    // 清除24 Hours之前的消息
-    localStorage.setItem("notifications", JSON.stringify(hoursAgoArr));
+    // 清除 1 days 之前的消息
+    localStorage.setItem("notifications", JSON.stringify(daysAgoArr));
 
-    const tempArr = filterLocalUserNotice(hoursAgoArr);
+    // 设置当前登录用户的消息列表（数组）
+    const tempArr = filterLocalUserNotice(daysAgoArr);
     setNoticeArr([...tempArr]);
 
     const token = storageUtils.getToken();
@@ -54,12 +57,10 @@ const TopNav = (props) => {
       withCredentials: false,
       headers: { "X-ACCESS-TOKEN": token, "CLIENT-ID": user.guid },
       // 结束请求，并重新发起的时间间距
-      heartbeatTimeout: 300000,
+      heartbeatTimeout: 30_000,
     });
 
-    sse.current.onopen = () => {
-      console.log("SSE Connected", new Date());
-    };
+    sse.current.onopen = () => {};
 
     sse.current.onmessage = (e) => {
       const notifications = JSON.parse(localStorage.getItem("notifications"));
@@ -69,7 +70,6 @@ const TopNav = (props) => {
       if (!(notifications instanceof Array)) {
         arr.unshift({
           ...notificationData,
-          date: moment().valueOf(),
           isRead: false,
         });
       } else {
@@ -79,7 +79,6 @@ const TopNav = (props) => {
         if (!isExist) {
           notifications.unshift({
             ...notificationData,
-            date: moment().valueOf(),
             isRead: false,
           });
         }
@@ -92,9 +91,7 @@ const TopNav = (props) => {
       localStorage.setItem("notifications", JSON.stringify(arr));
     };
 
-    sse.current.onerror = (err) => {
-      console.log("SSE Error", err, new Date());
-    };
+    sse.current.onerror = () => {};
 
     return () => {
       sse.current.close();
@@ -172,13 +169,8 @@ const TopNav = (props) => {
     localStorage.setItem("notifications", JSON.stringify(tempNoticeArr));
   };
 
-  const onNoticeVisibleChange = (item) => {
-    // console.log("onNoticeVisibleChange", item);
-  };
-
-  const handleNoticeClear = (title, key) => {
-    // console.log("handleNoticeClear", title, key);
-  };
+  // 消息列表是否展开 boolean
+  const onNoticeVisibleChange = (isExpend) => {};
 
   const countOfUnRead = noticeArr.filter((item) => item.isRead === false);
 
@@ -206,6 +198,19 @@ const TopNav = (props) => {
 
   const userData = storageUtils.getUser();
 
+  // 一键已读 通知
+  const onReadAllClick = () => {
+    let tempNoticeArr = [];
+    noticeArr.forEach((item) => {
+      item.isRead = true;
+      tempNoticeArr.push(item);
+    });
+
+    const tempFilterArr = filterLocalUserNotice(tempNoticeArr);
+    setNoticeArr([...tempFilterArr]);
+    localStorage.setItem("notifications", JSON.stringify(tempNoticeArr));
+  };
+
   return (
     <div className="right">
       <NoticeIcon
@@ -216,11 +221,12 @@ const TopNav = (props) => {
         }}
         clearText="清空"
         viewMoreText="查看更多"
-        onClear={handleNoticeClear}
+        readAllText="全部已读"
         onPopupVisibleChange={onNoticeVisibleChange}
         onViewMore={() => message.info("Click on view more")}
         clearClose
         extraClick={extraClick}
+        onReadAllClick={onReadAllClick}
       >
         <NoticeIcon.Tab
           tabKey="notification"
@@ -228,7 +234,9 @@ const TopNav = (props) => {
           list={noticeArr}
           title="通知"
           emptyText="暂无通知"
-          showViewMore
+          // showViewMore
+          // showClear
+          showReadAll
           downloading={downloading}
         />
         {/* <NoticeIcon.Tab
