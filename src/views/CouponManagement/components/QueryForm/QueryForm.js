@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Row, Col, Radio, Button, Input, DatePicker } from "antd";
+import { Form, Row, Col, Select, Button, Input, DatePicker } from "antd";
 import moment from "moment";
 
 import "@css/common.less";
@@ -15,7 +15,7 @@ const QueryForm = (props) => {
       className="ant-advanced-search-form"
       initialValues={{
         searchTxt: "",
-        typeSelection: "owner",
+        typeSelection: props.type,
         dateRange: [
           moment("2021-01-01", "YYYY-MM-DD"),
           moment(new Date(), "YYYY-MM-DD"),
@@ -24,24 +24,21 @@ const QueryForm = (props) => {
     >
       <Row gutter={[16, 16]}>
         <Col>
-          <Form.Item name="typeSelection" label="票券归属">
-            <Radio.Group
-              onChange={props.onChangeType}
-              buttonStyle="solid"
-              defaultValue="owner"
-              disabled={props.loading}
-            >
-              <Radio.Button value="owner">我的活动</Radio.Button>
-              <Radio.Button value="publisherId">机构活动</Radio.Button>
-            </Radio.Group>
+          <Form.Item name="typeSelection" label="活动">
+            <Select style={{ width: 140 }} loading={props.loading}>
+              <Select.Option value="OWNED">我发布的活动</Select.Option>
+              <Select.Option value="PARTICIPATED">我参与的活动</Select.Option>
+              <Select.Option value="OWNED_BY_ORG">机构发布的活动</Select.Option>
+            </Select>
           </Form.Item>
         </Col>
         <Col span={6}>
-          <Form.Item name="searchTxt" label="搜索">
-            <Input
-              placeholder="请输入券名、活动名、机构名、标签、创建人查询"
-              allowClear
-            />
+          <Form.Item
+            name="searchTxt"
+            label="搜索"
+            tooltip="包括券名、活动名、机构名、标签、创建人"
+          >
+            <Input placeholder="请输入" allowClear />
           </Form.Item>
         </Col>
         <Col>
@@ -56,7 +53,6 @@ const QueryForm = (props) => {
               className="cursor searchBtn"
               htmlType="submit"
               loading={props.loading}
-              onClick={props.enableLoading}
             >
               查询
             </Button>

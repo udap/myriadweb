@@ -225,6 +225,7 @@ export const reqGetAuthCode = (params) =>
 //TOPNAV END
 
 //票券管理 START
+
 //获取票券管理列表
 export const reqGetCoupons = (params) =>
   ajax.get(BASE + "/myriad/vouchers", { params: params });
@@ -237,6 +238,10 @@ export const reqGetClients = (params) =>
 // 单个发券：
 export const reqPublishDis = (params) =>
   ajax.post(BASE + "/myriad/distributions", params);
+
+export const queryCoupons = (type, params) => {
+  return ajax.get(`${BASE}/myriad/vouchers/summary?type=${type}`, params);
+};
 
 //票券管理 END
 
