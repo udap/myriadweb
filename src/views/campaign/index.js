@@ -743,6 +743,7 @@ class Campaign extends Component {
       listItem,
       loading,
       showIssuingPanel,
+      chooseItem,
     } = this.state;
     return (
       <>
@@ -801,13 +802,14 @@ class Campaign extends Component {
             visible={showDetail}
           />
         ) : null}
-        {this.showIssuingDrawer ? (
+        {this.showIssuingDrawer && (
           <IssueForm
             visible={showIssuingPanel}
             onSubmit={this.issueVouchers}
             onClose={this.handleCancel}
+            data={chooseItem}
           />
-        ) : null}
+        )}
       </>
     );
   };

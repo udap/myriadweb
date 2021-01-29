@@ -7,7 +7,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "antd": "^4.8.6",
+    "antd": "4.11.2",
     "axios": "^0.21.1",
     "blueimp-md5": "^2.18.0",
     "event-source-polyfill": "^1.0.21",

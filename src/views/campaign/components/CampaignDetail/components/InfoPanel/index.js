@@ -89,7 +89,7 @@ const InfoPanel = (props) => {
           thousandSeparator={true}
         />
       </Descriptions.Item>
-      <Descriptions.Item label="允许增发">
+      <Descriptions.Item label="自动增发">
         {props.autoUpdate ? "是" : "否"}
       </Descriptions.Item>
       <Descriptions.Item label="发放形式">
