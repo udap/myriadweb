@@ -140,18 +140,20 @@ class Campaign extends Component {
         title: "标签",
         dataIndex: "category",
         key: "category",
-        width: 90,
+        width: 140,
         render: (value) => {
           return (
-            <>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               {value
                 ? value.split(",").map((item, index) => (
-                    <Tag key={index} color="cyan">
-                      {item}
-                    </Tag>
+                    <div style={{ flex: 1 }}>
+                      <Tag key={index} color="cyan">
+                        {item}
+                      </Tag>
+                    </div>
                   ))
                 : ""}
-            </>
+            </div>
           );
         },
       },
