@@ -14,7 +14,7 @@ const QueryForm = (props) => {
       name="advanced_search"
       className="ant-advanced-search-form"
       initialValues={{
-        searchTxt: "",
+        searchTxt: props.searchTxt,
         typeSelection: props.type,
         dateRange: [
           moment("2021-01-01", "YYYY-MM-DD"),

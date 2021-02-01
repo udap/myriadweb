@@ -1,110 +1,132 @@
-import React, { useEffect, useState, useLayoutEffect, useRef } from "react";
-import {
-  Button,
-  Table,
-  PageHeader,
-  Input,
-  Tag,
-  Divider,
-  Modal,
-  notification,
-  Row,
-  Col,
-  Pagination,
-  Popover,
-} from "antd";
+import React, { useState, useLayoutEffect, useRef } from "react";
+import { Table, PageHeader, Tag, Divider, notification, Popover } from "antd";
 import NumberFormat from "react-number-format";
+import moment from "moment";
 
-import storageUtils from "@utils/storageUtils";
-import {
-  reqGetCoupons,
-  reqGetVoucherById,
-  reqPublishDis,
-  reqGetClients,
-  queryCoupons,
-} from "@api";
-import { Loading } from "@components";
-import { couponStatuses, couponSubTypes } from "@utils/constants";
+import { queryCoupons } from "@api";
+import { campaignStatusObj, couponTypes } from "@utils/constants";
 import comEvents from "@utils/comEvents";
-import { CouponDetails, QueryForm } from "./components";
+import { QueryForm } from "./components";
 import "@css/common.less";
 import "./CouponManagement.less";
 
 const { Column } = Table;
 
 const CouponManagement = () => {
+  const defaultPageIndex = 1;
+  const defaultPageSize = 20;
+  const defaultBeginDate = comEvents.firstDayOfMonth();
+  const defaultEndDate = moment(new Date(), "YYYY-MM-DD").locale("zh-cn");
+  const defaultType = "OWNED";
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [type, setType] = useState("OWNED");
+  const [type, setType] = useState(defaultType);
+  const [searchTxt, setSearchTxt] = useState("");
+  const [page, setPage] = useState(defaultPageIndex);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
+  const [totalElements, setTotalElements] = useState(0);
+  const [endDate, setEndDate] = useState(defaultEndDate);
+  const [beginDate, setBeginDate] = useState(defaultBeginDate);
 
-  const fetchData = async (_type, elements) => {
+  const fetchData = async (elements) => {
     setLoading(true);
     try {
-      const result = await queryCoupons(_type, elements);
-      console.log(result);
-      // if (data.entries && data.entries.length !== 0) {
-      //   const cont = data.entries;
-      //   let arr = [];
-      //   if (cont && cont.length !== 0) {
-      //     for (let i = 0; i < cont.length; i++) {
-      //       let type = cont[i].config.discount
-      //         ? cont[i].config.discount.type
-      //         : "";
-      //       arr.push({
-      //         key: i,
-      //         id: cont[i].id,
-      //         owner: cont[i].owner,
-      //         code: cont[i].code,
-      //         type,
-      //         subType: cont[i].config.type,
-      //         tags: cont[i].category,
-      //         name: cont[i].config.name,
-      //         valueOff:
-      //           cont[i].config.type === "COUPON" && cont[i].config.discount
-      //             ? cont[i].config.discount.valueOff
-      //             : cont[i].config.type === "GIFT" && cont[i].config.product
-      //             ? cont[i].config.product.exchangePrice
-      //             : null,
-      //         during: [
-      //           cont[i].effective,
-      //           comEvents.formatExpiry(cont[i].expiry),
-      //         ],
-      //         status: cont[i].status,
-      //         campaign: cont[i].campaign,
-      //       });
-      //     }
-      //   }
-      //   setData(arr);
-      // }
-    } catch (error) {}
+      const result = await queryCoupons(elements);
+      if (result.data?.retcode === 0) {
+        let arr = [];
+        result.data?.content?.content.forEach((item, index) => {
+          let valueOff = 0;
+          switch (item.type) {
+            case "GIFT":
+              valueOff = item.product?.exchangePrice;
+              break;
+            case "COUPON":
+              valueOff = item.discount?.valueOff;
+              break;
+
+            default:
+              break;
+          }
+          const obj = {
+            periodTime: `${item.beginDate} 至 ${item.endDate}`,
+            name: item.name,
+            remainingSupply: item.remainingSupply,
+            totalSupply: item.totalSupply,
+            type: item.type,
+            camActivationTime: item.campaign?.activationTime,
+            camCreatedById: item.campaign?.createdBy?.id,
+            camCreatedByName: item.campaign?.createdBy?.name,
+            camTags: item.campaign?.tags,
+            camId: item.campaign?.id,
+            camName: item.campaign?.name,
+            camStatus: item.campaign?.status,
+            issuerId: item.issuer?.id,
+            issuerName: item.issuer?.name,
+            valueOff,
+            discountType: item.discount?.type,
+          };
+          arr.push(obj);
+        });
+        setData(arr);
+        setTotalElements(result.data?.content?.totalElements);
+      }
+    } catch (error) {
+      if (error.type !== "HttpError") {
+        notification.error({
+          message: "系统内部错误，请联系管理员！",
+          description: error.ReferenceError,
+        });
+      }
+    }
     setLoading(false);
   };
 
   const firstUpdate = useRef(true);
   useLayoutEffect(() => {
-    // 页面首次加载不执行
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
     }
 
     const params = {
-      page: 0,
-      size: 10,
-      beginDate: "2021-01-01",
-      endDate: "2021-01-25",
-      searchTxt: "",
+      page: page - 1,
+      size: pageSize,
+      beginDate,
+      endDate,
+      searchTxt,
+      type,
     };
-    fetchData(type, params);
-  }, [type]);
+    fetchData(params);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, pageSize]);
 
   const onQueryClick = (elements) => {
-    console.log("onQueryClick", elements);
-    const [beginDate, endDate] = [
+    const [_beginDate, _endDate] = [
       elements["dateRange"][0].format("YYYY-MM-DD"),
       elements["dateRange"][1].format("YYYY-MM-DD"),
     ];
-    console.log(beginDate, endDate);
+    const params = {
+      page: defaultPageIndex - 1,
+      size: defaultPageSize,
+      beginDate: _beginDate,
+      endDate: _endDate,
+      searchTxt: elements.searchTxt,
+      type: elements.typeSelection,
+    };
+    fetchData(params);
+
+    setPage(defaultPageIndex);
+    setPageSize(defaultPageSize);
+    setType(elements.typeSelection);
+    setSearchTxt(elements.searchTxt);
+    setBeginDate(_beginDate);
+    setEndDate(_endDate);
+  };
+
+  const onPageChange = (_page, _pageSize) => {
+    setPage(_page);
+    setPageSize(_pageSize ?? defaultPageSize);
   };
 
   return (
@@ -113,20 +135,26 @@ const CouponManagement = () => {
         className="site-page-header-responsive cont"
         title="票券管理"
       />
-      <QueryForm loading={loading} onFinish={onQueryClick} type={type} />
+      <QueryForm
+        loading={loading}
+        onFinish={onQueryClick}
+        type={type}
+        searchTxt={searchTxt}
+      />
       <Table
-        rowKey="key"
+        rowKey={(record) => record.camId}
         size="small"
         bordered
         dataSource={data}
-        // pagination={{
-        //   current: currentPage,
-        //   pageSize: size,
-        //   total: this.totalPages,
-        //   onChange: this.handleTableChange,
-        //   showTotal: (total) => `总共 ${total} 条数据`,
-        //   disabled: loading,
-        // }}
+        pagination={{
+          showSizeChanger: true,
+          current: page,
+          pageSize,
+          total: totalElements,
+          onChange: onPageChange,
+          showTotal: (total) => `总共 ${total} 条数据`,
+          disabled: loading,
+        }}
         loading={loading}
       >
         <Column
@@ -135,21 +163,101 @@ const CouponManagement = () => {
           key="name"
           render={(text) => <div className="couponName">{text}</div>}
         />
-        <Column title="类型" dataIndex="subType" key="subType" />
-        <Column title="发行机构" dataIndex="code" key="code" />
-        <Column title="发行总数" dataIndex="name" key="name" />
-        <Column title="剩余数量" dataIndex="name" key="name" />
-        <Column title="活动名" dataIndex="name" key="name" />
-        <Column title="标签" dataIndex="name" key="name" />
-        <Column title="有效期" dataIndex="name" key="name" />
-        <Column title="优惠金额" dataIndex="name" key="name" />
-        <Column title="创建人" dataIndex="name" key="name" />
-        <Column title="状态" dataIndex="name" key="name" />
+        <Column
+          title="类型"
+          dataIndex="type"
+          key="type"
+          width={80}
+          render={(type) => <Tag color="green">{couponTypes[type]}</Tag>}
+        />
+        <Column title="发行机构" dataIndex="issuerName" key="issuerName" />
+        <Column title="发行总数" dataIndex="totalSupply" key="totalSupply" />
+        <Column
+          title="剩余数量"
+          dataIndex="remainingSupply"
+          key="remainingSupply"
+        />
+        <Column title="活动名" dataIndex="camName" key="camName" />
+        <Column
+          title="标签"
+          dataIndex="camTags"
+          key="camTags"
+          width={120}
+          render={(tag) => {
+            return (
+              <>
+                {tag &&
+                  tag.split(",").map((item, index) => (
+                    <Tag color="cyan" key={index}>
+                      {item}
+                    </Tag>
+                  ))}
+              </>
+            );
+          }}
+        />
+        <Column title="有效期" dataIndex="periodTime" key="periodTime" />
+        <Column
+          title="优惠金额"
+          dataIndex="valueOff"
+          key="valueOff"
+          render={(text, record) => {
+            if (record.type === "GIFT") {
+              return (
+                <NumberFormat
+                  value={text / 100}
+                  thousandSeparator={true}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  displayType={"text"}
+                  prefix={"(¥"}
+                  suffix={")"}
+                />
+              );
+            } else if (record.type === "COUPON") {
+              if (record.discountType === "AMOUNT") {
+                return (
+                  <NumberFormat
+                    value={text / 100}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    decimalScale={2}
+                    fixedDecimalScale={true}
+                    prefix={"¥"}
+                  />
+                );
+              } else if (record.discountType === "AMOUNT") {
+                return (
+                  <NumberFormat
+                    value={text}
+                    displayType={"text"}
+                    prefix={"优惠 "}
+                    suffix={"%"}
+                  />
+                );
+              }
+            }
+          }}
+        />
+        <Column
+          title="创建人"
+          dataIndex="camCreatedByName"
+          key="camCreatedByName"
+        />
+
+        <Column
+          title="状态"
+          dataIndex="camStatus"
+          key="camStatus"
+          render={(status) => (
+            <Tag color="green">{campaignStatusObj[status]}</Tag>
+          )}
+        />
         <Column
           title="操作"
-          dataIndex="action"
           key="action"
-          render={() => {
+          width={150}
+          render={(text) => {
             return (
               <>
                 <b onClick={() => {}} className="ant-green-link cursor">

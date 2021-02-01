@@ -239,8 +239,8 @@ export const reqGetClients = (params) =>
 export const reqPublishDis = (params) =>
   ajax.post(BASE + "/myriad/distributions", params);
 
-export const queryCoupons = (type, params) => {
-  return ajax.get(`${BASE}/myriad/vouchers/summary?type=${type}`, params);
+export const queryCoupons = (params) => {
+  return ajax.get(`${BASE}/myriad/vouchers/summary`, { params });
 };
 
 //票券管理 END
