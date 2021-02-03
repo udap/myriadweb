@@ -7,7 +7,7 @@ import {
   Empty,
   Campaign,
   CampaignEdit,
-  Coupon,
+  CouponManagement,
   Distribution,
   Redemption,
   SettlementHome,
@@ -61,7 +61,7 @@ const privateRoutes = [
   },
   {
     pathname: "/admin/coupon",
-    component: Coupon,
+    component: CouponManagement,
     title: "票券管理",
     icon: "MoneyCollectOutlined",
     isTop: true, //顶级菜单

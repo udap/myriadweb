@@ -1,9 +1,8 @@
 import axios from "axios";
-//import qs from "qs";
 import { notification } from "antd";
-import storageUtils from "../utils/storageUtils";
+import storageUtils from "@utils/storageUtils";
 
-// 添加请求拦截器:让post请求的请求格式为urlencode格式 a=1&b=2
+// 添加请求拦截器:让post请求的请求格式为urlEncode格式 a=1&b=2
 // 在发送请求之前做些什么
 
 //axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -35,6 +34,7 @@ axios.interceptors.response.use(
       if (response.data.retcode && response.data.retcode !== 0) {
         notification.error({
           message: response.data.msg,
+          duration: 6,
         });
         return response;
       } else {

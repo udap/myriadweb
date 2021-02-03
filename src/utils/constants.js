@@ -11,13 +11,25 @@ const distributionMethods = [
   { CSR_DISTRIBUTE: "手动发放（由营销人员决定发放对象）" },
   { CUSTOMER_COLLECT: "手动领取（由客户主动领取）" },
 ];
+
 const campaignStatuses = [
   //INITIATED 草稿, ACTIVATING 券正在生成, ACTIVATED 券已生成, REJECTED 审批拒绝, ARCHIVED 已删除, TERMINATED 已终止;
   { INITIATED: "草稿" },
   { ACTIVATING: "发布中" },
   { ACTIVATED: "已发布" },
-  { TERMINATED: "已撤销" },
+  { TERMINATED: "已终止" },
+  { ARCHIVED: "已终止" },
 ];
+
+const campaignStatusObj = {
+  //INITIATED 草稿, ACTIVATING 券正在生成, ACTIVATED 券已生成, REJECTED 审批拒绝, ARCHIVED 已删除, TERMINATED 已终止;
+  INITIATED: "草稿",
+  ACTIVATING: "发布中",
+  ACTIVATED: "已发布",
+  TERMINATED: "已终止",
+  ARCHIVED: "已终止",
+};
+
 const couponStatuses = [
   { NEW: "新券" }, // 可发布
   { PENDING: "未生效" }, // 未生效
@@ -51,6 +63,13 @@ const couponSubTypes = [
   { PREPAID_CARD: "储值卡" },
   { LOYALTY_CARD: "会员卡" },
 ];
+
+const couponTypes = {
+  COUPON: "优惠券",
+  GIFT: "礼品券",
+  PREPAID_CARD: "储值卡",
+  LOYALTY_CARD: "会员卡",
+};
 
 const couponSubTypeMethods = [
   { COUPON: "优惠券活动" },
@@ -261,6 +280,7 @@ export {
   voucherTypes,
   distributionMethods,
   campaignStatuses, //营销活动
+  campaignStatusObj,
   couponStatuses, //票券管理
   settlementStatuses, //结算中心
   settlementTypes, //结算添加类型
@@ -274,6 +294,7 @@ export {
   stepLists,
   couponSubTypes,
   couponSubTypeMethods, // 活动类型
+  couponTypes,
   ajaxSuccess,
   ajaxError,
   noticeType,

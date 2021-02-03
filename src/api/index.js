@@ -222,9 +222,10 @@ export const reqGetAuthCode = (params) =>
   ajax.get(BASE + "/organizations/" + params + "/merchantAuthCode");
 //授权码
 
-//TOPNAV END
+//TOP NAV END
 
 //票券管理 START
+
 //获取票券管理列表
 export const reqGetCoupons = (params) =>
   ajax.get(BASE + "/myriad/vouchers", { params: params });
@@ -237,6 +238,16 @@ export const reqGetClients = (params) =>
 // 单个发券：
 export const reqPublishDis = (params) =>
   ajax.post(BASE + "/myriad/distributions", params);
+// 多个发券
+export const batchDistribute = (params) =>
+  ajax.post(`${BASE}/myriad/vouchers/batchDistribute`, params);
+
+export const queryCoupons = (params) => {
+  return ajax.get(`${BASE}/myriad/vouchers/summary`, { params });
+};
+// 注销票券
+export const disableVouchers = (params) =>
+  ajax.put(`${BASE}/myriad/vouchers/disable`, params);
 
 //票券管理 END
 

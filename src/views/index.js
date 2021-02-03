@@ -34,12 +34,9 @@ const CampaignEdit = Loadable({
   loader: () => import("./CampaignEdit"),
   loading: Loading,
 });
-const Coupon = Loadable({
-  loader: () => import("./coupon"),
-  loading: Loading,
-});
-const CouponHome = Loadable({
-  loader: () => import("./coupon/couponHome"),
+
+const CouponManagement = Loadable({
+  loader: () => import("./CouponManagement"),
   loading: Loading,
 });
 
@@ -117,8 +114,7 @@ export {
   Empty,
   Campaign,
   CampaignEdit,
-  Coupon,
-  CouponHome,
+  CouponManagement,
   Distribution,
   Redemption,
   SettlementHome,
