@@ -1,180 +1,84 @@
 import React from "react";
-import { Tag, Descriptions, Drawer, Table, Space } from "antd";
-import NumberFormat from "react-number-format";
+import { Drawer, Descriptions, Tag, Collapse } from "antd";
 
-import comEvents from "@utils/comEvents";
-import { couponStatuses, couponSubTypes } from "@utils/constants";
-import "./CouponDetails.less";
-
-const merchantColumns = [
-  {
-    title: "商户名称",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "商户地址",
-    dataIndex: "address",
-    key: "address",
-  },
-];
-
-const pageSize = 20;
+import { couponTypes, campaignStatusObj } from "@/utils/constants";
+import ValueOffText from "../ValueOffText";
 
 const CouponDetails = (props) => {
-  const { voucher, visible, onClose } = props;
-  return voucher ? (
-    <Drawer width={480} title="票券详情" onClose={onClose} visible={visible}>
-      <Space direction="vertical">
-        <Descriptions size="small" bordered column={1}>
-          <Descriptions.Item label="券号">{voucher.code}</Descriptions.Item>
-          <Descriptions.Item label="券名">
-            {voucher.config.name}
-          </Descriptions.Item>
-          {_renderType(voucher.config)}
-          <Descriptions.Item label="营销机构">
-            {voucher.issuerName}
-          </Descriptions.Item>
-          {voucher.campaign ? (
-            <Descriptions.Item label="营销活动">
-              {voucher.campaign.name}
-            </Descriptions.Item>
-          ) : null}
-          <Descriptions.Item label="标签">
-            <span>
-              {voucher.category
-                ? voucher.category.split(",").map((t, index) => (
-                    <Tag color="cyan" key={index}>
-                      {t}
-                    </Tag>
-                  ))
-                : ""}
-            </span>
-          </Descriptions.Item>
-          {voucher.config.daysAfterDist ? (
-            <Descriptions.Item label="有效期">
-              领取/发放后 {voucher.config.daysAfterDist} 天内有效
-            </Descriptions.Item>
-          ) : (
-            <Descriptions.Item label="有效期">
-              {voucher.effective}至{comEvents.formatExpiry(voucher.expiry)}
-            </Descriptions.Item>
-          )}
-          {_renderValueOff(voucher.config)}
-          <Descriptions.Item label="持有人">
-            {voucher.ownerName}
-          </Descriptions.Item>
-          <Descriptions.Item label="状态">
-            <Tag color="green" key={voucher.status}>
-              {couponStatuses.map((item, index) => (
-                <span key={index}>{item[voucher.status]}</span>
-              ))}
-            </Tag>
-          </Descriptions.Item>
-        </Descriptions>
-        <div>
-          <h4>参与商户</h4>
-          <Table
-            bordered
-            size="small"
-            className="tableFont"
-            columns={merchantColumns}
-            dataSource={voucher.merchants}
-            pagination={{
-              pageSize: pageSize,
-              total: voucher.merchants.length,
-            }}
-          />
-        </div>
-      </Space>
-    </Drawer>
-  ) : null;
-};
-
-const _renderType = (config) => {
-  let subType = config.type;
   return (
-    <>
-      <Descriptions.Item label="类型">
-        <Tag color="green" key={subType}>
-          {couponSubTypes.map((item, index) => (
-            <span key={index}>{item[subType]}</span>
-          ))}
-        </Tag>
-      </Descriptions.Item>
-    </>
-  );
-};
-
-const _renderValueOff = (config) => {
-  let discountType = config.discount ? config.discount.type : config.type;
-  let valueOff = config.discount ? config.discount.valueOff : "";
-  return (
-    <>
-      {config.type === "COUPON" ? (
-        <>
-          <Descriptions.Item label="折扣">
-            {discountType === "AMOUNT" ? (
-              <NumberFormat
-                value={valueOff / 100}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"¥"}
+    <Drawer
+      title="票券详情"
+      width={480}
+      visible={props.visible}
+      onClose={props.handleCancel}
+      destroyOnClose
+    >
+      <Collapse defaultActiveKey={["1", "2", "3"]}>
+        <Collapse.Panel header="基本信息" key="1">
+          <Descriptions size="small" bordered column={1}>
+            <Descriptions.Item label="券名">
+              {props.data?.name}
+            </Descriptions.Item>
+            <Descriptions.Item label="类型">
+              <Tag color="green">{couponTypes[props.data?.type]}</Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="发行总数">
+              {props.data?.totalSupply}
+            </Descriptions.Item>
+            <Descriptions.Item label="剩余数量">
+              {props.data?.remainingSupply}
+            </Descriptions.Item>
+            <Descriptions.Item label="优惠金额">
+              <ValueOffText
+                type={props.data?.type}
+                discountType={props.data?.discountType}
+                text={props.data?.valueOff}
               />
-            ) : (
-              <NumberFormat
-                value={valueOff}
-                displayType={"text"}
-                suffix={"%"}
-              />
+            </Descriptions.Item>
+            <Descriptions.Item label="有效期">
+              {props.data?.periodTime}
+            </Descriptions.Item>
+          </Descriptions>
+        </Collapse.Panel>
+        <Collapse.Panel header="所属活动" key="2">
+          <Descriptions size="small" bordered column={1}>
+            <Descriptions.Item label="活动名">
+              {props.data?.camName}
+            </Descriptions.Item>
+            <Descriptions.Item label="状态">
+              <Tag color="green">
+                {campaignStatusObj[props.data?.camStatus]}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="允许增发">
+              {props.data?.camAutoUpdate ? "是" : "否"}
+            </Descriptions.Item>
+            <Descriptions.Item label="创建人">
+              {props.data?.camCreatedByName}
+            </Descriptions.Item>
+            {props.data?.camTags && (
+              <Descriptions.Item label="标签">
+                {props.data?.camTags.split(",").map((item, index) => (
+                  <Tag color="cyan" key={index}>
+                    {item}
+                  </Tag>
+                ))}
+              </Descriptions.Item>
             )}
-          </Descriptions.Item>
-          {discountType === "PERCENT" ? (
-            <Descriptions.Item label="最高优惠">
-              {config.discount.amountLimit ? (
-                <NumberFormat
-                  value={config.discount.amountLimit / 100}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  prefix={"¥"}
-                />
-              ) : (
-                "无限制"
-              )}
+            <Descriptions.Item label="发布时间">
+              {props.data?.camActivationTime}
             </Descriptions.Item>
-          ) : null}
-        </>
-      ) : config.type === "GIFT" ? (
-        <>
-          <Descriptions.Item label="商品名称">
-            {config.product.name}
-          </Descriptions.Item>
-          <Descriptions.Item label="SKU">
-            {config.product.code}
-          </Descriptions.Item>
-          <Descriptions.Item label="商品市场零售价">
-            <NumberFormat
-              value={config.product.marketPrice / 100}
-              displayType={"text"}
-              thousandSeparator={true}
-              decimalScale={2}
-              fixedDecimalScale={true}
-              prefix={"¥"}
-            />
-          </Descriptions.Item>
-          <Descriptions.Item label="商品换购价格">
-            <NumberFormat
-              value={config.product.exchangePrice / 100}
-              displayType={"text"}
-              thousandSeparator={true}
-              decimalScale={2}
-              fixedDecimalScale={true}
-              prefix={"¥"}
-            />
-          </Descriptions.Item>
-        </>
-      ) : null}
-    </>
+          </Descriptions>
+        </Collapse.Panel>
+        <Collapse.Panel header="所属机构" key="3">
+          <Descriptions size="small" bordered column={1}>
+            <Descriptions.Item label="机构名">
+              {props.data?.issuerName}
+            </Descriptions.Item>
+          </Descriptions>
+        </Collapse.Panel>
+      </Collapse>
+    </Drawer>
   );
 };
 
