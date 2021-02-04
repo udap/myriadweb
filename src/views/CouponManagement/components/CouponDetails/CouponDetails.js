@@ -50,7 +50,7 @@ const CouponDetails = (props) => {
                 {campaignStatusObj[props.data?.camStatus]}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="允许增发">
+            <Descriptions.Item label="自动增发">
               {props.data?.camAutoUpdate ? "是" : "否"}
             </Descriptions.Item>
             <Descriptions.Item label="创建人">

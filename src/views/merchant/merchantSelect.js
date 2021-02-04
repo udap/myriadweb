@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Input, Table } from "antd";
-import {
-  reqGetMerchants
-} from "../../api";
+import { reqGetMerchants } from "../../api";
 import storageUtils from "../../utils/storageUtils";
 import { Loading } from "../../components";
 import "../../css/common.less";
@@ -96,8 +94,8 @@ class MerchantSelect extends Component {
     const { merchants, size, currentPage, loading } = this.state;
     return (
       <div>
-        <p class="description">
-        请从当前机构的所有上级机构的入驻商户中选择商户入驻当前机构
+        <p className="description">
+          请从当前机构的所有上级机构的入驻商户中选择商户入驻当前机构
         </p>
         {/* --搜索栏-- */}
         <Search
@@ -131,7 +129,7 @@ class MerchantSelect extends Component {
         ) : (
           <Loading />
         )}
-      </div>  
+      </div>
     );
   }
 }

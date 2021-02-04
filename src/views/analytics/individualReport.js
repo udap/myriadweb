@@ -44,7 +44,7 @@ const renderPercent = (value) => {
   );
 };
 const renderEmployee = (value) => {
-  return value ? value : <div class="description">{"离职员工"}</div>;
+  return value ? value : <div className="description">{"离职员工"}</div>;
 };
 
 class IndividualReport extends Component {

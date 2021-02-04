@@ -19,7 +19,6 @@ const QueryForm = (props) => {
         <Col>
           <Form.Item name="group" label="查询条件">
             <Radio.Group
-              defaultValue="participant"
               onChange={props.onChangeType}
               buttonStyle="solid"
               disabled={props.loading}

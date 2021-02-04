@@ -73,7 +73,7 @@ class Groups extends Component {
 
   searchValue = (value) => {
     this.setState({
-      currentPage:1,
+      currentPage: 1,
       searchTxt: value.searchTxt,
     });
     this.getGroups(1, value.searchTxt);
@@ -144,8 +144,8 @@ class Groups extends Component {
   deleteItem = async (id) => {
     let result = await reqDelGroup(id);
     this.setState({
-      currentPage:1
-    })
+      currentPage: 1,
+    });
     if (result.data.retcode === 0) {
       notification.success({ message: "删除成功" });
       this.getGroups(1);
@@ -271,29 +271,31 @@ class Groups extends Component {
             name="name"
             rules={[{ required: true }, { max: 20 }]}
           >
-            <Input placeholder="分组名称不超过20个字" maxLength="20"/>
+            <Input placeholder="分组名称不超过20个字" maxLength="20" />
           </Form.Item>
-          {isNew? (
+          {isNew ? (
             <Form.Item label="创建模版组？">
-            <div class="description">模版组是当前机构为限定下属机构员工权限而创建的分组</div>
-            <Form.Item noStyle
-              name="createTemplateGroup"
-            >
-              <Switch />
+              <div className="description">
+                模版组是当前机构为限定下属机构员工权限而创建的分组
+              </div>
+              <Form.Item noStyle name="createTemplateGroup">
+                <Switch />
+              </Form.Item>
             </Form.Item>
-            </Form.Item>):(
+          ) : (
             <Form.Item label="模版">
-              <Switch disabled defaultChecked={this.state.curInfo.template}/>  
+              <Switch disabled defaultChecked={this.state.curInfo.template} />
             </Form.Item>
-            )
-          }
+          )}
           <Form.Item label="描述" name="description" rules={[{ max: 255 }]}>
             <TextArea rows={4} />
           </Form.Item>
           <Form.Item label="权限" name="operations">
             {this.state.curInfo.template ? (
-              <div class="description">修改模版组的权限将影响所有使用该模版的下属机构的员工权限</div>):null
-            }
+              <div className="description">
+                修改模版组的权限将影响所有使用该模版的下属机构的员工权限
+              </div>
+            ) : null}
             <TransferComponent
               treeData={operationsData}
               chooseItem={this.choosehandle}
@@ -334,20 +336,22 @@ class Groups extends Component {
         title: "描述",
         dataIndex: "desc",
         key: "desc",
-        responsive: ['lg'],
+        responsive: ["lg"],
       },
       {
         title: "管理机构",
         dataIndex: "owner",
         key: "owner",
-        responsive: ['lg'],
+        responsive: ["lg"],
         render: (owner) => <span>{owner ? owner.name : "-"}</span>,
       },
       {
         title: "类别",
         dataIndex: "template",
         width: 120,
-        render: (value) => <span>{value?<Tag color="blue">模版</Tag>:""}</span>
+        render: (value) => (
+          <span>{value ? <Tag color="blue">模版</Tag> : ""}</span>
+        ),
       },
       {
         title: "操作",
@@ -401,7 +405,7 @@ class Groups extends Component {
                 }}
                 className="ant-pink-link cursor"
               >
-                <DeleteOutlined title="删除"/>
+                <DeleteOutlined title="删除" />
               </b>
             </div>
           );

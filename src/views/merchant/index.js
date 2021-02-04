@@ -227,7 +227,7 @@ class Merchant extends Component {
         onFinishFailed={this.onFinishFailed}
         validateMessages={defaultValidateMessages.defaultValidateMessages}
       >
-        <p class="description">
+        <p className="description">
           添加入驻商户需要获得相关商户授权。请向相关商户索取授权码及银联商户码。
         </p>
         <Form.Item
@@ -422,7 +422,7 @@ class Merchant extends Component {
           }}
           onFinish={this.submitCommonTags}
         >
-          <div class="grey-block">选择公共标签设置</div>
+          <div className="grey-block">选择公共标签设置</div>
           <Form.Item name="tag">
             <TreeSelectComponent
               mockData={tagsData}

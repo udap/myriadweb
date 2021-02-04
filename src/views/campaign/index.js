@@ -215,7 +215,7 @@ class Campaign extends Component {
               ) : null}
               <Divider type="vertical" />
               <Popover
-                placement="topLeft"
+                // placement="topLeft"
                 content={
                   value.includes("participant")
                     ? this.showExtraBtns(chooseItem)
@@ -271,7 +271,7 @@ class Campaign extends Component {
           </span>
         ) : status === "ACTIVATED" ? (
           <span>
-            <b
+            {/* <b
               onClick={() => {
                 this.showIssuingDrawer(chooseItem);
               }}
@@ -297,7 +297,7 @@ class Campaign extends Component {
             >
               发放
             </b>
-            <Divider type="vertical" />
+            <Divider type="vertical" /> */}
             <b
               onClick={() => {
                 let that = this;
