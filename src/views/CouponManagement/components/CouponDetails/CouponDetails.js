@@ -36,7 +36,9 @@ const CouponDetails = (props) => {
               />
             </Descriptions.Item>
             <Descriptions.Item label="有效期">
-              {props.data?.periodTime}
+              {props.data?.daysAfterDist
+                ? `发放/领取${props.data?.daysAfterDist}天内有效`
+                : props.data?.periodTime}
             </Descriptions.Item>
           </Descriptions>
         </Collapse.Panel>
