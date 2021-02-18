@@ -27,3 +27,9 @@ Fixes and Functionality:
 - 修改 票券管理 => 详情，“允许增发”改为“自动增发”
 - 修改 样式书写问题 class => className
 - 移除 项目备注.md 文件
+
+### 1.9.1 (February 18, 2021)
+
+Fixes and Functionality:
+
+- 关闭 CouponManagement 页面 RangePicker 的清除按钮

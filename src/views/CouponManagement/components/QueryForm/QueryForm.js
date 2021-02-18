@@ -43,7 +43,7 @@ const QueryForm = (props) => {
         </Col>
         <Col>
           <Form.Item name="dateRange" label="发布时间">
-            <RangePicker format="YYYY-MM-DD" />
+            <RangePicker format="YYYY-MM-DD" allowClear={false} />
           </Form.Item>
         </Col>
         <Col>
