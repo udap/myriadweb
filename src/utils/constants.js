@@ -271,6 +271,8 @@ const rulesOfUse = {
   SelectedRegions: "所在区域",
 };
 
+const pwdReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
+
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
@@ -300,4 +302,5 @@ export {
   noticeType,
   autoUpdateTooltip,
   rulesOfUse,
+  pwdReg,
 };

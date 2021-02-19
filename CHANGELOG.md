@@ -33,3 +33,9 @@ Fixes and Functionality:
 Fixes and Functionality:
 
 - 关闭 CouponManagement 页面 RangePicker 的清除按钮
+
+### 1.9.x (February 18, 2021)
+
+Fixes and Functionality:
+
+- 新增 设置 => 我的账户 => 密码设置，密码必须是包含 8-18 位英文字母、数字、字符的组合

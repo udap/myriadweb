@@ -4,13 +4,13 @@ import md5 from "blueimp-md5";
 
 import defaultValidateMessages from "@utils/comFormErrorAlert";
 import { reqGetVerificationCode, reqPutPassword } from "@api";
+import { pwdReg } from "@utils/constants";
 
 class PasswordDrawer extends Component {
   constructor() {
     super();
     this.state = {
       iconLoading: false,
-      unableClick: false, //不允许再次获取验证码
       number: 60,
       password: "",
       loading: false,
@@ -20,47 +20,54 @@ class PasswordDrawer extends Component {
 
   //获取验证码 倒计时60s
   countdown = () => {
-    const { number } = this.state;
     const interval = setInterval(() => {
+      const { number } = this.state;
+
       //倒计时结束，清空倒计时并恢复初始状态
       if (number === 0) {
         clearInterval(interval);
         this.setState({
-          unableClick: false,
           iconLoading: false,
           number: 60,
         });
       }
-      this.setState({
-        number: number - 1,
-      });
+
+      this.setState({ number: number - 1 });
     }, 1000);
   };
 
   enterIconLoading = async () => {
     const result = await reqGetVerificationCode();
-    if (result.data.retcode === 0) {
-      this.setState({
-        iconLoading: true,
-        unableClick: true,
-      });
+    if (result.data?.retcode === 0) {
+      this.setState({ iconLoading: true });
       this.countdown();
     }
   };
 
   onFinish = async (values) => {
-    this.setState({ loading: true });
-    let params = {
-      password: md5(values.password),
-      verificationCode: values.verificationCode,
-    };
-
-    const result = await reqPutPassword(params);
-    this.setState({ loading: false });
-    if (result.data.retcode === 0) {
-      notification.success({ message: "更新成功" });
-      this.backIndex();
+    const { iconLoading } = this.state;
+    if (!iconLoading) {
+      notification.error({
+        message: "密码设置失败",
+        description: "请先获取验证码！",
+      });
+      return;
     }
+
+    this.setState({ loading: true });
+    try {
+      let params = {
+        password: md5(values.password),
+        verificationCode: values.verificationCode,
+      };
+
+      const result = await reqPutPassword(params);
+      if (result.data.retcode === 0) {
+        notification.success({ message: "更新成功" });
+        this.backIndex();
+      }
+    } catch (error) {}
+    this.setState({ loading: false });
   };
 
   //返回上一页
@@ -73,17 +80,16 @@ class PasswordDrawer extends Component {
       password,
       verificationCode,
       iconLoading,
-      unableClick,
       number,
       loading,
     } = this.state;
-    let { visible, selectedAccount } = this.props;
+    const { visible, selectedAccount, onClose } = this.props;
     return (
       <Drawer
         width={480}
         title="密码设置"
         visible={visible}
-        onClose={this.props.onClose}
+        onClose={onClose}
         footer={null}
       >
         <Form
@@ -107,35 +113,26 @@ class PasswordDrawer extends Component {
             name="verificationCode"
             label="验证码"
             type="number"
-            rules={[
-              {
-                required: true,
-              },
-              {
-                len: 6,
-              },
-            ]}
+            rules={[{ required: true }, { len: 6 }]}
           >
             <Row gutter={8}>
-              <Col span={14}>
+              <Col span={16}>
                 <Input
                   placeholder="请输入验证码"
                   name="verificationCode"
                   value={verificationCode}
                 />
               </Col>
-              <Col span={10}>
+              <Col span={8}>
                 <Button
                   className="getCodeBtn"
                   type="primary"
                   block
                   loading={iconLoading}
                   onClick={this.enterIconLoading}
-                  disabled={unableClick}
+                  disabled={iconLoading}
                 >
-                  <span className="btnText">
-                    {unableClick ? number + "秒" : "验证码"}
-                  </span>
+                  <span>{iconLoading ? number + "秒" : "获取验证码"}</span>
                 </Button>
               </Col>
             </Row>
@@ -144,9 +141,25 @@ class PasswordDrawer extends Component {
           <Form.Item
             label="密码"
             name="password"
-            rules={[{ required: true }, { max: 32 }]}
+            rules={[
+              { required: true },
+              () => ({
+                validator(_, value) {
+                  if (!pwdReg.test(value)) {
+                    return Promise.reject(
+                      new Error(
+                        "密码必须是包含8-18位英文字母、数字、字符的组合"
+                      )
+                    );
+                  }
+
+                  return Promise.resolve();
+                },
+              }),
+            ]}
+            hasFeedback
           >
-            <Input.Password />
+            <Input.Password placeholder="请输入新的密码" />
           </Form.Item>
 
           <Form.Item>
