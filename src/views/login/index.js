@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import md5 from "blueimp-md5";
 import { Row, Col, Form, Input, Button, Space, message, Card } from "antd";
-import { UserOutlined, LockOutlined, KeyOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 import "./index.less";
 import "@css/common.less";
@@ -15,7 +15,7 @@ import {
 } from "@api";
 import storageUtils from "@utils/storageUtils";
 import comEvents from "@utils/comEvents";
-import { ModalResult, RegistrarOrg } from "./components";
+import { ModalResult, RegistrarOrg, CaptchaCode } from "./components";
 
 const Login = (props) => {
   const timeInit = 60;
@@ -301,6 +301,7 @@ const Login = (props) => {
                 disabled={unableClick}
               />
             </Form.Item>
+            <CaptchaCode />
             {isPwd ? (
               <Form.Item
                 type="password"
@@ -313,10 +314,11 @@ const Login = (props) => {
                 ]}
               >
                 <Input.Password
-                  prefix={<KeyOutlined className="site-form-item-icon" />}
+                  prefix={<LockOutlined className="site-form-item-icon" />}
                   placeholder="请输入密码"
                   name="password"
                   value={password}
+                  allowClear
                 />
               </Form.Item>
             ) : (
@@ -345,6 +347,7 @@ const Login = (props) => {
                         placeholder="请输入验证码"
                         name="verificationCode"
                         value={verificationCode}
+                        allowClear
                       />
                     </Form.Item>
                   </Col>

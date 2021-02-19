@@ -113,7 +113,7 @@ class PasswordDrawer extends Component {
             name="verificationCode"
             label="验证码"
             type="number"
-            rules={[{ required: true }, { len: 6 }]}
+            rules={[{ required: true }]}
           >
             <Row gutter={8}>
               <Col span={16}>
@@ -121,6 +121,8 @@ class PasswordDrawer extends Component {
                   placeholder="请输入验证码"
                   name="verificationCode"
                   value={verificationCode}
+                  maxLength={6}
+                  allowClear
                 />
               </Col>
               <Col span={8}>
@@ -142,24 +144,26 @@ class PasswordDrawer extends Component {
             label="密码"
             name="password"
             rules={[
-              { required: true },
-              () => ({
+              { required: true, message: "请输入新的密码" },
+              {
                 validator(_, value) {
-                  if (!pwdReg.test(value)) {
-                    return Promise.reject(
-                      new Error(
-                        "密码必须是包含8-18位英文字母、数字、字符的组合"
-                      )
-                    );
+                  if (value) {
+                    if (!pwdReg.test(value)) {
+                      return Promise.reject(
+                        new Error(
+                          "密码必须是8-18位英文字母(包含大小写）、数字、字符的组合"
+                        )
+                      );
+                    }
                   }
 
                   return Promise.resolve();
                 },
-              }),
+              },
             ]}
             hasFeedback
           >
-            <Input.Password placeholder="请输入新的密码" />
+            <Input.Password placeholder="请输入新的密码" allowClear />
           </Form.Item>
 
           <Form.Item>
