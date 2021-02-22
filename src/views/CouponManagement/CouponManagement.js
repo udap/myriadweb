@@ -175,12 +175,17 @@ const CouponManagement = () => {
     setCustomerVisible(false);
   };
 
-  // 注销
+  // 票券注销
   const cancellation = async (elements) => {
     Modal.confirm({
-      title: "确定注销此票券吗？",
+      title: "确定注销以下活动的所有未发票券吗？",
       icon: <ExclamationCircleOutlined />,
-      content: elements.name,
+      content: (
+        <>
+          <div>{elements.camName}</div>
+          <div style={{ color: "red", paddingTop: 8 }}>票券注销后不可恢复</div>
+        </>
+      ),
       async onOk() {
         try {
           const params = { campaignId: elements.camId };

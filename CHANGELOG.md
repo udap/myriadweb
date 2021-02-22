@@ -28,8 +28,9 @@ Fixes and Functionality:
 - 修改 样式书写问题 class => className
 - 移除 项目备注.md 文件
 
-### 1.9.1 (February 18, 2021)
+### 1.9.1 (February 20, 2021)
 
 Fixes and Functionality:
 
 - 关闭 CouponManagement 页面 RangePicker 的清除按钮
+- 修改 票券管理 “注销” 提示文案
