@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Row, Col, Radio, Button, Input } from "antd";
+import { Form, Row, Col, Radio, Button, Input, Select } from "antd";
 
 import "@css/common.less";
 
@@ -17,8 +17,8 @@ const QueryForm = (props) => {
     >
       <Row gutter={[16, 16]}>
         <Col>
-          <Form.Item name="group" label="查询条件">
-            <Radio.Group
+          <Form.Item name="group" label="活动">
+            {/* <Radio.Group
               onChange={props.onChangeType}
               buttonStyle="solid"
               disabled={props.loading}
@@ -27,23 +27,35 @@ const QueryForm = (props) => {
               <Radio.Button value="participantCreate">我创建的</Radio.Button>
               <Radio.Button value="party">机构参与的</Radio.Button>
               <Radio.Button value="partyCreate">机构发布的</Radio.Button>
-            </Radio.Group>
+            </Radio.Group> */}
+            <Select
+              style={{ width: 120 }}
+              loading={props.loading}
+              onChange={props.onChangeType}
+            >
+              <Select.Option value="participant">我参与的</Select.Option>
+              <Select.Option value="participantCreate">我创建的</Select.Option>
+              <Select.Option value="party">机构参与的</Select.Option>
+              <Select.Option value="partyCreate">机构发布的</Select.Option>
+            </Select>
           </Form.Item>
         </Col>
         <Col>
-          <Radio.Group
-            defaultValue="valid"
-            buttonStyle="solid"
-            onChange={props.onChangeEffective}
-            disabled={props.loading}
-          >
-            <Radio.Button value="valid">有效活动</Radio.Button>
-            <Radio.Button value="all">全部活动</Radio.Button>
-          </Radio.Group>
+          <Form.Item name="camMethod" label="类型">
+            <Radio.Group
+              defaultValue="valid"
+              buttonStyle="solid"
+              onChange={props.onChangeEffective}
+              disabled={props.loading}
+            >
+              <Radio.Button value="valid">有效活动</Radio.Button>
+              <Radio.Button value="all">全部活动</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
         </Col>
         <Col span={6}>
-          <Form.Item name="searchTxt">
-            <Input placeholder="请输入名称或标签进行搜索" allowClear />
+          <Form.Item name="searchTxt" label="搜索" tooltip="包含名称、标签">
+            <Input placeholder="请输入" allowClear />
           </Form.Item>
         </Col>
         <Col>
@@ -55,7 +67,7 @@ const QueryForm = (props) => {
               loading={props.loading}
               onClick={props.enableLoading}
             >
-              搜索
+              查询
             </Button>
           </Form.Item>
         </Col>

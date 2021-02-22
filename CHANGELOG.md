@@ -34,3 +34,10 @@ Fixes and Functionality:
 
 - 关闭 CouponManagement 页面 RangePicker 的清除按钮
 - 修改 票券管理 “注销” 提示文案
+
+### 1.9.x (February 22, 2021)
+
+Fixes and Functionality:
+
+- 修改 营销活动，查询条件的展示方式
+- 修改 营销活动，页面加载取消 Loading
