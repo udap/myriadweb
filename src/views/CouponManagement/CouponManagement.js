@@ -9,7 +9,6 @@ import {
   Modal,
 } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import NumberFormat from "react-number-format";
 import moment from "moment";
 
 import {

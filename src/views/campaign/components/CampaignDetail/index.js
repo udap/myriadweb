@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Drawer, Collapse } from "antd";
+import { withRouter } from "react-router-dom";
 
 import "./index.less";
 import { InfoPanel, ConfigPanel, RedemptionRules } from "./components";
@@ -22,6 +23,8 @@ class CampaignDetail extends Component {
   };
 
   render() {
+    console.log(this);
+    console.log(window.location);
     const { campaign, visible } = this.state;
 
     const parties = campaign.parties ? campaign.parties : [];
@@ -62,4 +65,4 @@ class CampaignDetail extends Component {
   }
 }
 
-export default CampaignDetail;
+export default withRouter(CampaignDetail);

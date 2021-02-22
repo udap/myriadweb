@@ -39,3 +39,6 @@ Fixes and Functionality:
 Fixes and Functionality:
 
 - 新增 设置 => 我的账户 => 密码设置，密码必须是包含 8-18 位英文字母、数字、字符的组合
+- 新增 用户登陆时，需用验证码
+- 新增 配券记录、发放记录、核销记录查询时间，限制三个月内
+- 修改 移除 dotenv-cli 打包组件
