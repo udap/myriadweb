@@ -8,9 +8,8 @@ import "@css/common.less";
 import storageUtils from "@utils/storageUtils";
 import comEvents from "@utils/comEvents";
 import { reqGetRedemptions, reqExportRedemption } from "@api";
-import { Loading } from "@components";
-import { QueryForm } from "./components";
 import { redemptionStatuses, settlementStatuses } from "@utils/constants";
+import { QueryForm } from "./components";
 
 const columns = [
   {
@@ -117,7 +116,6 @@ class Redemption extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      initd: false,
       campaigns: [],
       ownerId: storageUtils.getUser().id,
       hasChoose: false,
@@ -216,7 +214,6 @@ class Redemption extends Component {
       }
     }
     this.setState({
-      initd: true,
       campaigns: data,
       total:
         result && result.data && result.data.content
@@ -339,7 +336,7 @@ class Redemption extends Component {
       });
   };
 
-  renderContent = () => {
+  render() {
     const {
       campaigns,
       size,
@@ -398,10 +395,6 @@ class Redemption extends Component {
         </div>
       </>
     );
-  };
-  render() {
-    const { initd } = this.state;
-    return <>{initd ? this.renderContent() : <Loading />}</>;
   }
 }
 
