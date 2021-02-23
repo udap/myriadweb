@@ -30,52 +30,51 @@ const RedemptionRules = (props) => {
   );
   return (
     <>
-      {redemptionObj ? (
+      {redemptionObj && (
         <Descriptions size="small" bordered column={1}>
-          {redemptionObj.rules
-            ? redemptionObj.rules.map((item) => {
-                return (
-                  <>
-                    {item.name === "MinimumValue" ? (
-                      <Descriptions.Item label={rulesOfUse[item.name]}>
-                        <NumberFormat
-                          value={item.option / 100}
-                          displayType={"text"}
-                          thousandSeparator={true}
-                          decimalScale={2}
-                          fixedDecimalScale={true}
-                          prefix={"最低消费金额 ¥"}
-                        />
-                      </Descriptions.Item>
-                    ) : null}
-                    {item.name === "SelectedTags" ? (
-                      <Descriptions.Item label={rulesOfUse[item.name]}>
-                        {item.option.split(",").map((item, index) => (
-                          <Tag key={index} color="cyan">
-                            {item}
+          {redemptionObj.rules &&
+            redemptionObj.rules.map((item) => {
+              return (
+                <>
+                  {item.name === "MinimumValue" && (
+                    <Descriptions.Item label={rulesOfUse[item.name]}>
+                      <NumberFormat
+                        value={item.option / 100}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        fixedDecimalScale={true}
+                        prefix={"最低消费金额 ¥"}
+                      />
+                    </Descriptions.Item>
+                  )}
+                  {item.name === "SelectedTags" && (
+                    <Descriptions.Item label={rulesOfUse[item.name]}>
+                      {item.option.split(",").map((item, index) => (
+                        <Tag key={index} color="cyan">
+                          {item}
+                        </Tag>
+                      ))}
+                    </Descriptions.Item>
+                  )}
+                  {item.name === "SelectedRegions" && (
+                    <Descriptions.Item label={rulesOfUse[item.name]}>
+                      {comEvents
+                        .flatRegions(JSON.parse(item.option))
+                        .map((t, idx) => (
+                          <Tag key={idx} color="blue">
+                            {t}
                           </Tag>
                         ))}
-                      </Descriptions.Item>
-                    ) : null}
-                    {item.name === "SelectedRegions" ? (
-                      <Descriptions.Item label={rulesOfUse[item.name]}>
-                        {comEvents
-                          .flatRegions(JSON.parse(item.option))
-                          .map((t, idx) => (
-                            <Tag key={idx} color="blue">
-                              {t}
-                            </Tag>
-                          ))}
-                      </Descriptions.Item>
-                    ) : null}
-                  </>
-                );
-              })
-            : null}
+                    </Descriptions.Item>
+                  )}
+                </>
+              );
+            })}
         </Descriptions>
-      ) : null}
+      )}
 
-      {merchants.length !== 0 ? (
+      {merchants.length !== 0 && (
         <Table
           bordered
           size="small"
@@ -89,7 +88,7 @@ const RedemptionRules = (props) => {
             showSizeChanger: false,
           }}
         />
-      ) : null}
+      )}
     </>
   );
 };

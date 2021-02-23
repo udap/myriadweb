@@ -13,21 +13,12 @@ const QueryForm = (props) => {
       initialValues={{
         searchTxt: "",
         group: "participant",
+        camMethod: "valid",
       }}
     >
       <Row gutter={[16, 16]}>
         <Col>
           <Form.Item name="group" label="活动">
-            {/* <Radio.Group
-              onChange={props.onChangeType}
-              buttonStyle="solid"
-              disabled={props.loading}
-            >
-              <Radio.Button value="participant">我参与的</Radio.Button>
-              <Radio.Button value="participantCreate">我创建的</Radio.Button>
-              <Radio.Button value="party">机构参与的</Radio.Button>
-              <Radio.Button value="partyCreate">机构发布的</Radio.Button>
-            </Radio.Group> */}
             <Select
               style={{ width: 120 }}
               loading={props.loading}
@@ -43,7 +34,6 @@ const QueryForm = (props) => {
         <Col>
           <Form.Item name="camMethod" label="类型">
             <Radio.Group
-              defaultValue="valid"
               buttonStyle="solid"
               onChange={props.onChangeEffective}
               disabled={props.loading}

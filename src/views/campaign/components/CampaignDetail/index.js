@@ -1,65 +1,46 @@
-import React, { Component } from "react";
-import { Drawer, Collapse } from "antd";
+import React from "react";
+import { Drawer, Collapse, Skeleton } from "antd";
 
 import "./index.less";
 import { InfoPanel, ConfigPanel, RedemptionRules } from "./components";
 
 const { Panel } = Collapse;
 
-class CampaignDetail extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      listSize: 20,
-      campaign: { ...props.campaign } || {},
-      visible: props.visible || false,
-    };
-  }
-
-  onClose = () => {
-    this.setState({ visible: false });
-    this.props.onClose();
-  };
-
-  render() {
-    const { campaign, visible } = this.state;
-
-    const parties = campaign.parties ? campaign.parties : [];
-    let merchants = [];
-    parties.forEach((p) => {
-      if (p.type === "MERCHANT") merchants.push(p);
-    });
-    return (
-      <Drawer
-        className="camDetail"
-        width={480}
-        title="活动详情"
-        onClose={this.onClose}
-        visible={visible}
-      >
+const CampaignDetail = (props) => {
+  return (
+    <Drawer
+      className="camDetail"
+      width={480}
+      title="活动详情"
+      onClose={props.onClose}
+      visible={props.visible}
+    >
+      {props.campaign ? (
         <Collapse defaultActiveKey={["1"]}>
           <Panel header="基本信息" key="1">
-            <InfoPanel {...campaign} />
+            <InfoPanel {...props.campaign} />
           </Panel>
-          {campaign.voucherConfig ? (
+          {props.campaign?.voucherConfig && (
             <Panel header="详细设置" key="2">
-              <ConfigPanel {...campaign.voucherConfig} />
+              <ConfigPanel {...props.campaign?.voucherConfig} />
             </Panel>
-          ) : null}
-          {campaign.rules && campaign.rules.length !== 0 ? (
+          )}
+          {props.campaign?.rules && props.campaign?.rules.length !== 0 && (
             <Panel header="使用规则" key="3">
-              {campaign.rules.length !== 0 ? (
+              {props.campaign?.rules.length !== 0 && (
                 <RedemptionRules
-                  rulesArr={campaign.rules}
-                  parties={campaign.parties}
+                  rulesArr={props.campaign?.rules}
+                  parties={props.campaign?.parties}
                 />
-              ) : null}
+              )}
             </Panel>
-          ) : null}
+          )}
         </Collapse>
-      </Drawer>
-    );
-  }
-}
+      ) : (
+        <Skeleton />
+      )}
+    </Drawer>
+  );
+};
 
 export default CampaignDetail;
