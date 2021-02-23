@@ -10,7 +10,6 @@ import {
 } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import FileSaver from "file-saver";
-import NumberFormat from "react-number-format";
 
 import "@css/common.less";
 import storageUtils from "@utils/storageUtils";
@@ -18,6 +17,9 @@ import comEvents from "@utils/comEvents";
 import { reqGetDistributions, reqExportDistributions } from "@api";
 import { distributionStatuses } from "@utils/constants";
 import { QueryFilter } from "./components";
+import { ValueOffText } from "@components";
+
+const { Column } = Table;
 
 class Distribution extends Component {
   state = {
@@ -28,7 +30,6 @@ class Distribution extends Component {
     size: 20,
     total: 0,
     visible: false,
-    // 搜索框
     searchTxt: "",
     beginDate: comEvents.firstDayOfMonth(),
     endDate: null,
@@ -39,16 +40,14 @@ class Distribution extends Component {
 
   componentDidMount() {
     this.initColumns();
-    this.getDistributions(
-      1,
-      this.state.searchTxt,
-      this.state.beginDate,
-      this.state.endDate
-    );
+    const params = {
+      pageIndex: 1,
+      searchTxt: "",
+    };
+    this.getDistributions(params);
   }
 
   initColumns() {
-    //券号	营销活动	客户	发放时间	状态
     this.columns = [
       {
         title: "券号",
@@ -56,108 +55,10 @@ class Distribution extends Component {
         key: "code",
       },
       {
-        title: "营销活动",
+        title: "活动名",
         dataIndex: "campaignName",
         key: "campaignName",
-        responsive: ["lg"],
-      },
-      {
-        title: "发放人",
-        dataIndex: "fromOwnerName",
-        key: "fromOwnerName",
-      },
-      {
-        title: "客户",
-        dataIndex: "customerName",
-        key: "customerName",
-        ellipsis: {
-          showTitle: false,
-        },
-        render: (cusName) => (
-          <Tooltip placement="topLeft" title={cusName}>
-            {cusName}
-          </Tooltip>
-        ),
-      },
-      {
-        title: "优惠金额",
-        dataIndex: "discountOff",
-        key: "discountOff",
-        width: 100,
-        render: (value, row) => {
-          if (!value) return null;
-          if (row.voucherType === "COUPON") {
-            return (
-              <div style={{ textAlign: "right" }}>
-                {row.discountType === "AMOUNT" ? (
-                  <NumberFormat
-                    value={value / 100}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    decimalScale={2}
-                    fixedDecimalScale={true}
-                    prefix={"¥"}
-                  />
-                ) : (
-                  <NumberFormat
-                    value={value}
-                    displayType={"text"}
-                    suffix={"%"}
-                  />
-                )}
-              </div>
-            );
-          } else if (row.voucherType === "GIFT") {
-            return (
-              <div style={{ textAlign: "right" }}>
-                <NumberFormat
-                  value={value / 100}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                  prefix={"(¥"}
-                  suffix={")"}
-                />
-              </div>
-            );
-          }
-        },
-      },
-      {
-        title: "发放时间",
-        dataIndex: "updatedAt",
-        key: "updatedAt",
-        responsive: ["md"],
-      },
-      {
-        title: "发放状态",
-        dataIndex: "status",
-        key: "status",
-        width: 100,
-        render: (text) => {
-          return (
-            <Tag color="green" key={text}>
-              {distributionStatuses.map((item, index) => (
-                <span key={index}>{item[text]}</span>
-              ))}
-            </Tag>
-          );
-        },
-      },
-    ];
-
-    this.orgColumns = [
-      {
-        title: "券号",
-        dataIndex: "code",
-        key: "code",
-      },
-      {
-        title: "营销活动",
-        dataIndex: "campaignName",
-        key: "campaignName",
-        responsive: ["lg"],
+        width: 280,
       },
       {
         title: "发放人",
@@ -168,6 +69,7 @@ class Distribution extends Component {
         title: "发放机构",
         dataIndex: "orgName",
         key: "orgName",
+        width: 280,
       },
       {
         title: "客户",
@@ -187,63 +89,29 @@ class Distribution extends Component {
         dataIndex: "discountOff",
         key: "discountOff",
         width: 100,
-        render: (value, row) => {
-          if (!value) return null;
-          if (row.voucherType === "COUPON") {
-            return (
-              <div style={{ textAlign: "right" }}>
-                {row.discountType === "AMOUNT" ? (
-                  <NumberFormat
-                    value={value / 100}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    decimalScale={2}
-                    fixedDecimalScale={true}
-                    prefix={"¥"}
-                  />
-                ) : (
-                  <NumberFormat
-                    value={value}
-                    displayType={"text"}
-                    suffix={"%"}
-                  />
-                )}
-              </div>
-            );
-          } else if (row.voucherType === "GIFT") {
-            return (
-              <div style={{ textAlign: "right" }}>
-                <NumberFormat
-                  value={value / 100}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                  prefix={"(¥"}
-                  suffix={")"}
-                />
-              </div>
-            );
-          }
-        },
+        render: (text, record) => (
+          <ValueOffText
+            type={record.voucherType}
+            discountType={record.discountType}
+            text={text}
+          />
+        ),
       },
       {
         title: "发放时间",
         dataIndex: "updatedAt",
         key: "updatedAt",
-        responsive: ["md"],
+        width: 180,
       },
       {
         title: "发放状态",
         dataIndex: "status",
         key: "status",
         width: 100,
-        render: (text) => {
+        render: (text, record) => {
           return (
-            <Tag color="green" key={text}>
-              {distributionStatuses.map((item, index) => (
-                <span key={index}>{item[text]}</span>
-              ))}
+            <Tag color="green" key={record.code}>
+              {distributionStatuses[text]}
             </Tag>
           );
         },
@@ -252,30 +120,29 @@ class Distribution extends Component {
   }
 
   // 获取列表数据
-  getDistributions = async (currentPage, searchTxt, beginDate, endDate) => {
-    // let typeStr = chooseRadio ? chooseRadio : this.state.chooseRadio;
-    let typeStr = this.state.type;
-    //owner 我的
-    let params =
-      typeStr === "user"
-        ? {
-            page: currentPage - 1,
-            size: this.state.size,
-            ownerId: storageUtils.getUser().id,
-            beginDate: beginDate ? beginDate : this.state.beginDate,
-            endDate: endDate ? endDate : this.state.endDate,
-            searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-            sort: "createdAt,desc",
-          }
-        : {
-            page: currentPage - 1,
-            size: this.state.size,
-            issuerId: storageUtils.getUser().orgId,
-            beginDate: beginDate ? beginDate : this.state.beginDate,
-            endDate: endDate ? endDate : this.state.endDate,
-            searchTxt: searchTxt ? searchTxt : this.state.searchTxt,
-            sort: "createdAt,desc",
-          };
+  getDistributions = async (elements) => {
+    const { size, searchTxt, beginDate, endDate, type } = this.state;
+    let params = {
+      page: elements.pageIndex - 1,
+      size,
+      searchTxt: elements.searchTxt || searchTxt,
+      beginDate: elements.beginDate || beginDate,
+      endDate: elements.endDate || endDate,
+      sort: "createdAt,desc",
+    };
+    switch (type) {
+      case "user":
+        params.ownerId = storageUtils.getUser().id;
+        break;
+
+      case "org":
+        params.issuerId = storageUtils.getUser().orgId;
+        break;
+
+      default:
+        break;
+    }
+
     this.setState({ loading: true });
     const result = await reqGetDistributions(params);
     const cont =
@@ -327,13 +194,10 @@ class Distribution extends Component {
           : 0,
       loading: false,
     });
-    //parseInt((this.receipts.length - 1) / PAGE_SIZE) + 1;//
   };
 
   enterLoading = () => {
-    this.setState({
-      loading: true,
-    });
+    this.setState({ loading: true });
   };
 
   submitQuery = (values) => {
@@ -343,24 +207,20 @@ class Distribution extends Component {
       beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
       endDate: values["dateRange"][1].format("YYYY-MM-DD"),
     });
-    this.getDistributions(
-      1,
-      values.searchTxt,
-      this.state.beginDate,
-      this.state.endDate
-    );
+    this.getDistributions({
+      pageIndex: 1,
+      searchTxt: values.searchTxt,
+    });
   };
 
   onPageChange = (page) => {
-    this.setState({
-      currentPage: page,
-    });
-    this.getDistributions(page);
+    this.setState({ currentPage: page });
+    this.getDistributions({ pageIndex: page });
   };
 
   // radio 切换
   onSwitchType = (e) => {
-    //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
+    // 提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
     this.setState(
       {
         page: 0,
@@ -368,12 +228,7 @@ class Distribution extends Component {
         currentPage: 1,
       },
       () => {
-        this.getDistributions(
-          1,
-          null,
-          this.state.beginDate,
-          this.state.endDate
-        );
+        this.getDistributions({ pageIndex: 1 });
       }
     );
   };
@@ -381,58 +236,48 @@ class Distribution extends Component {
   handleDownload = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    this.setState({
-      downloading: true,
-    });
-    let params =
-      this.state.type === "user"
-        ? {
-            ownerId: storageUtils.getUser().id,
-            beginDate: this.state.beginDate,
-            endDate: this.state.endDate,
-            searchTxt: this.state.searchTxt,
-          }
-        : {
-            issuerId: storageUtils.getUser().orgId,
-            beginDate: this.state.beginDate,
-            endDate: this.state.endDate,
-            searchTxt: this.state.searchTxt,
-          };
-    const filename = "distributions.xlsx";
-    reqExportDistributions(params)
-      .then((response) => {
-        FileSaver.saveAs(response.data, filename);
-        this.setState({
-          downloading: false,
+
+    this.setState({ downloading: true });
+    try {
+      const filename = "distributions.xlsx";
+      let params = {
+        beginDate: this.state.beginDate,
+        endDate: this.state.endDate,
+        searchTxt: this.state.searchTxt,
+      };
+      switch (this.state.type) {
+        case "user":
+          params.ownerId = storageUtils.getUser().id;
+          break;
+
+        case "org":
+          params.issuerId = storageUtils.getUser().orgId;
+          break;
+
+        default:
+          break;
+      }
+
+      reqExportDistributions(params)
+        .then((response) => {
+          FileSaver.saveAs(response.data, filename);
+        })
+        .catch(() => {
+          notification.warning({ message: "下载失败，请稍后再试" });
         });
-      })
-      .catch((e) => {
-        this.setState({
-          downloading: false,
-        });
-        notification.warning({
-          message: "下载失败，请稍后再试",
-        });
-      });
+    } catch (error) {}
+    this.setState({ downloading: false });
   };
 
   render() {
-    const {
-      campaigns,
-      size,
-      loading,
-      currentPage,
-      type,
-      downloading,
-    } = this.state;
-    let columns = type === "user" ? this.columns : this.orgColumns;
+    const { campaigns, size, loading, currentPage, downloading } = this.state;
     return (
       <>
         <PageHeader
-          className="site-page-header-responsive cont"
           title="发放记录"
           extra={[
             <Button
+              key="download"
               type="primary"
               shape="circle"
               loading={downloading}
@@ -449,14 +294,73 @@ class Distribution extends Component {
           onSubmitQuery={this.submitQuery}
         />
         <Table
-          rowKey="key"
+          rowKey={(record) => record.code}
           size="small"
           bordered
           dataSource={campaigns}
-          columns={columns}
           pagination={false}
           loading={loading}
-        />
+        >
+          <Column title="券号" dataIndex="code" key="code" />
+          <Column
+            title="活动名"
+            dataIndex="campaignName"
+            key="campaignName"
+            width={280}
+          />
+          <Column
+            title="发放人"
+            dataIndex="fromOwnerName"
+            key="fromOwnerName"
+            width={280}
+          />
+          <Column
+            title="发放机构"
+            dataIndex="orgName"
+            key="orgName"
+            width={280}
+          />
+          <Column
+            title="客户"
+            dataIndex="customerName"
+            key="customerName"
+            render={(cusName) => (
+              <Tooltip placement="topLeft" title={cusName}>
+                {cusName}
+              </Tooltip>
+            )}
+          />
+          <Column
+            title="优惠金额"
+            dataIndex="discountOff"
+            key="discountOff"
+            width={100}
+            render={(text, record) => (
+              <ValueOffText
+                type={record.voucherType}
+                discountType={record.discountType}
+                text={text}
+              />
+            )}
+          />
+          <Column
+            title="发放时间"
+            dataIndex="updatedAt"
+            key="updatedAt"
+            width={180}
+          />
+          <Column
+            title="发放状态"
+            dataIndex="status"
+            key="status"
+            width={100}
+            render={(text, record) => (
+              <Tag color="green" key={record.code}>
+                {distributionStatuses[text]}
+              </Tag>
+            )}
+          />
+        </Table>
         <div className="pagination">
           <Pagination
             pageSize={size}

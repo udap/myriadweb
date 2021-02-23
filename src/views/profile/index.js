@@ -330,7 +330,7 @@ class Profile extends Component {
   };
 
   renderPasswordDrawer = () => {
-    let { showPassword,account } = this.state;
+    let { showPassword, account } = this.state;
     return (
       <PasswordDrawer
         onClose={this.onClose}
@@ -349,7 +349,9 @@ class Profile extends Component {
           title={"我的账户"}
         ></PageHeader>
         <div className="profile-action">
-          {/* <b className='actionItems' onClick={this.bindWechat}>微信绑定</b> */}
+          <b className="actionItems" onClick={this.bindWechat}>
+            微信绑定
+          </b>
           <b onClick={this.settingPassword} className="ant-green-link cursor">
             密码设置
           </b>

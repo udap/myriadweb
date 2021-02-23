@@ -122,13 +122,12 @@ const settlementTypes = [
   },
 ];
 
-//发放列表
-//PENDING, SUCCESS, FAILED;
-const distributionStatuses = [
-  { PENDING: "发放中" },
-  { SUCCESS: "发放成功" },
-  { FAILED: "发放失败" },
-];
+// 发放列表
+const distributionStatuses = {
+  PENDING: "发放中",
+  SUCCESS: "发放成功",
+  FAILED: "发放失败",
+};
 
 const redemptionStatuses = {
   PENDING: "核销中",

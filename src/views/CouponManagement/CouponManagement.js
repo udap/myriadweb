@@ -26,8 +26,8 @@ import {
   IssueForm,
   CSVModal,
   CouponDetails,
-  ValueOffText,
 } from "./components";
+import { ValueOffText } from "@components";
 import "@css/common.less";
 import "./CouponManagement.less";
 
@@ -271,10 +271,7 @@ const CouponManagement = () => {
 
   return (
     <>
-      <PageHeader
-        className="site-page-header-responsive cont"
-        title="票券管理"
-      />
+      <PageHeader title="票券管理" />
       <QueryForm
         loading={loading}
         onFinish={onQueryClick}

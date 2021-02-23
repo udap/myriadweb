@@ -51,7 +51,11 @@ const QueryForm = ({
           </Form.Item>
         </Col>
         <Col span={6}>
-          <Form.Item name="searchTxt" label="搜索" tooltip="包含券号、活动名">
+          <Form.Item
+            name="searchTxt"
+            label="搜索"
+            tooltip="包含券号、活动名、发放人、发放机构、客户:（原始编号、电话号、邮箱、真实名字）"
+          >
             <Input placeholder="请输入" allowClear />
           </Form.Item>
         </Col>

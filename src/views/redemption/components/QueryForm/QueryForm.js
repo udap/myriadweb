@@ -11,7 +11,6 @@ const QueryForm = ({
   loading,
   dateRange,
   onLoading,
-  onSwitchRole,
   onSubmit,
   onIncluding,
   role,
@@ -44,18 +43,6 @@ const QueryForm = ({
     >
       <Row gutter={[16, 16]}>
         <Col>
-          <Form.Item name="role" label="机构类型">
-            <Radio.Group
-              onChange={onSwitchRole}
-              buttonStyle="solid"
-              disabled={loading}
-            >
-              <Radio.Button value="marketer">营销机构</Radio.Button>
-              <Radio.Button value="merchant">核销机构</Radio.Button>
-            </Radio.Group>
-          </Form.Item>
-        </Col>
-        <Col>
           <Form.Item name="includingSubsidiaries" label="下属机构">
             <Radio.Group
               onChange={onIncluding}
@@ -71,7 +58,7 @@ const QueryForm = ({
           <Form.Item
             name="searchTxt"
             label="搜索"
-            tooltip="包含券号、活动名、订单号"
+            tooltip="包含券号、活动名、订单号、活动标签、客户:（原始编号、电话号、邮箱、真实名字）"
           >
             <Input placeholder="请输入" allowClear />
           </Form.Item>

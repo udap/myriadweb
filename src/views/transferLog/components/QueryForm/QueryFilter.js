@@ -32,7 +32,11 @@ const QueryFilter = ({ loading, dateRange, onLoading, onSubmit }) => {
     >
       <Row gutter={[16, 16]}>
         <Col span={6}>
-          <Form.Item name="searchTxt" label="搜索" tooltip="包含活动名、标签">
+          <Form.Item
+            name="searchTxt"
+            label="搜索"
+            tooltip="包含活动名、员工名、员工号、员工手机号、所属机构"
+          >
             <Input placeholder="请输入" allowClear />
           </Form.Item>
         </Col>

@@ -118,10 +118,7 @@ class TransferStats extends Component {
 
     return (
       <div>
-        <PageHeader
-          className="site-page-header-responsive cont"
-          title="配券记录"
-        />
+        <PageHeader title="配券记录" />
         <QueryFilter
           loading={loading}
           dateRange={[this.state.beginDate]}
@@ -136,12 +133,8 @@ class TransferStats extends Component {
           pagination={false}
           loading={loading}
         >
-          <Column
-            title="活动名称"
-            dataIndex="campaignName"
-            key="campaignName"
-          />
-          <Column title="员工" dataIndex="csrName" key="csrName" />
+          <Column title="活动名" dataIndex="campaignName" key="campaignName" />
+          <Column title="员工名" dataIndex="csrName" key="csrName" />
           <Column title="员工号" dataIndex="csrCode" key="csrCode" />
           <Column title="所属机构" dataIndex="csrOrgName" key="csrOrgName" />
           <Column
