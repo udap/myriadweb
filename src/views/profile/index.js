@@ -349,9 +349,9 @@ class Profile extends Component {
           title={"我的账户"}
         ></PageHeader>
         <div className="profile-action">
-          <b className="actionItems" onClick={this.bindWechat}>
+          {/* <b className="actionItems" onClick={this.bindWechat}>
             微信绑定
-          </b>
+          </b> */}
           <b onClick={this.settingPassword} className="ant-green-link cursor">
             密码设置
           </b>

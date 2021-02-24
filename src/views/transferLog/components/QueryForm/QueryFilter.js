@@ -44,7 +44,7 @@ const QueryFilter = ({ loading, dateRange, onLoading, onSubmit }) => {
           <Form.Item
             name="dateRange"
             label="配券时间"
-            tooltip="基于当前时间，前三个月内的时间段"
+            tooltip="只能选择当前时间的前三个月内的时间段"
           >
             <RangePicker
               format="YYYY-MM-DD"
