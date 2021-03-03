@@ -54,7 +54,7 @@ const QueryForm = ({
           <Form.Item
             name="searchTxt"
             label="搜索"
-            tooltip="包含券号、活动名、发放人、发放机构、客户:（原始编号、电话号、邮箱、真实名字）"
+            tooltip="根据券号、活动名、发放人、发放机构或客户:（原始编号、电话号、邮箱、真实名字）搜索"
           >
             <Input placeholder="请输入" allowClear />
           </Form.Item>

@@ -24,7 +24,7 @@ const QueryFilter = (props) => {
           <Form.Item
             name="searchTxt"
             label="搜索"
-            tooltip="包括员工的姓名、手机号、登录账号"
+            tooltip="根据员工的姓名、手机号、编码或登录账号搜索"
           >
             <Input placeholder="请输入" allowClear />
           </Form.Item>

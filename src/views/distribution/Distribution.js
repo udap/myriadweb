@@ -326,7 +326,7 @@ class Distribution extends Component {
             key="customerName"
             render={(cusName) => (
               <Tooltip placement="topLeft" title={cusName}>
-                {cusName}
+                {comEvents.hiddenStr(cusName, 8, 8)}
               </Tooltip>
             )}
           />

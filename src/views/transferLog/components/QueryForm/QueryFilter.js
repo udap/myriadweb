@@ -35,7 +35,7 @@ const QueryFilter = ({ loading, dateRange, onLoading, onSubmit }) => {
           <Form.Item
             name="searchTxt"
             label="搜索"
-            tooltip="包含活动名、员工名、员工号、员工手机号、所属机构"
+            tooltip="根据活动名、员工名、员工号、员工手机号或所属机构搜索"
           >
             <Input placeholder="请输入" allowClear />
           </Form.Item>

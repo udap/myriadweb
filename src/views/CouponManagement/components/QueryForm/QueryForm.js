@@ -36,7 +36,7 @@ const QueryForm = (props) => {
           <Form.Item
             name="searchTxt"
             label="搜索"
-            tooltip="包括券名、活动名、机构名、标签、创建人"
+            tooltip="根据券名、活动名、机构名、标签或创建人搜索"
           >
             <Input placeholder="请输入" allowClear />
           </Form.Item>
