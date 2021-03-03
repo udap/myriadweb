@@ -1,6 +1,4 @@
-/*
-定义接口请求
-*/
+// 定义接口请求
 import ajax from "./serverAjax";
 import qs from "qs";
 import { host } from "../utils/config";
@@ -164,6 +162,11 @@ export const reqPermit = (str) =>
       }
       return response.data.content;
     });
+
+// 权限判断
+export const hasPermission = (str) =>
+  ajax(`${BASE}/accounts/me/permissions/any?operations=${str}`);
+
 //获取所有权限
 export const reqGetPermissions = () =>
   ajax.get(BASE + "/accounts/me/permissions");

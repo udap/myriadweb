@@ -8,14 +8,14 @@ import {
   Popconfirm,
   Pagination,
   Popover,
+  Button,
 } from "antd";
 import { PlusSquareFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 
 import storageUtils from "@utils/storageUtils";
-import { campaignStatuses, couponSubTypeMethods } from "@utils/constants";
+import { campaignStatuses, COUPON_SUBTYPE_METHODS } from "@utils/constants";
 import comEvents from "@utils/comEvents";
 import {
-  reqPermit,
   reqGetCampaigns,
   reqDelCampaign,
   reqPublishCampaign,
@@ -43,6 +43,7 @@ class Campaign extends Component {
       showDetail: false,
       listItem: null,
       effective: "valid",
+      createLoading: false,
     };
   }
 
@@ -63,13 +64,7 @@ class Campaign extends Component {
         dataIndex: "subType",
         key: "subType",
         render: (text) => {
-          return (
-            <>
-              {couponSubTypeMethods.map((item, index) => (
-                <span key={index}>{item[text]}</span>
-              ))}
-            </>
-          );
+          return <>{COUPON_SUBTYPE_METHODS[text]}</>;
         },
         width: 110,
         responsive: ["lg"],
@@ -318,10 +313,6 @@ class Campaign extends Component {
     });
   };
 
-  addItem = async () => {
-    this.props.history.push("/admin/campaign/edit/new");
-  };
-
   delItem = async (id) => {
     await reqDelCampaign(id);
     this.setState({
@@ -340,44 +331,54 @@ class Campaign extends Component {
 
   // 获取列表数据
   getCampaigns = async (value, currentPage, type, effective) => {
+    const { size, searchTxt } = this.state;
     const typeStr = type || this.state.value;
     const typeEff = effective || this.state.effective;
-    // 一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
-    // 都需要传status=NON_EXPIRED
-    let params = typeStr.includes("participant")
-      ? {
-          page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-          size: this.state.size,
-          participantId: storageUtils.getUser().id,
-          status: typeEff !== "all" ? "NEW_OR_EFFECTIVE" : "",
-          searchTxt: value ? value : this.state.searchTxt,
-          sort: "updatedAt,desc",
-        }
-      : {
-          page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
-          size: this.state.size,
-          partyId: storageUtils.getUser().orgId,
-          status: typeEff !== "all" ? "NON_EXPIRED" : "",
-          searchTxt: value ? value : this.state.searchTxt,
-          sort: "updatedAt,desc",
-        };
-    if (typeStr === "partyCreate") {
-      params = { ...params, partyType: "HOST" };
-    }
-    if (typeStr === "participantCreate") {
-      params = { ...params, participantType: "OWNER" };
-    }
-    this.setState({ loading: true });
-    const result = await reqGetCampaigns(params);
-    const cont = result && result.data ? result.data.content : [];
-    this.totalPages = result && result.data ? result.data.totalElements : 1;
 
-    this.setState({
-      campaigns: cont,
-      total: result && result.data ? result.data.totalElements : 1,
-      // searchTxt: "",
-      loading: false,
-    });
+    // 一个是“我参与的”，另一个是“机构参与的”前者只传participantId，后者只传partyId
+    // 都需要传status = NON_EXPIRED
+    let params = {
+      page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
+      size,
+      searchTxt: value || searchTxt,
+      sort: "updatedAt,desc",
+    };
+
+    // 我参与、我创建 || 机构参与、机构发布
+    if (typeStr.includes("participant")) {
+      params.participantId = storageUtils.getUser().id;
+      params.status = typeEff !== "all" ? "NEW_OR_EFFECTIVE" : "";
+    } else {
+      params.partyId = storageUtils.getUser().orgId;
+      params.status = typeEff !== "all" ? "NON_EXPIRED" : "";
+    }
+
+    // 我创建 || 机构发布
+    switch (typeStr) {
+      case "partyCreate":
+        params.partyType = "HOST";
+        break;
+
+      case "participantCreate":
+        params.participantType = "OWNER";
+        break;
+
+      default:
+        break;
+    }
+
+    this.setState({ loading: true });
+    try {
+      const result = await reqGetCampaigns(params);
+      const cont = result && result.data ? result.data.content : [];
+      this.totalPages = result && result.data ? result.data.totalElements : 1;
+
+      this.setState({
+        campaigns: cont,
+        total: result && result.data ? result.data.totalElements : 1,
+      });
+    } catch (error) {}
+    this.setState({ loading: false });
   };
 
   handleTableChange = (page) => {
@@ -385,6 +386,19 @@ class Campaign extends Component {
       currentPage: page,
     });
     this.getCampaigns(null, page);
+  };
+
+  handleCreateEvent = async () => {
+    const { history } = this.props;
+
+    this.setState({ createLoading: true });
+    try {
+      const result = await comEvents.isPermission("CREATE_CAMPAIGN");
+      if (result) {
+        history.push("/admin/campaign/edit/new");
+      }
+    } catch (error) {}
+    this.setState({ createLoading: false });
   };
 
   render() {
@@ -395,24 +409,19 @@ class Campaign extends Component {
       showDetail,
       listItem,
       loading,
+      createLoading,
     } = this.state;
     return (
       <>
         <PageHeader
           title="营销活动"
           extra={[
-            <PlusSquareFilled
+            <Button
               key="add"
-              className="setIcon"
-              onClick={() => {
-                const self = this;
-                comEvents.hasPower(
-                  self,
-                  reqPermit,
-                  "CREATE_CAMPAIGN",
-                  "addItem"
-                );
-              }}
+              type="link"
+              icon={<PlusSquareFilled style={{ fontSize: 24 }} />}
+              onClick={this.handleCreateEvent}
+              loading={createLoading}
             />,
           ]}
         />

@@ -1,7 +1,9 @@
+import { notification } from "antd";
+
 import { privateRoutes } from "../routes";
 import { ChinaRegions } from "./china-regions";
-// import { traverse } from "@babel/types";
-// import { rootCertificates } from "tls";
+import { hasPermission } from "@api";
+import { Operations } from "@utils/constants";
 
 //获取当前页面的title
 const getTitle = (pathname) => {
@@ -77,6 +79,24 @@ const hasPower = async (self, reqPermit, str, handleName, id, type) => {
       return result;
     }
   }
+};
+
+/**
+ *
+ * @param {string} str 权限名
+ * return {boolean}
+ */
+const isPermission = async (str) => {
+  const result = await hasPermission(str);
+
+  if (result.data?.retcode === 0 && !result.data?.content) {
+    notification.error({
+      message: "操作失败",
+      description: `您没有【${Operations[str]}】的权限`,
+    });
+  }
+
+  return result.data?.content;
 };
 
 const compareTwoArrayEqual = (arr1, arr2) => {
@@ -342,4 +362,5 @@ export default {
   guid,
   floatMul,
   removeProperty,
+  isPermission,
 };

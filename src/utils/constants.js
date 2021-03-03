@@ -71,12 +71,12 @@ const couponTypes = {
   LOYALTY_CARD: "会员卡",
 };
 
-const couponSubTypeMethods = [
-  { COUPON: "优惠券活动" },
-  { GIFT: "礼品换购活动" },
-  { SELF_CHECKIN: "自助签到" },
-  { MANUAL_CHECKIN: "人工签到" },
-];
+const COUPON_SUBTYPE_METHODS = {
+  COUPON: "优惠券活动",
+  GIFT: "礼品换购活动",
+  SELF_CHECKIN: "自助签到活动",
+  MANUAL_CHECKIN: "人工签到活动",
+};
 
 const stepLists = [
   "活动类型",
@@ -144,8 +144,9 @@ const orgStatusesList = [
   { SUSPENDED: "已暂停" },
   { DELETED: "已删除" },
 ];
+
 //请求权限
-var Operations = {
+const Operations = {
   MANAGE_ORGANIZATION: "管理机构",
   LIST_SUBSIDIARIES: "查询机构列表",
   VIEW_ORGANIZATION: "显示机构详情",
@@ -293,7 +294,7 @@ export {
   tagStatuses, //公共标签
   stepLists,
   couponSubTypes,
-  couponSubTypeMethods, // 活动类型
+  COUPON_SUBTYPE_METHODS, // 活动类型
   couponTypes,
   ajaxSuccess,
   ajaxError,
