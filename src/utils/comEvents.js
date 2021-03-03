@@ -324,6 +324,24 @@ const removeProperty = (obj = {}) => {
   return obj;
 };
 
+/**
+ *
+ * @param {string} str 原字符串
+ * @param {number} front 保留字符串前几位
+ * @param {number} back 保留字符串后几位
+ */
+const hiddenStr = (str, front, back) => {
+  if (str.length <= 16) {
+    return str;
+  }
+
+  const frontStr = str.slice(0, front);
+  const backStr = str.substring(str.length - back);
+  const tempStr = `${frontStr}***${backStr}`;
+
+  return tempStr;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getTitle,
@@ -342,4 +360,5 @@ export default {
   guid,
   floatMul,
   removeProperty,
+  hiddenStr,
 };

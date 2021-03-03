@@ -2,7 +2,7 @@ import React from "react";
 import { Drawer, Descriptions, Tag, Collapse } from "antd";
 
 import { couponTypes, campaignStatusObj } from "@/utils/constants";
-import ValueOffText from "../ValueOffText";
+import { ValueOffText } from "@components";
 
 const CouponDetails = (props) => {
   return (

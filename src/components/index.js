@@ -11,6 +11,7 @@ import TreeSelectComponent from "./TableTransfer";
 import HeaderDropdown from "./HeaderDropdown";
 import NoticeIcon from "./NoticeIcon";
 import BranchSelect from "./BranchSelect";
+import ValueOffText from "./ValueOffText";
 
 export {
   FrameOut,
@@ -26,4 +27,5 @@ export {
   HeaderDropdown,
   NoticeIcon,
   BranchSelect,
+  ValueOffText,
 };

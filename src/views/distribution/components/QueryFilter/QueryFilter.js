@@ -3,7 +3,7 @@ import { Form, Row, Col, Radio, Button, Input, DatePicker } from "antd";
 import moment from "moment";
 import "moment/locale/zh-cn";
 
-import "../../css/common.less";
+import "@css/common.less";
 
 const { RangePicker } = DatePicker;
 
@@ -14,14 +14,20 @@ const QueryForm = ({
   onSwitchType,
   onSubmitQuery,
 }) => {
-  let beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date();
-  let endDate = dateRange && dateRange[1] ? dateRange[1] : new Date();
+  const beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date();
+  const endDate = dateRange && dateRange[1] ? dateRange[1] : new Date();
+
+  const disabledDate = (current) => {
+    // 时间点：三个月前
+    const prohibitedTime = moment().subtract(3, "months");
+    return current < prohibitedTime;
+  };
+
   return (
     <Form
       onFinish={onSubmitQuery}
       layout="horizontal"
       name="advanced_search"
-      className="search-form"
       initialValues={{
         searchTxt: "",
         type: "user",
@@ -45,16 +51,26 @@ const QueryForm = ({
           </Form.Item>
         </Col>
         <Col span={6}>
-          <Form.Item name="searchTxt">
-            <Input
-              placeholder="请输入券号、活动名、活动标签进行搜索"
-              allowClear
-            />
+          <Form.Item
+            name="searchTxt"
+            label="搜索"
+            tooltip="根据券号、活动名、发放人、发放机构或客户:（原始编号、电话号、邮箱、真实名字）搜索"
+          >
+            <Input placeholder="请输入" allowClear />
           </Form.Item>
         </Col>
         <Col>
-          <Form.Item name="dateRange">
-            <RangePicker format="YYYY-MM-DD" disabled={loading} />
+          <Form.Item
+            name="dateRange"
+            label="发放时间"
+            tooltip="只能选择当前时间的前三个月内的时间段"
+          >
+            <RangePicker
+              format="YYYY-MM-DD"
+              disabled={loading}
+              allowClear={false}
+              disabledDate={disabledDate}
+            />
           </Form.Item>
         </Col>
         <Col>
@@ -66,7 +82,7 @@ const QueryForm = ({
               loading={loading}
               onClick={onLoading}
             >
-              搜索
+              查询
             </Button>
           </Form.Item>
         </Col>
