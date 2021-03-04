@@ -28,11 +28,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "dotenv -e .env.production craco build",
-    "build:support": "dotenv -e .env.support craco build",
-    "build:test": "dotenv -e .env.development craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "build": "craco build"
   },
   "eslintConfig": {
     "extends": [
@@ -58,7 +54,6 @@
     "@svgr/webpack": "^5.5.0",
     "babel-plugin-import": "^1.13.3",
     "craco-less": "^1.17.1",
-    "dotenv-cli": "^4.0.0",
     "simple-progress-webpack-plugin": "^1.1.2"
   }
 }

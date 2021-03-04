@@ -10,10 +10,10 @@ import "./InfoPanel.less";
 import comEvents from "@utils/comEvents";
 import {
   distributionMethods,
-  API_BASE_URL,
   VOUCHER_COLLECT_URL,
   COUPON_SUBTYPE_METHODS,
 } from "@utils/constants";
+import { host } from "@utils/config";
 
 const InfoPanel = (props) => {
   console.log(props);
@@ -107,9 +107,7 @@ const InfoPanel = (props) => {
         <Descriptions.Item label="领取码">
           <QRCode
             id="qrcode"
-            value={
-              API_BASE_URL + VOUCHER_COLLECT_URL + "?campaignId=" + props.id
-            }
+            value={`${window.location.host}${host}${VOUCHER_COLLECT_URL}?campaignId=${props.id}`}
             renderAs={"svg"}
             onClick={downloadQrCode}
             size={120}

@@ -2,7 +2,6 @@ const user = {};
 const token = "";
 
 const VOUCHER_COLLECT_URL = "/myriad/distributions/collect";
-const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const ajaxSuccess = 0;
 const ajaxError = 1;
@@ -123,13 +122,12 @@ const settlementTypes = [
   },
 ];
 
-//发放列表
-//PENDING, SUCCESS, FAILED;
-const distributionStatuses = [
-  { PENDING: "发放中" },
-  { SUCCESS: "发放成功" },
-  { FAILED: "发放失败" },
-];
+// 发放列表
+const distributionStatuses = {
+  PENDING: "发放中",
+  SUCCESS: "发放成功",
+  FAILED: "发放失败",
+};
 
 const redemptionStatuses = {
   PENDING: "核销中",
@@ -272,11 +270,12 @@ const rulesOfUse = {
   SelectedRegions: "所在区域",
 };
 
+const pwdReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
+
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
   VOUCHER_COLLECT_URL,
-  API_BASE_URL,
   campaignTypes,
   voucherTypes,
   distributionMethods,
@@ -301,4 +300,5 @@ export {
   noticeType,
   autoUpdateTooltip,
   rulesOfUse,
+  pwdReg,
 };

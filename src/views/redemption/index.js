@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import { Button, Table, PageHeader, Tag, Pagination, notification } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import FileSaver from "file-saver";
-import NumberFormat from "react-number-format";
 
 import "@css/common.less";
-import storageUtils from "@utils/storageUtils";
 import comEvents from "@utils/comEvents";
 import { reqGetRedemptions, reqExportRedemption } from "@api";
-import { Loading } from "@components";
-import { QueryForm } from "./components";
 import { redemptionStatuses, settlementStatuses } from "@utils/constants";
+import { QueryForm } from "./components";
+import { ValueOffText } from "@components";
 
 const columns = [
   {
@@ -21,7 +19,7 @@ const columns = [
     width: 160,
   },
   {
-    title: "营销活动",
+    title: "活动名",
     dataIndex: "campaignName",
     key: "campaignName",
     responsive: ["lg"],
@@ -45,37 +43,13 @@ const columns = [
     dataIndex: "discountOff",
     key: "discountOff",
     width: 100,
-    render: (value, row) => {
-      if (!value) return null;
-      if (row.voucherType === "COUPON") {
-        return (
-          <div style={{ textAlign: "right" }}>
-            <NumberFormat
-              value={value / 100}
-              displayType={"text"}
-              thousandSeparator={true}
-              decimalScale={2}
-              fixedDecimalScale={true}
-              prefix={"¥"}
-            />
-          </div>
-        );
-      } else if (row.voucherType === "GIFT") {
-        return (
-          <div style={{ textAlign: "right" }}>
-            <NumberFormat
-              value={value / 100}
-              displayType={"text"}
-              thousandSeparator={true}
-              decimalScale={2}
-              fixedDecimalScale={true}
-              prefix={"(¥"}
-              suffix={")"}
-            />
-          </div>
-        );
-      }
-    },
+    render: (text, record) => (
+      <ValueOffText
+        type={record.voucherType}
+        discountType={"AMOUNT"}
+        text={text}
+      />
+    ),
   },
   {
     title: "核销机构",
@@ -96,7 +70,6 @@ const columns = [
     fixed: "right",
     render: (chooseItem) => {
       const { status, settlementStatus } = chooseItem;
-      //show settlementStatus 结算状态
       return (
         <>
           <Tag color={status === "SUCCESS" ? "green" : "red"}>
@@ -117,14 +90,10 @@ class Redemption extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      initd: false,
       campaigns: [],
-      ownerId: storageUtils.getUser().id,
-      hasChoose: false,
       currentPage: 1,
       size: 20,
       total: 0,
-      visible: false,
       loading: false,
       beginDate: comEvents.firstDayOfMonth(),
       endDate: null,
@@ -135,45 +104,28 @@ class Redemption extends Component {
   }
 
   componentDidMount() {
-    const { searchTxt, beginDate, endDate } = this.state;
-    this.getRedemptions(1, searchTxt, beginDate, endDate);
+    const params = { pageIndex: 1 };
+    this.getRedemptions(params);
   }
 
   // 获取列表数据
-  getRedemptions = async (
-    currentPage,
-    tempSearchTxt,
-    tempBeginDate,
-    tempEndDate
-  ) => {
-    //owner Li:显示要有两个选择：营销机构，核销机构   前者传入issuerid，后者传入merchant id
+  getRedemptions = async (elements) => {
     const {
-      role,
       size,
       searchTxt,
       endDate,
       beginDate,
       includingSubsidiaries,
     } = this.state;
-    let params = {
-      page: currentPage - 1,
+    const params = {
+      page: elements.pageIndex - 1,
       size: size,
-      beginDate: tempBeginDate || beginDate,
-      endDate: tempEndDate || endDate,
-      searchTxt: tempSearchTxt || searchTxt,
+      searchTxt: elements.searchTxt || searchTxt,
+      beginDate: elements.beginDate || beginDate,
+      endDate: elements.endDate || endDate,
       includingSubsidiaries,
     };
-    switch (role) {
-      case "marketer":
-        params.issuerId = storageUtils.getUser().orgId;
-        break;
-      case "merchant":
-        params.merchantId = storageUtils.getUser().orgId;
-        break;
 
-      default:
-        break;
-    }
     this.setState({ loading: true });
     const result = await reqGetRedemptions(params);
     const cont =
@@ -216,7 +168,6 @@ class Redemption extends Component {
       }
     }
     this.setState({
-      initd: true,
       campaigns: data,
       total:
         result && result.data && result.data.content
@@ -227,9 +178,7 @@ class Redemption extends Component {
   };
 
   enterLoading = () => {
-    this.setState({
-      loading: true,
-    });
+    this.setState({ loading: true });
   };
 
   submitQuery = (values) => {
@@ -239,45 +188,21 @@ class Redemption extends Component {
       beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
       endDate: values["dateRange"][1].format("YYYY-MM-DD"),
     });
-    this.getRedemptions(
-      1,
-      values.searchTxt,
-      this.state.beginDate,
-      this.state.endDate
-    );
+    const params = {
+      pageIndex: 1,
+      searchTxt: values.searchTxt,
+    };
+    this.getRedemptions(params);
   };
 
   handlePageChange = (page) => {
-    this.setState(
-      {
-        currentPage: page,
-      },
-      () => {
-        this.getRedemptions(page);
-      }
-    );
-  };
-
-  // 机构类型切换
-  onSwitchRole = (e) => {
-    const { beginDate, endDate } = this.state;
-    //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
-    this.setState(
-      {
-        page: 0,
-        role: e.target.value,
-        currentPage: 1,
-      },
-      () => {
-        this.getRedemptions(1, null, beginDate, endDate);
-      }
-    );
+    this.setState({ currentPage: page }, () => {
+      this.getRedemptions({ pageIndex: page });
+    });
   };
 
   // 下属机构切换
   onIncluding = (e) => {
-    const { beginDate, endDate } = this.state;
-    //提交机构（merchant，只显示在机构审批类)，审批机构（marketer，只显示在机构提交)
     this.setState(
       {
         page: 0,
@@ -285,7 +210,8 @@ class Redemption extends Component {
         currentPage: 1,
       },
       () => {
-        this.getRedemptions(1, null, beginDate, endDate);
+        const params = { pageIndex: 1 };
+        this.getRedemptions(params);
       }
     );
   };
@@ -293,53 +219,35 @@ class Redemption extends Component {
   handleDownload = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const {
-      role,
-      beginDate,
-      endDate,
-      searchTxt,
-      includingSubsidiaries,
-    } = this.state;
+
+    const { beginDate, endDate, searchTxt, includingSubsidiaries } = this.state;
 
     this.setState({ downloading: true });
 
-    let params = {
-      beginDate,
-      endDate,
-      searchTxt,
-      includingSubsidiaries,
-    };
-    switch (role) {
-      case "marketer":
-        params.issuerId = storageUtils.getUser().orgId;
-        break;
-      case "merchant":
-        params.merchantId = storageUtils.getUser().orgId;
-        break;
+    try {
+      const params = {
+        beginDate,
+        endDate,
+        searchTxt,
+        includingSubsidiaries,
+      };
 
-      default:
-        break;
-    }
-    const filename = "redemptions.xlsx";
+      const filename = "redemptions.xlsx";
 
-    reqExportRedemption(params)
-      .then((response) => {
-        FileSaver.saveAs(response.data, filename);
-        this.setState({
-          downloading: false,
+      reqExportRedemption(params)
+        .then((response) => {
+          FileSaver.saveAs(response.data, filename);
+        })
+        .catch(() => {
+          notification.warning({
+            message: "下载失败，请稍后再试",
+          });
         });
-      })
-      .catch((e) => {
-        this.setState({
-          downloading: false,
-        });
-        notification.warning({
-          message: "下载失败，请稍后再试",
-        });
-      });
+    } catch (error) {}
+    this.setState({ downloading: false });
   };
 
-  renderContent = () => {
+  render() {
     const {
       campaigns,
       size,
@@ -352,10 +260,10 @@ class Redemption extends Component {
     return (
       <>
         <PageHeader
-          className="site-page-header-responsive cont"
           title="核销记录"
           extra={[
             <Button
+              key="download"
               type="primary"
               shape="circle"
               loading={this.state.downloading}
@@ -368,7 +276,6 @@ class Redemption extends Component {
           loading={loading}
           dateRange={[this.state.beginDate]}
           onLoading={this.enterLoading}
-          onSwitchRole={this.onSwitchRole}
           onSubmit={this.submitQuery}
           onIncluding={this.onIncluding}
           role={role}
@@ -398,10 +305,6 @@ class Redemption extends Component {
         </div>
       </>
     );
-  };
-  render() {
-    const { initd } = this.state;
-    return <>{initd ? this.renderContent() : <Loading />}</>;
   }
 }
 
