@@ -2,7 +2,12 @@ import React from "react";
 import { Drawer, Collapse, Skeleton } from "antd";
 
 import "./CampaignDetail.less";
-import { InfoPanel, ConfigPanel, RedemptionRules } from "./components";
+import {
+  InfoPanel,
+  ConfigPanel,
+  RedemptionRules,
+  CheckInPanel,
+} from "./components";
 
 const { Panel } = Collapse;
 
@@ -35,6 +40,15 @@ const CampaignDetail = (props) => {
                 />
               )}
             </Panel>
+          )}
+          {props.campaign?.subType.includes("CHECKIN") && (
+            <>
+              {props.campaign?.metadata?.schedule && (
+                <Panel header="签到详情" key="4">
+                  <CheckInPanel {...props.campaign?.metadata} />
+                </Panel>
+              )}
+            </>
           )}
         </Collapse>
       </Skeleton>

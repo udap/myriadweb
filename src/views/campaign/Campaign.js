@@ -102,20 +102,18 @@ class Campaign extends Component {
         dataIndex: "category",
         key: "category",
         width: 140,
-        render: (value) => {
-          return (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {value &&
-                value.split(",").map((item, index) => (
-                  <div style={{ flex: 1 }}>
-                    <Tag key={index} color="cyan">
-                      {item}
-                    </Tag>
-                  </div>
-                ))}
-            </div>
-          );
-        },
+        render: (value) => (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {value &&
+              value.split(",").map((item, index) => (
+                <div style={{ flex: 1 }}>
+                  <Tag key={index} color="cyan">
+                    {item}
+                  </Tag>
+                </div>
+              ))}
+          </div>
+        ),
       },
       {
         title: "发布时间",
@@ -148,7 +146,7 @@ class Campaign extends Component {
         key: "ops",
         width: 150,
         render: (chooseItem) => {
-          const { id, status } = chooseItem;
+          const { id, status, subType } = chooseItem;
           // element === 'participant' 才有按钮
           return (
             <span>
@@ -158,7 +156,8 @@ class Campaign extends Component {
               >
                 查看
               </b>
-              {status !== "ACTIVATING" ? (
+              {/* 屏蔽自助签到活动、人工签到活动的编辑功能 */}
+              {status !== "ACTIVATING" && !subType.includes("CHECKIN") ? (
                 <span>
                   <Divider type="vertical" />
                   <b

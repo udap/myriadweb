@@ -30,7 +30,7 @@ import {
 } from "@api";
 import storageUtils from "@utils/storageUtils";
 import {
-  distributionMethods,
+  DISTRIBUTION_METHODS,
   stepLists,
   autoUpdateTooltip,
 } from "@utils/constants";
@@ -495,14 +495,10 @@ class CampaignEdit extends Component {
         >
           <Radio.Group disabled={isDisabled(status)}>
             <Radio style={radioStyle} value="CSR_DISTRIBUTE">
-              {distributionMethods.map((item, index) => (
-                <span key={index}>{item["CSR_DISTRIBUTE"]}</span>
-              ))}
+              {DISTRIBUTION_METHODS["CSR_DISTRIBUTE"]}
             </Radio>
             <Radio style={radioStyle} value="CUSTOMER_COLLECT">
-              {distributionMethods.map((item, index) => (
-                <span key={index}>{item["CUSTOMER_COLLECT"]}</span>
-              ))}
+              {DISTRIBUTION_METHODS["CUSTOMER_COLLECT"]}
             </Radio>
           </Radio.Group>
         </Form.Item>

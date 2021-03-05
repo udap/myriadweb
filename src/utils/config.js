@@ -12,12 +12,6 @@
 //   }
 // }
 
-
 //调用
 //const host = versionLX();
-const host = "/myriadapi";
-
-
-module.exports = {
-  host: host
-}
+export const host = "/myriadapi";

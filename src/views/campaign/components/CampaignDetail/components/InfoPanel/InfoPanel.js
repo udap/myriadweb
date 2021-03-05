@@ -9,15 +9,30 @@ import { CopyOutlined } from "@ant-design/icons";
 import "./InfoPanel.less";
 import comEvents from "@utils/comEvents";
 import {
-  distributionMethods,
+  DISTRIBUTION_METHODS,
   VOUCHER_COLLECT_URL,
   COUPON_SUBTYPE_METHODS,
+  MANUAL_CHECKIN_URL,
 } from "@utils/constants";
 import { host } from "@utils/config";
 
 const InfoPanel = (props) => {
-  console.log(props);
   const downloadQrCode = () => {
+    let downloadName = "qrcode";
+    switch (props.subType) {
+      case "SELF_CHECKIN":
+      case "MANUAL_CHECKIN":
+        downloadName = `${props.name}-活动码`;
+        break;
+
+      case "COUPON":
+      case "GIFT":
+        downloadName = `${props.name}-活动领取码`;
+        break;
+
+      default:
+        break;
+    }
     const imageOptions = {
       scale: 5,
       encoderOptions: 1,
@@ -25,7 +40,7 @@ const InfoPanel = (props) => {
     };
     saveAs.saveSvgAsPng(
       document.getElementById("qrcode"),
-      "qrcode.png",
+      `${downloadName}.png`,
       imageOptions
     );
   };
@@ -72,61 +87,90 @@ const InfoPanel = (props) => {
           : ""}
       </Descriptions.Item>
       <Descriptions.Item label="活动时间">
-        {props.effective}至{comEvents.formatExpiry(props.expiry)}
+        {props.effective} 至 {comEvents.formatExpiry(props.expiry)}
       </Descriptions.Item>
-      <Descriptions.Item label="计划发行">
-        <NumberFormat
-          value={props.plannedSupply}
-          displayType={"text"}
-          thousandSeparator={true}
-        />
-      </Descriptions.Item>
-      <Descriptions.Item label="实际发行">
-        <NumberFormat
-          value={props.totalSupply}
-          displayType={"text"}
-          thousandSeparator={true}
-        />
-      </Descriptions.Item>
-      <Descriptions.Item label="自动增发">
-        {props.autoUpdate ? "是" : "否"}
-      </Descriptions.Item>
-      <Descriptions.Item label="发放形式">
-        {distributionMethods.map((item, index) => (
-          <span key={index}>{item[props.distMethod]}</span>
-        ))}
-      </Descriptions.Item>
-      <Descriptions.Item label="领取限制">
-        <NumberFormat
-          value={props.distLimit}
-          displayType={"text"}
-          suffix={" 张券/账户"}
-        />
-      </Descriptions.Item>
-      {props.distMethod === "CUSTOMER_COLLECT" ? (
-        <Descriptions.Item label="领取码">
-          <QRCode
-            id="qrcode"
-            value={`${window.location.host}${host}${VOUCHER_COLLECT_URL}?campaignId=${props.id}`}
-            renderAs={"svg"}
-            onClick={downloadQrCode}
-            size={120}
-            level={"H"}
-            imageSettings={{
-              src: "/images/logo.jpg",
-              height: 30,
-              width: 30,
-              excavate: true,
-            }}
-          />
-        </Descriptions.Item>
-      ) : null}
-      <Descriptions.Item label="活动主页">
-        <div className="word-wrap">{props.url ? props.url : ""}</div>
-      </Descriptions.Item>
-      <Descriptions.Item label="活动描述">
-        {props.description}
-      </Descriptions.Item>
+
+      {props.subType.includes("CHECKIN") ? (
+        <>
+          <Descriptions.Item label="主办单位">
+            {props.ownerName}
+          </Descriptions.Item>
+          {props.subType.includes("CHECKIN") && (
+            <Descriptions.Item label="活动码">
+              <QRCode
+                id="qrcode"
+                value={`${window.location.host}${MANUAL_CHECKIN_URL}?id=${props.id}`}
+                renderAs={"svg"}
+                onClick={downloadQrCode}
+                size={120}
+                level={"H"}
+                imageSettings={{
+                  src: "/images/logo.jpg",
+                  height: 30,
+                  width: 30,
+                  excavate: true,
+                }}
+              />
+            </Descriptions.Item>
+          )}
+        </>
+      ) : (
+        <>
+          <Descriptions.Item label="计划发行">
+            <NumberFormat
+              value={props.plannedSupply}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </Descriptions.Item>
+          <Descriptions.Item label="实际发行">
+            <NumberFormat
+              value={props.totalSupply}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </Descriptions.Item>
+          <Descriptions.Item label="自动增发">
+            {props.autoUpdate ? "是" : "否"}
+          </Descriptions.Item>
+          {props.distMethod && (
+            <Descriptions.Item label="发放形式">
+              {DISTRIBUTION_METHODS[props.distMethod]}
+            </Descriptions.Item>
+          )}
+          <Descriptions.Item label="领取限制">
+            <NumberFormat
+              value={props.distLimit}
+              displayType={"text"}
+              suffix={" 张券/账户"}
+            />
+          </Descriptions.Item>
+          {props.distMethod === "CUSTOMER_COLLECT" && (
+            <Descriptions.Item label="领取码">
+              <QRCode
+                id="qrcode"
+                value={`${window.location.host}${host}${VOUCHER_COLLECT_URL}?campaignId=${props.id}`}
+                renderAs={"svg"}
+                onClick={downloadQrCode}
+                size={120}
+                level={"H"}
+                imageSettings={{
+                  src: "/images/logo.jpg",
+                  height: 30,
+                  width: 30,
+                  excavate: true,
+                }}
+              />
+            </Descriptions.Item>
+          )}
+          <Descriptions.Item label="活动主页">
+            <div className="word-wrap">{props.url || "www.baidu.com"}</div>
+          </Descriptions.Item>
+          <Descriptions.Item label="活动描述">
+            {props.description}
+          </Descriptions.Item>
+        </>
+      )}
     </Descriptions>
   );
 };

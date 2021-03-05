@@ -2,14 +2,15 @@ const user = {};
 const token = "";
 
 const VOUCHER_COLLECT_URL = "/myriad/distributions/collect";
+const MANUAL_CHECKIN_URL = "/campaigns/registration/";
 
 const ajaxSuccess = 0;
 const ajaxError = 1;
 
-const distributionMethods = [
-  { CSR_DISTRIBUTE: "手动发放（由营销人员决定发放对象）" },
-  { CUSTOMER_COLLECT: "手动领取（由客户主动领取）" },
-];
+const DISTRIBUTION_METHODS = {
+  CSR_DISTRIBUTE: "手动发放（由营销人员决定发放对象）",
+  CUSTOMER_COLLECT: "手动领取（由客户主动领取）",
+};
 
 const campaignStatuses = [
   //INITIATED 草稿, ACTIVATING 券正在生成, ACTIVATED 券已生成, REJECTED 审批拒绝, ARCHIVED 已删除, TERMINATED 已终止;
@@ -272,13 +273,32 @@ const rulesOfUse = {
 
 const pwdReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
 
+const SCHEDULE_TYPE = {
+  ONETIME: "可一次签到",
+  DAILY: "每天可一次签到",
+  WEEKLY: "每周可一次签到",
+  DAYS_OF_WEEK: "每周可多次签到",
+  DAYS_OF_MONTH: "每月可多次签到",
+};
+
+const GIVEAWAY_SELECTION = {
+  AUTO: "随机发放",
+  ASSIGN: "客户经理发放",
+  SELF_SELECT: "自己选择",
+};
+
+const GIVEAWAY_REWARDS_TYPE = {
+  COUPON: "优惠券",
+  GIFT: "礼品",
+};
+
 export {
   user, //保存当前登录的user信息
   token, //保存当前登录的token信息
   VOUCHER_COLLECT_URL,
   campaignTypes,
   voucherTypes,
-  distributionMethods,
+  DISTRIBUTION_METHODS,
   campaignStatuses, //营销活动
   campaignStatusObj,
   couponStatuses, //票券管理
@@ -301,4 +321,8 @@ export {
   autoUpdateTooltip,
   rulesOfUse,
   pwdReg,
+  MANUAL_CHECKIN_URL,
+  SCHEDULE_TYPE,
+  GIVEAWAY_SELECTION,
+  GIVEAWAY_REWARDS_TYPE,
 };
