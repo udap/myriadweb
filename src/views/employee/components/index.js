@@ -1,4 +1,4 @@
-import QueryFilter from "./QueryFilter";
 import Details from "./Details";
+import BranchSelect from "./BranchSelect";
 
-export { QueryFilter, Details };
+export { Details, BranchSelect };

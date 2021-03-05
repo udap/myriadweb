@@ -1,44 +1,33 @@
 import React, { Component } from "react";
-import {
-  Table,
-  Pagination,
-  Input,
-} from "antd";
-import { reqGetSubsidiaries } from "../../api";
-import storageUtils from "../../utils/storageUtils";
-import { Loading } from "../../components";
+import { Table, Pagination, Input } from "antd";
+import { reqGetSubsidiaries } from "@api";
+import { Loading } from "@components";
+
 const { Search } = Input;
-const columns = [
-  {
-    title: "名称",
-    dataIndex: "fullName",
-    key: "fullName",
-  },
-];
+
 class BranchSelect extends Component {
   state = {
-    inited: false,
+    initd: false,
     org: {},
-    //分页
     currentPage: 1,
     size: 10,
     total: 1,
     searchTxt: "",
   };
+
   componentDidMount() {
     this.getBranchList(1);
   }
-  /*
-获取列表数据
-*/
+
+  // 获取列表数据
   getBranchList = async (currentPage, value) => {
-    const parmas = {
+    const params = {
       page: currentPage >= 0 ? currentPage - 1 : this.state.currentPage,
       size: this.state.size,
       uid: this.props.orgUid, //storageUtils.getUser().orgUid,
       searchTxt: value ? value : this.state.searchTxt,
     };
-    const result = await reqGetSubsidiaries(this.props.orgUid, parmas);
+    const result = await reqGetSubsidiaries(this.props.orgUid, params);
     const cont = result && result.data ? result.data.content : [];
     let list = [];
     if (cont && cont.content && cont.content.length !== 0) {
@@ -64,21 +53,24 @@ class BranchSelect extends Component {
         result && result.data && result.data.content
           ? result.data.content.totalElements
           : 1,
-      inited: true,
+      initd: true,
       loading: false,
     });
   };
+
   handleTableChange = (page) => {
     this.setState({
       currentPage: page,
     });
     this.getBranchList(page);
   };
+
   enterLoading = () => {
     this.setState({
       loading: true,
     });
   };
+
   searchValue = (value) => {
     this.setState({
       currentPage: 1,
@@ -86,6 +78,7 @@ class BranchSelect extends Component {
     });
     this.getBranchList(1, value);
   };
+
   render() {
     const { org, size, currentPage, loading } = this.state;
     return (
@@ -98,7 +91,7 @@ class BranchSelect extends Component {
           loading={loading}
           allowClear
         />
-        {this.state.inited ? (
+        {this.state.initd ? (
           <div>
             <Table
               className="table-small"
@@ -109,7 +102,13 @@ class BranchSelect extends Component {
                   this.props.onSelectBranch(selectedRows);
                 },
               }}
-              columns={columns}
+              columns={[
+                {
+                  title: "名称",
+                  dataIndex: "fullName",
+                  key: "fullName",
+                },
+              ]}
               dataSource={org}
               pagination={false}
             />

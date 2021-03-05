@@ -12,7 +12,6 @@ import {
 const { Panel } = Collapse;
 
 const CampaignDetail = (props) => {
-  console.log(props);
   return (
     <Drawer
       className="camDetail"

@@ -12,6 +12,7 @@ import HeaderDropdown from "./HeaderDropdown";
 import NoticeIcon from "./NoticeIcon";
 import BranchSelect from "./BranchSelect";
 import ValueOffText from "./ValueOffText";
+import EmployeeQueryFilter from "./EmployeeQueryFilter";
 
 export {
   FrameOut,
@@ -28,4 +29,5 @@ export {
   NoticeIcon,
   BranchSelect,
   ValueOffText,
+  EmployeeQueryFilter,
 };

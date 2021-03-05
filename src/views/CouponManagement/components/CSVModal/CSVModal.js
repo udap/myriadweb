@@ -26,7 +26,7 @@ const typeName = {
 };
 
 const typeTitle = {
-  transfer: "配券",
+  transfer: "批量配券",
   distribution: "批量发放",
 };
 

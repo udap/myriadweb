@@ -39,8 +39,8 @@ import {
   reqPutEmployee,
 } from "@api";
 import "@css/common.less";
-import BranchSelect from "./branchSelect";
-import { QueryFilter, Details } from "./components";
+import { Details, BranchSelect } from "./components";
+import { EmployeeQueryFilter } from "@components";
 
 const { confirm } = Modal;
 const { Option } = Select;
@@ -580,12 +580,11 @@ class Employee extends Component {
           ]}
           onBack={this.backIndex}
         />
-        <QueryFilter
+        <EmployeeQueryFilter
           onFinish={this.onQueryFinish}
           includingSubsidiaries={includingSubsidiaries}
           onChange={this.onCheckboxChange}
           loading={loading}
-          onClick={this.enterLoading}
         />
         <Table
           rowKey="uid"

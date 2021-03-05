@@ -72,7 +72,15 @@ export const reqGetNumber = (campaignId, owner, action) =>
 //增发票券
 export const reqIssueVouchers = (id, params) =>
   ajax.post(BASE + "/myriad/campaigns/" + id + "/vouchers", params);
-//批量分配reqTransfer
+
+// 配券
+export const batchTransfer = (params) =>
+  ajax.post(
+    `${BASE}/myriad/vouchers/batchTransfer?method=selectEmployees`,
+    params
+  );
+
+// 批量配券
 export const reqBatchTransfer = (params) =>
   ajax.post(BASE + "/myriad/vouchers/batchTransfer", params, {
     "Content-Type": "multipart/form-data",

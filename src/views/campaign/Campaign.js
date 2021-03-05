@@ -106,10 +106,8 @@ class Campaign extends Component {
           <div style={{ display: "flex", flexDirection: "column" }}>
             {value &&
               value.split(",").map((item, index) => (
-                <div style={{ flex: 1 }}>
-                  <Tag key={index} color="cyan">
-                    {item}
-                  </Tag>
+                <div key={index} style={{ flex: 1 }}>
+                  <Tag color="cyan">{item}</Tag>
                 </div>
               ))}
           </div>

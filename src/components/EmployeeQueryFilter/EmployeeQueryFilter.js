@@ -36,7 +36,6 @@ const QueryFilter = (props) => {
               className="cursor searchBtn"
               htmlType="submit"
               loading={props.loading}
-              onClick={props.onClick}
             >
               查询
             </Button>

@@ -26,6 +26,7 @@ import {
   IssueForm,
   CSVModal,
   CouponDetails,
+  EmployeeList,
 } from "./components";
 import { ValueOffText } from "@components";
 import "@css/common.less";
@@ -54,6 +55,8 @@ const CouponManagement = () => {
   const [currentItem, setCurrentItem] = useState({});
   const [additionalIssueVisible, setAdditionalIssueVisible] = useState(false);
   const [additionalIssueLoading, setAdditionalIssueLoading] = useState(false);
+
+  const [employeeVisible, setEmployeeVisible] = useState(false);
 
   const [voucherCount, setVoucherCount] = useState(0);
   const [voucherCountLoading, setVoucherCountLoading] = useState(false);
@@ -274,6 +277,15 @@ const CouponManagement = () => {
     setDetailsVisible(false);
   };
 
+  const handleTransfer = (elements) => {
+    setEmployeeVisible(true);
+    setCurrentItem(elements);
+  };
+
+  const handleEmployeeCancel = () => {
+    setEmployeeVisible(false);
+  };
+
   return (
     <>
       <PageHeader title="票券管理" />
@@ -333,18 +345,16 @@ const CouponManagement = () => {
           dataIndex="camTags"
           key="camTags"
           width={150}
-          render={(tag) => {
-            return (
-              <>
-                {tag &&
-                  tag.split(",").map((item, index) => (
-                    <Tag color="cyan" key={index}>
-                      {item}
-                    </Tag>
-                  ))}
-              </>
-            );
-          }}
+          render={(value) => (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {value &&
+                value.split(",").map((item, index) => (
+                  <div key={index} style={{ flex: 1 }}>
+                    <Tag color="cyan">{item}</Tag>
+                  </div>
+                ))}
+            </div>
+          )}
         />
         <Column
           title="有效期"
@@ -426,10 +436,17 @@ const CouponManagement = () => {
                           </b>
                           <Divider type="vertical" />
                           <b
-                            onClick={() => handleCSV("transfer", text)}
+                            onClick={() => handleTransfer(text)}
                             className="ant-blue-link cursor"
                           >
                             配券
+                          </b>
+                          <Divider type="vertical" />
+                          <b
+                            onClick={() => handleCSV("transfer", text)}
+                            className="ant-blue-link cursor"
+                          >
+                            批量配券
                           </b>
                           {storageUtils.getUser().id ===
                             Number(text.camCreatedById) && (
@@ -468,6 +485,13 @@ const CouponManagement = () => {
           visible={customerVisible}
           campaignId={currentItem.camId}
           handleCancel={handleCustomerCancel}
+        />
+      )}
+      {employeeVisible && (
+        <EmployeeList
+          visible={employeeVisible}
+          campaignId={currentItem.camId}
+          handleCancel={handleEmployeeCancel}
         />
       )}
       {additionalIssueVisible && (
