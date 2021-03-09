@@ -6,6 +6,7 @@ import storageUtils from "@utils/storageUtils";
 // 在发送请求之前做些什么
 
 //axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.timeout = 60_000;
 
 axios.interceptors.request.use(function (config, headers) {
   //得到请求方式和请求体数据
@@ -44,7 +45,12 @@ axios.interceptors.response.use(
   },
   function (error) {
     console.log("error", error);
-    switch (error.response.status) {
+    if (error.code === "ECONNABORTED" && error.message?.includes("timeout")) {
+      notification.warning({
+        message: "网络请求超时，请稍后再试",
+      });
+    }
+    switch (error.response?.status) {
       case 504:
       case 404:
       case 502:

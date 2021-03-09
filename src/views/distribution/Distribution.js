@@ -172,7 +172,7 @@ class Distribution extends Component {
           campaignName: cont[i].campaign.name,
           orgName: cont[i].orgName,
           fromOwnerName: cont[i].fromOwnerName,
-          customerName: cont[i].customerName,
+          customerName: cont[i].customerName || "",
           discountOff,
           discountType: cont[i].discountType,
           voucherType: cont[i].voucher.type,
