@@ -77,10 +77,10 @@ th {
   padding: 0;
 }
 
-td:not([align]),
-th:not([align]) {
-  text-align: left;
-}
+/*td:not([align]),*/
+/*th:not([align]) {*/
+/*  text-align: left;*/
+/*}*/
 
 html {
   font-size: 62.5%; /* 10÷16=62.5% */

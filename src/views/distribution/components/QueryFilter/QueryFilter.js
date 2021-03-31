@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form, Row, Col, Radio, Button, Input, DatePicker } from 'antd'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
@@ -17,10 +17,15 @@ const QueryForm = ({
   const beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date()
   const endDate = dateRange && dateRange[1] ? dateRange[1] : new Date()
 
+  const [dates, setDates] = useState([])
   const disabledDate = (current) => {
-    // 时间点：三个月前
     const prohibitedTime = moment().subtract(3, 'months')
-    return current < prohibitedTime
+    if (dates.length === 0) {
+      return current < prohibitedTime
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 30
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30
+    return tooEarly || tooLate
   }
 
   return (
@@ -68,6 +73,8 @@ const QueryForm = ({
             <RangePicker
               format="YYYY-MM-DD"
               disabled={loading}
+              onOpenChange={open => open && setDates([])}
+              onCalendarChange={val => setDates(val)}
               allowClear={false}
               disabledDate={disabledDate}
             />
