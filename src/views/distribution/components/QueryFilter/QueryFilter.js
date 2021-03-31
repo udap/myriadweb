@@ -1,27 +1,27 @@
-import React from "react";
-import { Form, Row, Col, Radio, Button, Input, DatePicker } from "antd";
-import moment from "moment";
-import "moment/locale/zh-cn";
+import React from 'react'
+import { Form, Row, Col, Radio, Button, Input, DatePicker } from 'antd'
+import moment from 'moment'
+import 'moment/locale/zh-cn'
 
-import "@css/common.less";
+import '@css/common.less'
 
-const { RangePicker } = DatePicker;
+const { RangePicker } = DatePicker
 
 const QueryForm = ({
   loading,
   dateRange,
   onLoading,
   onSwitchType,
-  onSubmitQuery,
+  onSubmitQuery
 }) => {
-  const beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date();
-  const endDate = dateRange && dateRange[1] ? dateRange[1] : new Date();
+  const beginDate = dateRange && dateRange[0] ? dateRange[0] : new Date()
+  const endDate = dateRange && dateRange[1] ? dateRange[1] : new Date()
 
   const disabledDate = (current) => {
     // 时间点：三个月前
-    const prohibitedTime = moment().subtract(3, "months");
-    return current < prohibitedTime;
-  };
+    const prohibitedTime = moment().subtract(3, 'months')
+    return current < prohibitedTime
+  }
 
   return (
     <Form
@@ -29,12 +29,12 @@ const QueryForm = ({
       layout="horizontal"
       name="advanced_search"
       initialValues={{
-        searchTxt: "",
-        type: "user",
+        searchTxt: '',
+        type: 'user',
         dateRange: [
-          moment(beginDate, "YYYY-MM-DD"),
-          moment(endDate, "YYYY-MM-DD"),
-        ],
+          moment(beginDate, 'YYYY-MM-DD'),
+          moment(endDate, 'YYYY-MM-DD')
+        ]
       }}
     >
       <Row gutter={[16, 16]}>
@@ -88,7 +88,7 @@ const QueryForm = ({
         </Col>
       </Row>
     </Form>
-  );
-};
+  )
+}
 
-export default QueryForm;
+export default QueryForm

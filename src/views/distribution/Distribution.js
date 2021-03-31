@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Button,
   Table,
@@ -6,88 +6,88 @@ import {
   Tag,
   Pagination,
   notification,
-  Tooltip,
-} from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
-import FileSaver from "file-saver";
+  Tooltip
+} from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
+import FileSaver from 'file-saver'
 
-import "@css/common.less";
-import storageUtils from "@utils/storageUtils";
-import comEvents from "@utils/comEvents";
-import { reqGetDistributions, reqExportDistributions } from "@api";
-import { distributionStatuses } from "@utils/constants";
-import { QueryFilter } from "./components";
-import { ValueOffText } from "@components";
+import '@css/common.less'
+import storageUtils from '@utils/storageUtils'
+import comEvents from '@utils/comEvents'
+import { reqGetDistributions, reqExportDistributions } from '@api'
+import { distributionStatuses } from '@utils/constants'
+import { QueryFilter } from './components'
+import { ValueOffText } from '@components'
 
-const { Column } = Table;
+const { Column } = Table
 
 class Distribution extends Component {
   state = {
     campaigns: [],
     hasChoose: false,
-    merchantCode: "",
+    merchantCode: '',
     currentPage: 1,
     size: 20,
     total: 0,
     visible: false,
-    searchTxt: "",
+    searchTxt: '',
     beginDate: comEvents.firstDayOfMonth(),
     endDate: null,
     downloading: false,
     loading: false,
-    type: "user",
-  };
-
-  componentDidMount() {
-    this.initColumns();
-    const params = {
-      pageIndex: 1,
-      searchTxt: "",
-    };
-    this.getDistributions(params);
+    type: 'user'
   }
 
-  initColumns() {
+  componentDidMount () {
+    this.initColumns()
+    const params = {
+      pageIndex: 1,
+      searchTxt: ''
+    }
+    this.getDistributions(params)
+  }
+
+  initColumns () {
     this.columns = [
       {
-        title: "券号",
-        dataIndex: "code",
-        key: "code",
+        title: '券号',
+        dataIndex: 'code',
+        key: 'code'
       },
       {
-        title: "活动名",
-        dataIndex: "campaignName",
-        key: "campaignName",
-        width: 280,
+        title: '活动名',
+        dataIndex: 'campaignName',
+        key: 'campaignName',
+        width: 280
       },
       {
-        title: "发放人",
-        dataIndex: "fromOwnerName",
-        key: "fromOwnerName",
+        title: '发放人',
+        dataIndex: 'fromOwnerName',
+        key: 'fromOwnerName'
       },
       {
-        title: "发放机构",
-        dataIndex: "orgName",
-        key: "orgName",
-        width: 280,
+        title: '发放机构',
+        dataIndex: 'orgName',
+        key: 'orgName',
+        width: 280
       },
       {
-        title: "客户",
-        dataIndex: "customerName",
-        key: "customerName",
+        title: '客户',
+        dataIndex: 'customerName',
+        key: 'customerName',
         ellipsis: {
-          showTitle: false,
+          showTitle: false
         },
         render: (cusName) => (
           <Tooltip placement="topLeft" title={cusName}>
             {cusName}
           </Tooltip>
-        ),
+        )
       },
       {
-        title: "优惠金额",
-        dataIndex: "discountOff",
-        key: "discountOff",
+        title: '优惠金额',
+        dataIndex: 'discountOff',
+        key: 'discountOff',
         width: 100,
         render: (text, record) => (
           <ValueOffText
@@ -95,74 +95,74 @@ class Distribution extends Component {
             discountType={record.discountType}
             text={text}
           />
-        ),
+        )
       },
       {
-        title: "发放时间",
-        dataIndex: "updatedAt",
-        key: "updatedAt",
-        width: 180,
+        title: '发放时间',
+        dataIndex: 'updatedAt',
+        key: 'updatedAt',
+        width: 180
       },
       {
-        title: "发放状态",
-        dataIndex: "status",
-        key: "status",
+        title: '发放状态',
+        dataIndex: 'status',
+        key: 'status',
         width: 100,
         render: (text, record) => {
           return (
             <Tag color="green" key={record.code}>
               {distributionStatuses[text]}
             </Tag>
-          );
-        },
-      },
-    ];
+          )
+        }
+      }
+    ]
   }
 
   // 获取列表数据
   getDistributions = async (elements) => {
-    const { size, searchTxt, beginDate, endDate, type } = this.state;
+    const { size, searchTxt, beginDate, endDate, type } = this.state
     let params = {
       page: elements.pageIndex - 1,
       size,
       searchTxt: elements.searchTxt || searchTxt,
       beginDate: elements.beginDate || beginDate,
       endDate: elements.endDate || endDate,
-      sort: "createdAt,desc",
-    };
+      sort: 'createdAt,desc'
+    }
     switch (type) {
-      case "user":
-        params.ownerId = storageUtils.getUser().id;
-        break;
+      case 'user':
+        params.ownerId = storageUtils.getUser().id
+        break
 
-      case "org":
-        params.issuerId = storageUtils.getUser().orgId;
-        break;
+      case 'org':
+        params.issuerId = storageUtils.getUser().orgId
+        break
 
       default:
-        break;
+        break
     }
 
-    this.setState({ loading: true });
-    const result = await reqGetDistributions(params);
+    this.setState({ loading: true })
+    const result = await reqGetDistributions(params)
     const cont =
       result && result.data && result.data.content
         ? result.data.content.entries
-        : [];
-    let data = [];
+        : []
+    let data = []
     if (cont && cont.length !== 0) {
       for (let i = 0; i < cont.length; i++) {
-        let discountOff;
+        let discountOff
         switch (cont[i].voucher.type) {
-          case "COUPON":
-            discountOff = cont[i].discountOff;
-            break;
-          case "GIFT":
-            discountOff = cont[i].product.exchangePrice;
-            break;
+          case 'COUPON':
+            discountOff = cont[i].discountOff
+            break
+          case 'GIFT':
+            discountOff = cont[i].product.exchangePrice
+            break
 
           default:
-            break;
+            break
         }
 
         data.push({
@@ -178,45 +178,44 @@ class Distribution extends Component {
           voucherType: cont[i].voucher.type,
           updatedAt: cont[i].updatedAt,
           channel: cont[i].channel,
-          status: cont[i].status,
-        });
+          status: cont[i].status
+        })
       }
     }
     this.totalPages =
       result && result.data && result.data.content
         ? result.data.content.totalElements
-        : 0;
+        : 0
     this.setState({
       campaigns: data,
       total:
         result.data && result.data.content
           ? result.data.content.totalElements
           : 0,
-      loading: false,
-    });
-  };
+      loading: false
+    })
+  }
 
   enterLoading = () => {
-    this.setState({ loading: true });
-  };
+    this.setState({ loading: true })
+  }
 
   submitQuery = (values) => {
     this.setState({
       currentPage: 1,
       searchTxt: values.searchTxt,
-      beginDate: values["dateRange"][0].format("YYYY-MM-DD"),
-      endDate: values["dateRange"][1].format("YYYY-MM-DD"),
-    });
+      beginDate: values['dateRange'][0].format('YYYY-MM-DD'),
+      endDate: values['dateRange'][1].format('YYYY-MM-DD')
+    })
     this.getDistributions({
       pageIndex: 1,
-      searchTxt: values.searchTxt,
-    });
-  };
-
+      searchTxt: values.searchTxt
+    })
+  }
   onPageChange = (page) => {
-    this.setState({ currentPage: page });
-    this.getDistributions({ pageIndex: page });
-  };
+    this.setState({ currentPage: page })
+    this.getDistributions({ pageIndex: page })
+  }
 
   // radio 切换
   onSwitchType = (e) => {
@@ -225,52 +224,53 @@ class Distribution extends Component {
       {
         page: 0,
         type: e.target.value,
-        currentPage: 1,
+        currentPage: 1
       },
       () => {
-        this.getDistributions({ pageIndex: 1 });
+        // 取消机构切换查询
+        // this.getDistributions({ pageIndex: 1 })
       }
-    );
-  };
+    )
+  }
 
   handleDownload = async (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault()
+    event.stopPropagation()
 
-    this.setState({ downloading: true });
+    this.setState({ downloading: true })
     try {
-      const filename = "distributions.xlsx";
+      const filename = 'distributions.xlsx'
       let params = {
         beginDate: this.state.beginDate,
         endDate: this.state.endDate,
-        searchTxt: this.state.searchTxt,
-      };
+        searchTxt: this.state.searchTxt
+      }
       switch (this.state.type) {
-        case "user":
-          params.ownerId = storageUtils.getUser().id;
-          break;
+        case 'user':
+          params.ownerId = storageUtils.getUser().id
+          break
 
-        case "org":
-          params.issuerId = storageUtils.getUser().orgId;
-          break;
+        case 'org':
+          params.issuerId = storageUtils.getUser().orgId
+          break
 
         default:
-          break;
+          break
       }
 
       reqExportDistributions(params)
         .then((response) => {
-          FileSaver.saveAs(response.data, filename);
+          FileSaver.saveAs(response.data, filename)
         })
         .catch(() => {
-          notification.warning({ message: "下载失败，请稍后再试" });
-        });
+          notification.warning({ message: '下载失败，请稍后再试' })
+        })
     } catch (error) {}
-    this.setState({ downloading: false });
-  };
+    this.setState({ downloading: false })
+  }
 
-  render() {
-    const { campaigns, size, loading, currentPage, downloading } = this.state;
+  render () {
+    const { campaigns, size, loading, currentPage, downloading } = this.state
     return (
       <>
         <PageHeader
@@ -283,7 +283,7 @@ class Distribution extends Component {
               loading={downloading}
               icon={<DownloadOutlined />}
               onClick={(e) => this.handleDownload(e)}
-            />,
+            />
           ]}
         />
         <QueryFilter
@@ -326,7 +326,7 @@ class Distribution extends Component {
             key="customerName"
             render={(cusName) => (
               <Tooltip placement="topLeft" title={cusName}>
-                {comEvents.hiddenStr(cusName, 8, 8)}
+                {comEvents.hiddenStr(cusName || '', 8, 8)}
               </Tooltip>
             )}
           />
@@ -374,8 +374,8 @@ class Distribution extends Component {
           />
         </div>
       </>
-    );
+    )
   }
 }
 
-export default Distribution;
+export default Distribution
